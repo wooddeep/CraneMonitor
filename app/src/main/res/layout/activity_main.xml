@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+ * 自定义progressbar
+ * https://blog.csdn.net/mad1989/article/details/38042875
+ * https://www.jianshu.com/p/8998e381b805
+ * 九点图
+ * https://onlooker.wodemo.net/browse/392022/res/drawable-hdpi-v4/
+
+ * 程序定义进度条
+ * https://blog.csdn.net/u012005313/article/details/76047122
+
+-->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,66 +20,16 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <!--
-    <FrameLayout
-        android:layout_width="450dp"
-        android:layout_height="450dp"
-        android:layout_gravity="center">
-
-        <com.wooddeep.crane.SuperCircleView
-            android:id="@+id/superview"
-            android:layout_width="380dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:min_circle_radio="200"
-            app:maxValue="100"
-            app:ring_width="50"
-            app:value="20" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="60dp"
-            android:text="信息完成度"
-            android:textColor="#CFD5DE"
-            android:textSize="18sp" />
-
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textColor="#506946"
-                android:textSize="80sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="%"
-                android:textSize="28sp" />
-        </LinearLayout>
-    </FrameLayout>
-    -->
-
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:background="@drawable/spliter_background">
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center">
+            android:layout_height="match_parent">
 
             <!-- No and name -->
             <LinearLayout
@@ -81,11 +44,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No.:19026"
-                    android:textColor="#506946"/>
+                    android:textColor="#506946" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SCT16014A"/>
+                    android:text="SCT16014A" />
             </LinearLayout>
 
             <ImageView
@@ -141,6 +104,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_gravity="center"
                 android:gravity="center"
                 android:text="5.0m/s" />
 
@@ -149,19 +113,20 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:orientation="vertical">
                 <TextView
                     android:id="@+id/calendar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="13:15:05"
-                    android:textColor="#506946"/>
+                    android:textColor="#506946" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2019-04-27"/>
+                    android:text="2019-04-27" />
             </LinearLayout>
 
         </TableRow>
@@ -188,7 +153,7 @@
             android:id="@+id/divider"
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@color/gray"/>
+            android:background="@color/gray" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -196,13 +161,74 @@
             android:layout_weight="3"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView4"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    app:srcCompat="@mipmap/ic_launcher" />
+
+                <LinearLayout
+                    android:layout_width="200dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/t0"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:text="13:15:05"
+                            android:textColor="#506946" />
+                        <TextView
+                            android:id="@+id/t1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:text="13:15:05"
+                            android:textColor="#506946" />
+                    </LinearLayout>
+
+                    <com.wooddeep.crane.views.SimpleProgressbar
+                        android:id="@+id/spb"
+                        android:layout_width="150dp"
+                        android:layout_height="20dp"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:progress="30" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@color/gray"
+                android:orientation="horizontal"></LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@color/green"
-                android:text="TextView"
-                android:textSize="30dp"/>
+                android:orientation="horizontal">
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
+
 </LinearLayout>

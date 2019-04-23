@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.wooddeep.crane.views.SimpleProgressbar;
+
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +37,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         */
+
+        final SimpleProgressbar spb = (SimpleProgressbar) findViewById(R.id.spb);
+
+        final int max = spb.getMax();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int progress = spb.getProgress();
+                while ((progress + 1) <= max) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    spb.setProgress(progress + 1);
+                    progress = progress + 1;
+                }
+            }
+        }).start();
+
     }
 
 
