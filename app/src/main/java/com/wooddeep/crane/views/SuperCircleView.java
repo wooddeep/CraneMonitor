@@ -1,4 +1,4 @@
-package com.wooddeep.crane;
+package com.wooddeep.crane.views;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -12,6 +12,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import com.wooddeep.crane.R;
 
 
 public class SuperCircleView extends View {
@@ -148,8 +150,8 @@ public class SuperCircleView extends View {
 
         double sin = Math.sin(Math.toRadians(mSelectRing + 90));
         double cos = Math.cos(Math.toRadians(mSelectRing + 90));
-        float xoffset = (float)(mMinRadio * sin);
-        float yoffset = (float)(mMinRadio * cos);
+        float xoffset = (float) (mMinRadio * sin);
+        float yoffset = (float) (mMinRadio * cos);
         Log.i(TAG, String.format("## x0 = %d, y0 = %d, x1 = %f, y1 = %f\n", mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY + yoffset));
         canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY - yoffset, radioPaint);
     }
@@ -163,7 +165,7 @@ public class SuperCircleView extends View {
      * @param value
      */
     public void
-    setValue(int value,TextView textView) {
+    setValue(int value, TextView textView) {
         if (value > mMaxValue) {
             value = mMaxValue;
         }
@@ -182,8 +184,8 @@ public class SuperCircleView extends View {
                 int i = Integer.valueOf(String.valueOf(animation.getAnimatedValue()));
                 textView.setText(i + "");
                 //每个单位长度占多少度
-                 mSelectRing=(int) (360 * (i / 100f));
-                Log.i(TAG, "onAnimationUpdate: mSelectRing::"+mSelectRing);
+                mSelectRing = (int) (360 * (i / 100f));
+                Log.i(TAG, "onAnimationUpdate: mSelectRing::" + mSelectRing);
                 invalidate(); // 调用onDraw方法
             }
         });

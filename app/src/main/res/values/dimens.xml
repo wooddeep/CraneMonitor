@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <dimen name="banner_height">80px</dimen>
+    <dimen name="image_height">80px</dimen>
+    <dimen name="image_width">100px</dimen>
+    <dimen name="text_width">100px</dimen>
+    <dimen name="text_height">50px</dimen>
+    <dimen name="btn_width">30mm</dimen>
+    <dimen name="btn_height">10mm</dimen>
+</resources>

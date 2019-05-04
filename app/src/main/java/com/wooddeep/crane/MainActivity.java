@@ -2,13 +2,10 @@ package com.wooddeep.crane;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 import com.wooddeep.crane.views.SimpleProgressbar;
-
-import java.util.Random;
+import com.wooddeep.crane.views.SuperCircleView;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
