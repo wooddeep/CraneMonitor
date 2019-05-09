@@ -1,9 +1,12 @@
 package com.wooddeep.crane;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.wooddeep.crane.views.SimpleProgressbar;
@@ -18,10 +21,15 @@ public class MainActivity extends AppCompatActivity {
 
     TextView textView;
 
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FrameLayout mainFrame = findViewById(R.id.main_frame);
+
 
         mSuperCircleView = findViewById(R.id.superview);
         mSuperCircleView.setValue(100, textView);
@@ -36,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        context = getApplicationContext();
 
         final SimpleProgressbar spb = (SimpleProgressbar) findViewById(R.id.spb);
 
@@ -57,7 +66,15 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
 
-    }
+        SuperCircleView cycle = new SuperCircleView(context);
+        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(250, 250);
+        paras.leftMargin = 300;
+        paras.topMargin = 100;
+        cycle.setLayoutParams(paras);
+        mainFrame.addView(cycle);
+        cycle.setValue(100, textView);
+        cycle.setBackgroundColor(0x00000000);
 
+    }
 
 }

@@ -47,9 +47,9 @@ public class SuperCircleView extends View {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SuperCircleView);
         //最里面白色圆的半径
-        mMinRadio = a.getInteger(R.styleable.SuperCircleView_min_circle_radio, 200);
+        mMinRadio = a.getInteger(R.styleable.SuperCircleView_min_circle_radio, 100);
         //圆环宽度
-        mRingWidth = a.getFloat(R.styleable.SuperCircleView_ring_width, 40);
+        mRingWidth = a.getFloat(R.styleable.SuperCircleView_ring_width, 5);
 
         //最里面的圆的颜色(白色)
         //mMinCircleColor = a.getColor(R.styleable.SuperCircleView_circle_color, context.getResources().getColor(R.color.green));
@@ -77,7 +77,6 @@ public class SuperCircleView extends View {
         color[2] = Color.parseColor("#16FF00");
     }
 
-
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
@@ -89,9 +88,9 @@ public class SuperCircleView extends View {
         mViewCenterY = viewHeight / 2;
         //画矩形
         mRectF = new RectF(mViewCenterX - mMinRadio - mRingWidth / 2,
-            mViewCenterY - mMinRadio - mRingWidth / 2,
-            mViewCenterX + mMinRadio + mRingWidth / 2,
-            mViewCenterY + mMinRadio + mRingWidth / 2);
+          mViewCenterY - mMinRadio - mRingWidth / 2,
+          mViewCenterX + mMinRadio + mRingWidth / 2,
+          mViewCenterY + mMinRadio + mRingWidth / 2);
     }
 
     @Override
@@ -102,10 +101,11 @@ public class SuperCircleView extends View {
         //画默认圆环
         drawNormalRing(canvas);
         //画彩色圆环
-        drawColorRing(canvas);
+        //drawColorRing(canvas);
 
         drawRadio(canvas);
-        getBackground().setAlpha(100);
+
+        //getBackground().setAlpha(100);
 
     }
 
@@ -147,16 +147,12 @@ public class SuperCircleView extends View {
         Paint radioPaint = new Paint(mPaint);
         radioPaint.setStyle(Paint.Style.STROKE);
         radioPaint.setColor(Color.BLACK);
-        //ringNormalPaint.setStrokeWidth(mRingWidth);
-        //ringNormalPaint.setColor(mRingNormalColor);//圆环默认颜色为灰色
-        //canvas.drawArc(mRectF, 360, 360, false, ringNormalPaint);
-        //Log.i(TAG, String.format("## mViewCenterX = %d, mViewCenterY = %d\n", mViewCenterX, mViewCenterY));
-
         double sin = Math.sin(Math.toRadians(mSelectRing + 90));
         double cos = Math.cos(Math.toRadians(mSelectRing + 90));
         float xoffset = (float) (mMinRadio * sin);
         float yoffset = (float) (mMinRadio * cos);
-        Log.i(TAG, String.format("## x0 = %d, y0 = %d, x1 = %f, y1 = %f\n", mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY + yoffset));
+        Log.i(TAG, String.format("## x0 = %d, y0 = %d, x1 = %f, y1 = %f\n",
+          mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY + yoffset));
         canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY - yoffset, radioPaint);
     }
 
@@ -184,9 +180,7 @@ public class SuperCircleView extends View {
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                //Log.i(TAG, "onAnimationUpdate: animation.getAnimatedValue()::"+animation.getAnimatedValue());
                 int i = Integer.valueOf(String.valueOf(animation.getAnimatedValue()));
-                //textView.setText(i + "");
                 //每个单位长度占多少度
                 mSelectRing = (int) (360 * (i / 100f));
                 Log.i(TAG, "onAnimationUpdate: mSelectRing::" + mSelectRing);
