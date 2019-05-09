@@ -11,7 +11,6 @@ import android.graphics.SweepGradient;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import com.wooddeep.crane.R;
 
@@ -34,6 +33,23 @@ public class SuperCircleView extends View {
     private int mSelectRing = 0;        //要显示几段彩色
     private int mMaxValue;
 
+    private int defMinRadio = 50;
+    private int defRingWidth = 1;
+
+    public void setDefMinRadio(int defMinRadio) {
+        this.defMinRadio = defMinRadio;
+        this.mMinRadio = defMinRadio;
+    }
+
+    public void setDefRingWidth(int defRingWidth) {
+        this.defRingWidth = defRingWidth;
+        this.mRingWidth = defRingWidth;
+    }
+
+    public SuperCircleView(Context context, int defMinRadio, int defRingWidth) {
+        this(context, null);
+    }
+
     public SuperCircleView(Context context) {
         this(context, null);
     }
@@ -46,10 +62,11 @@ public class SuperCircleView extends View {
         super(context, attrs, defStyleAttr);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SuperCircleView);
+
         //最里面白色圆的半径
-        mMinRadio = a.getInteger(R.styleable.SuperCircleView_min_circle_radio, 100);
+        mMinRadio = a.getInteger(R.styleable.SuperCircleView_min_circle_radio, defMinRadio);
         //圆环宽度
-        mRingWidth = a.getFloat(R.styleable.SuperCircleView_ring_width, 5);
+        mRingWidth = a.getFloat(R.styleable.SuperCircleView_ring_width, defRingWidth);
 
         //最里面的圆的颜色(白色)
         //mMinCircleColor = a.getColor(R.styleable.SuperCircleView_circle_color, context.getResources().getColor(R.color.green));
@@ -97,7 +114,7 @@ public class SuperCircleView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         mPaint.setColor(mMinCircleColor);
-        canvas.drawCircle(mViewCenterX, mViewCenterY, mMinRadio, mPaint);
+        //canvas.drawCircle(mViewCenterX, mViewCenterY, mMinRadio, mPaint);
         //画默认圆环
         drawNormalRing(canvas);
         //画彩色圆环
@@ -165,16 +182,16 @@ public class SuperCircleView extends View {
      * @param value
      */
     public void
-    setValue(int value, TextView textView) {
+    setValue(int value) {
         if (value > mMaxValue) {
             value = mMaxValue;
         }
         int start = 0;
         int end = value;
-        startAnimator(start, end, 2000, textView);
+        startAnimator(start, end, 2000);
     }
 
-    private void startAnimator(int start, int end, long animTime, final TextView textView) {
+    private void startAnimator(int start, int end, long animTime) {
         valueAnimator = ValueAnimator.ofInt(start, end);
         valueAnimator.setDuration(animTime);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {

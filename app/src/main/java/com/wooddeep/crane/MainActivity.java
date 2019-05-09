@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -14,12 +13,19 @@ import com.wooddeep.crane.views.SuperCircleView;
 
 import java.util.Random;
 
+// 获取控件的尺寸
+// mainFrame.measure(0,0);
+
+// 获取组件宽度
+// int width = mainFrame.getMeasuredWidth();
+
+// 获取组件高度
+// int height = mainFrame.getMeasuredHeight();
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     SuperCircleView mSuperCircleView;
-
-    TextView textView;
 
     Context context;
 
@@ -30,9 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
         FrameLayout mainFrame = findViewById(R.id.main_frame);
 
-
         mSuperCircleView = findViewById(R.id.superview);
-        mSuperCircleView.setValue(100, textView);
+        mSuperCircleView.setValue(100);
         mSuperCircleView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 int i = new Random().nextInt(100) + 1;
                 //int i = 2;
                 Log.i(TAG, "onClick: i::" + i);
-                mSuperCircleView.setValue(i, textView);
+                mSuperCircleView.setValue(i);
             }
         });
 
@@ -66,15 +71,27 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
 
+        // 画圆
         SuperCircleView cycle = new SuperCircleView(context);
-        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(250, 250);
+        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(320, 320);
         paras.leftMargin = 300;
         paras.topMargin = 100;
         cycle.setLayoutParams(paras);
         mainFrame.addView(cycle);
-        cycle.setValue(100, textView);
+        cycle.setDefMinRadio(150);
+        cycle.setValue(100);
         cycle.setBackgroundColor(0x00000000);
 
     }
 
+    /**
+     * 获取控件坐标
+     **/
+    @Override
+    public void onWindowFocusChanged (boolean hasFocus) {
+        int[] location = new int[2];
+        FrameLayout mainFrame = findViewById(R.id.main_frame);
+        mainFrame.getLocationInWindow(location);
+
+    }
 }
