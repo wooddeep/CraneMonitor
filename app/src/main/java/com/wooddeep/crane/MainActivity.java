@@ -2,10 +2,14 @@ package com.wooddeep.crane;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.wooddeep.crane.views.SimpleProgressbar;
 import com.wooddeep.crane.views.SuperCircleView;
+
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -19,8 +23,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*
-        textView = findViewById(R.id.tv);
         mSuperCircleView = findViewById(R.id.superview);
         mSuperCircleView.setValue(100, textView);
         mSuperCircleView.setOnClickListener(new View.OnClickListener() {
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
                 mSuperCircleView.setValue(i, textView);
             }
         });
-        */
+
 
         final SimpleProgressbar spb = (SimpleProgressbar) findViewById(R.id.spb);
 

@@ -47,12 +47,14 @@ public class SuperCircleView extends View {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SuperCircleView);
         //最里面白色圆的半径
-        mMinRadio = a.getInteger(R.styleable.SuperCircleView_min_circle_radio, 300);
+        mMinRadio = a.getInteger(R.styleable.SuperCircleView_min_circle_radio, 200);
         //圆环宽度
         mRingWidth = a.getFloat(R.styleable.SuperCircleView_ring_width, 40);
 
         //最里面的圆的颜色(白色)
-        mMinCircleColor = a.getColor(R.styleable.SuperCircleView_circle_color, context.getResources().getColor(R.color.green));
+        //mMinCircleColor = a.getColor(R.styleable.SuperCircleView_circle_color, context.getResources().getColor(R.color.green));
+        mMinCircleColor = 0x00000000;
+
         //圆环的默认颜色(圆环占据的是里面的圆的空间)
         mRingNormalColor = a.getColor(R.styleable.SuperCircleView_ring_normal_color, context.getResources().getColor(R.color.gray));
         //圆环要显示的彩色的区域
@@ -103,6 +105,8 @@ public class SuperCircleView extends View {
         drawColorRing(canvas);
 
         drawRadio(canvas);
+        getBackground().setAlpha(100);
+
     }
 
     /**
@@ -182,7 +186,7 @@ public class SuperCircleView extends View {
             public void onAnimationUpdate(ValueAnimator animation) {
                 //Log.i(TAG, "onAnimationUpdate: animation.getAnimatedValue()::"+animation.getAnimatedValue());
                 int i = Integer.valueOf(String.valueOf(animation.getAnimatedValue()));
-                textView.setText(i + "");
+                //textView.setText(i + "");
                 //每个单位长度占多少度
                 mSelectRing = (int) (360 * (i / 100f));
                 Log.i(TAG, "onAnimationUpdate: mSelectRing::" + mSelectRing);

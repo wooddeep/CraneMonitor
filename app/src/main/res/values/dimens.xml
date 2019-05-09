@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
+    <dimen name="title_banner_height">80px</dimen>
     <dimen name="banner_height">80px</dimen>
     <dimen name="image_height">80px</dimen>
     <dimen name="image_width">100px</dimen>

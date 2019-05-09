@@ -27,7 +27,7 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/banner_height"
+        android:layout_height="@dimen/title_banner_height"
         android:layout_gravity="center"
         android:gravity="center"
         android:background="@drawable/spliter_background">
@@ -143,23 +143,42 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <com.wooddeep.crane.views.SuperCircleView
-            android:id="@+id/superview"
+        <!-- main window for crane's cycle -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="2"
-            app:maxValue="100"
-            app:min_circle_radio="200"
-            app:ring_width="50"
-            app:value="20" />
+            android:layout_height="match_parent"
+            android:layout_weight="2">
 
+            <com.wooddeep.crane.views.SuperCircleView
+                android:id="@+id/superview1"
+                android:layout_width="250px"
+                android:layout_height="250px"
+                android:background="#00000000"
+                app:maxValue="100"
+                app:min_circle_radio="100"
+                app:ring_width="20"
+                app:value="20" />
+
+            <com.wooddeep.crane.views.SuperCircleView
+                android:id="@+id/superview"
+                android:layout_width="250px"
+                android:layout_height="250px"
+                android:layout_marginLeft="150px"
+                android:background="#00000000"
+                app:maxValue="100"
+                app:min_circle_radio="100"
+                app:ring_width="20"
+                app:value="20" />
+
+        </FrameLayout>
+        <!-- divider -->
         <View
             android:id="@+id/divider"
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="@color/gray" />
 
+        <!-- others -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
