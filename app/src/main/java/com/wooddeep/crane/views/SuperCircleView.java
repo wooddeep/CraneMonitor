@@ -34,7 +34,7 @@ public class SuperCircleView extends View {
     private int mMaxValue;
 
     private int defMinRadio = 50;
-    private int defRingWidth = 1;
+    private int defRingWidth = 2;
 
     public void setDefMinRadio(int defMinRadio) {
         this.defMinRadio = defMinRadio;
@@ -44,6 +44,10 @@ public class SuperCircleView extends View {
     public void setDefRingWidth(int defRingWidth) {
         this.defRingWidth = defRingWidth;
         this.mRingWidth = defRingWidth;
+    }
+
+    public void setmRingNormalColor(int mRingNormalColor) {
+        this.mRingNormalColor = mRingNormalColor;
     }
 
     public SuperCircleView(Context context, int defMinRadio, int defRingWidth) {
@@ -168,8 +172,8 @@ public class SuperCircleView extends View {
         double cos = Math.cos(Math.toRadians(mSelectRing + 90));
         float xoffset = (float) (mMinRadio * sin);
         float yoffset = (float) (mMinRadio * cos);
-        Log.i(TAG, String.format("## x0 = %d, y0 = %d, x1 = %f, y1 = %f\n",
-          mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY + yoffset));
+        //Log.i(TAG, String.format("## x0 = %d, y0 = %d, x1 = %f, y1 = %f\n",
+        //  mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY + yoffset));
         canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY - yoffset, radioPaint);
     }
 
@@ -200,7 +204,7 @@ public class SuperCircleView extends View {
                 int i = Integer.valueOf(String.valueOf(animation.getAnimatedValue()));
                 //每个单位长度占多少度
                 mSelectRing = (int) (360 * (i / 100f));
-                Log.i(TAG, "onAnimationUpdate: mSelectRing::" + mSelectRing);
+                //Log.i(TAG, "onAnimationUpdate: mSelectRing::" + mSelectRing);
                 invalidate(); // 调用onDraw方法
             }
         });
