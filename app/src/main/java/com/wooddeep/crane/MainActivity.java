@@ -10,6 +10,8 @@ import android.widget.FrameLayout;
 
 import com.wooddeep.crane.views.SuperCircleView;
 
+import java.util.List;
+
 /**
  * 获取主界面FrameLayout的坐标及长宽
  **/
@@ -150,13 +152,61 @@ public class MainActivity extends AppCompatActivity {
         return scale;
     }
 
+    class Vertex {
+        public int x;
+        public int y;
+    }
+
+    /**
+     * 画旁边圆环
+     **/
+    public static void DrawSideArea(Activity activity, ViewGroup parent, float scale,
+                                     int cx, int cy,
+                                     List<Vertex> vertexs, //顶点
+                                     int x, int y, int r) {
+
+        /*
+        Context context = activity.getApplicationContext();
+        int width = parent.getMeasuredWidth(); // 获取组件宽度
+        int height = parent.getMeasuredHeight(); // 获取组件高度
+
+        // 1号塔机坐标100.100圆环直径55。2号塔机坐标130.123圆环直径60
+        int ringWidth = 2; // 固定圆环宽度
+        int originRadius = (int)scale * r;
+        int originBackWidth = originRadius * 2 + ringWidth * 2; // 默认圆环正方形背景高度
+        int originBackHeight = originBackWidth; // 默认圆环正方形背景宽度
+        int centerX = width / 2;   // 中心点x坐标(到左边距的长度)，相对于FrameLayout的左下角
+        int centerY = height/ 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
+
+        int deltaX = (int)scale * (x - cx);
+        int delatY = (int)scale * (y - cy);
+
+        int leftMargin = centerX - originRadius + deltaX;  // 左偏
+        int topMagin = height - (centerY + originRadius) - delatY;   // 下偏
+
+        SuperCircleView cycle = new SuperCircleView(context);
+        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(originBackWidth, originBackHeight);
+        paras.leftMargin = leftMargin;
+        paras.topMargin = topMagin;
+        cycle.setLayoutParams(paras);
+        parent.addView(cycle);
+        cycle.setDefMinRadio(originRadius);
+        cycle.setBackgroundColor(0x00000000); // 透明色
+        cycle.setDefRingWidth(ringWidth);
+        cycle.setmRingNormalColor(Color.GREEN);
+        cycle.setValue(100);
+        return scale;
+        */
+    }
+
+
     /**
      * 获取主界面FrameLayout的坐标及长宽
      **/
     @Override
     public void onWindowFocusChanged (boolean hasFocus) {
         FrameLayout mainFrame = findViewById(R.id.main_frame);
-        float scale  = DrawCenterCycle(this, mainFrame, 2f, 55/2);
+        float scale  = DrawCenterCycle(this, mainFrame, 1f, 55/2);
         DrawSideCycle(this, mainFrame, scale, 100, 100, 130, 123, 60/2);
     }
 
