@@ -150,11 +150,11 @@
             android:layout_height="match_parent"
             android:layout_weight="2">
 
-
+            <!--
             <com.wooddeep.crane.views.Polygon
                 android:layout_width="300dp"
                 android:layout_height="300dp" />
-
+            -->
 
             <!--
             <com.wooddeep.crane.views.SuperCircleView

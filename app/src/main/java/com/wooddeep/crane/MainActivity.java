@@ -8,8 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.wooddeep.crane.views.Polygon;
 import com.wooddeep.crane.views.SuperCircleView;
+import com.wooddeep.crane.views.Vertex;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -152,25 +155,17 @@ public class MainActivity extends AppCompatActivity {
         return scale;
     }
 
-    class Vertex {
-        public int x;
-        public int y;
-    }
-
     /**
      * 画旁边圆环
      **/
-    public static void DrawSideArea(Activity activity, ViewGroup parent, float scale,
-                                     int cx, int cy,
-                                     List<Vertex> vertexs, //顶点
-                                     int x, int y, int r) {
-
-        /*
+    public static void DrawSideArea(Activity activity, ViewGroup parent, float scale, int cx, int cy) {
         Context context = activity.getApplicationContext();
         int width = parent.getMeasuredWidth(); // 获取组件宽度
         int height = parent.getMeasuredHeight(); // 获取组件高度
 
         // 1号塔机坐标100.100圆环直径55。2号塔机坐标130.123圆环直径60
+
+        /*
         int ringWidth = 2; // 固定圆环宽度
         int originRadius = (int)scale * r;
         int originBackWidth = originRadius * 2 + ringWidth * 2; // 默认圆环正方形背景高度
@@ -183,20 +178,25 @@ public class MainActivity extends AppCompatActivity {
 
         int leftMargin = centerX - originRadius + deltaX;  // 左偏
         int topMagin = height - (centerY + originRadius) - delatY;   // 下偏
-
-        SuperCircleView cycle = new SuperCircleView(context);
-        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(originBackWidth, originBackHeight);
-        paras.leftMargin = leftMargin;
-        paras.topMargin = topMagin;
-        cycle.setLayoutParams(paras);
-        parent.addView(cycle);
-        cycle.setDefMinRadio(originRadius);
-        cycle.setBackgroundColor(0x00000000); // 透明色
-        cycle.setDefRingWidth(ringWidth);
-        cycle.setmRingNormalColor(Color.GREEN);
-        cycle.setValue(100);
-        return scale;
         */
+
+        Polygon area = new Polygon(context);
+        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(300, 300); // TODO 替换实际的长宽
+        //paras.leftMargin = leftMargin;
+        //paras.topMargin = topMagin;
+        area.setLayoutParams(paras);
+        parent.addView(area);
+        //cycle.setDefMinRadio(originRadius);
+        area.setBackgroundColor(0x00000000); // 透明色
+
+        List<Vertex> vertex = new ArrayList<Vertex>() {{
+            add(new Vertex(100, 100));
+            add(new Vertex(150, 150));
+            add(new Vertex(50, 150));
+            add(new Vertex(0, 50));
+        }};
+
+        area.setValue(vertex);
     }
 
 
@@ -208,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
         FrameLayout mainFrame = findViewById(R.id.main_frame);
         float scale  = DrawCenterCycle(this, mainFrame, 1f, 55/2);
         DrawSideCycle(this, mainFrame, scale, 100, 100, 130, 123, 60/2);
+        DrawSideArea(this, mainFrame, scale, 0, 0);
     }
 
 }
