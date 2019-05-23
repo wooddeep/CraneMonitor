@@ -2,6 +2,7 @@ package com.wooddeep.crane.views;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -17,6 +18,7 @@ import java.util.List;
  * 绘制多边形，并且填充
  * https://blog.csdn.net/qq_41985689/article/details/81501501
  * https://ask.csdn.net/questions/357751
+ * https://blog.csdn.net/tianjian4592/article/details/45234419
  **/
 
 public class Polygon extends View {
@@ -48,8 +50,10 @@ public class Polygon extends View {
     @Override
     protected synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        setLayerType(LAYER_TYPE_SOFTWARE, null);
         Paint paint = new Paint();//创建画笔
         paint.setColor(Color.RED);//为画笔设置颜色
+        paint.setMaskFilter(new BlurMaskFilter(10f, BlurMaskFilter.Blur.SOLID));
         //paint.setStyle(Paint.Style.FILL);
         //paint.setStrokeWidth(50);//为画笔设置粗细
         //paint.setStyle(Paint.Style.STROKE);//设置空心

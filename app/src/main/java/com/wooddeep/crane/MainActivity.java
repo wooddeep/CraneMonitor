@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 画中心圆环
      **/
-    public static float DrawCenterCycle(Activity activity, ViewGroup parent, float oscale, int r) {
+    public static float DrawCenterCycle(Activity activity, ViewGroup parent, float oscale, int r, int ir) {
         Context context = activity.getApplicationContext();
         int width = parent.getMeasuredWidth(); // 获取组件宽度
         int height = parent.getMeasuredHeight(); // 获取组件高度
@@ -115,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
         cycle.setBackgroundColor(0x00000000); // 透明色
         cycle.setDefRingWidth(ringWidth);
         cycle.setmRingNormalColor(Color.GREEN);
+        float orgInnerRadius = originRadius / r * ir;
+        cycle.setmInnerRadio((int)orgInnerRadius);
         cycle.setValue(100);
         return scale;
     }
@@ -157,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 画旁边圆环
+     * @param: cx central ring's x axis
      **/
     public static void DrawSideArea(Activity activity, ViewGroup parent, float scale, int cx, int cy) {
         Context context = activity.getApplicationContext();
@@ -206,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged (boolean hasFocus) {
         FrameLayout mainFrame = findViewById(R.id.main_frame);
-        float scale  = DrawCenterCycle(this, mainFrame, 1f, 55/2);
+        float scale  = DrawCenterCycle(this, mainFrame, 1f, 55/2, 20);
         DrawSideCycle(this, mainFrame, scale, 100, 100, 130, 123, 60/2);
         DrawSideArea(this, mainFrame, scale, 0, 0);
     }

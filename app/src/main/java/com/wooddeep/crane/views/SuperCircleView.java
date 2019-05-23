@@ -3,8 +3,10 @@ package com.wooddeep.crane.views;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.SweepGradient;
@@ -14,6 +16,7 @@ import android.view.View;
 
 import com.wooddeep.crane.R;
 
+// https://blog.csdn.net/u013933720/article/details/78261844 dot line
 
 public class SuperCircleView extends View {
     private final String TAG = "SuperCircleView";
@@ -35,8 +38,16 @@ public class SuperCircleView extends View {
 
     private int defMinRadio = 50;
     private int defRingWidth = 2;
-
     private int mInnerRadio = 20;
+    private float mAngle = 0;
+
+    public void setmInnerRadio(int mInnerRadio) {
+        this.mInnerRadio = mInnerRadio;
+    }
+
+    public void setmAngle(float mAngle) {
+        this.mAngle = mAngle;
+    }
 
     public void setDefMinRadio(int defMinRadio) {
         this.defMinRadio = defMinRadio;
@@ -100,20 +111,22 @@ public class SuperCircleView extends View {
         color[2] = Color.parseColor("#16FF00");
     }
 
+    private RectF calRingRectArea(int radio) {
+        return new RectF(mViewCenterX - radio - mRingWidth / 2,
+          mViewCenterY - radio - mRingWidth / 2,
+          mViewCenterX + radio + mRingWidth / 2,
+          mViewCenterY + radio + mRingWidth / 2);
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-
         //view的宽和高,相对于父布局(用于确定圆心)
         int viewWidth = getMeasuredWidth();
         int viewHeight = getMeasuredHeight();
         mViewCenterX = viewWidth / 2;
         mViewCenterY = viewHeight / 2;
-        //画矩形
-        mRectF = new RectF(mViewCenterX - mMinRadio - mRingWidth / 2,
-          mViewCenterY - mMinRadio - mRingWidth / 2,
-          mViewCenterX + mMinRadio + mRingWidth / 2,
-          mViewCenterY + mMinRadio + mRingWidth / 2);
+        mRectF = calRingRectArea(mMinRadio);
     }
 
     @Override
@@ -128,7 +141,6 @@ public class SuperCircleView extends View {
         // draw radio
         drawRadio(canvas);
         //getBackground().setAlpha(100);
-
     }
 
     /**
@@ -157,13 +169,10 @@ public class SuperCircleView extends View {
         ringNormalPaint.setStyle(Paint.Style.STROKE);
         ringNormalPaint.setStrokeWidth(mRingWidth);
         ringNormalPaint.setColor(mRingNormalColor);//圆环默认颜色为灰色
+        ringNormalPaint.setMaskFilter(new BlurMaskFilter(100f, BlurMaskFilter.Blur.SOLID));
         canvas.drawArc(mRectF, 360, 360, false, ringNormalPaint);
-
-        //mInnerRadio
-        RectF innerRectF = new RectF(mViewCenterX - mInnerRadio - mRingWidth / 2,
-          mViewCenterY - mInnerRadio - mRingWidth / 2,
-          mViewCenterX + mInnerRadio + mRingWidth / 2,
-          mViewCenterY + mInnerRadio + mRingWidth / 2);
+        RectF innerRectF = calRingRectArea(mInnerRadio);
+        ringNormalPaint.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
         canvas.drawArc(innerRectF, 360, 360, false, ringNormalPaint);
     }
 
@@ -180,8 +189,6 @@ public class SuperCircleView extends View {
         double cos = Math.cos(Math.toRadians(mSelectRing + 90));
         float xoffset = (float) (mMinRadio * sin);
         float yoffset = (float) (mMinRadio * cos);
-        //Log.i(TAG, String.format("## x0 = %d, y0 = %d, x1 = %f, y1 = %f\n",
-        //  mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY + yoffset));
         canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY - yoffset, radioPaint);
     }
 
