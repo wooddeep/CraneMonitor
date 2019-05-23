@@ -36,6 +36,8 @@ public class SuperCircleView extends View {
     private int defMinRadio = 50;
     private int defRingWidth = 2;
 
+    private int mInnerRadio = 20;
+
     public void setDefMinRadio(int defMinRadio) {
         this.defMinRadio = defMinRadio;
         this.mMinRadio = defMinRadio;
@@ -123,9 +125,8 @@ public class SuperCircleView extends View {
         drawNormalRing(canvas);
         //画彩色圆环
         //drawColorRing(canvas);
-
+        // draw radio
         drawRadio(canvas);
-
         //getBackground().setAlpha(100);
 
     }
@@ -157,6 +158,13 @@ public class SuperCircleView extends View {
         ringNormalPaint.setStrokeWidth(mRingWidth);
         ringNormalPaint.setColor(mRingNormalColor);//圆环默认颜色为灰色
         canvas.drawArc(mRectF, 360, 360, false, ringNormalPaint);
+
+        //mInnerRadio
+        RectF innerRectF = new RectF(mViewCenterX - mInnerRadio - mRingWidth / 2,
+          mViewCenterY - mInnerRadio - mRingWidth / 2,
+          mViewCenterX + mInnerRadio + mRingWidth / 2,
+          mViewCenterY + mInnerRadio + mRingWidth / 2);
+        canvas.drawArc(innerRectF, 360, 360, false, ringNormalPaint);
     }
 
     /**
