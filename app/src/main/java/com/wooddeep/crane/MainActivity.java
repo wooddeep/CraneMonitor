@@ -13,7 +13,9 @@ import com.wooddeep.crane.views.SuperCircleView;
 import com.wooddeep.crane.views.Vertex;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.SortedMap;
 
 /**
  * 获取主界面FrameLayout的坐标及长宽
@@ -161,45 +163,46 @@ public class MainActivity extends AppCompatActivity {
      * 画旁边圆环
      * @param: cx central ring's x axis
      **/
-    public static void DrawSideArea(Activity activity, ViewGroup parent, float scale, int cx, int cy) {
+    public static void DrawSideArea(Activity activity, ViewGroup parent, float scale, int cx, int cy, List<Vertex> vertexs) {
         Context context = activity.getApplicationContext();
         int width = parent.getMeasuredWidth(); // 获取组件宽度
         int height = parent.getMeasuredHeight(); // 获取组件高度
 
-        // 1号塔机坐标100.100圆环直径55。2号塔机坐标130.123圆环直径60
 
-        /*
-        int ringWidth = 2; // 固定圆环宽度
-        int originRadius = (int)scale * r;
-        int originBackWidth = originRadius * 2 + ringWidth * 2; // 默认圆环正方形背景高度
-        int originBackHeight = originBackWidth; // 默认圆环正方形背景宽度
         int centerX = width / 2;   // 中心点x坐标(到左边距的长度)，相对于FrameLayout的左下角
         int centerY = height/ 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
 
-        int deltaX = (int)scale * (x - cx);
-        int delatY = (int)scale * (y - cy);
+        for (Vertex vertex: vertexs) {
+            vertex.x = (int)(scale * vertex.x);
+            vertex.y = height - (int)(scale * vertex.y);  // y 轴转换
+        }
 
-        int leftMargin = centerX - originRadius + deltaX;  // 左偏
-        int topMagin = height - (centerY + originRadius) - delatY;   // 下偏
+        //int leftMargin = centerX - originRadius + deltaX;  // 左偏
+        //int topMagin = height - (centerY + originRadius) - delatY;   // 下偏
+
+        /*
+        int [] xAxies = new int[vertexs.size()];
+        int [] yAxies = new int[vertexs.size()];
+        for (int i = 0; i < vertexs.size(); i++) {
+            xAxies[i] = vertexs.get(i).x;
+            yAxies[i] = vertexs.get(i).y;
+        }
+        Arrays.sort(xAxies);
+        Arrays.sort(yAxies);
+        int maxDeltaX = Math.abs(xAxies[0] - xAxies[vertexs.size() - 1]);
+        int maxDeltaY = Math.abs(yAxies[0] - yAxies[vertexs.size() - 1]);
         */
 
         Polygon area = new Polygon(context);
-        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(300, 300); // TODO 替换实际的长宽
-        //paras.leftMargin = leftMargin;
-        //paras.topMargin = topMagin;
+        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(width, height); // TODO 替换实际的长宽
+        paras.leftMargin = centerX - (int)(cx * scale);
+        //paras.topMargin = 0;
+        paras.topMargin = (int)(cy * scale) - centerY; // margin值为负数, 向顶部偏移
         area.setLayoutParams(paras);
         parent.addView(area);
         //cycle.setDefMinRadio(originRadius);
         area.setBackgroundColor(0x00000000); // 透明色
-
-        List<Vertex> vertex = new ArrayList<Vertex>() {{
-            add(new Vertex(100, 100));
-            add(new Vertex(150, 150));
-            add(new Vertex(50, 150));
-            add(new Vertex(0, 50));
-        }};
-
-        area.setValue(vertex);
+        area.setValue(vertexs);
     }
 
 
@@ -211,7 +214,33 @@ public class MainActivity extends AppCompatActivity {
         FrameLayout mainFrame = findViewById(R.id.main_frame);
         float scale  = DrawCenterCycle(this, mainFrame, 1f, 55/2, 20);
         DrawSideCycle(this, mainFrame, scale, 100, 100, 130, 123, 60/2);
-        DrawSideArea(this, mainFrame, scale, 0, 0);
+
+        /*
+        List<Vertex> vertex = new ArrayList<Vertex>() {{
+            add(new Vertex(100, 100));
+            add(new Vertex(150, 100));
+            add(new Vertex(150, 150));
+            add(new Vertex(100, 150));
+        }};
+
+        DrawSideArea(this, mainFrame, scale, 100, 100, vertex);
+        */
+
+        List<Vertex> vertex1 = new ArrayList<Vertex>() {{
+            add(new Vertex(100, 100));
+            add(new Vertex(150, 100));
+            add(new Vertex(100, 150));
+        }};
+
+        DrawSideArea(this, mainFrame, 1f, 100, 100, vertex1);
+
+        List<Vertex> vertex2 = new ArrayList<Vertex>() {{
+            add(new Vertex(100, 100));
+            add(new Vertex(150, 100));
+            add(new Vertex(100, 150));
+        }};
+
+        DrawSideArea(this, mainFrame, 2f, 100, 100, vertex2);
     }
 
 }
