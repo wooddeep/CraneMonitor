@@ -17,6 +17,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.SortedMap;
 
+// 启动mumu之后, 输入：
+// adb connect 127.0.0.1:7555
+// 然后再调试, 就ok了
+
 /**
  * 获取主界面FrameLayout的坐标及长宽
  **/
