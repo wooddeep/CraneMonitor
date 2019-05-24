@@ -75,6 +75,18 @@ new Thread(new Runnable() {
 }).start();
 */
 
+class OffsetInfo {
+    public float scale;
+    public float leftOffset;
+    public float topOffset;
+
+    public OffsetInfo(float s, float l, float t) {
+        this.scale = s;
+        this.leftOffset = l;
+        this.topOffset = t;
+    }
+}
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
@@ -92,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 画中心圆环
      **/
-    public static float DrawCenterCycle(Activity activity, ViewGroup parent, float oscale, int r, int ir) {
+    public static OffsetInfo DrawCenterCycle(Activity activity, ViewGroup parent, float oscale, int r, int ir) {
         Context context = activity.getApplicationContext();
         int width = parent.getMeasuredWidth(); // 获取组件宽度
         int height = parent.getMeasuredHeight(); // 获取组件高度
@@ -124,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         float orgInnerRadius = originRadius / r * ir;
         cycle.setmInnerRadio((int)orgInnerRadius);
         cycle.setValue(100);
-        return scale;
+        return new OffsetInfo(scale, leftMargin, topMagin);
     }
 
     /**
@@ -157,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
         parent.addView(cycle);
         cycle.setDefMinRadio(originRadius);
         cycle.setBackgroundColor(0x00000000); // 透明色
+        //cycle.setBackgroundColor(Color.RED);
         cycle.setDefRingWidth(ringWidth);
         cycle.setmRingNormalColor(Color.GREEN);
         cycle.setValue(100);
@@ -167,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
      * 画旁边圆环
      * @param: cx central ring's x axis
      **/
-    public static void DrawSideArea(Activity activity, ViewGroup parent, int color, float scale, int cx, int cy, List<Vertex> vertexs) {
+    public static void DrawSideArea(Activity activity, ViewGroup parent, int color, OffsetInfo offsetInfo, int cx, int cy, List<Vertex> vertexs) {
         Context context = activity.getApplicationContext();
         int width = parent.getMeasuredWidth(); // 获取组件宽度
         int height = parent.getMeasuredHeight(); // 获取组件高度
@@ -176,10 +189,10 @@ public class MainActivity extends AppCompatActivity {
         int centerY = height/ 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
 
         for (Vertex vertex: vertexs) {
-            vertex.x = (int)(scale * vertex.x);
-            vertex.y = height - (int)(scale * vertex.y);  // y 轴转换
+            vertex.x = (int)(offsetInfo.scale * vertex.x);
+            vertex.y = height - (int)(offsetInfo.scale * vertex.y);  // y 轴转换
         }
-        /*
+
         int [] xAxies = new int[vertexs.size()];
         int [] yAxies = new int[vertexs.size()];
         for (int i = 0; i < vertexs.size(); i++) {
@@ -188,20 +201,30 @@ public class MainActivity extends AppCompatActivity {
         }
         Arrays.sort(xAxies);
         Arrays.sort(yAxies);
-        int maxDeltaX = Math.abs(xAxies[0] - xAxies[vertexs.size() - 1]) + 1;
-        int maxDeltaY = Math.abs(yAxies[0] - yAxies[vertexs.size() - 1]) + 1;
-        */
+        int maxDeltaX = Math.abs(xAxies[0] - xAxies[vertexs.size() - 1]);
+        int maxDeltaY = Math.abs(yAxies[0] - yAxies[vertexs.size() - 1]);
+
+        for (int i = 0; i < vertexs.size(); i++) {
+            vertexs.get(i).x = vertexs.get(i).x - xAxies[0]; // 整体平移到坐标0点
+            vertexs.get(i).y = vertexs.get(i).y - yAxies[0]; // 整体平移到坐标0点
+        }
+
 
         Polygon area = new Polygon(context);
-        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(width, height); // TODO 替换实际的长宽
-        paras.leftMargin = centerX - (int)(cx * scale);
-        paras.topMargin = (int)(cy * scale) - centerY; // margin值为负数, 向顶部偏移
-        area.setLayoutParams(paras);
-        parent.addView(area);
+        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(width, height);
+        paras.topMargin = height - maxDeltaY;//(int)offsetInfo.leftOffset;//(int)(cy * scale) - centerY; // margin值为负数, 向顶部偏移
 
-        area.setBackgroundColor(0x00000000); // 透明色
+        // cx -> centerX; cy -> centerY
+        //paras.topMargin = paras.topMargin - yAxies[0] ;//- centerY - yAxies[0] + (int)(cy * offsetInfo.scale);
+        //paras.leftMargin = centerX + xAxies[0] - (int)(cx * offsetInfo.scale);
+
+        //area.setBackgroundColor(0x00000000); // 透明色
+        area.setBackgroundColor(Color.GRAY);
         area.setColor(color);
         area.setValue(vertexs);
+
+        area.setLayoutParams(paras);
+        parent.addView(area);
     }
 
 
@@ -211,8 +234,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged (boolean hasFocus) {
         FrameLayout mainFrame = (FrameLayout)findViewById(R.id.main_frame);
-        float scale  = DrawCenterCycle(this, mainFrame, 1f, 55/2, 20);
-        DrawSideCycle(this, mainFrame, scale, 100, 100, 130, 123, 60/2);
+        OffsetInfo offsetInfo  = DrawCenterCycle(this, mainFrame, 1f, 55/2, 20);
+        DrawSideCycle(this, mainFrame, offsetInfo.scale, 100, 100, 130, 123, 60/2);
 
         List<Vertex> vertex1 = new ArrayList<Vertex>() {{
             add(new Vertex(50, 50));
@@ -220,17 +243,17 @@ public class MainActivity extends AppCompatActivity {
             add(new Vertex(75, 75));
         }};
 
-        System.out.println(scale);
+        System.out.println(offsetInfo.scale);
 
-        DrawSideArea(this, mainFrame, Color.GREEN, scale, 100, 100, vertex1);
+        //DrawSideArea(this, mainFrame, Color.GREEN, offsetInfo, 100, 100, vertex1);
 
         List<Vertex> vertex2 = new ArrayList<Vertex>() {{
-            add(new Vertex(120, 50));
-            add(new Vertex(120, 100));
-            add(new Vertex(155, 75));
+            add(new Vertex(100, 123));
+            add(new Vertex(130, 123));
+            add(new Vertex(115, 146));
         }};
 
-        DrawSideArea(this, mainFrame, Color.RED, scale, 100, 100, vertex2);
+        DrawSideArea(this, mainFrame, Color.RED, offsetInfo,100,100, vertex2);
     }
 
 }
