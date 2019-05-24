@@ -31,6 +31,7 @@ public class Polygon extends View {
     private Paint paint;
     private int unreachedColor;
     private int reachedColor;
+    private int color = Color.RED;
 
     public Polygon(Context context) {
         this(context, null);
@@ -52,8 +53,8 @@ public class Polygon extends View {
         super.onDraw(canvas);
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         Paint paint = new Paint();//创建画笔
-        paint.setColor(Color.RED);//为画笔设置颜色
-        paint.setMaskFilter(new BlurMaskFilter(10f, BlurMaskFilter.Blur.SOLID));
+        paint.setColor(this.color);//为画笔设置颜色
+        paint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
         //paint.setStyle(Paint.Style.FILL);
         //paint.setStrokeWidth(50);//为画笔设置粗细
         //paint.setStyle(Paint.Style.STROKE);//设置空心
@@ -76,26 +77,13 @@ public class Polygon extends View {
      *
      * @param vertexs: 顶点
      */
-    public void
-    setValue(List<Vertex> vertexs) {
+    public void setValue(List<Vertex> vertexs) {
         this.vertexs = vertexs;
         invalidate();
-        //startAnimator(0, 100, 2000);
     }
 
-    /*
-    private void startAnimator(int start, int end, long animTime) {
-        valueAnimator = ValueAnimator.ofInt(start, end);
-        valueAnimator.setDuration(animTime);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int i = Integer.valueOf(String.valueOf(animation.getAnimatedValue()));
-                Log.i(TAG, "i = " + i);
-                invalidate(); // 调用onDraw方法
-            }
-        });
-        valueAnimator.start();
+    public void setColor(int color) {
+        this.color = color;
+        invalidate();
     }
-    */
 }

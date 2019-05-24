@@ -137,10 +137,9 @@ public class SuperCircleView extends View {
         //画默认圆环
         drawNormalRing(canvas);
         //画彩色圆环
-        //drawColorRing(canvas);
+        drawRingCenter(canvas);
         // draw radio
         drawRadio(canvas);
-        //getBackground().setAlpha(100);
     }
 
     /**
@@ -159,6 +158,18 @@ public class SuperCircleView extends View {
         ringColorPaint.setShader(null);
     }
 
+    private void drawRingCenter(Canvas canvas) {
+        Paint ringColorPaint = new Paint(mPaint);
+        ringColorPaint.setStyle(Paint.Style.STROKE);
+        ringColorPaint.setColor(Color.DKGRAY);
+        //ringColorPaint.setStrokeWidth(mRingWidth);
+        //ringColorPaint.setShader(new SweepGradient(mViewCenterX, mViewCenterX, color, null));
+        //canvas.rotate(-90, mViewCenterX, mViewCenterY);
+        //canvas.drawArc(mRectF, 360, mSelectRing, false, ringColorPaint);
+        canvas.drawCircle(mViewCenterX, mViewCenterX, 4, ringColorPaint);
+        ringColorPaint.setShader(null);
+    }
+
     /**
      * 画默认圆环
      *
@@ -169,7 +180,7 @@ public class SuperCircleView extends View {
         ringNormalPaint.setStyle(Paint.Style.STROKE);
         ringNormalPaint.setStrokeWidth(mRingWidth);
         ringNormalPaint.setColor(mRingNormalColor);//圆环默认颜色为灰色
-        ringNormalPaint.setMaskFilter(new BlurMaskFilter(100f, BlurMaskFilter.Blur.SOLID));
+        ringNormalPaint.setMaskFilter(new BlurMaskFilter(10f, BlurMaskFilter.Blur.NORMAL));
         canvas.drawArc(mRectF, 360, 360, false, ringNormalPaint);
         RectF innerRectF = calRingRectArea(mInnerRadio);
         ringNormalPaint.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
@@ -185,11 +196,22 @@ public class SuperCircleView extends View {
         Paint radioPaint = new Paint(mPaint);
         radioPaint.setStyle(Paint.Style.STROKE);
         radioPaint.setColor(Color.BLACK);
+        radioPaint.setStrokeWidth(2.0f);
+        //radioPaint.setShadowLayer(2, 1, 1, Color.RED);
+
+        // long arm
         double sin = Math.sin(Math.toRadians(mSelectRing + 90));
         double cos = Math.cos(Math.toRadians(mSelectRing + 90));
         float xoffset = (float) (mMinRadio * sin);
         float yoffset = (float) (mMinRadio * cos);
         canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY - yoffset, radioPaint);
+
+        // short arm
+        double isin = Math.sin(Math.toRadians(mSelectRing + 90 + 180));
+        double icos = Math.cos(Math.toRadians(mSelectRing + 90 + 180));
+        float ixoffset = (float) (mInnerRadio * isin);
+        float iyoffset = (float) (mInnerRadio * icos);
+        canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + ixoffset, mViewCenterY - iyoffset, radioPaint);
     }
 
 

@@ -163,11 +163,10 @@ public class MainActivity extends AppCompatActivity {
      * 画旁边圆环
      * @param: cx central ring's x axis
      **/
-    public static void DrawSideArea(Activity activity, ViewGroup parent, float scale, int cx, int cy, List<Vertex> vertexs) {
+    public static void DrawSideArea(Activity activity, ViewGroup parent, int color, float scale, int cx, int cy, List<Vertex> vertexs) {
         Context context = activity.getApplicationContext();
         int width = parent.getMeasuredWidth(); // 获取组件宽度
         int height = parent.getMeasuredHeight(); // 获取组件高度
-
 
         int centerX = width / 2;   // 中心点x坐标(到左边距的长度)，相对于FrameLayout的左下角
         int centerY = height/ 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
@@ -176,10 +175,6 @@ public class MainActivity extends AppCompatActivity {
             vertex.x = (int)(scale * vertex.x);
             vertex.y = height - (int)(scale * vertex.y);  // y 轴转换
         }
-
-        //int leftMargin = centerX - originRadius + deltaX;  // 左偏
-        //int topMagin = height - (centerY + originRadius) - delatY;   // 下偏
-
         /*
         int [] xAxies = new int[vertexs.size()];
         int [] yAxies = new int[vertexs.size()];
@@ -189,19 +184,19 @@ public class MainActivity extends AppCompatActivity {
         }
         Arrays.sort(xAxies);
         Arrays.sort(yAxies);
-        int maxDeltaX = Math.abs(xAxies[0] - xAxies[vertexs.size() - 1]);
-        int maxDeltaY = Math.abs(yAxies[0] - yAxies[vertexs.size() - 1]);
+        int maxDeltaX = Math.abs(xAxies[0] - xAxies[vertexs.size() - 1]) + 1;
+        int maxDeltaY = Math.abs(yAxies[0] - yAxies[vertexs.size() - 1]) + 1;
         */
 
         Polygon area = new Polygon(context);
         FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(width, height); // TODO 替换实际的长宽
         paras.leftMargin = centerX - (int)(cx * scale);
-        //paras.topMargin = 0;
         paras.topMargin = (int)(cy * scale) - centerY; // margin值为负数, 向顶部偏移
         area.setLayoutParams(paras);
         parent.addView(area);
-        //cycle.setDefMinRadio(originRadius);
+
         area.setBackgroundColor(0x00000000); // 透明色
+        area.setColor(color);
         area.setValue(vertexs);
     }
 
@@ -215,32 +210,23 @@ public class MainActivity extends AppCompatActivity {
         float scale  = DrawCenterCycle(this, mainFrame, 1f, 55/2, 20);
         DrawSideCycle(this, mainFrame, scale, 100, 100, 130, 123, 60/2);
 
-        /*
-        List<Vertex> vertex = new ArrayList<Vertex>() {{
-            add(new Vertex(100, 100));
-            add(new Vertex(150, 100));
-            add(new Vertex(150, 150));
-            add(new Vertex(100, 150));
-        }};
-
-        DrawSideArea(this, mainFrame, scale, 100, 100, vertex);
-        */
-
         List<Vertex> vertex1 = new ArrayList<Vertex>() {{
-            add(new Vertex(100, 100));
-            add(new Vertex(150, 100));
-            add(new Vertex(100, 150));
+            add(new Vertex(50, 50));
+            add(new Vertex(50, 100));
+            add(new Vertex(75, 75));
         }};
 
-        DrawSideArea(this, mainFrame, 1f, 100, 100, vertex1);
+        System.out.println(scale);
+
+        DrawSideArea(this, mainFrame, Color.GREEN, scale, 100, 100, vertex1);
 
         List<Vertex> vertex2 = new ArrayList<Vertex>() {{
-            add(new Vertex(100, 100));
-            add(new Vertex(150, 100));
-            add(new Vertex(100, 150));
+            add(new Vertex(120, 50));
+            add(new Vertex(120, 100));
+            add(new Vertex(155, 75));
         }};
 
-        DrawSideArea(this, mainFrame, 2f, 100, 100, vertex2);
+        DrawSideArea(this, mainFrame, Color.RED, scale, 100, 100, vertex2);
     }
 
 }
