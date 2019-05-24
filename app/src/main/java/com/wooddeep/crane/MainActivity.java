@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
      **/
     @Override
     public void onWindowFocusChanged (boolean hasFocus) {
-        FrameLayout mainFrame = findViewById(R.id.main_frame);
+        FrameLayout mainFrame = (FrameLayout)findViewById(R.id.main_frame);
         float scale  = DrawCenterCycle(this, mainFrame, 1f, 55/2, 20);
         DrawSideCycle(this, mainFrame, scale, 100, 100, 130, 123, 60/2);
 
