@@ -92,10 +92,22 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 画中心圆环
      **/
-    public static float DrawCenterCycle(Activity activity, ViewGroup parent, float oscale, int r, int ir) {
+    public static float DrawCenterCycle(
+            Activity activity,
+            ViewGroup parent,
+            float oscale,            // 原始尺寸比例
+            int r,                   // 原始大臂半径
+            int ir,                  // 原始小臂半径
+            float hAngle,            // 水平方向夹角
+            float vAngle             // 垂直方向夹角
+    ) {
         Context context = activity.getApplicationContext();
         int width = parent.getMeasuredWidth(); // 获取组件宽度
         int height = parent.getMeasuredHeight(); // 获取组件高度
+
+        //double sin = Math.sin(Math.toRadians(vAngle));
+        //double cos = Math.cos(Math.toRadians(hAngle));
+        //float xoffset = (float) (mMinRadio * sin);
 
         // 1号塔机坐标100.100圆环直径55。2号塔机坐标130.123圆环直径60
         int ringWidth = 2; // 固定圆环宽度
@@ -106,45 +118,58 @@ public class MainActivity extends AppCompatActivity {
         float originBackHeight = originBackWidth; // 默认圆环正方形背景宽度
         float scale = originRadius / r;
         int centerX = width / 2;   // 中心点x坐标(到左边距的长度)，相对于FrameLayout的左下角
-        int centerY = height/ 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
+        int centerY = height / 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
 
         float leftMargin = centerX - originRadius;  // 左偏
         float topMagin = height - (centerY + originRadius);   // 下偏
 
         SuperCircleView cycle = new SuperCircleView(context);
-        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams((int)originBackWidth, (int)originBackHeight);
-        paras.leftMargin = (int)leftMargin;
-        paras.topMargin = (int)topMagin;
+        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams((int) originBackWidth, (int) originBackHeight);
+        paras.leftMargin = (int) leftMargin;
+        paras.topMargin = (int) topMagin;
         cycle.setLayoutParams(paras);
         parent.addView(cycle);
-        cycle.setDefMinRadio((int)originRadius);
+        cycle.setDefMinRadio((int) originRadius);
         cycle.setBackgroundColor(0x00000000); // 透明色
         cycle.setDefRingWidth(ringWidth);
         cycle.setmRingNormalColor(Color.GREEN);
         float orgInnerRadius = originRadius / r * ir;
-        cycle.setmInnerRadio((int)orgInnerRadius);
-        cycle.setValue(100);
+        cycle.setmInnerRadio((int) orgInnerRadius);
+        cycle.sethAngle(hAngle);
+        cycle.show();
         return scale;
     }
 
     /**
      * 画旁边圆环
      **/
-    public static float DrawSideCycle(Activity activity, ViewGroup parent, float scale, int cx, int cy, int x, int y, int r) {
+    public static float DrawSideCycle(
+            Activity activity,
+            ViewGroup parent,
+            float scale,
+            int cx,
+            int cy,
+            int x,
+            int y,
+            int r,
+            int ir,
+            float hAngle,            // 水平方向夹角
+            float vAngle             // 垂直方向夹角
+    ) {
         Context context = activity.getApplicationContext();
         int width = parent.getMeasuredWidth(); // 获取组件宽度
         int height = parent.getMeasuredHeight(); // 获取组件高度
 
         // 1号塔机坐标100.100圆环直径55。2号塔机坐标130.123圆环直径60
         int ringWidth = 2; // 固定圆环宽度
-        int originRadius = (int)(scale * r);
+        int originRadius = (int) (scale * r);
         int originBackWidth = originRadius * 2 + ringWidth * 2; // 默认圆环正方形背景高度
         int originBackHeight = originBackWidth; // 默认圆环正方形背景宽度
         int centerX = width / 2;   // 中心点x坐标(到左边距的长度)，相对于FrameLayout的左下角
-        int centerY = height/ 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
+        int centerY = height / 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
 
-        int deltaX = (int)(scale * (x - cx));
-        int deltaY = (int)(scale * (y - cy));
+        int deltaX = (int) (scale * (x - cx));
+        int deltaY = (int) (scale * (y - cy));
 
         int leftMargin = centerX - originRadius + deltaX;  // 左偏
         int topMagin = height - (centerY + originRadius) - deltaY;   // 下偏
@@ -156,27 +181,39 @@ public class MainActivity extends AppCompatActivity {
         cycle.setLayoutParams(paras);
         parent.addView(cycle);
         cycle.setDefMinRadio(originRadius);
+        float orgInnerRadius = originRadius / r * ir;
+        cycle.setmInnerRadio((int) orgInnerRadius);
         cycle.setBackgroundColor(0x00000000); // 透明色
         cycle.setDefRingWidth(ringWidth);
         cycle.setmRingNormalColor(Color.GREEN);
-        cycle.setValue(100);
+        cycle.sethAngle(hAngle);
+        cycle.show();
         return scale;
     }
 
     /**
      * 画旁边圆环
+     *
      * @param: cx central ring's x axis
      **/
-    public static void DrawSideArea(Activity activity, ViewGroup parent, int color, float scale, int cx, int cy, List<Vertex> vertexs) {
+    public static void DrawSideArea(
+            Activity activity,
+            ViewGroup parent,
+            int color,
+            float scale,
+            int cx,
+            int cy,
+            List<Vertex> vertexs
+    ) {
         Context context = activity.getApplicationContext();
         int width = parent.getMeasuredWidth(); // 获取组件宽度
         int height = parent.getMeasuredHeight(); // 获取组件高度
 
         int centerX = width / 2;   // 中心点x坐标(到左边距的长度)，相对于FrameLayout的左下角
-        int centerY = height/ 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
+        int centerY = height / 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
 
-        int [] xAxies = new int[vertexs.size()];
-        int [] yAxies = new int[vertexs.size()];
+        int[] xAxies = new int[vertexs.size()];
+        int[] yAxies = new int[vertexs.size()];
         for (int i = 0; i < vertexs.size(); i++) {
             xAxies[i] = vertexs.get(i).x;
             yAxies[i] = vertexs.get(i).y;
@@ -184,13 +221,13 @@ public class MainActivity extends AppCompatActivity {
         Arrays.sort(xAxies);
         Arrays.sort(yAxies);
 
-        for (Vertex vertex: vertexs) {
-            vertex.x = (int)(scale * vertex.x) + centerX - (int)(cx * scale);
-            vertex.y = height - (int)(scale * vertex.y) + (int)(cy * scale) - centerY;  // y 轴转换
+        for (Vertex vertex : vertexs) {
+            vertex.x = (int) (scale * vertex.x) + centerX - (int) (cx * scale);
+            vertex.y = height - (int) (scale * vertex.y) + (int) (cy * scale) - centerY;  // y 轴转换
         }
 
         Polygon area = new Polygon(context);
-        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(width, height); // TODO 替换实际的长宽
+        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(width, height);
         area.setLayoutParams(paras);
         parent.addView(area);
 
@@ -204,23 +241,23 @@ public class MainActivity extends AppCompatActivity {
      * 获取主界面FrameLayout的坐标及长宽
      **/
     @Override
-    public void onWindowFocusChanged (boolean hasFocus) {
-        FrameLayout mainFrame = (FrameLayout)findViewById(R.id.main_frame);
-        float scale  = DrawCenterCycle(this, mainFrame, 1.2f, 80/2, 10);
-        DrawSideCycle(this, mainFrame, scale, 100, 100, 130, 130, 60/2);
+    public void onWindowFocusChanged(boolean hasFocus) {
+        FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
+        float scale = DrawCenterCycle(this, mainFrame, 1.0f, 80 / 2, 10, 45, 0);
+        DrawSideCycle(this, mainFrame, scale, 100, 100, 130, 130, 60 / 2, 10, -45, 0);
 
         List<Vertex> vertex1 = new ArrayList<Vertex>() {{
-            add(new Vertex(50, 50));
-            add(new Vertex(50, 100));
-            add(new Vertex(75, 75));
+            add(new Vertex(35, 75));
+            add(new Vertex(35, 125));
+            add(new Vertex(60, 100));
         }};
 
         DrawSideArea(this, mainFrame, Color.GREEN, scale, 100, 100, vertex1);
 
         List<Vertex> vertex2 = new ArrayList<Vertex>() {{
-            add(new Vertex(130, 130));
-            add(new Vertex(145, 160));
             add(new Vertex(160, 130));
+            add(new Vertex(175, 160));
+            add(new Vertex(190, 130));
         }};
 
         DrawSideArea(this, mainFrame, Color.RED, scale, 100, 100, vertex2);

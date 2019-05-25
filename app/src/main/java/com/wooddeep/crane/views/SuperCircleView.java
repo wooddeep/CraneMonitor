@@ -39,14 +39,15 @@ public class SuperCircleView extends View {
     private int defMinRadio = 50;
     private int defRingWidth = 2;
     private int mInnerRadio = 20;
-    private float mAngle = 0;
+    private float hAngle = 30;    // 大臂水平方向的倾角
+
 
     public void setmInnerRadio(int mInnerRadio) {
         this.mInnerRadio = mInnerRadio;
     }
 
-    public void setmAngle(float mAngle) {
-        this.mAngle = mAngle;
+    public void sethAngle(float jAngle) {
+        this.hAngle = jAngle;
     }
 
     public void setDefMinRadio(int defMinRadio) {
@@ -200,18 +201,18 @@ public class SuperCircleView extends View {
         //radioPaint.setShadowLayer(2, 1, 1, Color.RED);
 
         // long arm
-        double sin = Math.sin(Math.toRadians(mSelectRing + 90));
-        double cos = Math.cos(Math.toRadians(mSelectRing + 90));
+        double sin = Math.sin(Math.toRadians(hAngle + 90));
+        double cos = Math.cos(Math.toRadians(hAngle + 90));
         float xoffset = (float) (mMinRadio * sin);
         float yoffset = (float) (mMinRadio * cos);
-        canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY - yoffset, radioPaint);
+        canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY + yoffset, radioPaint);
 
         // short arm
-        double isin = Math.sin(Math.toRadians(mSelectRing + 90 + 180));
-        double icos = Math.cos(Math.toRadians(mSelectRing + 90 + 180));
+        double isin = Math.sin(Math.toRadians(hAngle + 90 + 180));
+        double icos = Math.cos(Math.toRadians(hAngle + 90 + 180));
         float ixoffset = (float) (mInnerRadio * isin);
         float iyoffset = (float) (mInnerRadio * icos);
-        canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + ixoffset, mViewCenterY - iyoffset, radioPaint);
+        canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + ixoffset, mViewCenterY + iyoffset, radioPaint);
     }
 
 
@@ -248,4 +249,7 @@ public class SuperCircleView extends View {
         valueAnimator.start();
     }
 
+    public void show() {
+        invalidate();
+    }
 }
