@@ -18,6 +18,9 @@ import com.wooddeep.crane.R;
 
 // https://blog.csdn.net/u013933720/article/details/78261844 dot line
 
+// anroid RGB对照值
+// https://blog.csdn.net/leslie___cheung/article/details/80873840
+
 public class SuperCircleView extends View {
     private final String TAG = "SuperCircleView";
 
@@ -40,28 +43,37 @@ public class SuperCircleView extends View {
     private int defRingWidth = 2;
     private int mInnerRadio = 20;
     private float hAngle = 30;    // 大臂水平方向的倾角
-
+    private float vAngle = 0; // 垂直方向夹角
 
     public void setmInnerRadio(int mInnerRadio) {
         this.mInnerRadio = mInnerRadio;
     }
 
-    public void sethAngle(float jAngle) {
-        this.hAngle = jAngle;
+    public void sethAngle(float hAngle) {
+        this.hAngle = hAngle;
+        invalidate();
+    }
+
+    public void setvAngle(float vAngle) {
+        this.vAngle = vAngle;
+        invalidate();
     }
 
     public void setDefMinRadio(int defMinRadio) {
         this.defMinRadio = defMinRadio;
         this.mMinRadio = defMinRadio;
+        invalidate();
     }
 
     public void setDefRingWidth(int defRingWidth) {
         this.defRingWidth = defRingWidth;
         this.mRingWidth = defRingWidth;
+        invalidate();
     }
 
     public void setmRingNormalColor(int mRingNormalColor) {
         this.mRingNormalColor = mRingNormalColor;
+        invalidate();
     }
 
     public SuperCircleView(Context context, int defMinRadio, int defRingWidth) {
@@ -177,15 +189,36 @@ public class SuperCircleView extends View {
      * @param canvas
      */
     private void drawNormalRing(Canvas canvas) {
-        Paint ringNormalPaint = new Paint(mPaint);
-        ringNormalPaint.setStyle(Paint.Style.STROKE);
-        ringNormalPaint.setStrokeWidth(mRingWidth);
-        ringNormalPaint.setColor(mRingNormalColor);//圆环默认颜色为灰色
-        ringNormalPaint.setMaskFilter(new BlurMaskFilter(10f, BlurMaskFilter.Blur.NORMAL));
-        canvas.drawArc(mRectF, 360, 360, false, ringNormalPaint);
+
+        Paint ringMaxPaint = new Paint(mPaint);
+        ringMaxPaint.setStyle(Paint.Style.STROKE);
+        ringMaxPaint.setStrokeWidth(1);
+        ringMaxPaint.setColor(Color.GRAY);//圆环默认颜色为灰色
+        ringMaxPaint.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
+
+        Paint ringRealPaint = new Paint(mPaint);
+        ringRealPaint.setStyle(Paint.Style.STROKE);
+        ringRealPaint.setStrokeWidth(mRingWidth);
+        ringRealPaint.setColor(Color.rgb(46, 139, 87));
+
+        // 大臂环
+        canvas.drawArc(mRectF, 360, 360, false, ringMaxPaint);
+
+        // 大臂环 * cos(夹角)
+        double cos = Math.cos(Math.toRadians(vAngle));
+        double realRadio = cos * mMinRadio;
+        RectF realRectF = calRingRectArea((int)realRadio);
+        canvas.drawArc(realRectF, 360, 360, false, ringRealPaint);
+
+        // 小臂环
         RectF innerRectF = calRingRectArea(mInnerRadio);
-        ringNormalPaint.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
-        canvas.drawArc(innerRectF, 360, 360, false, ringNormalPaint);
+        //ringRealPaint.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
+        canvas.drawArc(innerRectF, 360, 360, false, ringMaxPaint);
+
+        // 小臂环 * cos(夹角)
+        double realMinRadio = cos * mInnerRadio;
+        RectF realMinRectF = calRingRectArea((int)realMinRadio);
+        canvas.drawArc(realMinRectF, 360, 360, false, ringRealPaint);
     }
 
     /**
@@ -196,22 +229,26 @@ public class SuperCircleView extends View {
     private void drawRadio(Canvas canvas) {
         Paint radioPaint = new Paint(mPaint);
         radioPaint.setStyle(Paint.Style.STROKE);
-        radioPaint.setColor(Color.BLACK);
+        radioPaint.setColor(Color.rgb(225, 140, 0));
         radioPaint.setStrokeWidth(2.0f);
         //radioPaint.setShadowLayer(2, 1, 1, Color.RED);
 
         // long arm
         double sin = Math.sin(Math.toRadians(hAngle + 90));
         double cos = Math.cos(Math.toRadians(hAngle + 90));
-        float xoffset = (float) (mMinRadio * sin);
-        float yoffset = (float) (mMinRadio * cos);
+
+        // 大臂环 * cos(夹角)
+        double cosRate = Math.cos(Math.toRadians(vAngle));
+
+        float xoffset = (float) (mMinRadio * cosRate * sin);
+        float yoffset = (float) (mMinRadio * cosRate * cos);
         canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY + yoffset, radioPaint);
 
         // short arm
         double isin = Math.sin(Math.toRadians(hAngle + 90 + 180));
         double icos = Math.cos(Math.toRadians(hAngle + 90 + 180));
-        float ixoffset = (float) (mInnerRadio * isin);
-        float iyoffset = (float) (mInnerRadio * icos);
+        float ixoffset = (float) (mInnerRadio * cosRate * isin);
+        float iyoffset = (float) (mInnerRadio * cosRate * icos);
         canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + ixoffset, mViewCenterY + iyoffset, radioPaint);
     }
 

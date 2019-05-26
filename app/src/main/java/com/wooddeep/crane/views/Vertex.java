@@ -1,10 +1,10 @@
 package com.wooddeep.crane.views;
 
 public class Vertex {
-    public int x;
-    public int y;
+    public float x;
+    public float y;
 
-    public Vertex(int x, int y) {
+    public Vertex(float x, float y) {
         this.x = x;
         this.y = y;
     }
