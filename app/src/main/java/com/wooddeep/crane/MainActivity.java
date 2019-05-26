@@ -11,6 +11,11 @@ import com.wooddeep.crane.tookit.SideArea;
 import com.wooddeep.crane.tookit.SideCycle;
 import com.wooddeep.crane.views.Vertex;
 
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,6 +84,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Coordinate pointer0 = new Coordinate(0, 0);
+        Coordinate pointer1 = new Coordinate(0, 10);
+        double distance = pointer0.distance(pointer1);
+        System.out.println("### this distance = " + distance);
+        try {
+            Geometry g1 = new WKTReader().read("LINESTRING (0 0, 10 0)");
+            Geometry g2 = new WKTReader().read("POINTSTRING (0 10)");
+            double d = g1.distance(g2);
+            System.out.println("### this distance = " + d);
+            //g1.distance(pointer0);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     /**
