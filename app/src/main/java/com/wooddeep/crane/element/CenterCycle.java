@@ -109,6 +109,14 @@ public class CenterCycle extends BaseElem{
         return this.cycle.getAlarm();
     }
 
+    public boolean getFlink() {
+        return this.cycle.getFlink();
+    }
+
+    public void setFlink(boolean flink) {
+        this.cycle.setFlink(flink);
+    }
+
     @Override
     public Geometry getGeometry() {
         //Geometry g1 = new WKTReader().read("LINESTRING (0 10, 10 0)");

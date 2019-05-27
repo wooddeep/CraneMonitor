@@ -47,6 +47,17 @@ public class SuperCircleView extends View {
 
     private boolean alarm = false;
 
+    private boolean flink = false;
+
+    public boolean getFlink() {
+        return flink;
+    }
+
+    public void setFlink(boolean flink) {
+        this.flink = flink;
+        invalidate();
+    }
+
     public void setmInnerRadio(int mInnerRadio) {
         this.mInnerRadio = mInnerRadio;
     }
@@ -242,10 +253,16 @@ public class SuperCircleView extends View {
     private void drawRadio(Canvas canvas) {
         Paint radioPaint = new Paint(mPaint);
         radioPaint.setStyle(Paint.Style.STROKE);
-        radioPaint.setColor(Color.rgb(225, 140, 0));
         radioPaint.setStrokeWidth(2.0f);
-        if (alarm) {
+        if (flink) {
             radioPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
+        }
+        
+        if (alarm) {
+            radioPaint.setColor(Color.rgb(225, 140, 0));
+        } else {
+            radioPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
+            radioPaint.setColor(Color.rgb(46, 139, 87));
         }
         //radioPaint.setShadowLayer(2, 1, 1, Color.RED);
 

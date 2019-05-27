@@ -3,16 +3,14 @@ package com.wooddeep.crane;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.test.suitebuilder.annotation.Suppress;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
+import com.wooddeep.crane.ebus.MessageEvent;
 import com.wooddeep.crane.ebus.UserEvent;
-import com.wooddeep.crane.element.BaseElem;
 import com.wooddeep.crane.element.CenterCycle;
 import com.wooddeep.crane.element.ElemMap;
 import com.wooddeep.crane.element.SideArea;
@@ -22,14 +20,11 @@ import com.wooddeep.crane.views.Vertex;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 // 启动mumu之后, 输入：
@@ -123,11 +118,38 @@ public class MainActivity extends AppCompatActivity {
     private String mainCycleId = null; // 主环的uuid
     private String sideCycleId = null;
 
+    Timer timer = new Timer();
+    TimerTask task = new TimerTask() {
+        public void run() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    EventBus.getDefault().post(new MessageEvent("Mr.sorrow", "123456"));
+                }
+            });
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         EventBus.getDefault().register(this);
+
+        timer.schedule(task, 1000, 500);
+    }
+
+    // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void messageEventBus(MessageEvent userEvent) {
+        try {
+            CenterCycle cc = (CenterCycle) elemMap.getElem(mainCycleId);
+            if (cc.getAlarm()) {
+                cc.setFlink(!cc.getFlink());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
@@ -138,26 +160,16 @@ public class MainActivity extends AppCompatActivity {
             Float distance = elemMap.distanceMap.get(sideCycleId);
             EditText distanceEditText = findViewById(R.id.distance);
             distanceEditText.setText(String.format("%.2f", distance).toString());
-            CenterCycle cc = (CenterCycle)elemMap.getElem(mainCycleId);
+            CenterCycle cc = (CenterCycle) elemMap.getElem(mainCycleId);
             EditText limitEditText = findViewById(R.id.alarm_limit);
             try {
                 float limit = Float.parseFloat(limitEditText.getText().toString());
                 if (distance <= limit) {
-                    elemMap.getElem(mainCycleId);
-                    cc.setAlarm(!cc.getAlarm());
+                    cc.setAlarm(true);
                 } else {
+                    EventBus.getDefault().post(new MessageEvent("Mr.sorrow", "123456"));
                     cc.setAlarm(false);
                 }
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        EventBus.getDefault().post(
-                            new UserEvent("Mr.sorrow", "123456", mainCycleId, null)
-                        );
-                    }
-                }, 500);
-
 
             } catch (Exception e) {
 
