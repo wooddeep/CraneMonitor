@@ -45,8 +45,15 @@ public class SuperCircleView extends View {
     private float hAngle = 30;    // 大臂水平方向的倾角
     private float vAngle = 0; // 垂直方向夹角
 
+    private boolean alarm = false;
+
     public void setmInnerRadio(int mInnerRadio) {
         this.mInnerRadio = mInnerRadio;
+    }
+
+    public void setAlarm(boolean alarm) {
+        this.alarm = alarm;
+        invalidate();
     }
 
     public void sethAngle(float hAngle) {
@@ -145,6 +152,7 @@ public class SuperCircleView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        setLayerType(LAYER_TYPE_SOFTWARE, null);
         mPaint.setColor(mMinCircleColor);
         //canvas.drawCircle(mViewCenterX, mViewCenterY, mMinRadio, mPaint);
         //画默认圆环
@@ -200,6 +208,7 @@ public class SuperCircleView extends View {
         ringRealPaint.setStyle(Paint.Style.STROKE);
         ringRealPaint.setStrokeWidth(mRingWidth);
         ringRealPaint.setColor(Color.rgb(46, 139, 87));
+        ringRealPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
 
         // 大臂环
         canvas.drawArc(mRectF, 360, 360, false, ringMaxPaint);
@@ -231,6 +240,9 @@ public class SuperCircleView extends View {
         radioPaint.setStyle(Paint.Style.STROKE);
         radioPaint.setColor(Color.rgb(225, 140, 0));
         radioPaint.setStrokeWidth(2.0f);
+        if (alarm) {
+            radioPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
+        }
         //radioPaint.setShadowLayer(2, 1, 1, Color.RED);
 
         // long arm
@@ -249,6 +261,7 @@ public class SuperCircleView extends View {
         double icos = Math.cos(Math.toRadians(hAngle + 90 + 180));
         float ixoffset = (float) (mInnerRadio * cosRate * isin);
         float iyoffset = (float) (mInnerRadio * cosRate * icos);
+
         canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + ixoffset, mViewCenterY + iyoffset, radioPaint);
     }
 

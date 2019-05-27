@@ -3,14 +3,19 @@ package com.wooddeep.crane;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.wooddeep.crane.ebus.UserEvent;
 import com.wooddeep.crane.tookit.CenterCycle;
 import com.wooddeep.crane.tookit.SideArea;
 import com.wooddeep.crane.tookit.SideCycle;
 import com.wooddeep.crane.views.Vertex;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
@@ -19,10 +24,13 @@ import org.locationtech.jts.io.WKTReader;
 import java.util.ArrayList;
 import java.util.List;
 
+
 // 启动mumu之后, 输入：
 // adb connect 127.0.0.1:7555
 // 然后再调试, 就ok了
 
+// eventbus for android
+// https://www.jianshu.com/p/428a5257839c
 /**
  * 获取主界面FrameLayout的坐标及长宽
  **/
@@ -79,7 +87,7 @@ new Thread(new Runnable() {
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-
+    final CenterCycle centerCycle = new CenterCycle(1.0f, 80 / 2, 10, 45, 30);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,19 +96,27 @@ public class MainActivity extends AppCompatActivity {
         Coordinate pointer0 = new Coordinate(0, 0);
         Coordinate pointer1 = new Coordinate(0, 10);
         double distance = pointer0.distance(pointer1);
-        System.out.println("### this distance = " + distance);
         try {
-            Geometry g1 = new WKTReader().read("LINESTRING (0 0, 10 0)");
-            Geometry g2 = new WKTReader().read("POINTSTRING (0 10)");
+            Geometry g1 = new WKTReader().read("LINESTRING (0 10, 10 0)");
+            Geometry g2 = new WKTReader().read("POINTSTRING (0 0)");
             double d = g1.distance(g2);
-            System.out.println("### this distance = " + d);
+            Log.d(TAG, "### this distance = " + d);
             //g1.distance(pointer0);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
+        EventBus.getDefault().register(this);
 
     }
+
+    // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void userEventBus(UserEvent userEvent){
+            Log.d(TAG, "$$$$ in message callback");
+        centerCycle.hAngleAdd(1);
+    }
+
 
     /**
      * 获取主界面FrameLayout的坐标及长宽
@@ -108,13 +124,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
-        final CenterCycle centerCycle = new CenterCycle(1.0f, 80 / 2, 10, 45, 30);
+
         centerCycle.drawCenterCycle(this, mainFrame);
 
         float scale = centerCycle.scale; //DrawTool.DrawCenterCycle(this, mainFrame, 1.0f, 80 / 2, 10, 45, 30);
         SideCycle sideCycle = new SideCycle(scale, 100, 100, 130, 130, 60 / 2, 10, -45, 0);
         sideCycle.drawSideCycle(this, mainFrame);
-
 
         List<Vertex> vertex1 = new ArrayList<Vertex>() {{
             add(new Vertex(35, 75));
@@ -137,30 +152,34 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.adjust_hangle_add).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                centerCycle.hAngleAdd(10);
+                //centerCycle.setAlarm(false);
+                //centerCycle.hAngleAdd(1);
+                EventBus.getDefault().post(new UserEvent("Mr.sorrow", "123456"));
             }
         });
 
         findViewById(R.id.adjust_hangle_sub).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                centerCycle.hAngleSub(10);
+                //centerCycle.setAlarm(true);
+                centerCycle.hAngleSub(1);
             }
         });
 
         findViewById(R.id.adjust_vangle_add).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                centerCycle.vAngleAdd(5);
+                centerCycle.vAngleAdd(1);
             }
         });
 
         findViewById(R.id.adjust_vangle_sub).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                centerCycle.vAngleSub(5);
+                centerCycle.vAngleSub(1);
             }
         });
+
     }
 
 }

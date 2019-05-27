@@ -90,4 +90,8 @@ public class CenterCycle {
         this.vAngle = this.vAngle - subed;
         this.cycle.setvAngle(this.vAngle);
     }
+
+    public void setAlarm(boolean alarm) {
+        this.cycle.setAlarm(alarm);
+    }
 }
