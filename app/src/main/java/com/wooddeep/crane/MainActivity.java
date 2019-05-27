@@ -2,10 +2,13 @@ package com.wooddeep.crane;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.test.suitebuilder.annotation.Suppress;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.wooddeep.crane.ebus.UserEvent;
@@ -26,6 +29,7 @@ import org.locationtech.jts.io.WKTReader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 
 // 启动mumu之后, 输入：
@@ -116,6 +120,8 @@ try {
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final ElemMap elemMap = new ElemMap();
+    private String mainCycleId = null; // 主环的uuid
+    private String sideCycleId = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,27 +133,38 @@ public class MainActivity extends AppCompatActivity {
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void userEventBus(UserEvent userEvent) {
-        BaseElem view = elemMap.getElem(userEvent.getViewId());
-        CenterCycle cc = (CenterCycle)view;
-
-        float cx = cc.x;
-        float cy = cc.y;
-        float r  = cc.r;
-        float cos = (float)Math.cos(Math.toRadians(cc.vAngle));
-        float sin = (float)Math.sin(Math.toRadians(cc.vAngle));
-        float endpointX = cx + cos * r;
-        float endpointY = cy + sin * r;
-
-
         try {
-            Geometry g1 = new WKTReader().read(String.format("POINTSTRING (%f %f)", endpointX, endpointY));
-            Geometry g2 = new WKTReader().read("LINESTRING (0 10, 10 0)");
-            //cc.setAlarm(!cc.getAlarm());
-            Log.d(TAG, "$$$$ in message callback");
-        } catch (ParseException e) {
+            elemMap.alarmJudge(mainCycleId);
+            Float distance = elemMap.distanceMap.get(sideCycleId);
+            EditText distanceEditText = findViewById(R.id.distance);
+            distanceEditText.setText(String.format("%.2f", distance).toString());
+            CenterCycle cc = (CenterCycle)elemMap.getElem(mainCycleId);
+            EditText limitEditText = findViewById(R.id.alarm_limit);
+            try {
+                float limit = Float.parseFloat(limitEditText.getText().toString());
+                if (distance <= limit) {
+                    elemMap.getElem(mainCycleId);
+                    cc.setAlarm(!cc.getAlarm());
+                } else {
+                    cc.setAlarm(false);
+                }
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        EventBus.getDefault().post(
+                            new UserEvent("Mr.sorrow", "123456", mainCycleId, null)
+                        );
+                    }
+                }, 500);
+
+
+            } catch (Exception e) {
+
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -159,11 +176,13 @@ public class MainActivity extends AppCompatActivity {
         FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
         final CenterCycle centerCycle = new CenterCycle(1.0f, 100, 100, 80 / 2, 10, 45, 30);
         elemMap.addElem(centerCycle.getUuid(), centerCycle);
+        mainCycleId = centerCycle.getUuid();
         centerCycle.drawCenterCycle(this, mainFrame);
 
         float scale = centerCycle.scale; //DrawTool.DrawCenterCycle(this, mainFrame, 1.0f, 80 / 2, 10, 45, 30);
         SideCycle sideCycle = new SideCycle(scale, 100, 100, 130, 130, 60 / 2, 10, -45, 0);
         elemMap.addElem(sideCycle.getUuid(), sideCycle);
+        sideCycleId = sideCycle.getUuid();
         sideCycle.drawSideCycle(this, mainFrame);
 
         List<Vertex> vertex1 = new ArrayList<Vertex>() {{
@@ -191,7 +210,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // 发送消息
                 centerCycle.hAngleAdd(1);
-                EventBus.getDefault().post(new UserEvent("Mr.sorrow", "123456", centerCycle.getUuid(), null));
+                EventBus.getDefault().post(
+                    new UserEvent("Mr.sorrow", "123456", centerCycle.getUuid(), null)
+                );
             }
         });
 
@@ -199,7 +220,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 centerCycle.hAngleSub(1);
-                EventBus.getDefault().post(new UserEvent("Mr.sorrow", "123456", centerCycle.getUuid(), null));
+                EventBus.getDefault().post(
+                    new UserEvent("Mr.sorrow", "123456", centerCycle.getUuid(), null)
+                );
 
             }
         });
