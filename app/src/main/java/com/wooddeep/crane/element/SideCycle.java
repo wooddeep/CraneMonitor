@@ -8,6 +8,8 @@ import android.widget.FrameLayout;
 
 import com.wooddeep.crane.views.SuperCircleView;
 
+import org.locationtech.jts.geom.Geometry;
+
 public class SideCycle  extends BaseElem{
     public float scale;
     public float cx;
@@ -78,5 +80,10 @@ public class SideCycle  extends BaseElem{
         cycle.sethAngle(hAngle);
         cycle.setvAngle(vAngle);
         cycle.show();
+    }
+
+    @Override
+    public Geometry getGeometry() {
+        return null;
     }
 }

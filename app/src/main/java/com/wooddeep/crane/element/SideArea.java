@@ -8,6 +8,8 @@ import android.widget.FrameLayout;
 import com.wooddeep.crane.views.Polygon;
 import com.wooddeep.crane.views.Vertex;
 
+import org.locationtech.jts.geom.Geometry;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -68,4 +70,8 @@ public class SideArea extends BaseElem{
         area.setValue(vertexs);
     }
 
+    @Override
+    public Geometry getGeometry() {
+        return null;
+    }
 }

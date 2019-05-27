@@ -8,17 +8,25 @@ import android.widget.FrameLayout;
 
 import com.wooddeep.crane.views.SuperCircleView;
 
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.WKTReader;
+
 public class CenterCycle extends BaseElem{
     public float scale;
     public float oscale;            // 原始尺寸比例
+    public float x;
+    public float y;
     public float r;                   // 原始大臂半径
     public float ir;                  // 原始小臂半径
     public float hAngle;            // 水平方向夹角
     public float vAngle;             // 垂直方向夹角
     public SuperCircleView cycle;
+    private Geometry geometry; // 几何坐标
 
     public CenterCycle(
         float oscale,
+        float x,
+        float y,
         float r,
         float ir,
         float hAngle,
@@ -27,6 +35,8 @@ public class CenterCycle extends BaseElem{
         this.oscale = oscale;
         this.r = r;
         this.ir = ir;
+        this.x = x;
+        this.y = y;
         this.hAngle = hAngle;
         this.vAngle = vAngle;
     }
@@ -97,5 +107,12 @@ public class CenterCycle extends BaseElem{
 
     public boolean getAlarm() {
         return this.cycle.getAlarm();
+    }
+
+    @Override
+    public Geometry getGeometry() {
+        //Geometry g1 = new WKTReader().read("LINESTRING (0 10, 10 0)");
+        //Geometry g2 = new WKTReader().read("POINTSTRING (0 0)"); // 大臂端点
+        return null;
     }
 }

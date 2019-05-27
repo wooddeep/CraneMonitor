@@ -1,8 +1,10 @@
 package com.wooddeep.crane.element;
 
+import org.locationtech.jts.geom.Geometry;
+
 import java.util.UUID;
 
-public class BaseElem {
+abstract public class BaseElem {
 
     private String uuid;
 
@@ -17,4 +19,7 @@ public class BaseElem {
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
+
+    abstract Geometry getGeometry();
+
 }

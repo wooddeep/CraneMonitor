@@ -3,6 +3,7 @@ package com.wooddeep.crane;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.test.suitebuilder.annotation.Suppress;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -96,8 +97,22 @@ new Thread(new Runnable() {
         }
     }
 }).start();
+
+Coordinate pointer0 = new Coordinate(0, 0);
+Coordinate pointer1 = new Coordinate(0, 10);
+double distance = pointer0.distance(pointer1);
+try {
+    Geometry g1 = new WKTReader().read("LINESTRING (0 10, 10 0)");
+    Geometry g2 = new WKTReader().read("POINTSTRING (0 0)");
+    double d = g1.distance(g2);
+    Log.d(TAG, "### this distance = " + d);
+} catch (ParseException e) {
+    e.printStackTrace();
+}
+
 */
 
+@SuppressWarnings("unused")
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final ElemMap elemMap = new ElemMap();
@@ -106,30 +121,33 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Coordinate pointer0 = new Coordinate(0, 0);
-        Coordinate pointer1 = new Coordinate(0, 10);
-        double distance = pointer0.distance(pointer1);
-        try {
-            Geometry g1 = new WKTReader().read("LINESTRING (0 10, 10 0)");
-            Geometry g2 = new WKTReader().read("POINTSTRING (0 0)");
-            double d = g1.distance(g2);
-            Log.d(TAG, "### this distance = " + d);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
         EventBus.getDefault().register(this);
-
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void userEventBus(UserEvent userEvent) {
-        Log.d(TAG, "$$$$ in message callback");
         BaseElem view = elemMap.getElem(userEvent.getViewId());
         CenterCycle cc = (CenterCycle)view;
-        cc.setAlarm(!cc.getAlarm());
+
+        float cx = cc.x;
+        float cy = cc.y;
+        float r  = cc.r;
+        float cos = (float)Math.cos(Math.toRadians(cc.vAngle));
+        float sin = (float)Math.sin(Math.toRadians(cc.vAngle));
+        float endpointX = cx + cos * r;
+        float endpointY = cy + sin * r;
+
+
+        try {
+            Geometry g1 = new WKTReader().read(String.format("POINTSTRING (%f %f)", endpointX, endpointY));
+            Geometry g2 = new WKTReader().read("LINESTRING (0 10, 10 0)");
+            //cc.setAlarm(!cc.getAlarm());
+            Log.d(TAG, "$$$$ in message callback");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -139,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
-        final CenterCycle centerCycle = new CenterCycle(1.0f, 80 / 2, 10, 45, 30);
+        final CenterCycle centerCycle = new CenterCycle(1.0f, 100, 100, 80 / 2, 10, 45, 30);
         elemMap.addElem(centerCycle.getUuid(), centerCycle);
         centerCycle.drawCenterCycle(this, mainFrame);
 
@@ -172,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // 发送消息
+                centerCycle.hAngleAdd(1);
                 EventBus.getDefault().post(new UserEvent("Mr.sorrow", "123456", centerCycle.getUuid(), null));
             }
         });
@@ -179,8 +198,9 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.adjust_hangle_sub).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //centerCycle.setAlarm(true);
                 centerCycle.hAngleSub(1);
+                EventBus.getDefault().post(new UserEvent("Mr.sorrow", "123456", centerCycle.getUuid(), null));
+
             }
         });
 
