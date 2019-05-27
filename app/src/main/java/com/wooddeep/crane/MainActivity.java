@@ -8,9 +8,11 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.wooddeep.crane.ebus.UserEvent;
-import com.wooddeep.crane.tookit.CenterCycle;
-import com.wooddeep.crane.tookit.SideArea;
-import com.wooddeep.crane.tookit.SideCycle;
+import com.wooddeep.crane.element.BaseElem;
+import com.wooddeep.crane.element.CenterCycle;
+import com.wooddeep.crane.element.ElemMap;
+import com.wooddeep.crane.element.SideArea;
+import com.wooddeep.crane.element.SideCycle;
 import com.wooddeep.crane.views.Vertex;
 
 import org.greenrobot.eventbus.EventBus;
@@ -31,6 +33,17 @@ import java.util.List;
 
 // eventbus for android
 // https://www.jianshu.com/p/428a5257839c
+
+/*
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.0.0-alpha1'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.1'
+    implementation 'org.locationtech.jts:jts-core:1.15.0'
+    implementation 'org.greenrobot:eventbus:3.0.0'
+    }
+*/
+
 /**
  * 获取主界面FrameLayout的坐标及长宽
  **/
@@ -87,7 +100,8 @@ new Thread(new Runnable() {
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    final CenterCycle centerCycle = new CenterCycle(1.0f, 80 / 2, 10, 45, 30);
+    private static final ElemMap elemMap = new ElemMap();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
             Geometry g2 = new WKTReader().read("POINTSTRING (0 0)");
             double d = g1.distance(g2);
             Log.d(TAG, "### this distance = " + d);
-            //g1.distance(pointer0);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -112,9 +125,11 @@ public class MainActivity extends AppCompatActivity {
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void userEventBus(UserEvent userEvent){
-            Log.d(TAG, "$$$$ in message callback");
-        centerCycle.hAngleAdd(1);
+    public void userEventBus(UserEvent userEvent) {
+        Log.d(TAG, "$$$$ in message callback");
+        BaseElem view = elemMap.getElem(userEvent.getViewId());
+        CenterCycle cc = (CenterCycle)view;
+        cc.setAlarm(!cc.getAlarm());
     }
 
 
@@ -124,11 +139,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
-
+        final CenterCycle centerCycle = new CenterCycle(1.0f, 80 / 2, 10, 45, 30);
+        elemMap.addElem(centerCycle.getUuid(), centerCycle);
         centerCycle.drawCenterCycle(this, mainFrame);
 
         float scale = centerCycle.scale; //DrawTool.DrawCenterCycle(this, mainFrame, 1.0f, 80 / 2, 10, 45, 30);
         SideCycle sideCycle = new SideCycle(scale, 100, 100, 130, 130, 60 / 2, 10, -45, 0);
+        elemMap.addElem(sideCycle.getUuid(), sideCycle);
         sideCycle.drawSideCycle(this, mainFrame);
 
         List<Vertex> vertex1 = new ArrayList<Vertex>() {{
@@ -138,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         }};
 
         SideArea sideArea = new SideArea(Color.GREEN, scale, 100, 100, vertex1);
+        elemMap.addElem(sideArea.getUuid(), sideArea);
         sideArea.drawSideArea(this, mainFrame);
 
         List<Vertex> vertex2 = new ArrayList<Vertex>() {{
@@ -147,14 +165,14 @@ public class MainActivity extends AppCompatActivity {
         }};
 
         SideArea sideArea1 = new SideArea(Color.RED, scale, 100, 100, vertex2);
+        elemMap.addElem(sideArea1.getUuid(), sideArea1);
         sideArea1.drawSideArea(this, mainFrame);
 
         findViewById(R.id.adjust_hangle_add).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //centerCycle.setAlarm(false);
-                //centerCycle.hAngleAdd(1);
-                EventBus.getDefault().post(new UserEvent("Mr.sorrow", "123456"));
+                // 发送消息
+                EventBus.getDefault().post(new UserEvent("Mr.sorrow", "123456", centerCycle.getUuid(), null));
             }
         });
 

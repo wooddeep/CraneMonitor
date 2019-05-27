@@ -56,6 +56,10 @@ public class SuperCircleView extends View {
         invalidate();
     }
 
+    public boolean getAlarm() {
+        return this.alarm;
+    }
+
     public void sethAngle(float hAngle) {
         this.hAngle = hAngle;
         invalidate();
