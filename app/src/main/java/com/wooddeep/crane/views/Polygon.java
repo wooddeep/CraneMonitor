@@ -56,8 +56,9 @@ public class Polygon extends View {
         paint.setColor(this.color);//为画笔设置颜色
         paint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
         //paint.setStyle(Paint.Style.FILL);
-        //paint.setStrokeWidth(50);//为画笔设置粗细
-        //paint.setStyle(Paint.Style.STROKE);//设置空心
+        paint.setStrokeWidth(4);//为画笔设置粗细
+        paint.setStyle(Paint.Style.STROKE);//设置空心
+        //paint.setColor(Color.LTGRAY);
         //canvas.drawColor(Color.GREEN);//为画布设置颜色
         //设置等腰三角形的三点坐标
         Path path = new Path();//绘制多边形的类

@@ -158,10 +158,10 @@ public class MainActivity extends AppCompatActivity {
         try {
             elemMap.alarmJudge(mainCycleId);
             Float distance = elemMap.distanceMap.get(sideCycleId);
-            EditText distanceEditText = findViewById(R.id.distance);
+            EditText distanceEditText = (EditText)findViewById(R.id.distance);
             distanceEditText.setText(String.format("%.2f", distance).toString());
             CenterCycle cc = (CenterCycle) elemMap.getElem(mainCycleId);
-            EditText limitEditText = findViewById(R.id.alarm_limit);
+            EditText limitEditText = (EditText)findViewById(R.id.alarm_limit);
             try {
                 float limit = Float.parseFloat(limitEditText.getText().toString());
                 if (distance <= limit) {
@@ -198,12 +198,13 @@ public class MainActivity extends AppCompatActivity {
         sideCycle.drawSideCycle(this, mainFrame);
 
         List<Vertex> vertex1 = new ArrayList<Vertex>() {{
-            add(new Vertex(35, 75));
-            add(new Vertex(35, 125));
-            add(new Vertex(60, 100));
+            add(new Vertex(50, 25));
+            add(new Vertex(105, 75));
+            add(new Vertex(75, 125));
+            add(new Vertex(25, 50));
         }};
 
-        SideArea sideArea = new SideArea(Color.GREEN, scale, 100, 100, vertex1);
+        SideArea sideArea = new SideArea(Color.GRAY, scale, 100, 100, vertex1);
         elemMap.addElem(sideArea.getUuid(), sideArea);
         sideArea.drawSideArea(this, mainFrame);
 
@@ -213,9 +214,9 @@ public class MainActivity extends AppCompatActivity {
             add(new Vertex(190, 130));
         }};
 
-        SideArea sideArea1 = new SideArea(Color.RED, scale, 100, 100, vertex2);
-        elemMap.addElem(sideArea1.getUuid(), sideArea1);
-        sideArea1.drawSideArea(this, mainFrame);
+        //SideArea sideArea1 = new SideArea(Color.GRAY, scale, 100, 100, vertex2);
+        //elemMap.addElem(sideArea1.getUuid(), sideArea1);
+        //sideArea1.drawSideArea(this, mainFrame);
 
         findViewById(R.id.adjust_hangle_add).setOnClickListener(new View.OnClickListener() {
             @Override

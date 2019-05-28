@@ -10,6 +10,7 @@ import com.wooddeep.crane.views.Vertex;
 
 import org.locationtech.jts.geom.Geometry;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class SideArea extends BaseElem{
     public float scale;
     public float cx;
     public float cy;
+    public List<Vertex> overtexs;
     public List<Vertex> vertexs;
 
     public SideArea(
@@ -33,6 +35,12 @@ public class SideArea extends BaseElem{
         this.cx = cx;
         this.cy = cy;
         this.vertexs = vertexs;
+
+        this.overtexs = new ArrayList<>();
+        for (Vertex vertex: vertexs) {
+            Vertex node = new Vertex(vertex.x, vertex.y);
+            overtexs.add(node);
+        }
     }
 
     public void drawSideArea(
