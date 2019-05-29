@@ -142,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void messageEventBus(MessageEvent userEvent) {
+
+        /*
         try {
             CenterCycle cc = (CenterCycle) elemMap.getElem(mainCycleId);
             if (cc.getAlarm()) {
@@ -150,13 +152,19 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        */
+        elemMap.alramFlink();
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void userEventBus(UserEvent userEvent) {
         try {
-            elemMap.alarmJudge(mainCycleId);
+            EditText limitEditText = (EditText)findViewById(R.id.alarm_limit);
+            float limit = Float.parseFloat(limitEditText.getText().toString());
+            elemMap.alarmJudge(mainCycleId, limit); // 告警判断
+
+            /*
             Float distance = elemMap.distanceMap.get(sideCycleId);
             EditText distanceEditText = (EditText)findViewById(R.id.distance);
             distanceEditText.setText(String.format("%.2f", distance).toString());
@@ -174,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception e) {
 
             }
+            */
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -199,8 +208,9 @@ public class MainActivity extends AppCompatActivity {
 
         List<Vertex> vertex1 = new ArrayList<Vertex>() {{
             add(new Vertex(50, 25));
-            add(new Vertex(105, 75));
-            add(new Vertex(75, 125));
+            add(new Vertex(55, 25));
+            add(new Vertex(95, 75));
+            add(new Vertex(75, 99));
             add(new Vertex(25, 50));
         }};
 

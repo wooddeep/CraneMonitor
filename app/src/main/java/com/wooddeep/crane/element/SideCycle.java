@@ -20,6 +20,7 @@ public class SideCycle  extends BaseElem{
     public float ir;
     public float hAngle;            // 水平方向夹角
     public float vAngle;            // 垂直方向夹角
+    public SuperCircleView cycle;
 
     public SideCycle(
         float scale,
@@ -79,7 +80,44 @@ public class SideCycle  extends BaseElem{
         cycle.setmRingNormalColor(Color.GREEN);
         cycle.sethAngle(hAngle);
         cycle.setvAngle(vAngle);
+        this.cycle = cycle;
         cycle.show();
+    }
+
+    public void hAngleAdd(float added) {
+        this.hAngle = this.hAngle + added;
+        this.cycle.sethAngle(this.hAngle);
+    }
+
+    public void hAngleSub(float subed) {
+        this.hAngle = this.hAngle - subed;
+        this.cycle.sethAngle(this.hAngle);
+    }
+
+    public void vAngleAdd(float added) {
+        this.vAngle = this.vAngle + added;
+        this.cycle.setvAngle(this.vAngle);
+    }
+
+    public void vAngleSub(float subed) {
+        this.vAngle = this.vAngle - subed;
+        this.cycle.setvAngle(this.vAngle);
+    }
+
+    public void setAlarm(boolean alarm) {
+        this.cycle.setAlarm(alarm);
+    }
+
+    public boolean getAlarm() {
+        return this.cycle.getAlarm();
+    }
+
+    public boolean getFlink() {
+        return this.cycle.getFlink();
+    }
+
+    public void setFlink(boolean flink) {
+        this.cycle.setFlink(flink);
     }
 
     @Override

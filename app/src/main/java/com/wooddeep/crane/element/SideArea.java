@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.wooddeep.crane.views.Polygon;
+import com.wooddeep.crane.views.SuperCircleView;
 import com.wooddeep.crane.views.Vertex;
 
 import org.locationtech.jts.geom.Geometry;
@@ -22,6 +23,8 @@ public class SideArea extends BaseElem{
     public float cy;
     public List<Vertex> overtexs;
     public List<Vertex> vertexs;
+
+    public Polygon area;
 
     public SideArea(
         int color,
@@ -69,6 +72,7 @@ public class SideArea extends BaseElem{
         }
 
         Polygon area = new Polygon(context);
+        this.area = area;
         FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(width, height);
         area.setLayoutParams(paras);
         parent.addView(area);
@@ -81,5 +85,25 @@ public class SideArea extends BaseElem{
     @Override
     public Geometry getGeometry() {
         return null;
+    }
+
+    public void setAlarm(boolean alarm) {
+        this.area.setAlarm(alarm);
+    }
+
+    public boolean getAlarm() {
+        return this.area.getAlarm();
+    }
+
+    public boolean getFlink() {
+        return this.area.getFlink();
+    }
+
+    public void setFlink(boolean flink) {
+        this.area.setFlink(flink);
+    }
+
+    public void setBoderColer(int boderColer) {
+        this.area.setBoderColer(boderColer);
     }
 }

@@ -32,6 +32,36 @@ public class Polygon extends View {
     private int unreachedColor;
     private int reachedColor;
     private int color = Color.RED;
+    private int boderColer = Color.GRAY;
+    private boolean alarm = false;
+    private boolean flink = false;
+
+    public int getBoderColer() {
+        return boderColer;
+    }
+
+    public void setBoderColer(int boderColer) {
+        this.boderColer = boderColer;
+        invalidate();
+    }
+
+    public boolean getAlarm() {
+        return alarm;
+    }
+
+    public void setAlarm(boolean alarm) {
+        this.alarm = alarm;
+        invalidate();
+    }
+
+    public boolean getFlink() {
+        return flink;
+    }
+
+    public void setFlink(boolean flink) {
+        this.flink = flink;
+        invalidate();
+    }
 
     public Polygon(Context context) {
         this(context, null);
@@ -54,7 +84,17 @@ public class Polygon extends View {
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         Paint paint = new Paint();//创建画笔
         paint.setColor(this.color);//为画笔设置颜色
-        paint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
+        if (flink) {
+            paint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
+        }
+
+        if (alarm) {
+            paint.setColor(Color.rgb(225, 140, 0));
+        } else {
+            //radioPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
+            paint.setColor(Color.rgb(46, 139, 87));
+        }
+
         //paint.setStyle(Paint.Style.FILL);
         paint.setStrokeWidth(4);//为画笔设置粗细
         paint.setStyle(Paint.Style.STROKE);//设置空心
@@ -87,4 +127,5 @@ public class Polygon extends View {
         this.color = color;
         invalidate();
     }
+
 }

@@ -37,7 +37,7 @@ public class ElemMap {
         }
     }
 
-    public void alarmJudge(String mid) throws Exception {
+    public void alarmJudge(String mid, float limit) throws Exception {
         CenterCycle cc = (CenterCycle) elemMap.get(mid);
         float cx = cc.x;
         float cy = cc.y;
@@ -72,6 +72,11 @@ public class ElemMap {
                 Geometry gsc = new WKTReader().read(String.format("LINESTRING (%f %f, %f %f)", sx, sy, sendpointX, sendpointY));
                 double d = gcc.distance(gsc);
                 distanceMap.put(id, (float) d);
+                if (limit >= (float)d) {
+                    sc.setAlarm(true);
+                } else {
+                    sc.setAlarm(false);
+                }
             }
 
             if (elem instanceof SideArea) { // polygon
@@ -85,25 +90,43 @@ public class ElemMap {
                 Geometry gPolygon = new GeometryFactory().createPolygon(coordPolygon);
 
                 Coordinate[] arm = new Coordinate[]{
-                        new Coordinate(endpointX, endpointY), new Coordinate(iendpointX, iendpointY),
-                        new Coordinate(iendpointX + 1, iendpointX - 1), new Coordinate(endpointX + 1, endpointY - 1),
+                        new Coordinate(endpointX, endpointY),
+                        new Coordinate(iendpointX, iendpointY),
+                        new Coordinate(iendpointX + 0.01, iendpointX - 0.01), // 一厘米的偏移, 构造一个矩形
+                        new Coordinate(endpointX + 0.01, endpointY - 0.01),
                         new Coordinate(endpointX, endpointY)
                 };
 
-                System.out.println(String.format("%f,%f;%f,%f;%f,%f;%f,%f",
-                        vertexs.get(0).x, vertexs.get(0).y, vertexs.get(1).x, vertexs.get(1).y,
-                        vertexs.get(2).x, vertexs.get(2).y, vertexs.get(3).x, vertexs.get(3).y));
-
-                System.out.println(String.format("%f,%f;%f,%f;%f,%f;%f,%f",
-                        endpointX, endpointY, iendpointX, iendpointY,
-                        iendpointX + 1, iendpointY - 1, endpointX + 1, endpointY - 1));
-
                 Geometry gArm = new GeometryFactory().createPolygon(arm);
-                boolean intersected = gPolygon.intersects(gArm);
-
-                System.out.println("### endpoint to polygon's distance = " + intersected);
+                //boolean intersected = gPolygon.intersects(gArm);
+                double distance = gArm.distance(gPolygon);
+                if (limit >= (float)distance) {
+                    sa.setAlarm(true);
+                } else {
+                    sa.setAlarm(false);
+                }
+                //System.out.println(String.format("### distance: %f, intersected status: %b", distance, intersected));
             }
         }
+    }
 
+    public void alramFlink() {
+        Set<String> idSet = elemMap.keySet();
+        for (String id : idSet) {
+            BaseElem elem = elemMap.get(id);
+            if (elem instanceof SideCycle) { // cycle
+                SideCycle sc = (SideCycle) elemMap.get(id);
+                if (sc.getAlarm()) {
+                    sc.setFlink(!sc.getFlink());
+                }
+            }
+
+            if (elem instanceof SideArea) { // cycle
+                SideArea sa = (SideArea) elemMap.get(id);
+                if (sa.getAlarm()) {
+                    sa.setFlink(!sa.getFlink());
+                }
+            }
+        }
     }
 }
