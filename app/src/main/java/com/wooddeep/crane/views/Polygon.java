@@ -91,12 +91,12 @@ public class Polygon extends View {
         if (alarm) {
             paint.setColor(Color.rgb(225, 140, 0));
         } else {
-            //radioPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
+            paint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
             paint.setColor(Color.rgb(46, 139, 87));
         }
 
         //paint.setStyle(Paint.Style.FILL);
-        paint.setStrokeWidth(4);//为画笔设置粗细
+        paint.setStrokeWidth(2);//为画笔设置粗细
         paint.setStyle(Paint.Style.STROKE);//设置空心
         //paint.setColor(Color.LTGRAY);
         //canvas.drawColor(Color.GREEN);//为画布设置颜色

@@ -223,16 +223,18 @@ public class SuperCircleView extends View {
         ringRealPaint.setStyle(Paint.Style.STROKE);
         ringRealPaint.setStrokeWidth(mRingWidth);
         ringRealPaint.setColor(Color.rgb(46, 139, 87));
-        if (flink) {
-            ringRealPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
-        }
 
-        if (alarm) {
-            ringRealPaint.setColor(Color.rgb(225, 140, 0));
-        } else {
-            //radioPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
+        ringRealPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
+        //if (flink) {
+        //    ringRealPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
+        //}
+
+        //if (alarm) {
+        //    ringRealPaint.setColor(Color.rgb(225, 140, 0));
+        //} else {
+        //    ringRealPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
             ringRealPaint.setColor(Color.rgb(46, 139, 87));
-        }
+        //}
 
         // 大臂环
         canvas.drawArc(mRectF, 360, 360, false, ringMaxPaint);
@@ -270,7 +272,7 @@ public class SuperCircleView extends View {
         if (alarm) {
             radioPaint.setColor(Color.rgb(225, 140, 0));
         } else {
-            //radioPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
+            radioPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
             radioPaint.setColor(Color.rgb(46, 139, 87));
         }
         //radioPaint.setShadowLayer(2, 1, 1, Color.RED);

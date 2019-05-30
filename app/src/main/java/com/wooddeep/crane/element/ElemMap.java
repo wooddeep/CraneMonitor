@@ -112,11 +112,14 @@ public class ElemMap {
 
     public void alramFlink() {
         Set<String> idSet = elemMap.keySet();
+        CenterCycle cc = null;
+        boolean hasAlarm = false;
         for (String id : idSet) {
             BaseElem elem = elemMap.get(id);
             if (elem instanceof SideCycle) { // cycle
                 SideCycle sc = (SideCycle) elemMap.get(id);
                 if (sc.getAlarm()) {
+                    hasAlarm = true;
                     sc.setFlink(!sc.getFlink());
                 }
             }
@@ -124,9 +127,19 @@ public class ElemMap {
             if (elem instanceof SideArea) { // cycle
                 SideArea sa = (SideArea) elemMap.get(id);
                 if (sa.getAlarm()) {
+                    hasAlarm = true;
                     sa.setFlink(!sa.getFlink());
                 }
             }
+
+            if (elem instanceof CenterCycle) {
+                cc = (CenterCycle) elemMap.get(id);
+            }
+        }
+
+        cc.setAlarm(hasAlarm);
+        if (hasAlarm) {
+            cc.setFlink(!cc.getFlink());
         }
     }
 }
