@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+ * 自定义progressbar
+ * https://blog.csdn.net/mad1989/article/details/38042875
+ * https://www.jianshu.com/p/8998e381b805
+ * 九点图
+ * https://onlooker.wodemo.net/browse/392022/res/drawable-hdpi-v4/
+
+ * 程序定义进度条
+ * https://blog.csdn.net/u012005313/article/details/76047122
+
+
+ * android:gravity : 控件相对于父容器的位置
+
+ * 相对布局
+ * https://www.cnblogs.com/liter7/p/5178674.html
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/banner_height"
+        android:layout_gravity="center"
+        android:background="@drawable/spliter_background"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/crane_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            app:srcCompat="@mipmap/crane_setting" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/crane_logo"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="塔基设置"
+                android:textColor="#506946" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tower setting" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/close_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            app:srcCompat="@mipmap/close_logo" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/crane_setting_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.bin.david.form.core.SmartTable
+            android:id="@+id/table"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+        <!--
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                app:srcCompat="@mipmap/ic_launcher" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center" />
+
+            <RadioButton
+                android:id="@+id/radioButton"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="RadioButton" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                app:srcCompat="@mipmap/ic_launcher" />
+
+            <RadioButton
+                android:id="@+id/radioButton"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="RadioButton" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                app:srcCompat="@mipmap/ic_launcher" />
+
+        </LinearLayout>
+
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@drawable/spliter_background"
+            android:gravity="center">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageView00"
+                        android:layout_width="wrap_content"
+                        android:layout_height="80dp"
+                        app:srcCompat="@mipmap/ic_launcher" />
+
+                    <EditText
+                        android:id="@+id/spinner01"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageView03"
+                        android:layout_width="wrap_content"
+                        android:layout_height="80dp"
+                        app:srcCompat="@mipmap/ic_launcher" />
+
+                    <EditText
+                        android:id="@+id/spinner04"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageView05"
+                        android:layout_width="wrap_content"
+                        android:layout_height="80dp"
+                        app:srcCompat="@mipmap/ic_launcher" />
+
+                    <EditText
+                        android:id="@+id/spinner06"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center" />
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageView00"
+                        android:layout_width="wrap_content"
+                        android:layout_height="80dp"
+                        app:srcCompat="@mipmap/ic_launcher" />
+
+                    <EditText
+                        android:id="@+id/spinner01"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageView03"
+                        android:layout_width="wrap_content"
+                        android:layout_height="80dp"
+                        app:srcCompat="@mipmap/ic_launcher" />
+
+                    <EditText
+                        android:id="@+id/spinner04"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageView05"
+                        android:layout_width="wrap_content"
+                        android:layout_height="80dp"
+                        app:srcCompat="@mipmap/ic_launcher" />
+
+                    <EditText
+                        android:id="@+id/spinner06"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center" />
+                </LinearLayout>
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageView00"
+                        android:layout_width="wrap_content"
+                        android:layout_height="80dp"
+                        app:srcCompat="@mipmap/ic_launcher" />
+
+                    <EditText
+                        android:id="@+id/spinner01"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageView03"
+                        android:layout_width="wrap_content"
+                        android:layout_height="80dp"
+                        app:srcCompat="@mipmap/ic_launcher" />
+
+                    <EditText
+                        android:id="@+id/spinner04"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageView05"
+                        android:layout_width="wrap_content"
+                        android:layout_height="80dp"
+                        app:srcCompat="@mipmap/ic_launcher" />
+
+                    <EditText
+                        android:id="@+id/spinner06"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center" />
+                </LinearLayout>
+            </TableRow>
+
+
+        </TableLayout>
+        -->
+
+    </LinearLayout>
+
+
+</LinearLayout>

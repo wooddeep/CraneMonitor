@@ -1,13 +1,19 @@
 package com.wooddeep.crane;
 
+import android.animation.ObjectAnimator;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.wooddeep.crane.ebus.MessageEvent;
 import com.wooddeep.crane.ebus.UserEvent;
@@ -15,6 +21,7 @@ import com.wooddeep.crane.element.CenterCycle;
 import com.wooddeep.crane.element.ElemMap;
 import com.wooddeep.crane.element.SideArea;
 import com.wooddeep.crane.element.SideCycle;
+import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.views.Vertex;
 
 import org.greenrobot.eventbus.EventBus;
@@ -33,6 +40,13 @@ import java.util.TimerTask;
 
 // eventbus for android
 // https://www.jianshu.com/p/428a5257839c
+
+// set 按钮的前景 后台
+// https://blog.csdn.net/oathevil/article/details/23707359
+
+// FrameLayout 分层权重问题
+// https://www.jianshu.com/p/c1d17a39bc09
+
 
 /*
 dependencies {
@@ -115,6 +129,9 @@ try {
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final ElemMap elemMap = new ElemMap();
+
+    private float oscale = 1.0f;
+
     private String mainCycleId = null; // 主环的uuid
     private String sideCycleId = null;
 
@@ -130,6 +147,14 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    public float getOscale() {
+        return oscale;
+    }
+
+    public void setOscale(float oscale) {
+        this.oscale = oscale;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,17 +167,6 @@ public class MainActivity extends AppCompatActivity {
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void messageEventBus(MessageEvent userEvent) {
-
-        /*
-        try {
-            CenterCycle cc = (CenterCycle) elemMap.getElem(mainCycleId);
-            if (cc.getAlarm()) {
-                cc.setFlink(!cc.getFlink());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        */
         elemMap.alramFlink();
     }
 
@@ -160,42 +174,48 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void userEventBus(UserEvent userEvent) {
         try {
-            EditText limitEditText = (EditText)findViewById(R.id.alarm_limit);
+            EditText limitEditText = (EditText) findViewById(R.id.alarm_limit);
             float limit = Float.parseFloat(limitEditText.getText().toString());
             elemMap.alarmJudge(mainCycleId, limit); // 告警判断
-
-            /*
-            Float distance = elemMap.distanceMap.get(sideCycleId);
-            EditText distanceEditText = (EditText)findViewById(R.id.distance);
-            distanceEditText.setText(String.format("%.2f", distance).toString());
-            CenterCycle cc = (CenterCycle) elemMap.getElem(mainCycleId);
-            EditText limitEditText = (EditText)findViewById(R.id.alarm_limit);
-            try {
-                float limit = Float.parseFloat(limitEditText.getText().toString());
-                if (distance <= limit) {
-                    cc.setAlarm(true);
-                } else {
-                    EventBus.getDefault().post(new MessageEvent("Mr.sorrow", "123456"));
-                    cc.setAlarm(false);
-                }
-
-            } catch (Exception e) {
-
-            }
-            */
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public void setOnTouchListener(View view){
+        View.OnTouchListener onTouchListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    ObjectAnimator oa = ObjectAnimator.ofFloat(view,
+                        "scaleX", 0.93f, 1f);
+                    oa.setDuration(500);
+                    ObjectAnimator oa2 = ObjectAnimator.ofFloat(view,
+                        "scaleY", 0.93f, 1f);
+                    oa2.setDuration(700);
+                    oa.start();
+                    oa2.start();
+                }
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    ObjectAnimator oa = ObjectAnimator.ofFloat(view,
+                        "scaleX", 1f, 0.93f);
+                    oa.setDuration(500);
+                    ObjectAnimator oa2 = ObjectAnimator.ofFloat(view,
+                        "scaleY", 1f, 0.93f);
+                    oa2.setDuration(700);
+                    oa.start();
+                    oa2.start();
+                }
+                return false;
+            }
+        };
+        view.setOnTouchListener(onTouchListener);
+    }
 
-    /**
-     * 获取主界面FrameLayout的坐标及长宽
-     **/
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
+    private void renderMain(float oscale) {
         FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
-        final CenterCycle centerCycle = new CenterCycle(1.0f, 100, 100, 80 / 2, 10, 45, 30);
+        elemMap.delElems(mainFrame);
+        final CenterCycle centerCycle = new CenterCycle(oscale, 100, 100, 80 / 2, 10, 45, 30);
         elemMap.addElem(centerCycle.getUuid(), centerCycle);
         mainCycleId = centerCycle.getUuid();
         centerCycle.drawCenterCycle(this, mainFrame);
@@ -207,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         sideCycle.drawSideCycle(this, mainFrame);
 
         List<Vertex> vertex1 = new ArrayList<Vertex>() {{
-            add(new Vertex(50, 25));
+            add(new Vertex(0, 25));
             add(new Vertex(55, 25));
             add(new Vertex(95, 75));
             add(new Vertex(75, 99));
@@ -217,16 +237,6 @@ public class MainActivity extends AppCompatActivity {
         SideArea sideArea = new SideArea(Color.GRAY, scale, 100, 100, vertex1);
         elemMap.addElem(sideArea.getUuid(), sideArea);
         sideArea.drawSideArea(this, mainFrame);
-
-        List<Vertex> vertex2 = new ArrayList<Vertex>() {{
-            add(new Vertex(160, 130));
-            add(new Vertex(175, 160));
-            add(new Vertex(190, 130));
-        }};
-
-        //SideArea sideArea1 = new SideArea(Color.GRAY, scale, 100, 100, vertex2);
-        //elemMap.addElem(sideArea1.getUuid(), sideArea1);
-        //sideArea1.drawSideArea(this, mainFrame);
 
         findViewById(R.id.adjust_hangle_add).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -264,6 +274,79 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.menu).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ImageView btnMenu = (ImageView) findViewById(R.id.menu);
+                LinearLayout menuExpand = (LinearLayout) findViewById(R.id.menu_expand);
+                Context contex = getApplicationContext();
+                if (menuExpand.getVisibility() == View.GONE) {
+                    menuExpand.setVisibility(View.VISIBLE);
+                    AnimUtil.alphaAnimation(btnMenu);
+                    btnMenu.setImageResource(R.mipmap.menu_off);
+                    menuExpand.setAnimation(AnimationUtils.makeInAnimation(contex, true));
+                } else {
+                    menuExpand.setVisibility(View.GONE);
+                    AnimUtil.alphaAnimation(btnMenu);
+                    menuExpand.setAnimation(AnimationUtils.makeOutAnimation(contex, false));
+                    btnMenu.setImageResource(R.mipmap.menu_on);
+                }
+                Log.i(TAG, "## click!");
+            }
+        });
+
+        List<ImageView> menuButtons = new ArrayList<ImageView>() {{
+            add((ImageView) findViewById(R.id.crane_setting));
+            add((ImageView) findViewById(R.id.area_setting));
+            add((ImageView) findViewById(R.id.alarm_setting));
+            add((ImageView) findViewById(R.id.zoom_in));
+            add((ImageView) findViewById(R.id.zoom_out));
+        }};
+
+        for (ImageView view : menuButtons) {
+            setOnTouchListener(view);
+        }
+
+        // 放大
+        ImageView zoomIn = (ImageView) findViewById(R.id.zoom_in);
+        zoomIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float oscale = getOscale();
+                oscale = oscale + 0.1f;
+                setOscale(oscale);
+                renderMain(oscale);
+            }
+        });
+
+        // 缩小
+        ImageView zoomOut = (ImageView) findViewById(R.id.zoom_out);
+        zoomOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float oscale = getOscale();
+                oscale = oscale - 0.1f;
+                setOscale(oscale);
+                renderMain(oscale);
+            }
+        });
+
+        // 调到塔基设置页面
+        ImageView craneSetting = (ImageView) findViewById(R.id.crane_setting);
+        craneSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =new Intent(MainActivity.this, CraneSetting.class);
+                startActivity(intent);
+            }
+        });
     }
 
+    /**
+     * 获取主界面FrameLayout的坐标及长宽
+     **/
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        renderMain(oscale);
+    }
 }

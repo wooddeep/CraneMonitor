@@ -1,5 +1,8 @@
 package com.wooddeep.crane.element;
 
+import android.view.View;
+import android.view.ViewGroup;
+
 import com.wooddeep.crane.views.Vertex;
 
 import org.locationtech.jts.geom.Coordinate;
@@ -24,6 +27,28 @@ public class ElemMap {
 
     public void addElem(String id, BaseElem elem) {
         elemMap.put(id, elem);
+    }
+
+    public void delElems(ViewGroup parent) {
+        Set<String> idSet = elemMap.keySet();
+        for (String id : idSet) {
+            BaseElem elem = elemMap.get(id);
+
+            if (elem instanceof SideCycle) { // cycle
+                SideCycle sc = (SideCycle) elemMap.get(id);
+                parent.removeView(sc.cycle);
+            }
+
+            if (elem instanceof SideArea) { // cycle
+                SideArea sa = (SideArea) elemMap.get(id);
+                parent.removeView(sa.area);
+            }
+
+            if (elem instanceof CenterCycle) {
+                CenterCycle cc = (CenterCycle) elemMap.get(id);
+                parent.removeView(cc.cycle);
+            }
+        }
     }
 
     public BaseElem getElem(String id) {
