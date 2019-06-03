@@ -9,7 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -340,6 +343,20 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+        ImageView windSpeedLog = (ImageView) findViewById(R.id.wind_speed_log);
+        windSpeedLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RotateAnimation rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//上述参数解释分别为：旋转起始角度，旋转结束角度，相对与自身，x轴方向的一半，相对于自身，y轴方向的一半
+                rotateAnimation.setDuration(1000);
+                windSpeedLog.setAnimation(rotateAnimation);
+            }
+        });
+
+
     }
 
     /**
