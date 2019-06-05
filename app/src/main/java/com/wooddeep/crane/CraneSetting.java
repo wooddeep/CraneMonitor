@@ -9,14 +9,12 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import com.rmondjone.locktableview.LockTableView;
-import com.rmondjone.xrecyclerview.ProgressStyle;
 import com.rmondjone.xrecyclerview.XRecyclerView;
 import com.wooddeep.crane.persist.dao.CraneParaDao;
-import com.wooddeep.crane.persist.dao.StudentDao;
 import com.wooddeep.crane.persist.entity.CranePara;
-import com.wooddeep.crane.persist.entity.Student;
 
 import java.util.ArrayList;
+import java.util.List;
 
 // android开源控件
 // https://www.cnblogs.com/porter/p/8135835.html
@@ -35,10 +33,11 @@ import java.util.ArrayList;
 
 public class CraneSetting extends AppCompatActivity {
 
-    private void confLoad(Context contex) {
+    private List<CranePara> confLoad(Context contex) {
         CraneParaDao dao = new CraneParaDao(contex);
         //dao.insert(new CranePara(0,"zhangsan", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1));
-        dao.getAllCranePara();
+        List<CranePara> paras = dao.getAllCranePara();
+        return paras;
     }
 
     @Override
@@ -47,88 +46,84 @@ public class CraneSetting extends AppCompatActivity {
         setContentView(R.layout.crane_setting);
 
         Context context = getApplicationContext();
-        confLoad(context);
+        List<CranePara> paras = confLoad(context);
+        paraTableRender(paras);
 
-        paraTable();
     }
 
-    public void paraTable() {
-        LinearLayout craneSettingContainer = (LinearLayout) findViewById(R.id.crane_setting_container);
+    private static String[] craneParaNames = new String[]{
+        "X1(塔基X坐标)",
+        "Y1(塔基Y坐标)",
+        "X2(塔基X偏移)",
+        "Y2(塔基Y偏移)",
+        "           塔机高度", // SHIT!!! 必须保持字符串宽度一致！
+        "           大臂长度",
+        "         平衡臂长度",
+        "           塔身直径",
+        "           大臂宽度",
+        "         平衡臂宽度",
+    };
 
+
+    public ArrayList<ArrayList<String>> craneParaArrange(List<CranePara> paras) {
         ArrayList<ArrayList<String>> table = new ArrayList<ArrayList<String>>();
+
         ArrayList<String> head = new ArrayList<String>() {{
             add("参数类型");
-            add("01号塔基");
-            add("02号塔基");
-            add("03号塔基");
-            add("04号塔基");
-            add("05号塔基");
-            add("06号塔基");
-            add("07号塔基");
-            add("08号塔基");
-            add("09号塔基");
-            add("10号塔基");
-            add("11号塔基");
-
         }};
+
+        for (int i = 0; i < paras.size(); i++) {
+            head.add(String.format("%02d号塔基", i));
+        }
         table.add(head);
 
-        ArrayList<String> row = new ArrayList<String>() {{
-            add("X1(塔基X坐标)");
-            add("b");
-            add("a");
-            add("b");
-            add("a");
-            add("b");
-            add("a");
-            add("b");
-            add("a");
-            add("b");
-        }};
-        table.add(row);
+        for (int i = 0; i < craneParaNames.length; i++) {
+            ArrayList<String> row = new ArrayList<String>();
+            row.add(craneParaNames[i]);
+            for (int j = 0; j < paras.size(); j++) {
+                switch (i) {
+                    case 0:
+                        row.add(paras.get(j).getCoordX1().toString());
+                        break;
+                    case 1:
+                        row.add(paras.get(j).getCoordY1().toString());
+                        break;
+                    case 2:
+                        row.add(paras.get(j).getCoordX2().toString());
+                        break;
+                    case 3:
+                        row.add(paras.get(j).getCoordY2().toString());
+                        break;
+                    case 4:
+                        row.add(paras.get(j).getCraneHeight().toString());
+                        break;
+                    case 5:
+                        row.add(paras.get(j).getBigArmLength().toString());
+                        break;
+                    case 6:
+                        row.add(paras.get(j).getBalancArmLength().toString());
+                        break;
+                    case 7:
+                        row.add(paras.get(j).getCraneBodyRadius().toString());
+                        break;
+                    case 8:
+                        row.add(paras.get(j).getBigArmWidth().toString());
+                        break;
+                    case 9:
+                        row.add(paras.get(j).getBalancArmWidth().toString());
+                        break;
+                }
+            }
 
-        ArrayList<String> row1 = new ArrayList<String>() {{
-            add("Y1(塔基Y坐标)");
-            add("b");
-            add("a");
-            add("b");
-            add("a");
-            add("b");
-            add("a");
-            add("b");
-            add("a");
-            add("b");
-        }};
-        table.add(row1);
+            table.add(row);
+        }
 
-        ArrayList<String> row2 = new ArrayList<String>() {{
-            add("X2(塔基X偏移)");
-            add("b");
-            add("a");
-            add("b");
-            add("a");
-            add("b");
-            add("a");
-            add("b");
-            add("a");
-            add("b");
-        }};
-        table.add(row2);
+        return table;
+    }
 
-        ArrayList<String> row3 = new ArrayList<String>() {{
-            add("Y2(塔基Y偏移)");
-            add("b");
-            add("a");
-            add("b");
-            add("a");
-            add("b");
-            add("a");
-            add("b");
-            add("a");
-            add("b");
-        }};
-        table.add(row3);
-
+    public void paraTableRender(List<CranePara> paras) {
+        LinearLayout craneSettingContainer = (LinearLayout) findViewById(R.id.crane_setting_container);
+        ArrayList<ArrayList<String>> table = craneParaArrange(paras);
 
         final LockTableView mLockTableView = new LockTableView(this, craneSettingContainer, table);
         Log.e("表格加载开始", "当前线程：" + Thread.currentThread());
@@ -136,6 +131,7 @@ public class CraneSetting extends AppCompatActivity {
         .setLockFristRow(true) //是否锁定第一行
         .setMaxColumnWidth(100) //列最大宽度
         .setMinColumnWidth(60) //列最小宽度
+        .setColumnWidth(0, 100)
         .setColumnWidth(1, 60) //设置指定列文本宽度(从0开始计算,宽度单位dp)
         .setMinRowHeight(20)//行最小高度
         .setMaxRowHeight(60)//行最大高度
