@@ -26,6 +26,7 @@
     tools:context=".MainActivity">
 
     <RelativeLayout
+        android:id="@+id/banner"
         android:layout_width="match_parent"
         android:layout_height="@dimen/banner_height"
         android:layout_gravity="center"
@@ -61,10 +62,30 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/add_logo"
+            android:layout_width="40px"
+            android:layout_height="40px"
+            android:layout_centerInParent="true"
+            android:layout_toLeftOf="@+id/minus_logo"
+            android:layout_marginRight="20dp"
+            app:srcCompat="@mipmap/add_logo" />
+
+        <ImageView
+            android:id="@+id/minus_logo"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="40dp"
+            android:layout_toLeftOf="@+id/close_logo"
+            app:srcCompat="@mipmap/minus_logo" />
+
+        <ImageView
             android:id="@+id/close_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="45px"
+            android:layout_height="45px"
+            android:layout_centerInParent="true"
             android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
             app:srcCompat="@mipmap/close_logo" />
 
     </RelativeLayout>

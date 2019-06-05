@@ -1,11 +1,14 @@
 package com.wooddeep.crane;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.rmondjone.locktableview.LockTableView;
@@ -32,10 +35,12 @@ import java.util.List;
 
 
 public class CraneSetting extends AppCompatActivity {
-
+    private Context context;
     private List<CranePara> confLoad(Context contex) {
         CraneParaDao dao = new CraneParaDao(contex);
         //dao.insert(new CranePara(0,"zhangsan", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1));
+        //dao.insert(new CranePara(1,"lisi", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1));
+
         List<CranePara> paras = dao.getAllCranePara();
         return paras;
     }
@@ -45,10 +50,73 @@ public class CraneSetting extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.crane_setting);
 
-        Context context = getApplicationContext();
+        context = getApplicationContext();
         List<CranePara> paras = confLoad(context);
         paraTableRender(paras);
 
+    }
+
+    private void setOnTouchListener(View view) {
+        View.OnTouchListener onTouchListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    ObjectAnimator oa = ObjectAnimator.ofFloat(view,
+                        "scaleX", 0.93f, 1f);
+                    oa.setDuration(500);
+                    ObjectAnimator oa2 = ObjectAnimator.ofFloat(view,
+                        "scaleY", 0.93f, 1f);
+                    oa2.setDuration(700);
+                    oa.start();
+                    oa2.start();
+                }
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    ObjectAnimator oa = ObjectAnimator.ofFloat(view,
+                        "scaleX", 1f, 0.93f);
+                    oa.setDuration(500);
+                    ObjectAnimator oa2 = ObjectAnimator.ofFloat(view,
+                        "scaleY", 1f, 0.93f);
+                    oa2.setDuration(700);
+                    oa.start();
+                    oa2.start();
+                }
+                return false;
+            }
+        };
+        view.setOnTouchListener(onTouchListener);
+    }
+
+    private void setOnClickListener(View view) {
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                if (view.getId() == R.id.add_logo) {
+                    CraneParaDao dao = new CraneParaDao(context);
+                    dao.insert(new CranePara(0,"zhangsan", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1));
+                    List<CranePara> paras = confLoad(context);
+                    paraTableRender(paras);
+                } else if (view.getId() == R.id.minus_logo) {
+
+                } else if (view.getId() == R.id.close_logo) {
+
+                }
+            }
+        };
+        view.setOnClickListener(onClickListener);
+    }
+
+    private void setOnTouchListener() {
+        List<ImageView> menuButtons = new ArrayList<ImageView>() {{
+            add((ImageView) findViewById(R.id.close_logo));
+            add((ImageView) findViewById(R.id.add_logo));
+            add((ImageView) findViewById(R.id.minus_logo));
+        }};
+
+        for (ImageView view : menuButtons) {
+            setOnTouchListener(view);
+            setOnClickListener(view);
+        }
     }
 
     private static String[] craneParaNames = new String[]{
@@ -132,11 +200,10 @@ public class CraneSetting extends AppCompatActivity {
         .setMaxColumnWidth(100) //列最大宽度
         .setMinColumnWidth(60) //列最小宽度
         .setColumnWidth(0, 100)
-        .setColumnWidth(1, 60) //设置指定列文本宽度(从0开始计算,宽度单位dp)
         .setMinRowHeight(20)//行最小高度
         .setMaxRowHeight(60)//行最大高度
         .setTextViewSize(16) //单元格字体大小
-        .setCellPadding(15)//设置单元格内边距(dp)
+        .setCellPadding(5)//设置单元格内边距(dp)
         .setFristRowBackGroudColor(R.color.table_head)//表头背景色
         .setTableHeadTextColor(R.color.beijin)//表头字体颜色
         .setTableContentTextColor(R.color.border_color)//单元格字体颜色
@@ -198,8 +265,16 @@ public class CraneSetting extends AppCompatActivity {
                 Log.e("长按事件", position + "");
             }
         })
-        .setOnItemSeletor(R.color.dashline_color)//设置Item被选中颜色
-        .show(); //显示表格,此方法必须调用
+        .setOnItemSeletor(R.color.dashline_color);//设置Item被选中颜色
+
+        for (int i = 1; i <= paras.size(); i++) {
+            int columnWidth = 400 / paras.size();
+            if (columnWidth < 100) columnWidth = 100;
+            mLockTableView.setColumnWidth(i, columnWidth); //设置指定列文本宽度(从0开始计算,宽度单位dp)
+        }
+
+        mLockTableView.show(); //显示表格,此方法必须调用
+
         //mLockTableView.getTableScrollView().setPullRefreshEnabled(true);
         //mLockTableView.getTableScrollView().setLoadingMoreEnabled(true);
         //mLockTableView.getTableScrollView().setRefreshProgressStyle(ProgressStyle.SquareSpin);//属性值获取
@@ -211,4 +286,11 @@ public class CraneSetting extends AppCompatActivity {
 
     }
 
+    /**
+     * 获取主界面FrameLayout的坐标及长宽
+     **/
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        setOnTouchListener();
+    }
 }
