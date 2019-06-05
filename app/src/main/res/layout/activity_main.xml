@@ -77,12 +77,12 @@
             android:layout_centerInParent="true"
             android:gravity="center"
             android:layout_gravity="center"
-            android:layout_toRightOf="@+id/text_container"
+            android:layout_toLeftOf="@+id/wind_speed"
             app:srcCompat="@mipmap/wind_speed" />
 
         <TextView
             android:id="@+id/wind_speed"
-            android:layout_toRightOf="@+id/wind_speed_log"
+            android:layout_toLeftOf="@+id/clock_logo"
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_centerInParent="true"
@@ -94,7 +94,7 @@
         <ImageView
             android:id="@+id/clock_logo"
             android:layout_width="40dp"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="40dp"
             android:layout_height="40dp"
             android:gravity="center"
             android:layout_gravity="center"
@@ -137,7 +137,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="2">
-
+            <!--
             <Button
                 android:id="@+id/adjust_hangle_add"
                 android:layout_width="100dp"
@@ -221,7 +221,7 @@
                 android:layout_marginTop="35dp"
                 android:text="大臂倾角-"
                 android:textColor="#506946" />
-
+            -->
             <!-- 菜单容器 -->
             <LinearLayout
                 android:id="@+id/menu_container"
