@@ -75,9 +75,18 @@
             android:layout_width="46px"
             android:layout_height="46px"
             android:layout_centerInParent="true"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@+id/save_logo"
+            app:srcCompat="@mipmap/minus_logo" />
+
+        <ImageView
+            android:id="@+id/save_logo"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:layout_centerInParent="true"
             android:layout_marginRight="40dp"
             android:layout_toLeftOf="@+id/close_logo"
-            app:srcCompat="@mipmap/minus_logo" />
+            app:srcCompat="@drawable/save_logo" />
 
         <ImageView
             android:id="@+id/close_logo"

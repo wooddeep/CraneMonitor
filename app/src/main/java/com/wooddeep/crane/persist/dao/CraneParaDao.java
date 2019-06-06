@@ -62,6 +62,14 @@ public class CraneParaDao {
         //db.update("t_student", values, "id=?", new String[]{id+""});
     }
 
+    public int getRows() {
+        helper = new MySqliteHelper(context, "crane.db", null, 1);
+        SQLiteDatabase db = helper.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select count(1) from t_crane_para", null);
+        cursor.moveToNext();
+        return cursor.getInt(0);
+    }
+
     public void deleteById(int id) {
         helper = new MySqliteHelper(context, "crane.db", null, 1);
         SQLiteDatabase db = helper.getWritableDatabase();

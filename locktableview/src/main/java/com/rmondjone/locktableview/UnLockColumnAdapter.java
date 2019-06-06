@@ -266,7 +266,7 @@ public class UnLockColumnAdapter extends RecyclerView.Adapter<UnLockColumnAdapte
      */
     private void createRowView(LinearLayout linearLayout, List<String> datas, boolean isFristRow, int mMaxHeight, int rowNum) {
         //设置LinearLayout
-        System.out.println("##rowNum = " + rowNum );
+        //System.out.println("##rowNum = " + rowNum );
         linearLayout.removeAllViews();//首先清空LinearLayout,复用会造成重复绘制，使内容超出预期长度
         for (int i = 0; i < datas.size(); i++) {
             //构造单元格

@@ -20,8 +20,8 @@ public class DrawTool {
 
     public static void drawGrid(Activity activity, ViewGroup parent) {
         Context context = activity.getApplicationContext();
-        int width = parent.getMeasuredWidth(); // 获取组件宽度
-        int height = parent.getMeasuredHeight(); // 获取组件高度
+        int width = parent.getMeasuredWidth(); // ??????
+        int height = parent.getMeasuredHeight(); // ??????
         GridLineView gridLineView = new GridLineView(context);
         FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams((int) width, (int) height);
         gridLineView.setLayoutParams(paras);

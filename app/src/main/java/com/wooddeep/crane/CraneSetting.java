@@ -5,11 +5,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.rmondjone.locktableview.DisplayUtil;
 import com.rmondjone.locktableview.LockTableView;
@@ -34,6 +36,8 @@ import java.util.List;
 // https://github.com/huangyanbin/smartTable
 // https://juejin.im/post/5a5dce7651882573256bd043
 
+// 对话框
+// https://github.com/saiwu-bigkoo/Android-AlertView
 
 public class CraneSetting extends AppCompatActivity {
     private Context context;
@@ -42,10 +46,26 @@ public class CraneSetting extends AppCompatActivity {
 
     private List<CranePara> confLoad(Context contex) {
         CraneParaDao dao = new CraneParaDao(contex);
-        //dao.insert(new CranePara(0,"zhangsan", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1));
-        //dao.insert(new CranePara(1,"lisi", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1));
 
         List<CranePara> paras = dao.getAllCranePara();
+        if (paras.size() == 0) {
+            dao.insert(new CranePara(
+            1,
+            "1号塔基",
+            100,
+            100,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1)
+            );
+        }
+
+        paras = dao.getAllCranePara();
         return paras;
     }
 
@@ -96,15 +116,39 @@ public class CraneSetting extends AppCompatActivity {
             public void onClick(View view) {
                 if (view.getId() == R.id.add_logo) {
                     CraneParaDao dao = new CraneParaDao(context);
-                    dao.insert(new CranePara(0, "zhangsan", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1));
+                    int rowCnt =  dao.getRows();
+                    dao.insert(new CranePara(
+                    0,
+                    String.format("%d号塔基", rowCnt + 1),
+                    100,
+                    100,
+                    1,
+                    1,
+                    1,
+                    40,
+                    10,
+                    1,
+                    1,
+                    1)
+                    );
                     List<CranePara> paras = confLoad(context);
                     paraTableRender(paras);
-                } else if (view.getId() == R.id.minus_logo) {
-                    CraneParaDao dao = new CraneParaDao(context);
 
-                    dao.deleteLatest();
+                } else if (view.getId() == R.id.minus_logo) {
                     List<CranePara> paras = confLoad(context);
+                    if (paras.size() <= 1) {
+                        Toast toast =Toast.makeText(CraneSetting.this, "不能全删除!", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                    }
+                    CraneParaDao dao = new CraneParaDao(context);
+                    dao.deleteLatest();
+
+                    paras = confLoad(context);
                     paraTableRender(paras);
+
+                } else if (view.getId() == R.id.save_logo) {
+
 
                 } else if (view.getId() == R.id.close_logo) {
 
@@ -119,6 +163,7 @@ public class CraneSetting extends AppCompatActivity {
             add((ImageView) findViewById(R.id.close_logo));
             add((ImageView) findViewById(R.id.add_logo));
             add((ImageView) findViewById(R.id.minus_logo));
+            add((ImageView) findViewById(R.id.save_logo));
         }};
 
         for (ImageView view : menuButtons) {

@@ -24,6 +24,8 @@ import com.wooddeep.crane.element.CenterCycle;
 import com.wooddeep.crane.element.ElemMap;
 import com.wooddeep.crane.element.SideArea;
 import com.wooddeep.crane.element.SideCycle;
+import com.wooddeep.crane.persist.dao.CraneParaDao;
+import com.wooddeep.crane.persist.entity.CranePara;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.views.GridLineView;
@@ -52,6 +54,11 @@ import java.util.TimerTask;
 // FrameLayout 分层权重问题
 // https://www.jianshu.com/p/c1d17a39bc09
 
+// 仿qq弹出菜单
+// https://github.com/Zhaoss/HintPopupWindow
+
+// 仿苹果对话框
+// https://github.com/saiwu-bigkoo/Android-AlertView
 
 /*
 dependencies {
@@ -232,35 +239,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void renderMain(float oscale) {
-        FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
-
-        DrawTool.drawGrid(this, mainFrame);
-
-        elemMap.delElems(mainFrame);
-        final CenterCycle centerCycle = new CenterCycle(oscale, 100, 100, 80 / 2, 10, 45, 30);
-        elemMap.addElem(centerCycle.getUuid(), centerCycle);
-        mainCycleId = centerCycle.getUuid();
-        centerCycle.drawCenterCycle(this, mainFrame);
-
-        float scale = centerCycle.scale; //DrawTool.DrawCenterCycle(this, mainFrame, 1.0f, 80 / 2, 10, 45, 30);
-        SideCycle sideCycle = new SideCycle(scale, 100, 100, 130, 130, 60 / 2, 10, -45, 0);
-        elemMap.addElem(sideCycle.getUuid(), sideCycle);
-        sideCycleId = sideCycle.getUuid();
-        sideCycle.drawSideCycle(this, mainFrame);
-
-        List<Vertex> vertex1 = new ArrayList<Vertex>() {{
-            add(new Vertex(0, 25));
-            add(new Vertex(55, 25));
-            add(new Vertex(95, 75));
-            add(new Vertex(75, 99));
-            add(new Vertex(25, 50));
-        }};
-
-        SideArea sideArea = new SideArea(Color.GRAY, scale, 100, 100, vertex1);
-        elemMap.addElem(sideArea.getUuid(), sideArea);
-        sideArea.drawSideArea(this, mainFrame);
-
+    private void setAdjustButton() {
         /*
         findViewById(R.id.adjust_hangle_add).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,6 +277,43 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         */
+    }
+
+    private List<CranePara> confLoad(Context contex) {
+        CraneParaDao dao = new CraneParaDao(contex);
+        List<CranePara> paras = dao.getAllCranePara();
+        return paras;
+    }
+
+    private void renderMain(float oscale) {
+        // TODO
+
+        FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
+        DrawTool.drawGrid(this, mainFrame);
+
+        elemMap.delElems(mainFrame);
+        final CenterCycle centerCycle = new CenterCycle(oscale, 100, 100, 80 / 2, 10, 45, 30);
+        elemMap.addElem(centerCycle.getUuid(), centerCycle);
+        mainCycleId = centerCycle.getUuid();
+        centerCycle.drawCenterCycle(this, mainFrame);
+
+        float scale = centerCycle.scale; //DrawTool.DrawCenterCycle(this, mainFrame, 1.0f, 80 / 2, 10, 45, 30);
+        SideCycle sideCycle = new SideCycle(scale, 100, 100, 130, 130, 60 / 2, 10, -45, 0);
+        elemMap.addElem(sideCycle.getUuid(), sideCycle);
+        sideCycleId = sideCycle.getUuid();
+        sideCycle.drawSideCycle(this, mainFrame);
+
+        List<Vertex> vertex1 = new ArrayList<Vertex>() {{
+            add(new Vertex(0, 25));
+            add(new Vertex(55, 25));
+            add(new Vertex(95, 75));
+            add(new Vertex(75, 99));
+            add(new Vertex(25, 50));
+        }};
+
+        SideArea sideArea = new SideArea(Color.GRAY, scale, 100, 100, vertex1);
+        elemMap.addElem(sideArea.getUuid(), sideArea);
+        sideArea.drawSideArea(this, mainFrame);
 
         findViewById(R.id.menu).setOnClickListener(new View.OnClickListener() {
             @Override
