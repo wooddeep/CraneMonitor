@@ -11,6 +11,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.rmondjone.locktableview.DisplayUtil;
 import com.rmondjone.locktableview.LockTableView;
 import com.rmondjone.xrecyclerview.XRecyclerView;
 import com.wooddeep.crane.persist.dao.CraneParaDao;
@@ -36,6 +37,9 @@ import java.util.List;
 
 public class CraneSetting extends AppCompatActivity {
     private Context context;
+
+    private int screenWidth = 400; // dp
+
     private List<CranePara> confLoad(Context contex) {
         CraneParaDao dao = new CraneParaDao(contex);
         //dao.insert(new CranePara(0,"zhangsan", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1));
@@ -50,10 +54,9 @@ public class CraneSetting extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.crane_setting);
 
-        context = getApplicationContext();
-        List<CranePara> paras = confLoad(context);
-        paraTableRender(paras);
-
+        //context = getApplicationContext();
+        //List<CranePara> paras = confLoad(context);
+        //paraTableRender(paras);
     }
 
     private void setOnTouchListener(View view) {
@@ -62,20 +65,20 @@ public class CraneSetting extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     ObjectAnimator oa = ObjectAnimator.ofFloat(view,
-                        "scaleX", 0.93f, 1f);
+                    "scaleX", 0.93f, 1f);
                     oa.setDuration(500);
                     ObjectAnimator oa2 = ObjectAnimator.ofFloat(view,
-                        "scaleY", 0.93f, 1f);
+                    "scaleY", 0.93f, 1f);
                     oa2.setDuration(700);
                     oa.start();
                     oa2.start();
                 }
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     ObjectAnimator oa = ObjectAnimator.ofFloat(view,
-                        "scaleX", 1f, 0.93f);
+                    "scaleX", 1f, 0.93f);
                     oa.setDuration(500);
                     ObjectAnimator oa2 = ObjectAnimator.ofFloat(view,
-                        "scaleY", 1f, 0.93f);
+                    "scaleY", 1f, 0.93f);
                     oa2.setDuration(700);
                     oa.start();
                     oa2.start();
@@ -93,7 +96,7 @@ public class CraneSetting extends AppCompatActivity {
             public void onClick(View view) {
                 if (view.getId() == R.id.add_logo) {
                     CraneParaDao dao = new CraneParaDao(context);
-                    dao.insert(new CranePara(0,"zhangsan", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1));
+                    dao.insert(new CranePara(0, "zhangsan", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1));
                     List<CranePara> paras = confLoad(context);
                     paraTableRender(paras);
                 } else if (view.getId() == R.id.minus_logo) {
@@ -119,17 +122,37 @@ public class CraneSetting extends AppCompatActivity {
         }
     }
 
+    public static int StringLength(String value) {
+        int valueLength = 0;
+        String chinese = "[\u4e00-\u9fa5]";
+        for (int i = 0; i < value.length(); i++) {
+            String temp = value.substring(i, i + 1);
+            if (temp.matches(chinese)) {
+                valueLength += 2;
+            } else {
+                valueLength += 1;
+            }
+        }
+        return valueLength;
+    }
+
+    public static void _main(String[] args) {
+        for (int i = 0; i < craneParaNames.length; i++) {
+            System.out.println(StringLength(craneParaNames[i]));
+        }
+    }
+
     private static String[] craneParaNames = new String[]{
-        "X1(塔基X坐标)",
-        "Y1(塔基Y坐标)",
-        "X2(塔基X偏移)",
-        "Y2(塔基Y偏移)",
-        "           塔机高度", // SHIT!!! 必须保持字符串宽度一致！
-        "           大臂长度",
-        "         平衡臂长度",
-        "           塔身直径",
-        "           大臂宽度",
-        "         平衡臂宽度",
+    "X1(塔基X坐标)",
+    "Y1(塔基Y坐标)",
+    "X2(塔基X偏移)",
+    "Y2(塔基Y偏移)",
+    "         塔机高度", // SHIT!!! 必须保持字符串宽度一致！
+    "         大臂长度",
+    "       平衡臂长度",
+    "          塔身直径",
+    "          大臂宽度",
+    "        平衡臂宽度",
     };
 
 
@@ -194,10 +217,11 @@ public class CraneSetting extends AppCompatActivity {
         ArrayList<ArrayList<String>> table = craneParaArrange(paras);
 
         final LockTableView mLockTableView = new LockTableView(this, craneSettingContainer, table);
+        int firstColumnWidth = 100;
         Log.e("表格加载开始", "当前线程：" + Thread.currentThread());
         mLockTableView.setLockFristColumn(true) //是否锁定第一列
         .setLockFristRow(true) //是否锁定第一行
-        .setMaxColumnWidth(100) //列最大宽度
+        .setMaxColumnWidth(firstColumnWidth) //列最大宽度
         .setMinColumnWidth(60) //列最小宽度
         .setColumnWidth(0, 100)
         .setMinRowHeight(20)//行最小高度
@@ -228,62 +252,38 @@ public class CraneSetting extends AppCompatActivity {
             }
         })
         .setOnLoadingListener(new LockTableView.OnLoadingListener() {
-            //下拉刷新、上拉加载监听
             @Override
             public void onRefresh(final XRecyclerView mXRecyclerView, final ArrayList<ArrayList<String>> mTableDatas) {
-                //Log.e("表格主视图", mXRecyclerView);
-                //Log.e("表格所有数据", mTableDatas);
-                //如需更新表格数据调用,部分刷新不会全部重绘
                 mLockTableView.setTableDatas(mTableDatas);
                 //停止刷新
-                //mXRecyclerView.refreshComplete();
             }
 
             @Override
             public void onLoadMore(final XRecyclerView mXRecyclerView, final ArrayList<ArrayList<String>> mTableDatas) {
-                //Log.e("表格主视图", mXRecyclerView);
-                //Log.e("表格所有数据", mTableDatas);
-                //如需更新表格数据调用,部分刷新不会全部重绘
                 mLockTableView.setTableDatas(mTableDatas);
-                //停止刷新
-                //mXRecyclerView.loadMoreComplete();
-                //如果没有更多数据调用
-                //mXRecyclerView.setNoMore(true);
             }
         })
         .setOnItemClickListenter(new LockTableView.OnItemClickListenter() {
             @Override
             public void onItemClick(View item, int position) {
-
                 Log.e("点击事件", position + "");
             }
         })
         .setOnItemLongClickListenter(new LockTableView.OnItemLongClickListenter() {
             @Override
             public void onItemLongClick(View item, int position) {
-
                 Log.e("长按事件", position + "");
             }
         })
         .setOnItemSeletor(R.color.dashline_color);//设置Item被选中颜色
 
         for (int i = 1; i <= paras.size(); i++) {
-            int columnWidth = 400 / paras.size();
+            int columnWidth = (screenWidth - firstColumnWidth - 50 * paras.size()) / paras.size();
             if (columnWidth < 100) columnWidth = 100;
             mLockTableView.setColumnWidth(i, columnWidth); //设置指定列文本宽度(从0开始计算,宽度单位dp)
         }
 
         mLockTableView.show(); //显示表格,此方法必须调用
-
-        //mLockTableView.getTableScrollView().setPullRefreshEnabled(true);
-        //mLockTableView.getTableScrollView().setLoadingMoreEnabled(true);
-        //mLockTableView.getTableScrollView().setRefreshProgressStyle(ProgressStyle.SquareSpin);//属性值获取
-        Log.e("每列最大宽度(dp)", mLockTableView.getColumnMaxWidths().toString());
-        Log.e("每行最大高度(dp)", mLockTableView.getRowMaxHeights().toString());
-        Log.e("表格所有的滚动视图", mLockTableView.getScrollViews().toString());
-        Log.e("表格头部固定视图(锁列)", mLockTableView.getLockHeadView().toString());
-        Log.e("表格头部固定视图(不锁列)", mLockTableView.getUnLockHeadView().toString());
-
     }
 
     /**
@@ -291,6 +291,13 @@ public class CraneSetting extends AppCompatActivity {
      **/
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
+        LinearLayout craneSettingContainer = (LinearLayout) findViewById(R.id.crane_setting_container);
+        int screenWidthPx = craneSettingContainer.getMeasuredWidth();
+        context = getApplicationContext();
+        screenWidth =  DisplayUtil.px2dip(context, screenWidthPx); // 转换为dp
+        List<CranePara> paras = confLoad(context);
+        paraTableRender(paras);
+
         setOnTouchListener();
     }
 }
