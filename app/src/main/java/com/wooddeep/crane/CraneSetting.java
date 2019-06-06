@@ -100,6 +100,11 @@ public class CraneSetting extends AppCompatActivity {
                     List<CranePara> paras = confLoad(context);
                     paraTableRender(paras);
                 } else if (view.getId() == R.id.minus_logo) {
+                    CraneParaDao dao = new CraneParaDao(context);
+
+                    dao.deleteLatest();
+                    List<CranePara> paras = confLoad(context);
+                    paraTableRender(paras);
 
                 } else if (view.getId() == R.id.close_logo) {
 
@@ -278,7 +283,7 @@ public class CraneSetting extends AppCompatActivity {
         .setOnItemSeletor(R.color.dashline_color);//设置Item被选中颜色
 
         for (int i = 1; i <= paras.size(); i++) {
-            int columnWidth = (screenWidth - firstColumnWidth - 50 * paras.size()) / paras.size();
+            int columnWidth = (screenWidth - firstColumnWidth - 20 * paras.size()) / paras.size();
             if (columnWidth < 100) columnWidth = 100;
             mLockTableView.setColumnWidth(i, columnWidth); //设置指定列文本宽度(从0开始计算,宽度单位dp)
         }

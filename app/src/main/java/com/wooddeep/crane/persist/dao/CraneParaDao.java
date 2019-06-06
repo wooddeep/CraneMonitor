@@ -55,26 +55,23 @@ public class CraneParaDao {
     }
 
     public void updateNameById(int id, String newName) {
-
         helper = new MySqliteHelper(context, "crane.db", null, 1);
-
         SQLiteDatabase db = helper.getWritableDatabase();
-
         //ContentValues values = new ContentValues();
-
         //values.put("name", newName);
-
         //db.update("t_student", values, "id=?", new String[]{id+""});
     }
 
     public void deleteById(int id) {
-
         helper = new MySqliteHelper(context, "crane.db", null, 1);
-
         SQLiteDatabase db = helper.getWritableDatabase();
+        db.delete("t_crane_para", "id=?", new String[]{id + ""});
+    }
 
-        db.delete("t_student", "id=?", new String[]{id + ""});
-
+    public void deleteLatest() {
+        helper = new MySqliteHelper(context, "crane.db", null, 1);
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.execSQL("delete from t_crane_para where id = (SELECT max(id) FROM t_crane_para);");
     }
 
     public List<CranePara> getAllCranePara() {

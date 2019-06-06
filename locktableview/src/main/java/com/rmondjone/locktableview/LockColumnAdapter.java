@@ -2,6 +2,7 @@ package com.rmondjone.locktableview;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -190,6 +191,7 @@ public class LockColumnAdapter extends RecyclerView.Adapter<LockColumnAdapter.Lo
         public LockViewHolder(View itemView) {
             super(itemView);
             mTextView = (TextView) itemView.findViewById(R.id.lock_text);
+            //mTextView.setTypeface(Typeface.MONOSPACE); // 设置成等宽字体！
             mLinearLayout = (LinearLayout) itemView.findViewById(R.id.lock_linearlayout);
         }
     }

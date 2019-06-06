@@ -2,6 +2,7 @@ package com.rmondjone.locktableview;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -270,6 +271,7 @@ public class UnLockColumnAdapter extends RecyclerView.Adapter<UnLockColumnAdapte
         for (int i = 0; i < datas.size(); i++) {
             //构造单元格
             final EditText editText = new EditText(mContext); // 单元格是 编辑框
+            editText.setTypeface(Typeface.MONOSPACE);
             editText.setBackgroundColor(Color.TRANSPARENT);
             try {
                 editText.setTag(new JSONObject().put("row", rowNum).put("col", i)); // 列编号

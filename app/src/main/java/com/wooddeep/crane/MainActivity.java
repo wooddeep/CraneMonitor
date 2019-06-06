@@ -25,6 +25,8 @@ import com.wooddeep.crane.element.ElemMap;
 import com.wooddeep.crane.element.SideArea;
 import com.wooddeep.crane.element.SideCycle;
 import com.wooddeep.crane.tookit.AnimUtil;
+import com.wooddeep.crane.tookit.DrawTool;
+import com.wooddeep.crane.views.GridLineView;
 import com.wooddeep.crane.views.Vertex;
 
 import org.greenrobot.eventbus.EventBus;
@@ -193,20 +195,20 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     ObjectAnimator oa = ObjectAnimator.ofFloat(view,
-                            "scaleX", 0.93f, 1f);
+                    "scaleX", 0.93f, 1f);
                     oa.setDuration(500);
                     ObjectAnimator oa2 = ObjectAnimator.ofFloat(view,
-                            "scaleY", 0.93f, 1f);
+                    "scaleY", 0.93f, 1f);
                     oa2.setDuration(700);
                     oa.start();
                     oa2.start();
                 }
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     ObjectAnimator oa = ObjectAnimator.ofFloat(view,
-                            "scaleX", 1f, 0.93f);
+                    "scaleX", 1f, 0.93f);
                     oa.setDuration(500);
                     ObjectAnimator oa2 = ObjectAnimator.ofFloat(view,
-                            "scaleY", 1f, 0.93f);
+                    "scaleY", 1f, 0.93f);
                     oa2.setDuration(700);
                     oa.start();
                     oa2.start();
@@ -223,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
         //上述参数解释分别为：旋转起始角度，旋转结束角度，相对与自身，x轴方向的一半，相对于自身，y轴方向的一半
 
         RotateAnimation rotateAnimation = new RotateAnimation(0, 360,
-                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.54f);
+        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.54f);
         rotateAnimation.setDuration(500);
         windSpeedLog.setAnimation(rotateAnimation);
         windSpeedLog.startAnimation(rotateAnimation);
@@ -232,6 +234,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void renderMain(float oscale) {
         FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
+
+        DrawTool.drawGrid(this, mainFrame);
+
         elemMap.delElems(mainFrame);
         final CenterCycle centerCycle = new CenterCycle(oscale, 100, 100, 80 / 2, 10, 45, 30);
         elemMap.addElem(centerCycle.getUuid(), centerCycle);
