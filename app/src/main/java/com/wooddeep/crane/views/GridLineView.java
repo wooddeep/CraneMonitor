@@ -37,7 +37,7 @@ public class GridLineView extends View {
     public GridLineView(Context context) {
         super(context);
         paint = new Paint();
-        paint.setColor(Color.LTGRAY);
+        paint.setColor(Color.GREEN);
         //paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStyle(Paint.Style.STROKE);
         //paint.setStrokeCap(Paint.Cap.ROUND);

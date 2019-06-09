@@ -53,7 +53,7 @@ public class LockTableView {
     /**
      * 表格数据，每一行为一条数据，从表头计算
      */
-    private ArrayList<ArrayList<String>> mTableDatas = new ArrayList<ArrayList<String>>();
+    private ArrayList<ArrayList<DataCell>> mTableDatas = new ArrayList<ArrayList<DataCell>>();
     /**
      * 表格视图
      */
@@ -142,11 +142,11 @@ public class LockTableView {
     /**
      * 表格第一行数据,不包括第一个元素
      */
-    private ArrayList<String> mTableFristData = new ArrayList<>();
+    private ArrayList<DataCell> mTableFristData = new ArrayList<>();
     /**
      * 表格第一列数据，不包括第一个元素
      */
-    private ArrayList<String> mTableColumnDatas = new ArrayList<>();
+    private ArrayList<DataCell> mTableColumnDatas = new ArrayList<>();
     /**
      * 表格左上角数据
      */
@@ -154,7 +154,7 @@ public class LockTableView {
     /**
      * 表格每一行数据，不包括第一行和第一列
      */
-    private ArrayList<ArrayList<String>> mTableRowDatas = new ArrayList<ArrayList<String>>();
+    private ArrayList<ArrayList<DataCell>> mTableRowDatas = new ArrayList<ArrayList<DataCell>>();
     /**
      * 记录每列最大宽度
      */
@@ -207,7 +207,7 @@ public class LockTableView {
      * @param mContentView 表格父视图
      * @param mTableDatas  表格数据
      */
-    public LockTableView(Context mContext, ViewGroup mContentView, ArrayList<ArrayList<String>> mTableDatas) {
+    public LockTableView(Context mContext, ViewGroup mContentView, ArrayList<ArrayList<DataCell>> mTableDatas) {
         this.mContext = mContext;
         this.mContentView = mContentView;
         this.mTableDatas = mTableDatas;
@@ -255,21 +255,21 @@ public class LockTableView {
                 if (mTableDatas.get(i).size() >= maxLength) {
                     maxLength = mTableDatas.get(i).size();
                 }
-                ArrayList<String> rowDatas = mTableDatas.get(i);
+                ArrayList<DataCell> rowDatas = mTableDatas.get(i);
                 for (int j = 0; j < rowDatas.size(); j++) {
                     if (rowDatas.get(j) == null || rowDatas.get(j).equals("")) {
-                        rowDatas.set(j, mNullableString);
+                        rowDatas.set(j, new DataCell(0, mNullableString));
                     }
                 }
                 mTableDatas.set(i, rowDatas);
             }
 //            Log.e("每行最多个数",maxLength+"");
             for (int i = 0; i < mTableDatas.size(); i++) {
-                ArrayList<String> rowDatas = mTableDatas.get(i);
+                ArrayList<DataCell> rowDatas = mTableDatas.get(i);
                 if (rowDatas.size() < maxLength) {
                     int size = maxLength - rowDatas.size();
                     for (int j = 0; j < size; j++) {
-                        rowDatas.add(mNullableString);
+                        rowDatas.add(new DataCell(0, mNullableString));
                     }
                     mTableDatas.set(i, rowDatas);
                 }
@@ -286,7 +286,7 @@ public class LockTableView {
 //            }
             //初始化每列最大宽度
             for (int i = 0; i < mTableDatas.size(); i++) {
-                ArrayList<String> rowDatas = mTableDatas.get(i);
+                ArrayList<DataCell> rowDatas = mTableDatas.get(i);
                 StringBuffer buffer = new StringBuffer();
                 for (int j = 0; j < rowDatas.size(); j++) {
                     //TextView textView = new TextView(mContext);
@@ -300,15 +300,15 @@ public class LockTableView {
                     textViewParams.setMargins(mCellPadding, mCellPadding, mCellPadding, mCellPadding);//android:layout_margin="15dp"
                     textView.setLayoutParams(textViewParams);
                     if (i == 0) {
-                        mColumnMaxWidths.add(measureTextWidth(textView, rowDatas.get(j)));
-                        buffer.append("[" + measureTextWidth(textView, rowDatas.get(j)) + "]");
+                        mColumnMaxWidths.add(measureTextWidth(textView, rowDatas.get(j).getValue()));
+                        buffer.append("[" + measureTextWidth(textView, rowDatas.get(j).getValue()) + "]");
                     } else {
                         int length = mColumnMaxWidths.get(j);
-                        int current = measureTextWidth(textView, rowDatas.get(j));
+                        int current = measureTextWidth(textView, rowDatas.get(j).getValue());
                         if (current > length) {
                             mColumnMaxWidths.set(j, current);
                         }
-                        buffer.append("[" + measureTextWidth(textView, rowDatas.get(j)) + "]");
+                        buffer.append("[" + measureTextWidth(textView, rowDatas.get(j).getValue()) + "]");
                     }
                 }
                 Log.e("第"+i+"行列最大宽度",buffer.toString());
@@ -324,7 +324,7 @@ public class LockTableView {
 
             //初始化每行最大高度
             for (int i = 0; i < mTableDatas.size(); i++) {
-                ArrayList<String> rowDatas = mTableDatas.get(i);
+                ArrayList<DataCell> rowDatas = mTableDatas.get(i);
                 StringBuffer buffer = new StringBuffer();
 
                 //TextView textView = new TextView(mContext);
@@ -336,15 +336,15 @@ public class LockTableView {
                         LinearLayout.LayoutParams.WRAP_CONTENT);
                 textViewParams.setMargins(mCellPadding, mCellPadding, mCellPadding, mCellPadding);//android:layout_margin="15dp"
                 textView.setLayoutParams(textViewParams);
-                int maxHeight = measureTextHeight(textView, rowDatas.get(0));
+                int maxHeight = measureTextHeight(textView, rowDatas.get(0).getValue());
                 mRowMaxHeights.add(maxHeight);
                 for (int j = 0; j < rowDatas.size(); j++) {
                     int currentHeight;
                     //如果用户指定某列宽度则按照用户指定宽度算对应列的高度
                     if (mChangeColumns.size() > 0 && mChangeColumns.containsKey(j)) {
-                        currentHeight = getTextViewHeight(textView, rowDatas.get(j), mChangeColumns.get(j));
+                        currentHeight = getTextViewHeight(textView, rowDatas.get(j).getValue(), mChangeColumns.get(j));
                     } else {
-                        currentHeight = measureTextHeight(textView, rowDatas.get(j));
+                        currentHeight = measureTextHeight(textView, rowDatas.get(j).getValue());
                     }
                     buffer.append("[" + currentHeight + "]");
                     if (currentHeight > maxHeight) {
@@ -356,15 +356,15 @@ public class LockTableView {
 //            Log.e("每行最大高度dp:",mRowMaxHeights.toString());
 
             if (isLockFristRow) {
-                ArrayList<String> fristRowDatas = (ArrayList<String>) mTableDatas.get(0).clone();
+                ArrayList<DataCell> fristRowDatas = (ArrayList<DataCell>) mTableDatas.get(0).clone();
                 if (isLockFristColumn) {
                     //锁定第一列
-                    mColumnTitle = fristRowDatas.get(0);
+                    mColumnTitle = fristRowDatas.get(0).getValue();
                     fristRowDatas.remove(0);
                     mTableFristData.addAll(fristRowDatas);
                     //构造第一列数据,并且构造表格每行数据
                     for (int i = 1; i < mTableDatas.size(); i++) {
-                        ArrayList<String> rowDatas = (ArrayList<String>) mTableDatas.get(i).clone();
+                        ArrayList<DataCell> rowDatas = (ArrayList<DataCell>) mTableDatas.get(i).clone();
                         mTableColumnDatas.add(rowDatas.get(0));
                         rowDatas.remove(0);
                         mTableRowDatas.add(rowDatas);
@@ -380,7 +380,7 @@ public class LockTableView {
                     //锁定第一列
                     //构造第一列数据,并且构造表格每行数据
                     for (int i = 0; i < mTableDatas.size(); i++) {
-                        ArrayList<String> rowDatas = (ArrayList<String>) mTableDatas.get(i).clone();
+                        ArrayList<DataCell> rowDatas = (ArrayList<DataCell>) mTableDatas.get(i).clone();
                         mTableColumnDatas.add(rowDatas.get(0));
                         rowDatas.remove(0);
                         mTableRowDatas.add(rowDatas);
@@ -685,7 +685,7 @@ public class LockTableView {
      * @param datas
      * @param isFristRow 是否是第一行
      */
-    private void createScollview(HorizontalScrollView scrollView, List<String> datas, boolean isFristRow) {
+    private void createScollview(HorizontalScrollView scrollView, List<DataCell> datas, boolean isFristRow) {
         //设置LinearLayout
         LinearLayout linearLayout = new LinearLayout(mContext);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -702,9 +702,17 @@ public class LockTableView {
                 textView.setTextColor(ContextCompat.getColor(mContext, mTableContentTextColor));
             }
 
+            textView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    System.out.println("########### long click !!!");
+                    return false;
+                }
+            });
+
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextViewSize);
             textView.setGravity(Gravity.CENTER);
-            textView.setText(datas.get(i));
+            textView.setText(datas.get(i).getValue());
             //设置布局
             LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -892,7 +900,7 @@ public class LockTableView {
      *
      * @param mTableDatas
      */
-    public void setTableDatas(ArrayList<ArrayList<String>> mTableDatas) {
+    public void setTableDatas(ArrayList<ArrayList<DataCell>> mTableDatas) {
         this.mTableDatas = mTableDatas;
         mTableFristData.clear();
         mTableColumnDatas.clear();
@@ -956,7 +964,7 @@ public class LockTableView {
          * @param mXRecyclerView
          * @param mTableDatas
          */
-        void onRefresh(XRecyclerView mXRecyclerView, ArrayList<ArrayList<String>> mTableDatas);
+        void onRefresh(XRecyclerView mXRecyclerView, ArrayList<ArrayList<DataCell>> mTableDatas);
 
         /**
          * 说明 上拉加载
@@ -966,7 +974,7 @@ public class LockTableView {
          * @param mXRecyclerView
          * @param mTableDatas
          */
-        void onLoadMore(XRecyclerView mXRecyclerView, ArrayList<ArrayList<String>> mTableDatas);
+        void onLoadMore(XRecyclerView mXRecyclerView, ArrayList<ArrayList<DataCell>> mTableDatas);
     }
 
 

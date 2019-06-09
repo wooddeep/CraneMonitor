@@ -2,7 +2,6 @@ package com.rmondjone.locktableview;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -13,11 +12,16 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,7 +44,7 @@ public class UnLockColumnAdapter extends RecyclerView.Adapter<UnLockColumnAdapte
     /**
      * 表格数据
      */
-    private ArrayList<ArrayList<String>> mTableDatas;
+    private ArrayList<ArrayList<DataCell>> mTableDatas;
     /**
      * 第一行背景颜色
      */
@@ -100,7 +104,7 @@ public class UnLockColumnAdapter extends RecyclerView.Adapter<UnLockColumnAdapte
      * @param mContext
      * @param mTableDatas
      */
-    public UnLockColumnAdapter(Context mContext, ArrayList<ArrayList<String>> mTableDatas) {
+    public UnLockColumnAdapter(Context mContext, ArrayList<ArrayList<DataCell>> mTableDatas) {
         this.mContext = mContext;
         this.mTableDatas = mTableDatas;
     }
@@ -120,18 +124,15 @@ public class UnLockColumnAdapter extends RecyclerView.Adapter<UnLockColumnAdapte
     @Override
     public void onBindViewHolder(UnLockViewHolder holder, final int position) {
 
-        ArrayList<String> datas = mTableDatas.get(position);
+        ArrayList<DataCell> datas = mTableDatas.get(position);
         if (isLockFristRow) {
             //第一行是锁定的
-            System.out.println("##[A]position = " + position);
             createRowView(holder.mLinearLayout, datas, false, mRowMaxHeights.get(position + 1), position);
         } else {
             if (position == 0) {
-                System.out.println("##[B]position = " + position);
                 holder.mLinearLayout.setBackgroundColor(ContextCompat.getColor(mContext, mFristRowBackGroudColor));
                 createRowView(holder.mLinearLayout, datas, true, mRowMaxHeights.get(position), position);
             } else {
-                System.out.println("##[C]position = " + position);
                 createRowView(holder.mLinearLayout, datas, false, mRowMaxHeights.get(position), position);
             }
         }
@@ -257,6 +258,135 @@ public class UnLockColumnAdapter extends RecyclerView.Adapter<UnLockColumnAdapte
         }
     }
 
+    private void createEditTextCell(LinearLayout linearLayout, List<DataCell> datas, boolean isFristRow, int mMaxHeight, int rowNum, int colNum) {
+        //构造单元格
+        EditText widget = new EditText(mContext); // 单元格是 编辑框
+        widget.setBackgroundColor(Color.TRANSPARENT);
+        try {
+            widget.setTag(new JSONObject().put("row", rowNum).put("col", colNum)); // 列编号
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        widget.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //System.out.println(widget.getTag().toString());
+                System.out.println(widget.getText().toString());
+                datas.get(colNum).setValue(widget.getText().toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        if (isFristRow) {
+            widget.setTextColor(ContextCompat.getColor(mContext, mTableHeadTextColor));
+        } else {
+            widget.setTextColor(ContextCompat.getColor(mContext, mTableContentTextColor));
+        }
+        widget.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextViewSize);
+        widget.setGravity(Gravity.CENTER);
+        widget.setText(datas.get(colNum).getValue());
+        //设置布局
+        LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        textViewParams.setMargins(mCellPadding, mCellPadding, mCellPadding, mCellPadding);
+        textViewParams.height = DisplayUtil.dip2px(mContext, mMaxHeight);
+        if (isLockFristColumn) {
+            textViewParams.width = DisplayUtil.dip2px(mContext, mColumnMaxWidths.get(colNum+1));
+        } else {
+            textViewParams.width = DisplayUtil.dip2px(mContext, mColumnMaxWidths.get(colNum));
+        }
+        widget.setLayoutParams(textViewParams);
+        linearLayout.addView(widget);
+        //画分隔线
+        if (colNum != datas.size() - 1) {
+            View splitView = new View(mContext);
+            ViewGroup.LayoutParams splitViewParmas = new ViewGroup.LayoutParams(DisplayUtil.dip2px(mContext, 1), ViewGroup.LayoutParams.MATCH_PARENT);
+            splitView.setLayoutParams(splitViewParmas);
+            if (isFristRow) {
+                splitView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));
+            } else {
+                splitView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.light_gray));
+            }
+            linearLayout.addView(splitView);
+        }
+    }
+
+    private void createEditSpinnerCell(LinearLayout linearLayout, List<DataCell> datas, boolean isFristRow, int mMaxHeight, int rowNum, int colNum) {
+        Button widget = new Button(mContext); // 单元格是 编辑框
+
+        try {
+            widget.setTag(new JSONObject().put("row", rowNum).put("col", colNum) // 列编号
+                .put("options", new JSONArray("[\"A类型\", \"B类型\"]")).put("index", 0));
+
+            if (isFristRow) {
+                widget.setTextColor(ContextCompat.getColor(mContext, mTableHeadTextColor));
+            } else {
+                widget.setTextColor(ContextCompat.getColor(mContext, mTableContentTextColor));
+            }
+            //widget.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextViewSize);
+            widget.setGravity(Gravity.CENTER);
+            int index = Integer.parseInt(datas.get(colNum).getValue());
+            String option = ((JSONObject) widget.getTag()).optJSONArray("options").getString(index);
+            widget.setText(option);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //widget.setText("A型");
+        widget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Button button = (Button)view;
+                JSONObject tag = (JSONObject) widget.getTag();
+                int index = tag.optInt("index");
+                JSONArray options = tag.optJSONArray("options");
+                index = (index + 1) % options.length();
+                try {
+                    tag.put("index", index);
+                    datas.get(colNum).setValue(String.valueOf(index)); // 回设值
+                    button.setText(options.getString(index));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        //设置布局
+        LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        textViewParams.setMargins(mCellPadding, mCellPadding, mCellPadding, mCellPadding);
+        textViewParams.height = DisplayUtil.dip2px(mContext, mMaxHeight);
+        if (isLockFristColumn) {
+            textViewParams.width = DisplayUtil.dip2px(mContext, mColumnMaxWidths.get(colNum+1));
+        } else {
+            textViewParams.width = DisplayUtil.dip2px(mContext, mColumnMaxWidths.get(colNum));
+        }
+        widget.setLayoutParams(textViewParams);
+        linearLayout.addView(widget);
+
+        //画分隔线
+        if (colNum != datas.size() - 1) {
+            View splitView = new View(mContext);
+            ViewGroup.LayoutParams splitViewParmas = new ViewGroup.LayoutParams(DisplayUtil.dip2px(mContext, 1), ViewGroup.LayoutParams.MATCH_PARENT);
+            splitView.setLayoutParams(splitViewParmas);
+            if (isFristRow) {
+                splitView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));
+            } else {
+                splitView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.light_gray));
+            }
+            linearLayout.addView(splitView);
+        }
+    }
+
     /**
      * 构造每行数据视图
      *
@@ -264,69 +394,17 @@ public class UnLockColumnAdapter extends RecyclerView.Adapter<UnLockColumnAdapte
      * @param datas
      * @param isFristRow   是否是第一行
      */
-    private void createRowView(LinearLayout linearLayout, List<String> datas, boolean isFristRow, int mMaxHeight, int rowNum) {
+    private void createRowView(LinearLayout linearLayout, List<DataCell> datas, boolean isFristRow, int mMaxHeight, int rowNum) {
         //设置LinearLayout
-        //System.out.println("##rowNum = " + rowNum );
+        System.out.println("##rowNum = " + rowNum );
         linearLayout.removeAllViews();//首先清空LinearLayout,复用会造成重复绘制，使内容超出预期长度
         for (int i = 0; i < datas.size(); i++) {
             //构造单元格
-            final EditText editText = new EditText(mContext); // 单元格是 编辑框
-            editText.setTypeface(Typeface.MONOSPACE);
-            editText.setBackgroundColor(Color.TRANSPARENT);
-            try {
-                editText.setTag(new JSONObject().put("row", rowNum).put("col", i)); // 列编号
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            editText.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    System.out.println(editText.getTag().toString());
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-
-                }
-            });
-
-            if (isFristRow) {
-                editText.setTextColor(ContextCompat.getColor(mContext, mTableHeadTextColor));
-            } else {
-                editText.setTextColor(ContextCompat.getColor(mContext, mTableContentTextColor));
-            }
-            editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextViewSize);
-            editText.setGravity(Gravity.CENTER);
-            editText.setText(datas.get(i));
-            //设置布局
-            LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            textViewParams.setMargins(mCellPadding, mCellPadding, mCellPadding, mCellPadding);
-            textViewParams.height = DisplayUtil.dip2px(mContext, mMaxHeight);
-            if (isLockFristColumn) {
-                textViewParams.width = DisplayUtil.dip2px(mContext, mColumnMaxWidths.get(i+1));
-            } else {
-                textViewParams.width = DisplayUtil.dip2px(mContext, mColumnMaxWidths.get(i));
-            }
-            editText.setLayoutParams(textViewParams);
-            linearLayout.addView(editText);
-            //画分隔线
-            if (i != datas.size() - 1) {
-                View splitView = new View(mContext);
-                ViewGroup.LayoutParams splitViewParmas = new ViewGroup.LayoutParams(DisplayUtil.dip2px(mContext, 1),
-                        ViewGroup.LayoutParams.MATCH_PARENT);
-                splitView.setLayoutParams(splitViewParmas);
-                if (isFristRow) {
-                    splitView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));
-                } else {
-                    splitView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.light_gray));
-                }
-                linearLayout.addView(splitView);
+            DataCell dc = datas.get(i);
+            if (dc.getType() == 0) {
+                createEditTextCell(linearLayout, datas, isFristRow, mMaxHeight, rowNum, i);
+            } else if (dc.getType() == 1) {
+                createEditSpinnerCell(linearLayout, datas, isFristRow, mMaxHeight, rowNum, i);
             }
         }
     }

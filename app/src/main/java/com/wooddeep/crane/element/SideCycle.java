@@ -55,8 +55,8 @@ public class SideCycle  extends BaseElem{
         // 1号塔机坐标100.100圆环直径55。2号塔机坐标130.123圆环直径60
         int ringWidth = 2; // 固定圆环宽度
         float originRadius = (scale * r);
-        float originBackWidth = originRadius * 2 + ringWidth * 2; // 默认圆环正方形背景高度
-        float originBackHeight = originBackWidth; // 默认圆环正方形背景宽度
+        float originBackWidth = originRadius * 2 + ringWidth * 2 + 4; // 默认圆环正方形背景高度
+        float originBackHeight = originBackWidth + 4; // 默认圆环正方形背景宽度
         float centerX = width / 2;   // 中心点x坐标(到左边距的长度)，相对于FrameLayout的左下角
         float centerY = height / 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
 

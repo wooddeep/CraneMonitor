@@ -4,6 +4,7 @@ package com.wooddeep.crane.persist.entity;
 public class CranePara {
     private int id;
     private String name;
+    private int type; // 塔基类型
     private float coordX1;
     private float coordY1;
     private float coordX2;
@@ -14,6 +15,14 @@ public class CranePara {
     private float CraneBodyRadius;
     private float BigArmWidth;
     private float BalancArmWidth;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public Float getCoordX1() {
         return coordX1;
@@ -115,12 +124,13 @@ public class CranePara {
         super();
     }
 
-    public CranePara(int id, String name, float coordX1, float coordY1,
+    public CranePara(int id, String name, int type, float coordX1, float coordY1,
                      float coordX2, float coordY2, float CraneHeight, float BigArmLength,
                      float BalancArmLength, float CraneBodyRadius, float BigArmWidth, float BalancArmWidth) {
         super();
         this.id = id;
         this.name = name;
+        this.type = type;
         this.coordX1 = coordX1;
         this.coordY1 = coordY1;
         this.coordX2 = coordX2;

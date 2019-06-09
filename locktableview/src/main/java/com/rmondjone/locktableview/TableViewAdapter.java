@@ -30,11 +30,11 @@ public class TableViewAdapter extends RecyclerView.Adapter<TableViewAdapter.Tabl
     /**
      * 第一列数据
      */
-    private ArrayList<String> mLockColumnDatas;
+    private ArrayList<DataCell> mLockColumnDatas;
     /**
      * 表格数据
      */
-    private ArrayList<ArrayList<String>> mTableDatas;
+    private ArrayList<ArrayList<DataCell>> mTableDatas;
 
     /**
      * 第一列是否被锁定
@@ -125,7 +125,7 @@ public class TableViewAdapter extends RecyclerView.Adapter<TableViewAdapter.Tabl
      * @param mTableDatas
      * @param isLockColumn
      */
-    public TableViewAdapter(Context mContext, ArrayList<String> mLockColumnDatas, ArrayList<ArrayList<String>> mTableDatas, boolean isLockColumn, boolean isLockRow) {
+    public TableViewAdapter(Context mContext, ArrayList<DataCell> mLockColumnDatas, ArrayList<ArrayList<DataCell>> mTableDatas, boolean isLockColumn, boolean isLockRow) {
         this.mContext = mContext;
         this.mLockColumnDatas = mLockColumnDatas;
         this.mTableDatas = mTableDatas;

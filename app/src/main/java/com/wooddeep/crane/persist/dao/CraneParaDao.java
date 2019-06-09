@@ -1,5 +1,6 @@
 package com.wooddeep.crane.persist.dao;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -28,6 +29,7 @@ public class CraneParaDao {
         "create table IF NOT EXISTS t_crane_para (" +
         "id integer primary key, " +
         "name varchar(20), " +
+        "type int, " +
         "coordX1 float, " +
         "coordY1 float, " +
         "coordX2 float, " +
@@ -44,22 +46,32 @@ public class CraneParaDao {
         Log.i("MYSQLITEHELPER", "before get db");
         SQLiteDatabase db = helper.getWritableDatabase();
         Log.i("MYSQLITEHELPER", "after get db");
-        db.execSQL("insert into t_crane_para(name, coordX1, coordY1, coordX2, coordY2, " +
+        db.execSQL("insert into t_crane_para(name, type, coordX1, coordY1, coordX2, coordY2, " +
         "craneHeight, bigArmLength, balancArmLength, craneBodyRadius, bigArmWidth, balancArmWidth) " +
-        "values(?,?,?,?,?,?,?,?,?,?,?)",
-        new Object[]{cp.getName(), cp.getCoordX1(), cp.getCoordY1(), cp.getCoordX2(), cp.getCoordY2(),
+        "values(?,?,?,?,?,?,?,?,?,?,?,?)",
+        new Object[]{cp.getName(), cp.getType(), cp.getCoordX1(), cp.getCoordY1(), cp.getCoordX2(), cp.getCoordY2(),
         cp.getCraneHeight(), cp.getBigArmLength(), cp.getBalancArmLength(), cp.getCraneBodyRadius(),
         cp.getBigArmWidth(), cp.getBalancArmWidth()});
 
         db.close();
     }
 
-    public void updateNameById(int id, String newName) {
+    public void updateById(int id, CranePara cp) {
         helper = new MySqliteHelper(context, "crane.db", null, 1);
         SQLiteDatabase db = helper.getWritableDatabase();
-        //ContentValues values = new ContentValues();
-        //values.put("name", newName);
-        //db.update("t_student", values, "id=?", new String[]{id+""});
+        ContentValues values = new ContentValues();
+        values.put("type", cp.getType());
+        values.put("coordX1", cp.getCoordX1());
+        values.put("coordY1", cp.getCoordY1());
+        values.put("coordX2", cp.getCoordX2());
+        values.put("coordY2", cp.getCoordY2());
+        values.put("craneHeight", cp.getCraneHeight());
+        values.put("bigArmLength", cp.getBigArmLength());
+        values.put("balancArmLength", cp.getBalancArmLength());
+        values.put("craneBodyRadius", cp.getCraneBodyRadius());
+        values.put("bigArmWidth", cp.getBigArmWidth());
+        values.put("balancArmWidth", cp.getBalancArmWidth());
+        db.update("t_crane_para", values, "id=?", new String[]{id+""});
     }
 
     public int getRows() {
@@ -86,7 +98,7 @@ public class CraneParaDao {
         List<CranePara> list = new ArrayList<CranePara>();
         helper = new MySqliteHelper(context, "crane.db", null, 1);
         SQLiteDatabase db = helper.getWritableDatabase();
-        Cursor cursor = db.rawQuery("select id, name, coordX1, coordY1, coordX2, coordY2, " +
+        Cursor cursor = db.rawQuery("select id, name, type, coordX1, coordY1, coordX2, coordY2, " +
         "craneHeight, bigArmLength, balancArmLength, craneBodyRadius, bigArmWidth, balancArmWidth " +
         "from t_crane_para", null);
 
@@ -98,7 +110,7 @@ public class CraneParaDao {
             CranePara cp = new CranePara(
             cursor.getInt(0),
             cursor.getString(1),
-            cursor.getFloat(2),
+            cursor.getInt(2),
             cursor.getFloat(3),
             cursor.getFloat(4),
             cursor.getFloat(5),
@@ -107,7 +119,8 @@ public class CraneParaDao {
             cursor.getFloat(8),
             cursor.getFloat(9),
             cursor.getFloat(10),
-            cursor.getFloat(11)
+            cursor.getFloat(11),
+            cursor.getFloat(12)
             );
 
             Log.i("MYSQLITEHELPER", cp.toString());

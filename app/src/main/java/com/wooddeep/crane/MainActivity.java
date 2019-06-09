@@ -13,10 +13,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 import com.wooddeep.crane.ebus.MessageEvent;
 import com.wooddeep.crane.ebus.UserEvent;
@@ -286,23 +288,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void renderMain(float oscale) {
-        // TODO
-
         FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
         DrawTool.drawGrid(this, mainFrame);
-
+        List<CranePara> paras = confLoad(getApplicationContext());
         elemMap.delElems(mainFrame);
-        final CenterCycle centerCycle = new CenterCycle(oscale, 100, 100, 80 / 2, 10, 45, 30);
+
+        // 画中心圆环，目前暂时以此环
+        final CenterCycle centerCycle = new CenterCycle(oscale, 150, 150, 80 / 2, 10, 45, 30);
         elemMap.addElem(centerCycle.getUuid(), centerCycle);
         mainCycleId = centerCycle.getUuid();
         centerCycle.drawCenterCycle(this, mainFrame);
 
+        // 根据数据库的数据画图
+        for (CranePara cp : paras) {
+            float scale = centerCycle.scale; //DrawTool.DrawCenterCycle(this, mainFrame, 1.0f, 80 / 2, 10, 45, 30);
+            SideCycle sideCycle = new SideCycle(scale, 150, 150, cp.getCoordX1(),
+                cp.getCoordY1(), cp.getBigArmLength(), 10, -45, 0);
+
+            elemMap.addElem(sideCycle.getUuid(), sideCycle);
+            sideCycleId = sideCycle.getUuid();
+            sideCycle.drawSideCycle(this, mainFrame);
+        }
+
+        /*
         float scale = centerCycle.scale; //DrawTool.DrawCenterCycle(this, mainFrame, 1.0f, 80 / 2, 10, 45, 30);
         SideCycle sideCycle = new SideCycle(scale, 100, 100, 130, 130, 60 / 2, 10, -45, 0);
         elemMap.addElem(sideCycle.getUuid(), sideCycle);
         sideCycleId = sideCycle.getUuid();
         sideCycle.drawSideCycle(this, mainFrame);
+        */
 
+        /*
         List<Vertex> vertex1 = new ArrayList<Vertex>() {{
             add(new Vertex(0, 25));
             add(new Vertex(55, 25));
@@ -314,6 +330,7 @@ public class MainActivity extends AppCompatActivity {
         SideArea sideArea = new SideArea(Color.GRAY, scale, 100, 100, vertex1);
         elemMap.addElem(sideArea.getUuid(), sideArea);
         sideArea.drawSideArea(this, mainFrame);
+        */
 
         findViewById(R.id.menu).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -2,7 +2,6 @@ package com.rmondjone.locktableview;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,7 +27,7 @@ public class LockColumnAdapter extends RecyclerView.Adapter<LockColumnAdapter.Lo
     /**
      * 第一列数据
      */
-    private ArrayList<String> mLockColumnDatas;
+    private ArrayList<DataCell> mLockColumnDatas;
     /**
      * 第一行背景颜色
      */
@@ -79,7 +78,7 @@ public class LockColumnAdapter extends RecyclerView.Adapter<LockColumnAdapter.Lo
     private TableViewAdapter.OnItemSelectedListenter mOnItemSelectedListenter;
 
 
-    public LockColumnAdapter(Context mContext, ArrayList<String> mLockColumnDatas) {
+    public LockColumnAdapter(Context mContext, ArrayList<DataCell> mLockColumnDatas) {
         this.mContext = mContext;
         this.mLockColumnDatas = mLockColumnDatas;
     }
@@ -94,7 +93,7 @@ public class LockColumnAdapter extends RecyclerView.Adapter<LockColumnAdapter.Lo
     @Override
     public void onBindViewHolder(LockViewHolder holder, final int position) {
         //设置布局
-        holder.mTextView.setText(mLockColumnDatas.get(position));
+        holder.mTextView.setText(mLockColumnDatas.get(position).getValue());
         holder.mTextView.setTextSize(mTextViewSize);
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.mTextView.getLayoutParams();
         layoutParams.width = DisplayUtil.dip2px(mContext, mColumnMaxWidths.get(0));
@@ -191,7 +190,6 @@ public class LockColumnAdapter extends RecyclerView.Adapter<LockColumnAdapter.Lo
         public LockViewHolder(View itemView) {
             super(itemView);
             mTextView = (TextView) itemView.findViewById(R.id.lock_text);
-            //mTextView.setTypeface(Typeface.MONOSPACE); // 设置成等宽字体！
             mLinearLayout = (LinearLayout) itemView.findViewById(R.id.lock_linearlayout);
         }
     }

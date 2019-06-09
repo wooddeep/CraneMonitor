@@ -12,24 +12,30 @@ public class MySqliteHelper extends SQLiteOpenHelper {
 
     public static final String TAG = "MYSQLITEHELPER";
 
-    public static final String CREATE_STUDENT = "" +
-    "create table t_student (" +
-    "id integer primary key, " +
-    "name varchar(20), " +
-    "gender varchar(10), " +
-    "age integer" +
-    ")";
-
-    private String createSql = "";
+    private String createSql = "create table IF NOT EXISTS t_crane_para (" +
+        "id integer primary key, " +
+        "name varchar(20), " +
+        "type int, " +
+        "coordX1 float, " +
+        "coordY1 float, " +
+        "coordX2 float, " +
+        "coordY2 float, " +
+        "craneHeight float, " +
+        "bigArmLength float, " +
+        "balancArmLength float, " +
+        "craneBodyRadius float, " +
+        "bigArmWidth float, " +
+        "balancArmWidth float" +
+        ");";
 
     public MySqliteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
-        this.createSql = createSql;
+        //this.createSql = createSql;
     }
 
     public MySqliteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, String createSql) {
         super(context, name, factory, version);
-        this.createSql = createSql;
+        //this.createSql = createSql;
     }
 
     @Override
