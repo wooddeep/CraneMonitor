@@ -4,7 +4,7 @@ package com.wooddeep.crane.persist.entity;
 public class CranePara {
     private int id;
     private String name;
-    private int type; // 塔基类型
+    private int type;
     private float coordX1;
     private float coordY1;
     private float coordX2;
