@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.wooddeep.crane.R;
 
+// https://trickyandroid.com/protip-inflating-layout-for-your-custom-view/
 
 public class SimDialog extends RelativeLayout {
     private TextView header;

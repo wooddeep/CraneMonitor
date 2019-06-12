@@ -22,8 +22,6 @@ import com.rmondjone.locktableview.LockTableView;
 import com.rmondjone.xrecyclerview.XRecyclerView;
 import com.wooddeep.crane.persist.dao.CraneParaDao;
 import com.wooddeep.crane.persist.entity.CranePara;
-import com.wooddeep.crane.tookit.DrawTool;
-import com.wooddeep.crane.views.CommomDialog;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -169,7 +167,6 @@ public class CraneSetting extends AppCompatActivity {
                     paraTableRender(paras);
 
                 } else if (view.getId() == R.id.save_logo) { // 保存数据
-
                     AlertView alertView = new AlertView("保存塔基参数", "", null,
                         new String[]{"确定", "取消"}, null, activity,
                         AlertView.Style.Alert, new OnItemClickListener() {
