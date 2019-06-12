@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+ * 自定义progressbar
+ * https://blog.csdn.net/mad1989/article/details/38042875
+ * https://www.jianshu.com/p/8998e381b805
+ * 九点图
+ * https://onlooker.wodemo.net/browse/392022/res/drawable-hdpi-v4/
+
+ * 程序定义进度条
+ * https://blog.csdn.net/u012005313/article/details/76047122
+
+
+ * android:gravity : 控件相对于父容器的位置
+
+ * 相对布局
+ * https://www.cnblogs.com/liter7/p/5178674.html
+-->
+
+<!--suppress ALL -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/title_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_banner_height"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@drawable/spliter_background">
+
+        <ImageView
+            android:id="@+id/home_logo"
+            android:layout_width="70px"
+            android:layout_height="70px"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_centerInParent="true"
+            android:layout_alignParentLeft="true"
+            app:srcCompat="@mipmap/home" />
+
+        <!-- No and name -->
+        <LinearLayout
+            android:id="@+id/text_container"
+            android:layout_toRightOf="@+id/home_logo"
+            android:layout_marginLeft="10dp"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text="No.:19026"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text="SCT16014A" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/wind_speed_log"
+            android:layout_width="40px"
+            android:layout_height="40px"
+            android:layout_marginLeft="100dp"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_toLeftOf="@+id/wind_speed"
+            app:srcCompat="@mipmap/wind_speed" />
+
+        <TextView
+            android:id="@+id/wind_speed"
+            android:layout_toLeftOf="@+id/clock_logo"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:textSize="14dp"
+            android:text="5.0m/s" />
+
+        <ImageView
+            android:id="@+id/clock_logo"
+            android:layout_width="40px"
+            android:layout_height="40px"
+            android:layout_marginLeft="40dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_toLeftOf="@+id/time_container"
+            android:layout_centerInParent="true"
+            app:srcCompat="@mipmap/clock_png" />
+
+        <LinearLayout
+            android:id="@+id/time_container"
+            android:layout_alignParentRight="true"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/calendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text="13:15:05" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text="2019-04-27" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <!-- main window for crane's cycle -->
+        <FrameLayout
+            android:id="@+id/main_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+
+            <!--
+            <Button
+                android:id="@+id/adjust_hangle_add"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="大臂角度+"
+                android:textColor="#506946" />
+
+            <Button
+                android:id="@+id/adjust_hangle_sub"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="100dp"
+                android:text="大臂角度-"
+                android:textColor="#506946" />
+
+            <TextView
+                android:id="@+id/distance_lable"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="200dp"
+                android:gravity="center"
+                android:text="距离"
+                android:textColor="#506946" />
+
+            <EditText
+                android:id="@+id/distance"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="240dp"
+                android:focusable="false"
+                android:gravity="center"
+                android:textColor="#506946" />
+
+            <TextView
+                android:id="@+id/alarm_limit_lable"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="320dp"
+                android:gravity="center"
+                android:text="告警门限"
+                android:textColor="#506946" />
+
+            <EditText
+                android:id="@+id/alarm_limit"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="380dp"
+                android:gravity="center"
+                android:text="5"
+                android:textColor="#506946" />
+
+            <Button
+                android:id="@+id/adjust_vangle_add"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="35dp"
+                android:text="大臂倾角+"
+                android:textColor="#506946" />
+
+            <Button
+                android:id="@+id/adjust_vangle_sub"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="35dp"
+                android:text="大臂倾角-"
+                android:textColor="#506946" />
+            -->
+            <!-- 菜单容器 -->
+            <LinearLayout
+                android:id="@+id/menu_container"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/frame_border"
+                android:elevation="1dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/menu"
+                    android:layout_width="50dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:src="@mipmap/menu_on" />
+
+                <LinearLayout
+                    android:id="@+id/menu_expand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="bottom"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+                    <!--
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/gray" />
+                    -->
+                    <ImageView
+                        android:id="@+id/crane_setting"
+                        android:layout_width="50dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:src="@mipmap/crane_setting" />
+                    <!--
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/gray" />
+                    -->
+                    <ImageView
+                        android:id="@+id/area_setting"
+                        android:layout_width="50dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:src="@mipmap/area_setting" />
+                    <!--
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/gray" />
+                    -->
+                    <ImageView
+                        android:id="@+id/alarm_setting"
+                        android:layout_width="50dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:src="@mipmap/alarm_setting" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 菜单容器 -->
+            <LinearLayout
+                android:id="@+id/zoom_container"
+                android:layout_width="50dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/frame_border"
+                android:elevation="1dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/zoom_in"
+                    android:layout_width="40dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:src="@mipmap/zoom_in" />
+
+                <ImageView
+                    android:id="@+id/zoom_out"
+                    android:layout_width="40dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:src="@mipmap/zoom_out" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+        <!-- divider -->
+        <!-- 恢复1dp
+        android:layout_width="1dp"
+        -->
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/gray" />
+
+        <!-- others -->
+        <!-- 恢复: layout_width = match_parent -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <!-- 左边第一行 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/banner_height"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    app:srcCompat="@mipmap/ic_launcher" />
+
+                <LinearLayout
+                    android:layout_width="200dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/t0"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="13:15:05"
+                            android:textColor="#506946" />
+
+                        <TextView
+                            android:id="@+id/t1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="13:15:05"
+                            android:textColor="#506946" />
+                    </LinearLayout>
+
+                    <com.wooddeep.crane.views.SimpleProgressbar
+                        android:id="@+id/spb"
+                        android:layout_width="150dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/spliter_background"
+                        android:gravity="center"
+                        android:progress="30" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 左边第二行 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/banner_height"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageView22"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    app:srcCompat="@mipmap/ic_launcher" />
+
+                <LinearLayout
+                    android:layout_width="200dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/t02"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:gravity="left"
+                            android:text="13:15:05"
+                            android:textColor="#506946" />
+                    </LinearLayout>
+
+                    <com.wooddeep.crane.views.SimpleProgressbar
+                        android:id="@+id/spb2"
+                        android:layout_width="150dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/spliter_background"
+                        android:gravity="center"
+                        android:progress="30" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <!-- 左边第三行 共三列 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/green"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <!-- 第一列 -->
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="10"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView310"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/image_height"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        app:srcCompat="@mipmap/ic_launcher" />
+
+                    <com.wooddeep.crane.views.SimpleProgressbar
+                        android:id="@+id/spb311"
+                        android:layout_width="150dp"
+                        android:layout_height="20dp"
+                        android:layout_marginTop="150dp"
+                        android:background="@drawable/spliter_background"
+                        android:progress="30"
+                        android:rotation="90" />
+
+                    <TextView
+                        android:id="@+id/t312"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="13:15:05"
+                        android:textColor="#506946" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:layout_weight="12"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:layout_weight="12"
+                        android:background="@drawable/frame_border"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/imageView3210"
+                            android:layout_width="50dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            app:srcCompat="@mipmap/ic_launcher" />
+
+                        <TextView
+                            android:id="@+id/t3210"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="13:15:05"
+                            android:textColor="#506946" />
+
+                        <ImageView
+                            android:id="@+id/imageView3213"
+                            android:layout_width="50dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            app:srcCompat="@mipmap/ic_launcher" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/imageView3214"
+                        android:layout_width="50dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        app:srcCompat="@mipmap/ic_launcher" />
+
+                    <ImageView
+                        android:id="@+id/imageView3215"
+                        android:layout_width="50dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        app:srcCompat="@mipmap/ic_launcher" />
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="9"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView320"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/image_height"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        app:srcCompat="@mipmap/ic_launcher" />
+
+                    <com.wooddeep.crane.views.SimpleProgressbar
+                        android:id="@+id/spb321"
+                        android:layout_width="150dp"
+                        android:layout_height="20dp"
+                        android:layout_marginTop="150dp"
+                        android:background="@drawable/spliter_background"
+                        android:progress="30"
+                        android:rotation="90" />
+
+                    <TextView
+                        android:id="@+id/t332"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="13:15:05"
+                        android:textColor="#506946" />
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
