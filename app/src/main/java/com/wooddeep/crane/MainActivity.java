@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
+import com.example.x6.serial.SerialPort;
 import com.wooddeep.crane.ebus.MessageEvent;
 import com.wooddeep.crane.ebus.UserEvent;
 import com.wooddeep.crane.element.CenterCycle;
@@ -37,6 +38,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -144,6 +149,7 @@ try {
 
 @SuppressWarnings("unused")
 public class MainActivity extends AppCompatActivity {
+
     private static final String TAG = "MainActivity";
     private static final ElemMap elemMap = new ElemMap();
 
@@ -179,6 +185,14 @@ public class MainActivity extends AppCompatActivity {
         EventBus.getDefault().register(this);
 
         timer.schedule(task, 1000, 500);
+
+        try {
+            SerialPort serialttyS1 =  new SerialPort( new File( "/dev/ttyS1"),115200,0);
+            InputStream ttyS1InputStream =  serialttyS1.getInputStream();
+            OutputStream ttyS1OutputStream =  serialttyS1.getOutputStream();
+        }  catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
