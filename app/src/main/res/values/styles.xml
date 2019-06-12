@@ -21,17 +21,17 @@
 
     <style name="dialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
-        <!--±ß¿ò-->
+        <!--è¾¹æ¡†-->
         <item name="android:windowIsFloating">true</item>
-        <!--ÊÇ·ñ¸¡ÏÖÔÚactivityÖ®ÉÏ-->
+        <!--æ˜¯å¦æµ®çŽ°åœ¨activityä¹‹ä¸Š-->
         <item name="android:windowIsTranslucent">false</item>
-        <!--°ëÍ¸Ã÷-->
+        <!--åŠé€æ˜Ž-->
         <item name="android:windowNoTitle">true</item>
-        <!--ÎÞ±êÌâ-->
+        <!--æ— æ ‡é¢˜-->
         <item name="android:windowBackground">@android:color/transparent</item>
-        <!--±³¾°Í¸Ã÷-->
+        <!--èƒŒæ™¯é€æ˜Ž-->
         <item name="android:backgroundDimEnabled">true</item>
-        <!--Ä£ºý-->
+        <!--æ¨¡ç³Š-->
 
     </style>
 
@@ -48,5 +48,21 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AlertActivity_AlertStyle" parent="android:Theme.Dialog">
+        <!--<item name="android:windowAnimationStyle">@style/AnimAlert</item>-->
+        <!-- è¾¹æ¡† -->
+        <item name="android:windowFrame">@null</item>
+        <!-- æ˜¯å¦æµ®çŽ°åœ¨activityä¹‹ä¸Š -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- åŠé€æ˜Ž -->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- æ— æ ‡é¢˜ -->
+        <item name="android:windowNoTitle">true</item>
+        <!-- èƒŒæ™¯é€æ˜Ž -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- æ¨¡ç³Š -->
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
 
 </resources>

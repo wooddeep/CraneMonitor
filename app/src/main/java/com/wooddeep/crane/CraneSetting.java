@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bigkoo.alertview.AlertView;
+import com.bigkoo.alertview.OnItemClickListener;
 import com.rmondjone.locktableview.DataCell;
 import com.rmondjone.locktableview.DisplayUtil;
 import com.rmondjone.locktableview.LockTableView;
@@ -167,43 +169,7 @@ public class CraneSetting extends AppCompatActivity {
                     paraTableRender(paras);
 
                 } else if (view.getId() == R.id.save_logo) { // 保存数据
-                    //DrawTool.showAlterDialog(activity);
-                    CommomDialog cd = new CommomDialog(activity, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (gTable != null) { // 确认
-                                for (int i = 0; i < gTable.size(); i++) {
-                                    for (int j = 0; j < gTable.get(0).size(); j++) {
-                                        System.out.print(gTable.get(i).get(j).getValue() + "  ");
-                                    }
-                                    System.out.println("");
-                                }
-                                /*
-                                for (int j = 1; j < gTable.get(j).size(); j++) {
-                                    CranePara cp = new CranePara();
-                                    cp.setType(Integer.parseInt(gTable.get(1).get(j).getValue()));
-                                    cp.setCoordX1(Float.parseFloat(gTable.get(2).get(j).getValue()));
-                                    cp.setCoordY1(Float.parseFloat(gTable.get(3).get(j).getValue()));
-                                    cp.setCoordX2(Float.parseFloat(gTable.get(4).get(j).getValue()));
-                                    cp.setCoordY2(Float.parseFloat(gTable.get(5).get(j).getValue()));
-                                    cp.setCraneHeight(Float.parseFloat(gTable.get(6).get(j).getValue()));
-                                    cp.setBigArmLength(Float.parseFloat(gTable.get(7).get(j).getValue()));
-                                    cp.setBalancArmLength(Float.parseFloat(gTable.get(8).get(j).getValue()));
-                                    cp.setCraneBodyRadius(Float.parseFloat(gTable.get(9).get(j).getValue()));
-                                    cp.setBigArmWidth(Float.parseFloat(gTable.get(10).get(j).getValue()));
-                                    cp.setBalancArmWidth(Float.parseFloat(gTable.get(11).get(j).getValue()));
-                                    CraneParaDao dao = new CraneParaDao(context);
-                                    dao.updateById(j, cp);
-                                }
-                                */
-                            }
-                        }
-                    });
-                    cd.setTitle("保存塔基参数");
 
-                    cd.show();
-
-                    /*
                     AlertView alertView = new AlertView("保存塔基参数", "", null,
                         new String[]{"确定", "取消"}, null, activity,
                         AlertView.Style.Alert, new OnItemClickListener() {
@@ -229,9 +195,8 @@ public class CraneSetting extends AppCompatActivity {
                             }
                         }
                     });
-
                     alertView.show();
-                    */
+
                 } else if (view.getId() == R.id.close_logo) {
 
                 }

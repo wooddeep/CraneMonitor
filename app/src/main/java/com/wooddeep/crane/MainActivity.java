@@ -62,6 +62,9 @@ import java.util.TimerTask;
 // 仿苹果对话框
 // https://github.com/saiwu-bigkoo/Android-AlertView
 
+// 自定义按钮
+// https://www.cnblogs.com/Free-Thinker/p/5571876.html
+
 /*
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
