@@ -30,7 +30,7 @@ public class StudentDao {
 
         Log.i("MYSQLITEHELPER","after get db");
 
-        db.execSQL("insert into t_student(name, gender, age) values(?,?,?)" , new Object[]{stu.getName(),stu.getGender(),stu.getAge()});
+        //db.execSQL("insert into t_student(name, gender, age) values(?,?,?)" , new Object[]{stu.getName(),stu.getGender(),stu.getAge()});
 
         db.close();
 

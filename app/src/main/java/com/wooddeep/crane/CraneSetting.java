@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigkoo.alertview.AlertView;
@@ -155,7 +156,7 @@ public class CraneSetting extends AppCompatActivity {
                     1)
                     );
                     List<CranePara> paras = confLoad(context);
-                    paraTableRender(paras);
+                    try {paraTableRender(paras);} catch (Exception e) {}
                 } else if (view.getId() == R.id.minus_logo) {
                     List<CranePara> paras = confLoad(context);
                     if (paras.size() <= 1) {
@@ -167,10 +168,10 @@ public class CraneSetting extends AppCompatActivity {
                     dao.deleteLatest();
 
                     paras = confLoad(context);
-                    paraTableRender(paras);
+                    try {paraTableRender(paras);} catch (Exception e) {}
 
                 } else if (view.getId() == R.id.save_logo) { // 保存数据
-                    AlertView alertView = new AlertView("保存塔基参数", "", null,
+                    AlertView alertView = new AlertView("保存塔基参数", "确定保存?", null,
                         new String[]{"确定", "取消"}, null, activity,
                         AlertView.Style.Alert, new OnItemClickListener() {
                         @Override
@@ -233,28 +234,23 @@ public class CraneSetting extends AppCompatActivity {
         return valueLength;
     }
 
-    public static void _main(String[] args) {
-        for (int i = 0; i < craneParaNames.length; i++) {
-            System.out.println(StringLength(craneParaNames[i]));
-        }
-    }
 
     private static String[] craneParaNames = new String[]{
-    "塔基类型",
-    "X1(塔基X坐标)",
-    "Y1(塔基Y坐标)",
-    "X2(塔基X偏移)",
-    "Y2(塔基Y偏移)",
-    "塔机高度",
-    "大臂长度",
-    "平衡臂长度",
-    "塔身直径",
-    "大臂宽度",
-    "平衡臂宽度",
+        "塔基类型",
+        "X1(塔基X坐标)",
+        "Y1(塔基Y坐标)",
+        "X2(塔基X偏移)",
+        "Y2(塔基Y偏移)",
+        "塔机高度",
+        "大臂长度",
+        "平衡臂长度",
+        "塔身直径",
+        "大臂宽度",
+        "平衡臂宽度",
     };
 
 
-    public ArrayList<ArrayList<DataCell>> craneParaArrange(List<CranePara> paras) {
+    public ArrayList<ArrayList<DataCell>> craneParaArrange(List<CranePara> paras) throws Exception{
         ArrayList<ArrayList<DataCell>> table = new ArrayList<ArrayList<DataCell>>();
 
         ArrayList<DataCell> head = new ArrayList<DataCell>() {{
@@ -263,7 +259,44 @@ public class CraneSetting extends AppCompatActivity {
 
         gColId = new ArrayList<Integer>();
         for (int i = 0; i < paras.size(); i++) {
-            head.add(new DataCell(0, String.format("%02d号塔基", i + 1)));
+            head.add(new DataCell(0, String.format("%02d号塔基", i + 1),
+            new JSONObject().put("craneNo", i + 1), new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    TextView textView = (TextView)view;
+                    JSONObject privData = (JSONObject)textView.getTag();
+                    int craneNo = privData.optInt("craneNo");
+                    AlertView alertView = new AlertView("保存塔基参数", "确定" + craneNo +"号塔基绑定本终端?" , null,
+                    new String[]{"确定", "取消"}, null, activity,
+                    AlertView.Style.Alert, new OnItemClickListener() {
+                        @Override
+                        public void onItemClick(Object o, int position) {
+                            if (position == 0 && gTable != null) { // 确认
+                                for (int j = 1; j < gTable.get(j).size(); j++) {
+                                    /*
+                                    CranePara cp = new CranePara();
+                                    cp.setType(Integer.parseInt(gTable.get(1).get(j).getValue()));
+                                    cp.setCoordX1(Float.parseFloat(gTable.get(2).get(j).getValue()));
+                                    cp.setCoordY1(Float.parseFloat(gTable.get(3).get(j).getValue()));
+                                    cp.setCoordX2(Float.parseFloat(gTable.get(4).get(j).getValue()));
+                                    cp.setCoordY2(Float.parseFloat(gTable.get(5).get(j).getValue()));
+                                    cp.setCraneHeight(Float.parseFloat(gTable.get(6).get(j).getValue()));
+                                    cp.setBigArmLength(Float.parseFloat(gTable.get(7).get(j).getValue()));
+                                    cp.setBalancArmLength(Float.parseFloat(gTable.get(8).get(j).getValue()));
+                                    cp.setCraneBodyRadius(Float.parseFloat(gTable.get(9).get(j).getValue()));
+                                    cp.setBigArmWidth(Float.parseFloat(gTable.get(10).get(j).getValue()));
+                                    cp.setBalancArmWidth(Float.parseFloat(gTable.get(11).get(j).getValue()));
+                                    CraneParaDao dao = new CraneParaDao(context);
+                                    dao.updateById(j, cp);
+                                    */
+                                }
+                            }
+                        }
+                    });
+                    alertView.show();
+                    return false;
+                }
+            }));
             gColId.add(paras.get(i).getId());
         }
         table.add(head);
@@ -321,7 +354,7 @@ public class CraneSetting extends AppCompatActivity {
         return table;
     }
 
-    public void paraTableRender(List<CranePara> paras) {
+    public void paraTableRender(List<CranePara> paras) throws Exception {
         LinearLayout craneSettingContainer = (LinearLayout) findViewById(R.id.crane_setting_container);
         ArrayList<ArrayList<DataCell>> table = craneParaArrange(paras);
         gTable = table;
@@ -406,8 +439,11 @@ public class CraneSetting extends AppCompatActivity {
         context = getApplicationContext();
         screenWidth = DisplayUtil.px2dip(context, screenWidthPx); // 转换为dp
         List<CranePara> paras = confLoad(context);
-        paraTableRender(paras);
-
+        try {
+            paraTableRender(paras);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         setOnTouchListener();
 
     }

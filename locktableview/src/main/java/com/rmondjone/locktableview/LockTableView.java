@@ -690,13 +690,13 @@ public class LockTableView {
                 textView.setTextColor(ContextCompat.getColor(mContext, mTableContentTextColor));
             }
 
-            textView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    System.out.println("########### long click !!!");
-                    return false;
-                }
-            });
+            if (datas.get(i).getOnLongClickListener() != null) { // 设置长按事件
+                textView.setOnLongClickListener(datas.get(i).getOnLongClickListener());
+            }
+
+            if (datas.get(i).getPrivData() != null) {
+                textView.setTag(datas.get(i).getPrivData());
+            }
 
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextViewSize);
             textView.setGravity(Gravity.CENTER);

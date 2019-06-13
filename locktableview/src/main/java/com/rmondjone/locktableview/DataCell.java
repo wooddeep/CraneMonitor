@@ -1,5 +1,7 @@
 package com.rmondjone.locktableview;
 
+import android.view.View;
+
 import org.json.JSONObject;
 
 public class DataCell {
@@ -8,7 +10,34 @@ public class DataCell {
 
     private String value;
 
-    private JSONObject privData;
+    private JSONObject privData = null;
+
+    private View.OnLongClickListener onLongClickListener  = null;
+
+
+    public DataCell(int type, String value) {
+        this.type = type;
+        this.value = value;
+    }
+
+    public DataCell(int type, String value, JSONObject pd) {
+        this.type = type;
+        this.value = value;
+        this.privData = pd;
+    }
+
+    public DataCell(int type, String value, View.OnLongClickListener onLongClickListener) {
+        this.type = type;
+        this.value = value;
+        this.onLongClickListener = onLongClickListener;
+    }
+
+    public DataCell(int type, String value, JSONObject privData, View.OnLongClickListener onLongClickListener) {
+        this.type = type;
+        this.value = value;
+        this.privData = privData;
+        this.onLongClickListener = onLongClickListener;
+    }
 
     public int getType() {
         return type;
@@ -34,14 +63,12 @@ public class DataCell {
         this.privData = privData;
     }
 
-    public DataCell(int type, String value) {
-        this.type = type;
-        this.value = value;
+    public View.OnLongClickListener getOnLongClickListener() {
+        return onLongClickListener;
     }
 
-    public DataCell(int type, String value, JSONObject pd) {
-        this.type = type;
-        this.value = value;
-        this.privData = pd;
+    public void setOnLongClickListener(View.OnLongClickListener onLongClickListener) {
+        this.onLongClickListener = onLongClickListener;
     }
+
 }

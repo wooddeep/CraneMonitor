@@ -23,14 +23,19 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.example.x6.serial.SerialPort;
+import com.j256.ormlite.dao.ForeignCollection;
 import com.wooddeep.crane.ebus.MessageEvent;
 import com.wooddeep.crane.ebus.UserEvent;
 import com.wooddeep.crane.element.CenterCycle;
 import com.wooddeep.crane.element.ElemMap;
 import com.wooddeep.crane.element.SideArea;
 import com.wooddeep.crane.element.SideCycle;
+import com.wooddeep.crane.persist.dao.ArticleDao;
 import com.wooddeep.crane.persist.dao.CraneParaDao;
+import com.wooddeep.crane.persist.dao.UserDao;
+import com.wooddeep.crane.persist.entity.ArticleBean;
 import com.wooddeep.crane.persist.entity.CranePara;
+import com.wooddeep.crane.persist.entity.UserBean;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.views.GridLineView;
@@ -45,6 +50,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -71,6 +78,9 @@ import java.util.TimerTask;
 
 // 自定义按钮
 // https://www.cnblogs.com/Free-Thinker/p/5571876.html
+
+// ormlite
+// https://blog.csdn.net/u013501637/article/details/52388802
 
 /*
 dependencies {
@@ -191,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setEnterTransition(new Fade().setDuration(2000));
         getWindow().setExitTransition(new Fade().setDuration(2000));
 
+        daoTest();
         /*
         try {
             SerialPort serialttyS1 =  new SerialPort( new File( "/dev/ttyS1"),115200,0);
@@ -442,5 +453,41 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         renderMain(oscale);
+    }
+
+    // 初始化数据
+    private void initData() {
+        // 添加用户数据
+        UserBean userData = new UserBean("张三", '1', new Date(), "北京");
+        new UserDao(MainActivity.this).insert(userData);
+        // 添加文章数据
+        ArticleBean articleData = new ArticleBean("标题", "内容内容内容内容内容内容", userData);
+        new ArticleDao(MainActivity.this).insert(articleData);
+    }
+
+    // 初始化视图
+    private void initView() {
+        // 从数据库中根据ID取出文章信息
+        StringBuffer contentBuffer = new StringBuffer();
+        ArticleBean articleBean = new ArticleDao(MainActivity.this).queryById(1);
+        contentBuffer.append(articleBean.toString());
+        // 根据取出的用户id查询用户信息
+        UserBean userBean = new UserDao(MainActivity.this).queryById(articleBean.getUser().getId());
+        contentBuffer.append("\n\n" + userBean.toString());
+        // 从用户信息中取出关联的文章列表信息
+        ForeignCollection<ArticleBean> articles = userBean.getArticles();
+        Iterator<ArticleBean> iterator = articles.iterator();
+        contentBuffer.append("\n\n");
+        while (iterator.hasNext()) {
+            ArticleBean article = iterator.next();
+            contentBuffer.append(article.toString() + "\n");
+        }
+        // 设置TextView的文本
+        System.out.println(contentBuffer.toString());
+    }
+
+    public void daoTest() {
+        initData();
+        //initView();
     }
 }

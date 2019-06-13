@@ -140,8 +140,8 @@ public class CraneParaDao {
         }
 
         if (cursor.moveToFirst()) {
-            stu = new Student(cursor.getInt(0), cursor.getString(1),
-            cursor.getString(2), cursor.getInt(3));
+            //stu = new Student(cursor.getInt(0), cursor.getString(1),
+            //cursor.getString(2), cursor.getInt(3));
         }
         return stu;
 
