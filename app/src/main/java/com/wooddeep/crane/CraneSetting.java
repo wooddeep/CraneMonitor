@@ -95,8 +95,8 @@ public class CraneSetting extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.crane_setting);
 
-        getWindow().setEnterTransition(new Fade().setDuration(2000));
-        getWindow().setExitTransition(new Fade().setDuration(2000));
+        //getWindow().setEnterTransition(new Fade().setDuration(2000));
+        //getWindow().setExitTransition(new Fade().setDuration(2000));
         //context = getApplicationContext();
         //List<CranePara> paras = confLoad(context);
         //paraTableRender(paras);
@@ -433,7 +433,7 @@ public class CraneSetting extends AppCompatActivity {
      **/
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-
+        /*
         LinearLayout craneSettingContainer = (LinearLayout) findViewById(R.id.crane_setting_container);
         int screenWidthPx = craneSettingContainer.getMeasuredWidth();
         context = getApplicationContext();
@@ -445,6 +445,6 @@ public class CraneSetting extends AppCompatActivity {
             e.printStackTrace();
         }
         setOnTouchListener();
-
+        */
     }
 }

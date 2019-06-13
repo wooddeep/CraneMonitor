@@ -8,6 +8,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.wooddeep.crane.persist.entity.ArticleBean;
+import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.UserBean;
 
 import java.sql.SQLException;
@@ -70,9 +71,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     @Override // 创建数据库时调用的方法
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         try {
-            System.out.println("#############^^^^^^^^^^^^^^^^&&&&&&&&&&&&&&&&&&");
             TableUtils.createTable(connectionSource, UserBean.class);
             TableUtils.createTable(connectionSource, ArticleBean.class);
+            TableUtils.createTable(connectionSource, Crane.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -83,6 +84,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         try {
             TableUtils.dropTable(connectionSource, UserBean.class, true);
             TableUtils.dropTable(connectionSource, ArticleBean.class, true);
+            TableUtils.dropTable(connectionSource, Crane.class, true);
             onCreate(database, connectionSource);
         } catch (SQLException e) {
             e.printStackTrace();

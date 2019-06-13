@@ -31,9 +31,11 @@ import com.wooddeep.crane.element.ElemMap;
 import com.wooddeep.crane.element.SideArea;
 import com.wooddeep.crane.element.SideCycle;
 import com.wooddeep.crane.persist.dao.ArticleDao;
+import com.wooddeep.crane.persist.dao.CraneDao;
 import com.wooddeep.crane.persist.dao.CraneParaDao;
 import com.wooddeep.crane.persist.dao.UserDao;
 import com.wooddeep.crane.persist.entity.ArticleBean;
+import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.CranePara;
 import com.wooddeep.crane.persist.entity.UserBean;
 import com.wooddeep.crane.tookit.AnimUtil;
@@ -198,8 +200,8 @@ public class MainActivity extends AppCompatActivity {
 
         timer.schedule(task, 1000, 500);
 
-        getWindow().setEnterTransition(new Fade().setDuration(2000));
-        getWindow().setExitTransition(new Fade().setDuration(2000));
+        //getWindow().setEnterTransition(new Fade().setDuration(2000));
+        //getWindow().setExitTransition(new Fade().setDuration(2000));
 
         daoTest();
         /*
@@ -325,7 +327,30 @@ public class MainActivity extends AppCompatActivity {
     private void renderMain(float oscale) {
         FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
         DrawTool.drawGrid(this, mainFrame);
-        List<CranePara> paras = confLoad(getApplicationContext());
+        //List<CranePara> paras = confLoad(getApplicationContext());
+        CraneDao craneDao = new CraneDao(MainActivity.this);
+
+        Crane crane = new Crane(
+            0,
+            String.format("%d号塔基", 1),
+            0,
+            100,
+            100,
+            1,
+            1,
+            1,
+            40,
+            10,
+            1,
+            1,
+            1);
+
+        List<Crane> paras = craneDao.selectAll();
+        if (paras.size() == 0) {
+            craneDao.insert(crane);
+        }
+        paras = craneDao.selectAll();
+
         elemMap.delElems(mainFrame);
 
         // 画中心圆环，目前暂时以此环
@@ -335,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
         centerCycle.drawCenterCycle(this, mainFrame);
 
         // 根据数据库的数据画图
-        for (CranePara cp : paras) {
+        for (Crane cp : paras) {
             float scale = centerCycle.scale; //DrawTool.DrawCenterCycle(this, mainFrame, 1.0f, 80 / 2, 10, 45, 30);
             SideCycle sideCycle = new SideCycle(scale, 150, 150, cp.getCoordX1(),
                 cp.getCoordY1(), cp.getBigArmLength(), 10, -45, 0);
@@ -458,11 +483,35 @@ public class MainActivity extends AppCompatActivity {
     // 初始化数据
     private void initData() {
         // 添加用户数据
+        /*
         UserBean userData = new UserBean("张三", '1', new Date(), "北京");
-        new UserDao(MainActivity.this).insert(userData);
+        new UserDao(MainActivity.this);//.insert(userData);
         // 添加文章数据
         ArticleBean articleData = new ArticleBean("标题", "内容内容内容内容内容内容", userData);
-        new ArticleDao(MainActivity.this).insert(articleData);
+        new ArticleDao(MainActivity.this);//.insert(articleData);
+        */
+
+        Crane crane = new Crane(
+            0,
+            String.format("%d号塔基", 1),
+            0,
+            100,
+            100,
+            1,
+            1,
+            1,
+            40,
+            10,
+            1,
+            1,
+            1);
+
+        // 创建表！为什么只能写怎么恶心的代码? ormlite
+        CraneDao craneDao = new CraneDao(MainActivity.this);
+        List<Crane> cranes = craneDao.selectAll();
+        if (cranes == null) {
+            new CraneDao(MainActivity.this).insert(crane);
+        }
     }
 
     // 初始化视图

@@ -94,8 +94,8 @@ public class AreaSetting extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.area_setting);
 
-        getWindow().setEnterTransition(new Fade().setDuration(2000));
-        getWindow().setExitTransition(new Fade().setDuration(2000));
+        //getWindow().setEnterTransition(new Fade().setDuration(2000));
+        //getWindow().setExitTransition(new Fade().setDuration(2000));
         //context = getApplicationContext();
         //List<CranePara> paras = confLoad(context);
         //paraTableRender(paras);
