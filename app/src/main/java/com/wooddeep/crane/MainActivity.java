@@ -1,11 +1,13 @@
 package com.wooddeep.crane;
 
 import android.animation.ObjectAnimator;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -186,6 +188,10 @@ public class MainActivity extends AppCompatActivity {
 
         timer.schedule(task, 1000, 500);
 
+        getWindow().setEnterTransition(new Fade().setDuration(2000));
+        getWindow().setExitTransition(new Fade().setDuration(2000));
+
+        /*
         try {
             SerialPort serialttyS1 =  new SerialPort( new File( "/dev/ttyS1"),115200,0);
             InputStream ttyS1InputStream =  serialttyS1.getInputStream();
@@ -193,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
         }  catch (IOException e) {
             e.printStackTrace();
         }
+        */
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
@@ -406,12 +413,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // 调到塔基设置页面
+        // 跳到塔基设置页面
         ImageView craneSetting = (ImageView) findViewById(R.id.crane_setting);
         craneSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, CraneSetting.class);
+                startActivity(intent);
+            }
+        });
+
+
+        // 跳到区域设置页面
+        ImageView areaSetting = (ImageView) findViewById(R.id.area_setting);
+        areaSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AreaSetting.class);
                 startActivity(intent);
             }
         });

@@ -248,6 +248,7 @@ public class LockTableView {
      * 初始化表格数据
      */
     private void initData() {
+
         if (mTableDatas != null && mTableDatas.size() > 0) {
             //检查数据，如果有一行数据长度不一致，以最长为标准填"N/A"字符串,如果有null也替换
             int maxLength = 0;
@@ -263,7 +264,7 @@ public class LockTableView {
                 }
                 mTableDatas.set(i, rowDatas);
             }
-//            Log.e("每行最多个数",maxLength+"");
+
             for (int i = 0; i < mTableDatas.size(); i++) {
                 ArrayList<DataCell> rowDatas = mTableDatas.get(i);
                 if (rowDatas.size() < maxLength) {
@@ -275,22 +276,13 @@ public class LockTableView {
                 }
             }
 
-//            //测试
-//            for (int i=0;i<mTableDatas.size();i++){
-//                ArrayList<String> rowDatas=mTableDatas.get(i);
-//                StringBuffer b=new StringBuffer();
-//                for (String str:rowDatas){
-//                    b.append("["+str+"]");
-//                }
-//                Log.e("第"+i+"行数据",b.toString()+"/"+rowDatas.size()+"个");
-//            }
             //初始化每列最大宽度
             for (int i = 0; i < mTableDatas.size(); i++) {
                 ArrayList<DataCell> rowDatas = mTableDatas.get(i);
                 StringBuffer buffer = new StringBuffer();
                 for (int j = 0; j < rowDatas.size(); j++) {
-                    //TextView textView = new TextView(mContext);
-                    EditText textView = new EditText(mContext);
+                    TextView textView = new TextView(mContext);
+                    //EditText textView = new EditText(mContext);
                     textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextViewSize);
                     //textView.setText(rowDatas.get(j));
                     textView.setGravity(Gravity.CENTER);
@@ -319,16 +311,14 @@ public class LockTableView {
                     changeColumnWidth(key, mChangeColumns.get(key));
                 }
             }
-//            Log.e("每列最大宽度dp:",mColumnMaxWidths.toString());
-
 
             //初始化每行最大高度
             for (int i = 0; i < mTableDatas.size(); i++) {
                 ArrayList<DataCell> rowDatas = mTableDatas.get(i);
                 StringBuffer buffer = new StringBuffer();
 
-                //TextView textView = new TextView(mContext);
-                EditText textView = new EditText(mContext);
+                TextView textView = new TextView(mContext);
+                //EditText textView = new EditText(mContext);
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextViewSize);
                 textView.setGravity(Gravity.CENTER);
                 //设置布局
@@ -337,7 +327,8 @@ public class LockTableView {
                 textViewParams.setMargins(mCellPadding, mCellPadding, mCellPadding, mCellPadding);//android:layout_margin="15dp"
                 textView.setLayoutParams(textViewParams);
                 int maxHeight = measureTextHeight(textView, rowDatas.get(0).getValue());
-                mRowMaxHeights.add(maxHeight);
+                //mRowMaxHeights.add(maxHeight); // TODO
+                mRowMaxHeights.add(40);
                 for (int j = 0; j < rowDatas.size(); j++) {
                     int currentHeight;
                     //如果用户指定某列宽度则按照用户指定宽度算对应列的高度
@@ -348,12 +339,11 @@ public class LockTableView {
                     }
                     buffer.append("[" + currentHeight + "]");
                     if (currentHeight > maxHeight) {
-                        mRowMaxHeights.set(i, currentHeight);
+                        //mRowMaxHeights.set(i, currentHeight); // TODO
+                        mRowMaxHeights.add(i, 40);
                     }
                 }
-//                Log.e("第"+i+"行高度",buffer.toString());
             }
-//            Log.e("每行最大高度dp:",mRowMaxHeights.toString());
 
             if (isLockFristRow) {
                 ArrayList<DataCell> fristRowDatas = (ArrayList<DataCell>) mTableDatas.get(0).clone();
@@ -391,9 +381,7 @@ public class LockTableView {
                     }
                 }
             }
-//            Log.e("第一行数据", mTableFristData.toString());
-//            Log.e("第一列数据", mTableColumnDatas.toString());
-//            Log.e("每行数据", mTableRowDatas.toString());
+
         } else {
             Toast.makeText(mContext, "表格数据为空！", Toast.LENGTH_SHORT).show();
         }
@@ -585,7 +573,7 @@ public class LockTableView {
      * @param text
      * @return
      */
-    private int measureTextWidth(EditText textView, String text) {
+    private int measureTextWidth(TextView textView, String text) {
         if (textView != null) {
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) textView.getLayoutParams();
             int width = DisplayUtil.px2dip(mContext, layoutParams.leftMargin) +
@@ -609,7 +597,7 @@ public class LockTableView {
      * @param text
      * @return
      */
-    private int measureTextHeight(EditText textView, String text) {
+    private int measureTextHeight(TextView textView, String text) {
         if (textView != null) {
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) textView.getLayoutParams();
             int height = getTextViewHeight(textView, text);
@@ -631,7 +619,7 @@ public class LockTableView {
      * @param text
      * @return
      */
-    private int getTextViewHeight(EditText textView, String text) {
+    private int getTextViewHeight(TextView textView, String text) {
         if (textView != null) {
             int width = measureTextWidth(textView, text);
             TextPaint textPaint = textView.getPaint();
@@ -652,7 +640,7 @@ public class LockTableView {
      * @param width
      * @return
      */
-    private int getTextViewHeight(EditText textView, String text, int width) {
+    private int getTextViewHeight(TextView textView, String text, int width) {
         if (textView != null) {
             TextPaint textPaint = textView.getPaint();
             StaticLayout staticLayout = new StaticLayout(text, textPaint, DisplayUtil.dip2px(mContext, width), Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
@@ -669,7 +657,7 @@ public class LockTableView {
      * @param text
      * @return
      */
-    private int getTextViewWidth(EditText view, String text) {
+    private int getTextViewWidth(TextView view, String text) {
         if (view != null) {
             TextPaint paint = view.getPaint();
             return DisplayUtil.px2dip(mContext, (int) paint.measureText(text));

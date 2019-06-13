@@ -53,7 +53,7 @@ import java.util.List;
 // greendao
 // https://www.cnblogs.com/wjtaigwh/p/6394288.html
 
-public class CraneSetting extends AppCompatActivity {
+public class AreaSetting extends AppCompatActivity {
     private Context context;
 
     private int screenWidth = 400; // dp
@@ -92,7 +92,7 @@ public class CraneSetting extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.crane_setting);
+        setContentView(R.layout.area_setting);
 
         getWindow().setEnterTransition(new Fade().setDuration(2000));
         getWindow().setExitTransition(new Fade().setDuration(2000));
@@ -159,7 +159,7 @@ public class CraneSetting extends AppCompatActivity {
                 } else if (view.getId() == R.id.minus_logo) {
                     List<CranePara> paras = confLoad(context);
                     if (paras.size() <= 1) {
-                        Toast toast = Toast.makeText(CraneSetting.this, "不能全删除!", Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(AreaSetting.this, "不能全删除!", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
                     }
@@ -171,8 +171,8 @@ public class CraneSetting extends AppCompatActivity {
 
                 } else if (view.getId() == R.id.save_logo) { // 保存数据
                     AlertView alertView = new AlertView("保存塔基参数", "", null,
-                        new String[]{"确定", "取消"}, null, activity,
-                        AlertView.Style.Alert, new OnItemClickListener() {
+                    new String[]{"确定", "取消"}, null, activity,
+                    AlertView.Style.Alert, new OnItemClickListener() {
                         @Override
                         public void onItemClick(Object o, int position) {
                             if (position == 0 && gTable != null) { // 确认
@@ -240,17 +240,19 @@ public class CraneSetting extends AppCompatActivity {
     }
 
     private static String[] craneParaNames = new String[]{
-    "塔基类型",
-    "X1(塔基X坐标)",
-    "Y1(塔基Y坐标)",
-    "X2(塔基X偏移)",
-    "Y2(塔基Y偏移)",
-    "塔机高度",
-    "大臂长度",
-    "平衡臂长度",
-    "塔身直径",
-    "大臂宽度",
-    "平衡臂宽度",
+    "高度",
+    "X1",
+    "Y1",
+    "X2",
+    "Y2",
+    "X3",
+    "Y3",
+    "X4",
+    "Y4",
+    "X5",
+    "Y5",
+    "X6",
+    "Y6",
     };
 
 
@@ -322,7 +324,7 @@ public class CraneSetting extends AppCompatActivity {
     }
 
     public void paraTableRender(List<CranePara> paras) {
-        LinearLayout craneSettingContainer = (LinearLayout) findViewById(R.id.crane_setting_container);
+        LinearLayout craneSettingContainer = (LinearLayout) findViewById(R.id.area_setting_container);
         ArrayList<ArrayList<DataCell>> table = craneParaArrange(paras);
         gTable = table;
         final LockTableView mLockTableView = new LockTableView(this, craneSettingContainer, table);
@@ -332,7 +334,7 @@ public class CraneSetting extends AppCompatActivity {
         .setLockFristRow(true) //是否锁定第一行
         .setMaxColumnWidth(firstColumnWidth) //列最大宽度
         .setMinColumnWidth(60) //列最小宽度
-        .setColumnWidth(0, 100)
+        .setColumnWidth(0, 60)
         .setMinRowHeight(20)//行最小高度
         .setMaxRowHeight(60)//行最大高度
         .setTextViewSize(16) //单元格字体大小
@@ -401,7 +403,7 @@ public class CraneSetting extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
 
-        LinearLayout craneSettingContainer = (LinearLayout) findViewById(R.id.crane_setting_container);
+        LinearLayout craneSettingContainer = (LinearLayout) findViewById(R.id.area_setting_container);
         int screenWidthPx = craneSettingContainer.getMeasuredWidth();
         context = getApplicationContext();
         screenWidth = DisplayUtil.px2dip(context, screenWidthPx); // 转换为dp
