@@ -1,6 +1,7 @@
 package com.wooddeep.crane;
 
 import android.animation.ObjectAnimator;
+import android.app.ActionBar;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.transition.Fade;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -30,10 +32,12 @@ import com.wooddeep.crane.element.CenterCycle;
 import com.wooddeep.crane.element.ElemMap;
 import com.wooddeep.crane.element.SideArea;
 import com.wooddeep.crane.element.SideCycle;
+import com.wooddeep.crane.persist.dao.AreaDao;
 import com.wooddeep.crane.persist.dao.ArticleDao;
 import com.wooddeep.crane.persist.dao.CraneDao;
 import com.wooddeep.crane.persist.dao.CraneParaDao;
 import com.wooddeep.crane.persist.dao.UserDao;
+import com.wooddeep.crane.persist.entity.Area;
 import com.wooddeep.crane.persist.entity.ArticleBean;
 import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.CranePara;
@@ -51,6 +55,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -196,14 +201,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        EventBus.getDefault().register(this);
 
+        EventBus.getDefault().register(this);
         timer.schedule(task, 1000, 500);
 
-        //getWindow().setEnterTransition(new Fade().setDuration(2000));
-        //getWindow().setExitTransition(new Fade().setDuration(2000));
+        initTable();
 
-        daoTest();
         /*
         try {
             SerialPort serialttyS1 =  new SerialPort( new File( "/dev/ttyS1"),115200,0);
@@ -327,10 +330,10 @@ public class MainActivity extends AppCompatActivity {
     private void renderMain(float oscale) {
         FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
         DrawTool.drawGrid(this, mainFrame);
-        //List<CranePara> paras = confLoad(getApplicationContext());
         CraneDao craneDao = new CraneDao(MainActivity.this);
 
         Crane crane = new Crane(
+            true,
             0,
             String.format("%d号塔基", 1),
             0,
@@ -350,47 +353,52 @@ public class MainActivity extends AppCompatActivity {
             craneDao.insert(crane);
         }
         paras = craneDao.selectAll();
-
         elemMap.delElems(mainFrame);
 
-        // 画中心圆环，目前暂时以此环
-        final CenterCycle centerCycle = new CenterCycle(oscale, 150, 150, 80 / 2, 10, 45, 30);
+        Crane mainCrane = paras.get(0);
+        for (Crane iterator : paras) {
+            if (iterator.getIsMain() == true) {
+                mainCrane = iterator;
+                break;
+            }
+        }
+        
+        // 画中心圆环
+        final CenterCycle centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(),
+            mainCrane.getBigArmLength(), mainCrane.getBalancArmLength(), 0, 0);
         elemMap.addElem(centerCycle.getUuid(), centerCycle);
         mainCycleId = centerCycle.getUuid();
         centerCycle.drawCenterCycle(this, mainFrame);
 
         // 根据数据库的数据画图
         for (Crane cp : paras) {
-            float scale = centerCycle.scale; //DrawTool.DrawCenterCycle(this, mainFrame, 1.0f, 80 / 2, 10, 45, 30);
-            SideCycle sideCycle = new SideCycle(scale, 150, 150, cp.getCoordX1(),
-                cp.getCoordY1(), cp.getBigArmLength(), 10, -45, 0);
+            if (cp == mainCrane) continue;
+            float scale = centerCycle.scale;
+            SideCycle sideCycle = new SideCycle(scale, mainCrane.getCoordX1(), mainCrane.getCoordY1(), cp.getCoordX1(),
+                cp.getCoordY1(), cp.getBigArmLength(), mainCrane.getBalancArmLength(), 0, 0);
 
             elemMap.addElem(sideCycle.getUuid(), sideCycle);
             sideCycleId = sideCycle.getUuid();
             sideCycle.drawSideCycle(this, mainFrame);
         }
 
-        /*
-        float scale = centerCycle.scale; //DrawTool.DrawCenterCycle(this, mainFrame, 1.0f, 80 / 2, 10, 45, 30);
-        SideCycle sideCycle = new SideCycle(scale, 100, 100, 130, 130, 60 / 2, 10, -45, 0);
-        elemMap.addElem(sideCycle.getUuid(), sideCycle);
-        sideCycleId = sideCycle.getUuid();
-        sideCycle.drawSideCycle(this, mainFrame);
-        */
-
-        /*
-        List<Vertex> vertex1 = new ArrayList<Vertex>() {{
-            add(new Vertex(0, 25));
-            add(new Vertex(55, 25));
-            add(new Vertex(95, 75));
-            add(new Vertex(75, 99));
-            add(new Vertex(25, 50));
-        }};
-
-        SideArea sideArea = new SideArea(Color.GRAY, scale, 100, 100, vertex1);
-        elemMap.addElem(sideArea.getUuid(), sideArea);
-        sideArea.drawSideArea(this, mainFrame);
-        */
+        AreaDao areaDao = new AreaDao(MainActivity.this);
+        List<Area> areas = areaDao.selectAll();
+        if (areas != null && areas.size() > 0) {
+            List<Vertex> vertex = new ArrayList<Vertex>();
+            for (Area area : areas) {
+                vertex.add(new Vertex(area.getX1(), area.getY1()));
+                vertex.add(new Vertex(area.getX2(), area.getY2()));
+                vertex.add(new Vertex(area.getX3(), area.getY3()));
+                vertex.add(new Vertex(area.getX4(), area.getY4()));
+                vertex.add(new Vertex(area.getX5(), area.getY5()));
+                vertex.add(new Vertex(area.getX6(), area.getY6()));
+            }
+            float scale = centerCycle.scale;
+            SideArea sideArea = new SideArea(Color.GRAY, scale, mainCrane.getCoordX1(), mainCrane.getCoordY1(), vertex);
+            elemMap.addElem(sideArea.getUuid(), sideArea);
+            sideArea.drawSideArea(this, mainFrame);
+        }
 
         findViewById(R.id.menu).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -469,7 +477,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
     /**
@@ -481,17 +488,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 初始化数据
-    private void initData() {
-        // 添加用户数据
-        /*
-        UserBean userData = new UserBean("张三", '1', new Date(), "北京");
-        new UserDao(MainActivity.this);//.insert(userData);
-        // 添加文章数据
-        ArticleBean articleData = new ArticleBean("标题", "内容内容内容内容内容内容", userData);
-        new ArticleDao(MainActivity.this);//.insert(articleData);
-        */
-
+    private void initTable() {
         Crane crane = new Crane(
+            true,
             0,
             String.format("%d号塔基", 1),
             0,
@@ -512,31 +511,5 @@ public class MainActivity extends AppCompatActivity {
         if (cranes == null) {
             new CraneDao(MainActivity.this).insert(crane);
         }
-    }
-
-    // 初始化视图
-    private void initView() {
-        // 从数据库中根据ID取出文章信息
-        StringBuffer contentBuffer = new StringBuffer();
-        ArticleBean articleBean = new ArticleDao(MainActivity.this).queryById(1);
-        contentBuffer.append(articleBean.toString());
-        // 根据取出的用户id查询用户信息
-        UserBean userBean = new UserDao(MainActivity.this).queryById(articleBean.getUser().getId());
-        contentBuffer.append("\n\n" + userBean.toString());
-        // 从用户信息中取出关联的文章列表信息
-        ForeignCollection<ArticleBean> articles = userBean.getArticles();
-        Iterator<ArticleBean> iterator = articles.iterator();
-        contentBuffer.append("\n\n");
-        while (iterator.hasNext()) {
-            ArticleBean article = iterator.next();
-            contentBuffer.append(article.toString() + "\n");
-        }
-        // 设置TextView的文本
-        System.out.println(contentBuffer.toString());
-    }
-
-    public void daoTest() {
-        initData();
-        //initView();
     }
 }

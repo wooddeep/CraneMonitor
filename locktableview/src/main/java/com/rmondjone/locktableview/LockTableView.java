@@ -684,6 +684,7 @@ public class LockTableView {
         for (int i = 0; i < datas.size(); i++) {
             //构造单元格
             TextView textView = new TextView(mContext);
+            datas.get(i).setView(textView);
             if (isFristRow) {
                 textView.setTextColor(ContextCompat.getColor(mContext, mTableHeadTextColor));
             } else {

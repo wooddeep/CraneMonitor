@@ -2,13 +2,12 @@ package com.wooddeep.crane.persist.dao;
 
 import android.content.Context;
 
-import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.entity.Crane;
-import com.wooddeep.crane.persist.entity.UserBean;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CraneDao {
@@ -58,6 +57,9 @@ public class CraneDao {
         List<Crane> cranes = null;
         try {
             cranes = dao.queryForAll();
+            if (cranes == null) {
+                cranes = new ArrayList<>();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -74,4 +76,16 @@ public class CraneDao {
         }
         return crane;
     }
+
+    public List<Crane> queryForMatching(Crane crane) {
+        List<Crane> cranes = null;
+        try {
+            cranes = dao.queryForMatching(crane);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return cranes;
+    }
+
 }

@@ -12,7 +12,7 @@ public class Crane {
     @DatabaseField(generatedId = true, columnName = "id", useGetSet = true)
     private int id;
 
-    @DatabaseField(columnName = "name", useGetSet = true, canBeNull = false, unique = false)
+    @DatabaseField(columnName = "name", useGetSet = true, defaultValue = "")
     private String name;
 
     @DatabaseField(columnName = "isMain", useGetSet = true, defaultValue = "false")
@@ -167,11 +167,12 @@ public class Crane {
         super();
     }
 
-    public Crane(int id, String name, int type, float coordX1, float coordY1,
+    public Crane(boolean isMain, int id, String name, int type, float coordX1, float coordY1,
                      float coordX2, float coordY2, float CraneHeight, float BigArmLength,
                      float BalancArmLength, float CraneBodyRadius, float BigArmWidth, float BalancArmWidth) {
         super();
         this.id = id;
+        this.isMain = isMain;
         this.name = name;
         this.type = type;
         this.coordX1 = coordX1;

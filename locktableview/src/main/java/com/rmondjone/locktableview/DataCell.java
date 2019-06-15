@@ -14,6 +14,7 @@ public class DataCell {
 
     private View.OnLongClickListener onLongClickListener  = null;
 
+    private View view;
 
     public DataCell(int type, String value) {
         this.type = type;
@@ -71,4 +72,11 @@ public class DataCell {
         this.onLongClickListener = onLongClickListener;
     }
 
+    public View getView() {
+        return view;
+    }
+
+    public void setView(View view) {
+        this.view = view;
+    }
 }
