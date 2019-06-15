@@ -97,6 +97,9 @@ public class CraneSetting extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.crane_setting);
+        if (getSupportActionBar()!=null){
+            getSupportActionBar().hide();
+        }
     }
 
     private void setOnTouchListener(View view) {

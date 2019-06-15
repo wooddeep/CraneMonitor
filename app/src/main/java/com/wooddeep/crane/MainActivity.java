@@ -202,6 +202,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (getSupportActionBar()!=null){
+            getSupportActionBar().hide();
+        }
+
         EventBus.getDefault().register(this);
         timer.schedule(task, 1000, 500);
 
