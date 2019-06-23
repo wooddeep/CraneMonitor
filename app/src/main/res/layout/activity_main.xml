@@ -139,6 +139,13 @@
             android:layout_weight="2">
 
             <!--
+            <com.wooddeep.crane.views.GridLineView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+            -->
+
+            <!--
             <Button
                 android:id="@+id/adjust_hangle_add"
                 android:layout_width="100dp"
@@ -250,12 +257,7 @@
                     android:layout_gravity="bottom"
                     android:orientation="horizontal"
                     android:visibility="gone">
-                    <!--
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/gray" />
-                    -->
+
                     <ImageView
                         android:id="@+id/crane_setting"
                         android:layout_width="50dp"
@@ -263,32 +265,34 @@
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:src="@mipmap/crane_setting" />
-                    <!--
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/gray" />
-                    -->
+
                     <ImageView
                         android:id="@+id/area_setting"
                         android:layout_width="50dp"
                         android:layout_height="45dp"
                         android:layout_gravity="center"
+                        android:layout_marginLeft="15dp"
                         android:gravity="center"
                         android:src="@mipmap/area_setting" />
-                    <!--
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/gray" />
-                    -->
+
+                    <ImageView
+                        android:id="@+id/calibration_setting"
+                        android:layout_width="40dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="15dp"
+                        android:gravity="center"
+                        android:src="@mipmap/calibration_setting" />
+
                     <ImageView
                         android:id="@+id/alarm_setting"
                         android:layout_width="50dp"
                         android:layout_height="45dp"
                         android:layout_gravity="center"
+                        android:layout_marginLeft="15dp"
                         android:gravity="center"
                         android:src="@mipmap/alarm_setting" />
+
                 </LinearLayout>
             </LinearLayout>
 

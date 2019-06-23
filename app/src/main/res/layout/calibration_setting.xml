@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<!--suppress ALL -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/title_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_banner_height"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@drawable/title_bar_background">
+
+        <ImageView
+            android:id="@+id/home_logo"
+            android:layout_width="70px"
+            android:layout_height="70px"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_centerInParent="true"
+            android:layout_alignParentLeft="true"
+            android:src="@mipmap/calibration_setting" />
+
+        <!-- No and name -->
+        <LinearLayout
+            android:id="@+id/text_container"
+            android:layout_toRightOf="@+id/home_logo"
+            android:layout_marginLeft="10dp"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text="No.:19026"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text="SCT16014A" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/wind_speed_log"
+            android:layout_width="40px"
+            android:layout_height="40px"
+            android:layout_marginLeft="100dp"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_toLeftOf="@+id/wind_speed"
+            app:srcCompat="@mipmap/wind_speed" />
+
+        <TextView
+            android:id="@+id/wind_speed"
+            android:layout_toLeftOf="@+id/clock_logo"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:textSize="14dp"
+            android:text="5.0m/s" />
+
+        <ImageView
+            android:id="@+id/clock_logo"
+            android:layout_width="40px"
+            android:layout_height="40px"
+            android:layout_marginLeft="40dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_toLeftOf="@+id/time_container"
+            android:layout_centerInParent="true"
+            app:srcCompat="@mipmap/clock_png" />
+
+        <LinearLayout
+            android:id="@+id/time_container"
+            android:layout_alignParentRight="true"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/calendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text="13:15:05" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text="2019-04-27" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <TableLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/frame_border">
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="标定类型"/>
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="起始值"/>
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="终止值"/>
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="斜率"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/frame_border">
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="回转"/>
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="起始值"/>
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="终止值"/>
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="斜率"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/frame_border">
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="重量"/>
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="起始值"/>
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="终止值"/>
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="斜率"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/frame_border">
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="幅度"/>
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="起始值"/>
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="终止值"/>
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="斜率"/>
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/frame_border">
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="高度"/>
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="起始值"/>
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="终止值"/>
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="斜率"/>
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/frame_border">
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="风速"/>
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="起始值"/>
+
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="终止值"/>
+            <TextView
+                android:id="@+id/clock_logo"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:text="斜率"/>
+        </TableRow>
+    </TableLayout>
+
+    </ScrollView>
+</LinearLayout>

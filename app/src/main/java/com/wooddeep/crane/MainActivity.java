@@ -1,31 +1,22 @@
 package com.wooddeep.crane;
 
 import android.animation.ObjectAnimator;
-import android.app.ActionBar;
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.transition.Fade;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 
 import com.example.x6.serial.SerialPort;
-import com.j256.ormlite.dao.ForeignCollection;
 import com.wooddeep.crane.ebus.MessageEvent;
 import com.wooddeep.crane.ebus.UserEvent;
 import com.wooddeep.crane.element.CenterCycle;
@@ -33,18 +24,13 @@ import com.wooddeep.crane.element.ElemMap;
 import com.wooddeep.crane.element.SideArea;
 import com.wooddeep.crane.element.SideCycle;
 import com.wooddeep.crane.persist.dao.AreaDao;
-import com.wooddeep.crane.persist.dao.ArticleDao;
 import com.wooddeep.crane.persist.dao.CraneDao;
 import com.wooddeep.crane.persist.dao.CraneParaDao;
-import com.wooddeep.crane.persist.dao.UserDao;
 import com.wooddeep.crane.persist.entity.Area;
-import com.wooddeep.crane.persist.entity.ArticleBean;
 import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.CranePara;
-import com.wooddeep.crane.persist.entity.UserBean;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.DrawTool;
-import com.wooddeep.crane.views.GridLineView;
 import com.wooddeep.crane.views.Vertex;
 
 import org.greenrobot.eventbus.EventBus;
@@ -54,11 +40,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -202,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (getSupportActionBar()!=null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
@@ -211,15 +194,37 @@ public class MainActivity extends AppCompatActivity {
 
         initTable();
 
-        /*
-        try {
-            SerialPort serialttyS1 =  new SerialPort( new File( "/dev/ttyS1"),115200,0);
-            InputStream ttyS1InputStream =  serialttyS1.getInputStream();
-            OutputStream ttyS1OutputStream =  serialttyS1.getOutputStream();
-        }  catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    //SerialPort serialttyS0 = new SerialPort(new File("/dev/ttyS0"), 115200, 0);
+                    SerialPort serialttyS1 = new SerialPort(new File("/dev/ttyS1"), 115200, 0);
+                    //OutputStream ttyS0OutputStream = serialttyS0.getOutputStream();
+                    InputStream ttyS1InputStream = serialttyS1.getInputStream();
+                    while (true) {
+
+                        //ttyS0OutputStream.write("hello world".getBytes());
+                        byte[] in = new byte[1024];
+                        int len = ttyS1InputStream.read(in, 0, 1024);
+                        byte[] real = Arrays.copyOf(in, len);
+                        //String res = new String(real, "UTF-8");
+                        //System.out.println("## read data: " + res);
+
+                        System.out.println("\n#########################");
+                        for (byte data : real) {
+                            System.out.printf("%02x ", data);
+                        }
+                        System.out.println("\n#########################");
+
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
@@ -248,20 +253,20 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     ObjectAnimator oa = ObjectAnimator.ofFloat(view,
-                    "scaleX", 0.93f, 1f);
+                        "scaleX", 0.93f, 1f);
                     oa.setDuration(500);
                     ObjectAnimator oa2 = ObjectAnimator.ofFloat(view,
-                    "scaleY", 0.93f, 1f);
+                        "scaleY", 0.93f, 1f);
                     oa2.setDuration(700);
                     oa.start();
                     oa2.start();
                 }
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     ObjectAnimator oa = ObjectAnimator.ofFloat(view,
-                    "scaleX", 1f, 0.93f);
+                        "scaleX", 1f, 0.93f);
                     oa.setDuration(500);
                     ObjectAnimator oa2 = ObjectAnimator.ofFloat(view,
-                    "scaleY", 1f, 0.93f);
+                        "scaleY", 1f, 0.93f);
                     oa2.setDuration(700);
                     oa.start();
                     oa2.start();
@@ -278,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
         //上述参数解释分别为：旋转起始角度，旋转结束角度，相对与自身，x轴方向的一半，相对于自身，y轴方向的一半
 
         RotateAnimation rotateAnimation = new RotateAnimation(0, 360,
-        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.54f);
+            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.54f);
         rotateAnimation.setDuration(500);
         windSpeedLog.setAnimation(rotateAnimation);
         windSpeedLog.startAnimation(rotateAnimation);
@@ -366,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
-        
+
         // 画中心圆环
         final CenterCycle centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(),
             mainCrane.getBigArmLength(), mainCrane.getBalancArmLength(), 0, 0);
@@ -428,6 +433,7 @@ public class MainActivity extends AppCompatActivity {
         List<ImageView> menuButtons = new ArrayList<ImageView>() {{
             add((ImageView) findViewById(R.id.crane_setting));
             add((ImageView) findViewById(R.id.area_setting));
+            add((ImageView) findViewById(R.id.calibration_setting));
             add((ImageView) findViewById(R.id.alarm_setting));
             add((ImageView) findViewById(R.id.zoom_in));
             add((ImageView) findViewById(R.id.zoom_out));
@@ -478,6 +484,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, AreaSetting.class);
+                startActivity(intent);
+            }
+        });
+
+        // 跳到标定设置页面
+        ImageView calibrationSetting = (ImageView) findViewById(R.id.calibration_setting);
+        calibrationSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, CalibrationSetting.class);
                 startActivity(intent);
             }
         });

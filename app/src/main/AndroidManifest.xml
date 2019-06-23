@@ -19,6 +19,8 @@
         </activity>
         <activity android:name="com.wooddeep.crane.AreaSetting">
         </activity>
+        <activity android:name="com.wooddeep.crane.CalibrationSetting">
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
