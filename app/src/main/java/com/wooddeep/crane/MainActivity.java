@@ -497,6 +497,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        DrawTool.drawMenu(this, mainFrame);
     }
 
     /**
