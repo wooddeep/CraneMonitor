@@ -4,23 +4,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.wooddeep.crane.R;
 import com.wooddeep.crane.views.GridLineView;
-import com.wooddeep.crane.views.Polygon;
-import com.wooddeep.crane.views.SuperCircleView;
-import com.wooddeep.crane.views.Vertex;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
 
 @SuppressWarnings("unused")
 public class DrawTool {
@@ -37,92 +31,161 @@ public class DrawTool {
         parent.addView(gridLineView);
     }
 
-    public static void drawMenu(Activity activity, ViewGroup parent) {
+    public static HashMap<String, Object> drawMenu(Activity activity, ViewGroup parent) {
+        HashMap<String, Object> viewMap = new HashMap<>();
         Context context = activity.getApplicationContext();
 
         LinearLayout container = new LinearLayout(activity);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 50);
-        layoutParams.setMargins(5, 0, 0, 60);         //设置边距
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 50);
+        layoutParams.setMargins(5, 0, 0, 5);         //设置边距
         layoutParams.gravity = Gravity.BOTTOM; //  android:layout_gravity
 
         container.setOrientation(LinearLayout.HORIZONTAL);
         container.setLayoutParams(layoutParams); //将以上的属性赋给LinearLayout
+        container.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.frame_border));
 
-        /*
-        <ImageView
-        android:id="@+id/menu"
-        android:layout_width="50dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:src="@mipmap/menu_on" />
-        */
-
-        ImageView imageView = new ImageView(activity);
+        // 菜单图片按钮
+        ImageView menuOn = new ImageView(activity);
         LinearLayout.LayoutParams ivParams = new LinearLayout.LayoutParams(50, 30);
         ivParams.gravity = Gravity.CENTER;
-        imageView.setLayoutParams(ivParams);
+        menuOn.setLayoutParams(ivParams);
+        //imageView.setBackgroundDrawable(activity.getResources().getDrawable(R.mipmap.menu_on)); // 设置背景
+        menuOn.setImageResource(R.mipmap.menu_on);
+        container.addView(menuOn);
+        viewMap.put("R.id.menu", menuOn);
 
-        imageView.setBackgroundDrawable(activity.getResources().getDrawable(R.mipmap.menu_on));
+        // 菜单内部容器
+        LinearLayout icontainer = new LinearLayout(activity);
+        icontainer.setVisibility(View.GONE);
+        LinearLayout.LayoutParams ilayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 50);
+        ilayoutParams.gravity = Gravity.BOTTOM; //  android:layout_gravity
+        icontainer.setOrientation(LinearLayout.HORIZONTAL);
+        icontainer.setLayoutParams(ilayoutParams); //将以上的属性赋给LinearLayout
+        viewMap.put("R.id.menu_expand", icontainer);
 
-        container.addView(imageView);
+        // 菜单图片按钮
+        // 塔基设置
+        ImageView craneSetting = new ImageView(activity);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(50, 40);
+        params.gravity = Gravity.CENTER;
+        craneSetting.setLayoutParams(params);
+        craneSetting.setImageResource(R.mipmap.crane_setting);
+        icontainer.addView(craneSetting);
+        viewMap.put("R.id.crane_setting", craneSetting);
+
+        // 区域设置
+        ImageView areaSetting = new ImageView(activity);
+        params = new LinearLayout.LayoutParams(50, 45);
+        params.setMargins(15, 0, 0, 0);
+        params.gravity = Gravity.CENTER;
+        areaSetting.setLayoutParams(params);
+        areaSetting.setImageResource(R.mipmap.area_setting);
+        icontainer.addView(areaSetting);
+        viewMap.put("R.id.area_setting", areaSetting);
+
+        // 保护区域设置
+        ImageView protectAreaSetting = new ImageView(activity);
+        params = new LinearLayout.LayoutParams(45, 40);
+        params.setMargins(15, 0, 0, 0);
+        params.gravity = Gravity.CENTER;
+        protectAreaSetting.setLayoutParams(params);
+        protectAreaSetting.setImageResource(R.mipmap.protect_area_setting);
+        icontainer.addView(protectAreaSetting);
+        viewMap.put("R.id.protect_area_setting", protectAreaSetting);
+
+        // 标定设置
+        ImageView carlibrationSetting = new ImageView(activity);
+        params = new LinearLayout.LayoutParams(40, 35);
+        params.setMargins(15, 0, 0, 0);
+        params.gravity = Gravity.CENTER;
+        carlibrationSetting.setLayoutParams(params);
+        carlibrationSetting.setImageResource(R.mipmap.calibration_setting);
+        icontainer.addView(carlibrationSetting);
+        viewMap.put("R.id.calibration_setting", carlibrationSetting);
+
+        // 告警设置
+        ImageView alarmSetting = new ImageView(activity);
+        params = new LinearLayout.LayoutParams(50, 45);
+        params.setMargins(15, 0, 0, 0);
+        params.gravity = Gravity.CENTER;
+        alarmSetting.setLayoutParams(params);
+        alarmSetting.setImageResource(R.mipmap.alarm_setting);
+        icontainer.addView(alarmSetting);
+        viewMap.put("R.id.alarm_setting", alarmSetting);
+
+        // 告警设置
+        ImageView loadAttribute = new ImageView(activity);
+        params = new LinearLayout.LayoutParams(40, 35);
+        params.setMargins(15, 0, 5, 0);
+        params.gravity = Gravity.CENTER;
+        loadAttribute.setLayoutParams(params);
+        loadAttribute.setImageResource(R.mipmap.load_attr);
+        icontainer.addView(loadAttribute);
+        viewMap.put("R.id.load_attribute", loadAttribute);
+
+        container.addView(icontainer);
         parent.addView(container);
 
+        System.out.println("### draw menu!!!");
 
-//        //实例化一个TextView
-//        TextView tv = new TextView(this);
-//        //设置宽高以及权重
-//        LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
-//        //设置textview垂直居中
-//        tvParams.gravity = Gravity.CENTER_VERTICAL;
-//        tv.setLayoutParams(tvParams);
-//        tv.setTextSize(14);
-//        tv.setTextColor(getResources().getColor(R.color.rbtn_tet));
-//        tv.setText(initMissionList().get(i).toString().trim());
-//
-//        RadioGroup radioGroup = new RadioGroup(this);
-//        radioGroup.setLayoutParams(new RadioGroup.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 120));
-//        radioGroup.setOrientation(0);
-//
-//        RadioGroup.LayoutParams rbtnParams = new RadioGroup.LayoutParams(72, 72);
-//        rbtnParams.gravity=Gravity.CENTER_VERTICAL;
-//
-//        RadioGroup.LayoutParams rbtnParamsf = new RadioGroup.LayoutParams(72, 72);
-//        rbtnParamsf.gravity=Gravity.CENTER_VERTICAL;
-//        rbtnParamsf.leftMargin=84;
-//        rbtnParamsf.rightMargin=90;
-//
-//        final RadioButton radioButtonF = new RadioButton(this);
-//        radioButtonF.setLayoutParams(rbtnParamsf);
-//        radioButtonF.setButtonDrawable(android.R.color.transparent);
-//        radioButtonF.setBackground(getResources().getDrawable(R.drawable.selector_fmhp_radiobutton_x_style));
-//
-//        final RadioButton radioButtonT = new RadioButton(this);
-//        radioButtonT.setLayoutParams(rbtnParams);
-//        radioButtonT.setButtonDrawable(android.R.color.transparent);
-//        radioButtonT.setBackground(getResources().getDrawable(R.drawable.selector_fmhp_radiobutton_hook_style));
-//
-//        radioGroup.addView(radioButtonF);
-//        radioGroup.addView(radioButtonT);
-//
-//        linearLayout.addView(tv);
-//        linearLayout.addView(radioGroup);
-//
-//        llFmhpMissionList.addView(linearLayout);
-
-
-        /*
-        int width = parent.getMeasuredWidth(); // 获取组件宽度
-        int height = parent.getMeasuredHeight(); // 获取组件高度
-        GridLineView gridLineView = new GridLineView(context);
-        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams((int) width, (int) height);
-
-        gridLineView.setLayoutParams(paras);
-        gridLineView.setWidthSize(width);
-        gridLineView.setHeighSize(height);
-        parent.addView(gridLineView);
-        */
+        return viewMap;
     }
+
+    public static void eraseMenu(Activity activity, ViewGroup parent,  HashMap<String, Object> map){
+        LinearLayout icontainer = (LinearLayout)map.get("R.id.menu_expand");
+        //ImageView craneSetting = (ImageView)map.get("R.id.crane_setting");
+        //ImageView areaSetting = (ImageView)map.get("R.id.area_setting");
+        //ImageView carlibrationSetting = (ImageView)map.get("R.id.calibration_setting");
+        //ImageView alarmSetting = (ImageView)map.get("R.id.alarm_setting");
+        icontainer.removeAllViews();
+        parent.removeView(icontainer);
+        ImageView menu =  (ImageView)map.get("R.id.menu");
+        parent.removeView(menu);
+    }
+
+    public static HashMap<String, Object> drawZoom(Activity activity, ViewGroup parent) {
+        HashMap<String, Object> viewMap = new HashMap<>();
+        Context context = activity.getApplicationContext();
+
+        LinearLayout container = new LinearLayout(activity);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(50, 100);
+        layoutParams.setMargins(0, 0, 5, 0);         //设置边距
+        layoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT; //  android:layout_gravity
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setLayoutParams(layoutParams); //将以上的属性赋给LinearLayout
+        container.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.frame_border));
+
+        // zoomin图片按钮
+        ImageView zoomIn = new ImageView(activity);
+        LinearLayout.LayoutParams ivParams = new LinearLayout.LayoutParams(40, 50);
+        ivParams.gravity = Gravity.CENTER;
+        zoomIn.setLayoutParams(ivParams);
+        //imageView.setBackgroundDrawable(activity.getResources().getDrawable(R.mipmap.menu_on)); // 设置背景
+        zoomIn.setImageResource(R.mipmap.zoom_in);
+        container.addView(zoomIn);
+        viewMap.put("R.id.zoom_in", zoomIn);
+
+        ImageView zoomOut = new ImageView(activity);
+        zoomOut.setLayoutParams(ivParams);
+        //imageView.setBackgroundDrawable(activity.getResources().getDrawable(R.mipmap.menu_on)); // 设置背景
+        zoomOut.setImageResource(R.mipmap.zoom_out);
+        container.addView(zoomOut);
+        viewMap.put("R.id.zoom_out", zoomOut);
+
+        parent.addView(container);
+        System.out.println("### draw zoom!!!");
+
+        viewMap.put("R.id.zoom_container", container);
+
+        return viewMap;
+    }
+
+    public static void eraseZoom(Activity activity, ViewGroup parent,  HashMap<String, Object> map){
+        LinearLayout icontainer = (LinearLayout)map.get("R.id.zoom_container");
+        icontainer.removeAllViews();
+        parent.removeView(icontainer);
+    }
+
 
     /**
      * 普通dialog

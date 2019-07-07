@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -17,7 +18,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.x6.serial.SerialPort;
+import com.wooddeep.crane.comm.Protocol;
 import com.wooddeep.crane.ebus.MessageEvent;
+import com.wooddeep.crane.ebus.UartEvent;
 import com.wooddeep.crane.ebus.UserEvent;
 import com.wooddeep.crane.element.CenterCycle;
 import com.wooddeep.crane.element.ElemMap;
@@ -42,6 +45,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -147,6 +151,10 @@ try {
     e.printStackTrace();
 }
 
+// android动画 https://blog.csdn.net/qq_19431333/article/details/87690200
+
+// Android绘制(三):Path结合属性动画, 让图标动起来! https://www.jianshu.com/p/923eb80e80a3
+
 */
 
 @SuppressWarnings("unused")
@@ -155,10 +163,16 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final ElemMap elemMap = new ElemMap();
 
+    private static HashMap<String, Object> viewMapBak = new HashMap<>();
+    private static HashMap<String, Object> zoomMapBak = new HashMap<>();
+
     private float oscale = 1.0f;
 
     private String mainCycleId = null; // 主环的uuid
     private String sideCycleId = null;
+
+    private static Protocol packer = new Protocol();
+    private static Protocol parser = new Protocol();
 
     Timer timer = new Timer();
     TimerTask task = new TimerTask() {
@@ -166,7 +180,13 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    EventBus.getDefault().post(new MessageEvent("Mr.sorrow", "123456"));
+                    EventBus.getDefault().post(new MessageEvent("x", "y"));
+                    packer.setAmplitude(100);
+                    packer.setHeight(201);
+                    packer.setWeight(301);
+                    packer.setWindSpeed(401);
+                    byte[] data = packer.pack();
+                    EventBus.getDefault().post(new UartEvent(data));
                 }
             });
         }
@@ -193,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
         timer.schedule(task, 1000, 500);
 
         initTable();
-
 
         new Thread(new Runnable() {
             @Override
@@ -225,6 +244,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
 
+
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
@@ -242,6 +262,26 @@ public class MainActivity extends AppCompatActivity {
             //float limit = Float.parseFloat(limitEditText.getText().toString());
             float limit = 5;
             elemMap.alarmJudge(mainCycleId, limit); // 告警判断
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void commEventBus(UartEvent uartEvent) {
+        try {
+
+            byte[] data = uartEvent.data;
+
+            parser.parse(data);
+
+            System.out.printf("## %d - %d - %d - %d\n", parser.getAmplitude(), parser.getHeight(),
+                parser.getWeight(), parser.getWindSpeed());
+
+            weightAlarm();
+            //System.out.println("## I have get uart0 data!");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -409,11 +449,24 @@ public class MainActivity extends AppCompatActivity {
             sideArea.drawSideArea(this, mainFrame);
         }
 
-        findViewById(R.id.menu).setOnClickListener(new View.OnClickListener() {
+
+        HashMap<String, Object> viewMap = DrawTool.drawMenu(this, mainFrame);
+        HashMap<String, Object> zoomMap = DrawTool.drawZoom(this, mainFrame);
+
+        if (!viewMapBak.isEmpty()) {
+            DrawTool.eraseMenu(this, mainFrame, viewMapBak);
+        }
+        viewMapBak = viewMap;
+        if (!zoomMapBak.isEmpty()) {
+            DrawTool.eraseZoom(this, mainFrame, zoomMapBak);
+        }
+        zoomMapBak = zoomMap;
+
+        ((ImageView) viewMap.get("R.id.menu")).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ImageView btnMenu = (ImageView) findViewById(R.id.menu);
-                LinearLayout menuExpand = (LinearLayout) findViewById(R.id.menu_expand);
+                ImageView btnMenu = (ImageView) viewMap.get("R.id.menu");
+                LinearLayout menuExpand = (LinearLayout) viewMap.get("R.id.menu_expand");
                 Context contex = getApplicationContext();
                 if (menuExpand.getVisibility() == View.GONE) {
                     menuExpand.setVisibility(View.VISIBLE);
@@ -431,12 +484,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         List<ImageView> menuButtons = new ArrayList<ImageView>() {{
-            add((ImageView) findViewById(R.id.crane_setting));
-            add((ImageView) findViewById(R.id.area_setting));
-            add((ImageView) findViewById(R.id.calibration_setting));
-            add((ImageView) findViewById(R.id.alarm_setting));
-            add((ImageView) findViewById(R.id.zoom_in));
-            add((ImageView) findViewById(R.id.zoom_out));
+            add((ImageView) viewMap.get("R.id.crane_setting"));
+            add((ImageView) viewMap.get("R.id.area_setting"));
+            add((ImageView) viewMap.get("R.id.calibration_setting"));
+            add((ImageView) viewMap.get("R.id.alarm_setting"));
+            add((ImageView) viewMap.get("R.id.load_attribute"));
+            add((ImageView) zoomMap.get("R.id.zoom_in"));
+            add((ImageView) zoomMap.get("R.id.zoom_out"));
         }};
 
         for (ImageView view : menuButtons) {
@@ -444,7 +498,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 放大
-        ImageView zoomIn = (ImageView) findViewById(R.id.zoom_in);
+        ImageView zoomIn = (ImageView) zoomMap.get("R.id.zoom_in");
         zoomIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -456,7 +510,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 缩小
-        ImageView zoomOut = (ImageView) findViewById(R.id.zoom_out);
+        ImageView zoomOut = (ImageView) zoomMap.get("R.id.zoom_out");
         zoomOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -468,7 +522,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 跳到塔基设置页面
-        ImageView craneSetting = (ImageView) findViewById(R.id.crane_setting);
+        ImageView craneSetting = (ImageView) viewMap.get("R.id.crane_setting");
         craneSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -479,7 +533,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // 跳到区域设置页面
-        ImageView areaSetting = (ImageView) findViewById(R.id.area_setting);
+        ImageView areaSetting = (ImageView) viewMap.get("R.id.area_setting");
         areaSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -489,7 +543,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 跳到标定设置页面
-        ImageView calibrationSetting = (ImageView) findViewById(R.id.calibration_setting);
+        ImageView calibrationSetting = (ImageView) viewMap.get("R.id.calibration_setting");
         calibrationSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -498,7 +552,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        DrawTool.drawMenu(this, mainFrame);
+        // 跳到告警设置页面
+        ImageView alarmSetting = (ImageView) viewMap.get("R.id.alarm_setting");
+        alarmSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AlarmSetting.class);
+                startActivity(intent);
+            }
+        });
+
+        // 跳转到负荷特性
+        ImageView loadAttribute = (ImageView) viewMap.get("R.id.load_attribute");
+        loadAttribute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, LoadAttribute.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     /**
@@ -533,5 +606,34 @@ public class MainActivity extends AppCompatActivity {
         if (cranes == null) {
             new CraneDao(MainActivity.this).insert(crane);
         }
+    }
+
+
+    // https://www.cnblogs.com/yongdaimi/p/7943226.html 控件动画
+    public void weightAlarm() {
+        ImageView weight = (ImageView) findViewById(R.id.weight_logo);
+
+        ObjectAnimator oa = ObjectAnimator.ofFloat(weight, "scaleX", 0.90f, 1.1f);
+        oa.setDuration(1000);
+        ObjectAnimator oa2 = ObjectAnimator.ofFloat(weight, "scaleY", 0.90f, 1.1f);
+        oa2.setDuration(1000);
+
+        weight.setImageDrawable(getResources().getDrawable(R.mipmap.weight_alarm));
+        //weight.setBackgroundDrawable(getResources().getDrawable(R.mipmap.weight_alarm));
+        //ObjectAnimator oa3 = ObjectAnimator.ofInt(weight, "backgroundColor", Color.BLACK, Color.RED, Color.BLACK);
+        //oa3.setDuration(1000);
+
+        oa.start();
+        oa2.start();
+        //oa3.start();
+
+        oa = ObjectAnimator.ofFloat(weight, "scaleX", 1.1f, 0.90f);
+        oa.setDuration(1000);
+        oa2 = ObjectAnimator.ofFloat(weight, "scaleY", 1.1f, 0.90f);
+        oa2.setDuration(1000);
+
+        oa.start();
+        oa2.start();
+
     }
 }

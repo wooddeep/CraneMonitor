@@ -5,12 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
-public class CalibrationSetting extends AppCompatActivity {
+import com.wooddeep.crane.R;
+
+public class AlarmSetting extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.calibration_setting);
+        setContentView(R.layout.alarm_settting);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -20,13 +22,13 @@ public class CalibrationSetting extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
 
-        ImageView closeBtn = (ImageView)findViewById(R.id.clock_calibration);
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+//        ImageView closeBtn = (ImageView)findViewById(R.id.alarm_setting);
+//        closeBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                finish();
+//            }
+//        });
 
     }
 }

@@ -21,6 +21,10 @@
         </activity>
         <activity android:name="com.wooddeep.crane.CalibrationSetting">
         </activity>
+        <activity android:name="com.wooddeep.crane.AlarmSetting">
+        </activity>
+        <activity android:name="com.wooddeep.crane.LoadAttribute">
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>

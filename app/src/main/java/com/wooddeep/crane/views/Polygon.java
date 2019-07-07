@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import com.wooddeep.crane.views.Vertex;
+
 import java.util.ArrayList;
 import java.util.List;
 
