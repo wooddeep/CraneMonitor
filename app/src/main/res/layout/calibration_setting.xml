@@ -45,14 +45,19 @@
             <TextView
                 android:id="@+id/tv"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="No.:19026"
-                android:textSize="14dp" />
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="标定值设置"
+                android:textStyle="bold"
+                android:textSize="15dp" />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SCT16014A"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="calibration"
+                android:textStyle="bold"
                 android:textSize="14dp" />
         </LinearLayout>
 
@@ -86,7 +91,7 @@
                 android:background="@drawable/frame_border">
 
                 <ImageView
-                    android:id="@+id/clock_logo"
+                    android:id="@+id/gear_shift_logo"
                     android:layout_width="0dp"
                     android:layout_height="55dp"
                     android:layout_centerInParent="true"
@@ -101,7 +106,7 @@
                     android:layout_weight="8">
 
                     <Button
-                        android:id="@+id/clock_logo"
+                        android:id="@+id/first_gear"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_centerInParent="true"
@@ -111,35 +116,16 @@
                         android:text="一档"
                         android:textSize="20dp" />
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/clock_logo"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="60dp"
+                        android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <EditText
-                            android:id="@+id/clock_logo"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center"
-                            android:layout_marginTop="15dp"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="起始值"
-                            android:textSize="20dp" />
-
-                        <TextView
-                            android:id="@+id/clock_logo"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:paddingBottom="25dp"
-                            android:text="起始值"
-                            android:textSize="20dp" />
-                    </LinearLayout>
+                        android:gravity="center"
+                        android:text="10/s"
+                        android:textSize="20dp" />
 
                     <Button
                         android:id="@+id/clock_logo"
@@ -152,35 +138,16 @@
                         android:text="二挡"
                         android:textSize="20dp" />
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/clock_logo"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="60dp"
+                        android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <EditText
-                            android:id="@+id/clock_logo"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center"
-                            android:layout_marginTop="15dp"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="起始值"
-                            android:textSize="20dp" />
-
-                        <TextView
-                            android:id="@+id/clock_logo"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:paddingBottom="25dp"
-                            android:text="起始值"
-                            android:textSize="20dp" />
-                    </LinearLayout>
+                        android:gravity="center"
+                        android:text="10/s"
+                        android:textSize="20dp" />
 
                     <Button
                         android:id="@+id/clock_logo"
@@ -193,35 +160,16 @@
                         android:text="三挡"
                         android:textSize="20dp" />
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/clock_logo"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="60dp"
+                        android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <EditText
-                            android:id="@+id/clock_logo"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center"
-                            android:layout_marginTop="15dp"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="起始值"
-                            android:textSize="20dp" />
-
-                        <TextView
-                            android:id="@+id/clock_logo"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:paddingBottom="25dp"
-                            android:text="起始值"
-                            android:textSize="20dp" />
-                    </LinearLayout>
+                        android:gravity="center"
+                        android:text="10/s"
+                        android:textSize="20dp" />
 
                     <Button
                         android:id="@+id/clock_logo"
@@ -234,35 +182,16 @@
                         android:text="四挡"
                         android:textSize="20dp" />
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/clock_logo"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="60dp"
+                        android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <EditText
-                            android:id="@+id/clock_logo"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center"
-                            android:layout_marginTop="15dp"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="起始值"
-                            android:textSize="20dp" />
-
-                        <TextView
-                            android:id="@+id/clock_logo"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:paddingBottom="25dp"
-                            android:text="起始值"
-                            android:textSize="20dp" />
-                    </LinearLayout>
+                        android:gravity="center"
+                        android:text="10/s"
+                        android:textSize="20dp" />
 
                     <Button
                         android:id="@+id/clock_logo"
@@ -275,35 +204,16 @@
                         android:text="五档"
                         android:textSize="20dp" />
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/clock_logo"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="60dp"
+                        android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <EditText
-                            android:id="@+id/clock_logo"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center"
-                            android:layout_marginTop="15dp"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="起始值"
-                            android:textSize="20dp" />
-
-                        <TextView
-                            android:id="@+id/clock_logo"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:paddingBottom="25dp"
-                            android:text="起始值"
-                            android:textSize="20dp" />
-                    </LinearLayout>
+                        android:gravity="center"
+                        android:text="10/s"
+                        android:textSize="20dp" />
 
                 </LinearLayout>
             </TableRow>
@@ -332,6 +242,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="10">
 
+                    <!--
                     <ImageView
                         android:id="@+id/clock_logo"
                         android:layout_width="0dp"
@@ -341,7 +252,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         app:srcCompat="@mipmap/coordinates" />
-
+                    -->
                     <LinearLayout
                         android:id="@+id/clock_logo"
                         android:layout_width="0dp"
@@ -428,6 +339,7 @@
                         android:text="起始值"
                         android:textSize="20dp" />
 
+                    <!--
                     <ImageView
                         android:id="@+id/clock_logo"
                         android:layout_width="0dp"
@@ -437,7 +349,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         app:srcCompat="@mipmap/coordinates" />
-
+                    -->
                     <LinearLayout
                         android:id="@+id/clock_logo"
                         android:layout_width="0dp"

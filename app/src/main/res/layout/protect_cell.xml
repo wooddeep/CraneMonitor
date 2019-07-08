@@ -18,7 +18,6 @@
             <TableRow>
                 <!-- one coordinator -->
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
@@ -26,29 +25,28 @@
                     android:text="X1:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/etx1"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
 
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
                     android:text="Y1:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/ety1"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
                 <Button
-                    android:id="@+id/tv"
+                    android:id="@+id/btn1"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_marginRight="10dp"
@@ -58,36 +56,34 @@
 
                 <!-- one coordinator -->
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
                     android:text="X2:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/etx2"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
 
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
                     android:text="Y2:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/ety2"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
                 <Button
-                    android:id="@+id/tv"
+                    android:id="@+id/btn2"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_marginRight="10dp"
@@ -97,36 +93,34 @@
 
                 <!-- one coordinator -->
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
                     android:text="X3:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/etx3"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
 
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
                     android:text="Y3:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/ety3"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
                 <Button
-                    android:id="@+id/tv"
+                    android:id="@+id/btn3"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
@@ -139,37 +133,35 @@
             <TableRow>
                 <!-- one coordinator -->
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_marginLeft="10dp"
                     android:layout_height="wrap_content"
-                    android:text="X1:"
+                    android:text="X4:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/etx4"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
 
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
-                    android:text="Y1:"
+                    android:text="Y4:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/ety4"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
                 <Button
-                    android:id="@+id/tv"
+                    android:id="@+id/btn4"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_marginRight="10dp"
@@ -179,36 +171,34 @@
 
                 <!-- one coordinator -->
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
-                    android:text="X2:"
+                    android:text="X5:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/etx5"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
 
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
-                    android:text="Y2:"
+                    android:text="Y5:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/ety5"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
                 <Button
-                    android:id="@+id/tv"
+                    android:id="@+id/btn5"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_marginRight="10dp"
@@ -218,36 +208,34 @@
 
                 <!-- one coordinator -->
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
-                    android:text="X3:"
+                    android:text="X6:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/etx6"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
 
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
-                    android:text="Y3:"
+                    android:text="Y6:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/ety6"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
                 <Button
-                    android:id="@+id/tv"
+                    android:id="@+id/btn6"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
@@ -260,37 +248,35 @@
             <TableRow>
                 <!-- one coordinator -->
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_marginLeft="10dp"
                     android:layout_height="wrap_content"
-                    android:text="X1:"
+                    android:text="X7:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/etx7"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
 
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
-                    android:text="Y1:"
+                    android:text="Y7:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/ety7"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
                 <Button
-                    android:id="@+id/tv"
+                    android:id="@+id/btn7"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_marginRight="10dp"
@@ -300,36 +286,34 @@
 
                 <!-- one coordinator -->
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
-                    android:text="X2:"
+                    android:text="X8:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/etx8"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
 
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
-                    android:text="Y2:"
+                    android:text="Y8:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/ety8"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
                 <Button
-                    android:id="@+id/tv"
+                    android:id="@+id/btn8"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_marginRight="10dp"
@@ -339,36 +323,34 @@
 
                 <!-- one coordinator -->
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
-                    android:text="X3:"
+                    android:text="X9:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/etx9"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
 
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
-                    android:text="Y3:"
+                    android:text="Y9:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/ety9"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
                 <Button
-                    android:id="@+id/tv"
+                    android:id="@+id/btn9"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
@@ -381,37 +363,35 @@
             <TableRow>
                 <!-- one coordinator -->
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_marginLeft="10dp"
                     android:layout_height="wrap_content"
-                    android:text="X1:"
+                    android:text="X10:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/etx10"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
 
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
-                    android:text="Y1:"
+                    android:text="Y10:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/ety10"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
                 <Button
-                    android:id="@+id/tv"
+                    android:id="@+id/btn10"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_marginRight="10dp"
@@ -421,36 +401,34 @@
 
                 <!-- one coordinator -->
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
-                    android:text="X2:"
+                    android:text="X11:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/etx11"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
 
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
-                    android:text="Y2:"
+                    android:text="Y11:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/ety11"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
                 <Button
-                    android:id="@+id/tv"
+                    android:id="@+id/btn11"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_marginRight="10dp"
@@ -460,36 +438,34 @@
 
                 <!-- one coordinator -->
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
-                    android:text="X3:"
+                    android:text="X12:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/etx12"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
 
                 <TextView
-                    android:id="@+id/tv"
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_height="wrap_content"
-                    android:text="Y3:"
+                    android:text="Y12:"
                     android:textSize="14dp" />
                 <EditText
-                    android:id="@+id/tv"
+                    android:id="@+id/ety12"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="N/A"
                     android:textSize="14dp" />
                 <Button
-                    android:id="@+id/tv"
+                    android:id="@+id/btn12"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
