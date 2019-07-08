@@ -19,6 +19,8 @@
         </activity>
         <activity android:name="com.wooddeep.crane.AreaSetting">
         </activity>
+        <activity android:name="com.wooddeep.crane.ProtectArea">
+        </activity>
         <activity android:name="com.wooddeep.crane.CalibrationSetting">
         </activity>
         <activity android:name="com.wooddeep.crane.AlarmSetting">

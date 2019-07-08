@@ -486,6 +486,7 @@ public class MainActivity extends AppCompatActivity {
         List<ImageView> menuButtons = new ArrayList<ImageView>() {{
             add((ImageView) viewMap.get("R.id.crane_setting"));
             add((ImageView) viewMap.get("R.id.area_setting"));
+            add((ImageView) viewMap.get("R.id.protect_area_setting"));
             add((ImageView) viewMap.get("R.id.calibration_setting"));
             add((ImageView) viewMap.get("R.id.alarm_setting"));
             add((ImageView) viewMap.get("R.id.load_attribute"));
@@ -538,6 +539,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, AreaSetting.class);
+                startActivity(intent);
+            }
+        });
+
+        ImageView protectSetting = (ImageView) viewMap.get("R.id.protect_area_setting");
+        protectSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ProtectArea.class);
                 startActivity(intent);
             }
         });
