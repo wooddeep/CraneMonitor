@@ -1,16 +1,18 @@
 package com.wooddeep.crane.persist;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.wooddeep.crane.ProtectArea;
+import com.wooddeep.crane.persist.entity.AlarmSet;
 import com.wooddeep.crane.persist.entity.Area;
-import com.wooddeep.crane.persist.entity.ArticleBean;
+import com.wooddeep.crane.persist.entity.Calibration;
 import com.wooddeep.crane.persist.entity.Crane;
-import com.wooddeep.crane.persist.entity.UserBean;
+import com.wooddeep.crane.persist.entity.Load;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -34,6 +36,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     // 本类的单例实例
     private static DatabaseHelper instance;
+
+    // DatabaseHelper 对象的 connSource
+    private ConnectionSource connSource = null;
+
+    private SQLiteDatabase db = null;
 
     // 存储APP中所有的DAO对象的Map集合
     private Map<String, Dao> daos = new HashMap<>();
@@ -69,11 +76,27 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         return dao;
     }
 
+    @SuppressWarnings("unused")
+    public void createTable(Class cls) {
+        try {
+            TableUtils.createTableIfNotExists(this.connSource, cls);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override // 创建数据库时调用的方法
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         try {
-            TableUtils.createTable(connectionSource, Crane.class);
-            TableUtils.createTable(connectionSource, Area.class);
+            this.connSource = connectionSource;
+            this.db = database;
+            TableUtils.createTableIfNotExists(connectionSource, Crane.class);  // 塔基
+            TableUtils.createTableIfNotExists(connectionSource, Area.class);   // 区域
+            //TableUtils.createTableIfNotExists(connectionSource, ProtectArea.class);   // 保护区域
+            //TableUtils.createTableIfNotExists(connectionSource, Calibration.class); // 标定
+            //TableUtils.createTableIfNotExists(connectionSource, Load.class);  // 负荷特性
+            //TableUtils.createTableIfNotExists(connectionSource, AlarmSet.class); // 告警
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -84,6 +107,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         try {
             TableUtils.dropTable(connectionSource, Crane.class, true);
             TableUtils.dropTable(connectionSource, Area.class, true);
+            //TableUtils.dropTable(connectionSource, ProtectArea.class, true);
+            //TableUtils.dropTable(connectionSource, Calibration.class, true);
+            //TableUtils.dropTable(connectionSource, Load.class, true);
+            //TableUtils.dropTable(connectionSource, AlarmSet.class, true);
             onCreate(database, connectionSource);
         } catch (SQLException e) {
             e.printStackTrace();

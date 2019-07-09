@@ -1,25 +1,20 @@
 package com.wooddeep.crane;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.wooddeep.crane.persist.DatabaseHelper;
+import com.wooddeep.crane.persist.dao.AreaDao;
+import com.wooddeep.crane.persist.dao.CalibrationDao;
+import com.wooddeep.crane.persist.entity.Area;
+import com.wooddeep.crane.persist.entity.Calibration;
+
+import java.util.List;
+
 public class CalibrationSetting extends AppCompatActivity {
-
-    // 回转标定
-    private float rotateStartX1 = 0.0f;
-    private float rotateStartY1 = 0.0f;
-    private float rotateStartData = 0.0f; //根据485传输的电压数据
-
-    private float rotateEndX2 = 0.0f;
-    private float rotateEndY2 = 0.0f;
-    private float rotateEndData = 0.0f;   // 根据485传输的电压数据
-
-    private float rotateRate = 0.1f;      // 角度差值 / (rotateEndData - rotateStartData)
-
-    // 档位标定
-    private float Gear1 = 0.1f;  // 一档
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +28,6 @@ public class CalibrationSetting extends AppCompatActivity {
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-
         ImageView closeBtn = (ImageView)findViewById(R.id.clock_calibration);
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,9 +35,19 @@ public class CalibrationSetting extends AppCompatActivity {
                 finish();
             }
         });
-
+        confLoad(getApplicationContext());
     }
 
+    private List<Calibration> confLoad(Context contex) {
+        CalibrationDao dao = new CalibrationDao(contex);
+        DatabaseHelper.getInstance(contex).createTable(Calibration.class);
+        List<Calibration> paras = dao.selectAll();
+        if (paras == null || paras.size() == 0) {
+            dao.insert(new Calibration(1.0f));
+        }
 
+        paras = dao.selectAll();
+        return paras;
+    }
 
 }
