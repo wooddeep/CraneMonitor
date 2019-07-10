@@ -16,7 +16,9 @@ import com.wooddeep.crane.persist.entity.Load;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 数据库操作管理工具类
@@ -37,10 +39,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     // 本类的单例实例
     private static DatabaseHelper instance;
 
-    // DatabaseHelper 对象的 connSource
-    private ConnectionSource connSource = null;
-
-    private SQLiteDatabase db = null;
 
     // 存储APP中所有的DAO对象的Map集合
     private Map<String, Dao> daos = new HashMap<>();
@@ -79,7 +77,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     @SuppressWarnings("unused")
     public void createTable(Class cls) {
         try {
-            TableUtils.createTableIfNotExists(this.connSource, cls);
+            Iterator<String> it = daos.keySet().iterator();
+            while (it.hasNext()) {
+                String name = it.next();
+                TableUtils.createTableIfNotExists(daos.get(name).getConnectionSource(), cls);
+                break;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -88,8 +91,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     @Override // 创建数据库时调用的方法
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         try {
-            this.connSource = connectionSource;
-            this.db = database;
+
             TableUtils.createTableIfNotExists(connectionSource, Crane.class);  // 塔基
             TableUtils.createTableIfNotExists(connectionSource, Area.class);   // 区域
             //TableUtils.createTableIfNotExists(connectionSource, ProtectArea.class);   // 保护区域

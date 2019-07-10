@@ -10,105 +10,104 @@ public class Calibration {
     private int id;
 
     @DatabaseField(columnName = "rotateStartX1", useGetSet = true, defaultValue = "-1.0f")
-    private float rotateStartX1;
+    public float rotateStartX1;
 
     @DatabaseField(columnName = "rotateStartY1", useGetSet = true, defaultValue = "-1.0f")
-    private float rotateStartY1;
+    public float rotateStartY1;
 
     @DatabaseField(columnName = "rotateStartData", useGetSet = true, defaultValue = "-1.0f") // data代表从串口中解析到的数据
-    private float rotateStartData;
+    public float rotateStartData;
 
     @DatabaseField(columnName = "rotateEndX2", useGetSet = true, defaultValue = "-1.0f")
-    private float rotateEndX2;
+    public float rotateEndX2;
 
     @DatabaseField(columnName = "rotateEndY2", useGetSet = true, defaultValue = "-1.0f")
-    private float rotateEndY2;
+    public float rotateEndY2;
 
     @DatabaseField(columnName = "rotateEndData", useGetSet = true, defaultValue = "-1.0f")
-    private float rotateEndData;
+    public float rotateEndData;
 
     @DatabaseField(columnName = "rotateRate", useGetSet = true, defaultValue = "-1.0f")
-    private float rotateRate;
+    public float rotateRate;
 
     @DatabaseField(columnName = "GearRate1", useGetSet = true, defaultValue = "-1.0f")
-    private float GearRate1;
+    public float GearRate1;
 
     @DatabaseField(columnName = "GearRate2", useGetSet = true, defaultValue = "-1.0f")
-    private float GearRate2;
+    public float GearRate2;
 
     @DatabaseField(columnName = "GearRate3", useGetSet = true, defaultValue = "-1.0f")
-    private float GearRate3;
+    public float GearRate3;
 
     @DatabaseField(columnName = "GearRate4", useGetSet = true, defaultValue = "-1.0f")
-    private float GearRate4;
+    public float GearRate4;
 
     @DatabaseField(columnName = "GearRate5", useGetSet = true, defaultValue = "-1.0f")
-    private float GearRate5;
+    public float GearRate5;
 
     // 倾角
     @DatabaseField(columnName = "dipAngleStart", useGetSet = true, defaultValue = "-1.0f")
-    private float dipAngleStart;
+    public float dipAngleStart;
 
     @DatabaseField(columnName = "dipAngleStartData", useGetSet = true, defaultValue = "-1.0f") // data代表从串口中解析到的数据
-    private float dipAngleStartData;
+    public float dipAngleStartData;
 
     @DatabaseField(columnName = "dipAngleEnd", useGetSet = true, defaultValue = "-1.0f")
-    private float dipAngleEnd;
+    public float dipAngleEnd;
 
     @DatabaseField(columnName = "dipAngleEndData", useGetSet = true, defaultValue = "-1.0f")
-    private float dipAngleEndData;
+    public float dipAngleEndData;
 
     @DatabaseField(columnName = "dipAngleRate", useGetSet = true, defaultValue = "-1.0f")
-    private float dipAngleRate;
+    public float dipAngleRate;
 
     // 重量
     @DatabaseField(columnName = "weightStart", useGetSet = true, defaultValue = "-1.0f")
-    private float weightStart;
+    public float weightStart;
 
     @DatabaseField(columnName = "weightStartData", useGetSet = true, defaultValue = "-1.0f") // data代表从串口中解析到的数据
-    private float weightStartData;
+    public float weightStartData;
 
     @DatabaseField(columnName = "weightEnd", useGetSet = true, defaultValue = "-1.0f")
-    private float weightEnd;
+    public float weightEnd;
 
     @DatabaseField(columnName = "weightEndData", useGetSet = true, defaultValue = "-1.0f")
-    private float weightEndData;
+    public float weightEndData;
 
     @DatabaseField(columnName = "weightRate", useGetSet = true, defaultValue = "-1.0f")
-    private float weightRate;
+    public float weightRate;
 
     // 小车长度
     @DatabaseField(columnName = "lengthStart", useGetSet = true, defaultValue = "-1.0f")
-    private float lengthStart;
+    public float lengthStart;
 
     @DatabaseField(columnName = "lengthStartData", useGetSet = true, defaultValue = "-1.0f") // data代表从串口中解析到的数据
-    private float lengthStartData;
+    public float lengthStartData;
 
     @DatabaseField(columnName = "lengthEnd", useGetSet = true, defaultValue = "-1.0f")
-    private float lengthEnd;
+    public float lengthEnd;
 
     @DatabaseField(columnName = "lengthEndData", useGetSet = true, defaultValue = "-1.0f")
-    private float lengthEndData;
+    public float lengthEndData;
 
     @DatabaseField(columnName = "lengthRate", useGetSet = true, defaultValue = "-1.0f")
-    private float lengthRate;
+    public float lengthRate;
 
     // 小车高度
     @DatabaseField(columnName = "heightStart", useGetSet = true, defaultValue = "-1.0f")
-    private float heightStart;
+    public float heightStart;
 
     @DatabaseField(columnName = "heightStartData", useGetSet = true, defaultValue = "-1.0f") // data代表从串口中解析到的数据
-    private float heightStartData;
+    public float heightStartData;
 
     @DatabaseField(columnName = "heightEnd", useGetSet = true, defaultValue = "-1.0f")
-    private float heightEnd;
+    public float heightEnd;
 
     @DatabaseField(columnName = "heightEndData", useGetSet = true, defaultValue = "-1.0f")
-    private float heightEndData;
+    public float heightEndData;
 
     @DatabaseField(columnName = "heightRate", useGetSet = true, defaultValue = "-1.0f")
-    private float heightRate;
-
+    public float heightRate;
 
     public Calibration() {
         super();
