@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.dao.CalibrationDao;
 import com.wooddeep.crane.persist.entity.Calibration;
+import com.wooddeep.crane.tookit.CommTool;
+import com.wooddeep.crane.tookit.Coordinate;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -77,7 +79,6 @@ public class CalibrationSetting extends AppCompatActivity {
     private CalibrationCell  rotateStartX1 =  new CalibrationCell("rotateStartX1", "rotateStartData", "rotateRate", R.id.etx1, R.id.tv_rotate_coord1, R.id.btn_rotate_coord1, R.id.tv_rotate_rate) {
         @Override
         public void setOnClickListener() {
-            //CalibrationCell cell = this;
             Button btn = (Button)findViewById(rotateStartX1.buttonId);
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -91,9 +92,41 @@ public class CalibrationSetting extends AppCompatActivity {
                     TextView tvEnd = (TextView) findViewById(rotateEndX2.uartDataTextViewId);
                     float end = Float.parseFloat(tvEnd.getText().toString());
 
-                    float dataDelta = end - start;
+                    float dataDelta = end - start; // 读值的delta值
 
-                    System.out.println("#### detaDelata = " + dataDelta);
+                    // TODO 通过圆心，(x1, y1), (x2, y2) 求得角度值
+                    Coordinate center = CommTool.getMainCoordinate(CalibrationSetting.this);
+                    System.out.printf("## center: x: %f, y: %f\n", center.x, center.y);
+
+                    EditText etStartX = (EditText)findViewById(rotateStartX1.dimValueEditTextId);
+                    EditText etStartY = (EditText)findViewById(rotateStartY1.dimValueEditTextId);
+                    System.out.printf("## start: x: %s, y: %s\n", etStartX.getText(), etStartY.getText());
+
+                    EditText etEndX = (EditText)findViewById(rotateEndX2.dimValueEditTextId);
+                    EditText etEndY = (EditText)findViewById(rotateEndY2.dimValueEditTextId);
+                    System.out.printf("## end: x: %s, y: %s\n", etEndX.getText(), etEndY.getText());
+
+                    double tanStart = (Double.parseDouble(etStartY.getText().toString()) - center.y) /
+                        (Double.parseDouble(etStartX.getText().toString()) - center.x);
+
+                    double tanEnd = (Double.parseDouble(etEndY.getText().toString()) - center.y) /
+                        (Double.parseDouble(etEndX.getText().toString()) - center.x);
+
+                    System.out.printf("## tanStart: %f, tanEnd: %f\n", tanStart, tanEnd);
+
+                    Double angleStart = Math.toDegrees(Math.atan(tanStart));
+                    Double angleEnd = Math.toDegrees(Math.atan(tanEnd));
+
+                    // https://locationtech.github.io/jts/javadoc/org/locationtech/jts/algorithm/Angle.html
+
+                    System.out.printf("## angleStart: %f, angleEnd: %f\n", angleStart, angleEnd);
+
+                    //double degrees = 45.0;
+                    //double radians = Math.toRadians(degrees);
+                    //System.out.format("pi 的值为 %.4f%n", Math.PI);
+                    //System.out.format("%.4f 的反正弦值为 %.4f 度 %n", Math.sin(radians), Math.toDegrees(Math.asin(Math.sin(radians))));
+                    //Math.asin();
+
                 }
             });
         }
