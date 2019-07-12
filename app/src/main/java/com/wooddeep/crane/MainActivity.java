@@ -251,6 +251,7 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void messageEventBus(MessageEvent userEvent) {
         //fanRotate();
+        //System.out.println("### event message!");
         elemMap.alramFlink();
     }
 

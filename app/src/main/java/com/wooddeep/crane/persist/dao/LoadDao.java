@@ -10,6 +10,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+// ormlite的使用
+// https://blog.csdn.net/industriously/article/details/50790624
+
 public class LoadDao {
 
     private Context context;
@@ -23,6 +26,65 @@ public class LoadDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public List<String> getCraneTypes() {
+        List<String> out = new ArrayList<>();
+
+        try {
+            List<Load> loads = dao.queryBuilder().selectColumns("craneType").distinct().query();
+            for (Load load : loads) {
+                out.add(load.getCraneType());
+            }
+        } catch (Exception e) {
+
+        }
+        return out;
+    }
+
+    public List<String> getArmLengths(String craneType) {
+        List<String> out = new ArrayList<>();
+
+        try {
+            List<Load> loads = dao.queryBuilder().selectColumns("armLength").distinct()
+                .where().eq("craneType", craneType).query();
+            for (Load load : loads) {
+                out.add(load.getArmLength());
+            }
+        } catch (Exception e) {
+            // NOTHING
+        }
+        return out;
+    }
+
+    public List<String> getCables(String craneType, String armLength) {
+        List<String> out = new ArrayList<>();
+
+        try {
+            List<Load> loads = dao.queryBuilder().selectColumns("power").distinct().where()
+                .eq("craneType", craneType).and().eq("armLength", armLength).query();
+            for (Load load : loads) {
+                out.add(load.getPower());
+            }
+        } catch (Exception e) {
+            // NOTHING
+        }
+        return out;
+    }
+
+
+    public List<Load> getLoads(String craneType, String armLength, String power) {
+        List<Load> out = new ArrayList<>();
+
+        try {
+            List<Load> loads = dao.queryBuilder().where().eq("craneType", craneType)
+                .and().eq("armLength", armLength).and().eq("power", power).query();
+            out = loads;
+        } catch (Exception e) {
+            // NOTHING
+        }
+        return out;
     }
 
     // 向user表中添加一条数据

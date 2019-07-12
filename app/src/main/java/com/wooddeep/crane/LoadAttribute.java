@@ -4,33 +4,29 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.Toast;
 
-import com.bigkoo.alertview.AlertView;
-import com.bigkoo.alertview.OnItemClickListener;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.rmondjone.locktableview.DataCell;
 import com.rmondjone.locktableview.DisplayUtil;
 import com.rmondjone.locktableview.LockTableView;
 import com.rmondjone.xrecyclerview.XRecyclerView;
-import com.wooddeep.crane.persist.dao.AreaDao;
-import com.wooddeep.crane.persist.entity.Area;
+import com.wooddeep.crane.persist.DatabaseHelper;
+import com.wooddeep.crane.persist.dao.LoadDao;
+import com.wooddeep.crane.persist.entity.Load;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+//import android.support.design.widget.Snackbar;
 
 
 // android开源控件
@@ -66,29 +62,38 @@ public class LoadAttribute extends AppCompatActivity {
 
     private Activity activity = this;
 
-    private List<Area> confLoad(Context contex) {
-        AreaDao dao = new AreaDao(contex);
-
-        List<Area> paras = dao.selectAll();
+    private List<Load> confLoad(Context contex) {
+        DatabaseHelper.getInstance(contex).createTable(Load.class);
+        LoadDao dao = new LoadDao(contex);
+        List<Load> paras = dao.selectAll();
         if (paras == null || paras.size() == 0) {
-            dao.insert(new Area(
-                100,
-                0,
-                0,
-                50,
-                50,
-                100,
-                100,
-                150,
-                150,
-                200,
-                200,
-                250,
-                250)
-            );
-        }
+            Load load = new Load();
+            load.setCraneType("JL186/12");
+            load.setPower("2");
+            load.setArmLength("50");
+            load.setCoordinate("0");
+            load.setWeight("6");
+            dao.insert(load);
 
+            load = new Load();
+            load.setCraneType("JL186/12");
+            load.setPower("2");
+            load.setArmLength("50");
+            load.setCoordinate("34");
+            load.setWeight("6");
+            dao.insert(load);
+
+            load = new Load();
+            load.setCraneType("JL186/12");
+            load.setPower("2");
+            load.setArmLength("50");
+            load.setCoordinate("35");
+            load.setWeight("5.6");
+            dao.insert(load);
+        }
         paras = dao.selectAll();
+
+        System.out.println(paras.size());
         return paras;
     }
 
@@ -100,32 +105,62 @@ public class LoadAttribute extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
+        confLoad(getApplicationContext());
+
+        LoadDao dao = new LoadDao(getApplicationContext());
+        List<String> craneTypes = dao.getCraneTypes();
+        List<String> armLengths = dao.getArmLengths(craneTypes.get(0));
+        List<String> cables = dao.getCables(craneTypes.get(0), armLengths.get(0));
+
         MaterialSpinner spinner = (MaterialSpinner) findViewById(R.id.crane_type_option);
-        spinner.setItems("Ice Cream Sandwich", "Jelly Bean", "KitKat", "Lollipop", "Marshmallow");
+        spinner.setItems(craneTypes);
         spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
+                MaterialSpinner armLenSpinner = (MaterialSpinner) findViewById(R.id.arm_length_option);
+                List<String> armLens = dao.getArmLengths(item);
+                armLenSpinner.setItems(armLens);
+                armLenSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
+                    @Override
+                    public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+                        // TODO
+                    }
+                });
             }
         });
 
-        MaterialSpinner spinner1 = (MaterialSpinner) findViewById(R.id.arm_length_option);
-        spinner1.setItems("Ice Cream Sandwich", "Jelly Bean", "KitKat", "Lollipop", "Marshmallow");
-        spinner1.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
+        MaterialSpinner armLenSpinner = (MaterialSpinner) findViewById(R.id.arm_length_option);
+        armLenSpinner.setItems(armLengths);
+        armLenSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
+                //Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
             }
         });
 
-        MaterialSpinner spinner2 = (MaterialSpinner) findViewById(R.id.rope_num_option);
-        spinner2.setItems("Ice Cream Sandwich", "Jelly Bean", "KitKat", "Lollipop", "Marshmallow");
-        spinner2.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
+        MaterialSpinner cableSpiner = (MaterialSpinner) findViewById(R.id.rope_num_option);
+        cableSpiner.setItems(cables);
+        cableSpiner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
+                //Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
             }
         });
+    }
+
+    public List<Load> queryLoadByCondition() {
+        MaterialSpinner craneTypeSpinner = (MaterialSpinner) findViewById(R.id.crane_type_option);
+        MaterialSpinner armLenSpinner = (MaterialSpinner) findViewById(R.id.arm_length_option);
+        MaterialSpinner cableNumSpinner = (MaterialSpinner) findViewById(R.id.rope_num_option);
+
+        String craneType = craneTypeSpinner.getText().toString();
+        String armLength = armLenSpinner.getText().toString();
+        String cableNum = cableNumSpinner.getText().toString();
+
+        System.out.printf("%s-%s-%s\n", craneType, armLength, cableNum);
+
+        LoadDao dao = new LoadDao(getApplicationContext());
+        return dao.getLoads(craneType, armLength, cableNum);
     }
 
     private void setOnTouchListener(View view) {
@@ -159,6 +194,7 @@ public class LoadAttribute extends AppCompatActivity {
     }
 
     private void setOnClickListener(View view) {
+        /*
         View.OnClickListener onClickListener = new View.OnClickListener() {
 
             @Override
@@ -233,6 +269,7 @@ public class LoadAttribute extends AppCompatActivity {
             }
         };
         view.setOnClickListener(onClickListener);
+        */
     }
 
     private void setOnTouchListener() {
@@ -247,120 +284,38 @@ public class LoadAttribute extends AppCompatActivity {
         }
     }
 
-    public static int StringLength(String value) {
-        int valueLength = 0;
-        String chinese = "[\u4e00-\u9fa5]";
-        for (int i = 0; i < value.length(); i++) {
-            String temp = value.substring(i, i + 1);
-            if (temp.matches(chinese)) {
-                valueLength += 2;
-            } else {
-                valueLength += 1;
-            }
-        }
-        return valueLength;
-    }
 
-    public static void _main(String[] args) {
-        for (int i = 0; i < craneParaNames.length; i++) {
-            System.out.println(StringLength(craneParaNames[i]));
-        }
-    }
+    public ArrayList<ArrayList<DataCell>> areaParaArrange(List<Load> paras) {
 
-    private static String[] craneParaNames = new String[]{
-        "高度",
-        "X1",
-        "Y1",
-        "X2",
-        "Y2",
-        "X3",
-        "Y3",
-        "X4",
-        "Y4",
-        "X5",
-        "Y5",
-        "X6",
-        "Y6",
-    };
-
-
-    public ArrayList<ArrayList<DataCell>> areaParaArrange(List<Area> paras) {
         ArrayList<ArrayList<DataCell>> table = new ArrayList<ArrayList<DataCell>>();
 
+        // 头部信息
         ArrayList<DataCell> head = new ArrayList<DataCell>() {{
-            add(new DataCell(0, "参数类型"));
+            add(new DataCell(0, "小车坐标"));
+            add(new DataCell(0, "额定吊重"));
         }};
-
-        gColId = new ArrayList<Integer>();
-        for (int i = 0; i < paras.size(); i++) {
-            try {
-                head.add(new DataCell(0, String.format("%02d号区域", i + 1),
-                    new JSONObject().put("id", paras.get(i).getId())));
-                gColId.add(paras.get(i).getId());
-            } catch (Exception e) {
-            }
-        }
         table.add(head);
 
-        for (int i = 0; i < craneParaNames.length; i++) {
+        // 数据信息
+        List<Load> loads = queryLoadByCondition();
+        for (Load load : loads) {
             ArrayList<DataCell> row = new ArrayList<DataCell>();
-            row.add(new DataCell(0, craneParaNames[i]));
-            for (int j = 0; j < paras.size(); j++) {
-                switch (i) {
-                    case 0:
-                        JSONObject privData = new JSONObject();
-                        row.add(new DataCell(0, paras.get(j).getHeight() + "", privData));
-                        break;
-                    case 1:
-                        row.add(new DataCell(0, paras.get(j).getX1() + ""));
-                        break;
-                    case 2:
-                        row.add(new DataCell(0, paras.get(j).getY1() + ""));
-                        break;
-                    case 3:
-                        row.add(new DataCell(0, paras.get(j).getX2() + ""));
-                        break;
-                    case 4:
-                        row.add(new DataCell(0, paras.get(j).getY2() + ""));
-                        break;
-                    case 5:
-                        row.add(new DataCell(0, paras.get(j).getX3() + ""));
-                        break;
-                    case 6:
-                        row.add(new DataCell(0, paras.get(j).getY3() + ""));
-                        break;
-                    case 7:
-                        row.add(new DataCell(0, paras.get(j).getX4() + ""));
-                        break;
-                    case 8:
-                        row.add(new DataCell(0, paras.get(j).getY4() + ""));
-                        break;
-                    case 9:
-                        row.add(new DataCell(0, paras.get(j).getX5() + ""));
-                        break;
-                    case 10:
-                        row.add(new DataCell(0, paras.get(j).getY5() + ""));
-                        break;
-                    case 11:
-                        row.add(new DataCell(0, paras.get(j).getX6() + ""));
-                        break;
-                    case 12:
-                        row.add(new DataCell(0, paras.get(j).getY6() + ""));
-                        break;
-                }
-            }
-
+            row.add(new DataCell(0, load.getCoordinate()));
+            row.add(new DataCell(0, load.getWeight()));
             table.add(row);
+
         }
 
         return table;
     }
 
-    public void paraTableRender(List<Area> paras) {
-        LinearLayout craneSettingContainer = (LinearLayout) findViewById(R.id.load_attri_container);
+    public void paraTableRender(List<Load> paras) {
+
+        LinearLayout loadAttrContainer = (LinearLayout) findViewById(R.id.load_attri_container);
         ArrayList<ArrayList<DataCell>> table = areaParaArrange(paras);
+
         gTable = table;
-        final LockTableView mLockTableView = new LockTableView(this, craneSettingContainer, table);
+        final LockTableView mLockTableView = new LockTableView(this, loadAttrContainer, table);
         int firstColumnWidth = 100;
         Log.e("表格加载开始", "当前线程：" + Thread.currentThread());
         mLockTableView.setLockFristColumn(true) //是否锁定第一列
@@ -420,14 +375,10 @@ public class LoadAttribute extends AppCompatActivity {
                 }
             })
             .setOnItemSeletor(R.color.dashline_color);//设置Item被选中颜色
-
-        for (int i = 1; i <= paras.size(); i++) {
-            int columnWidth = (screenWidth - firstColumnWidth - 20 * paras.size()) / paras.size();
-            if (columnWidth < 100) columnWidth = 100;
-            mLockTableView.setColumnWidth(i, columnWidth); //设置指定列文本宽度(从0开始计算,宽度单位dp)
-        }
-
+        
+        mLockTableView.setColumnWidth(1, screenWidth - firstColumnWidth); //设置指定列文本宽度(从0开始计算,宽度单位dp)
         mLockTableView.show(); //显示表格,此方法必须调用
+
     }
 
     /**
@@ -440,10 +391,10 @@ public class LoadAttribute extends AppCompatActivity {
         int screenWidthPx = craneSettingContainer.getMeasuredWidth();
         context = getApplicationContext();
         screenWidth = DisplayUtil.px2dip(context, screenWidthPx); // 转换为dp
-        List<Area> paras = confLoad(context);
-        paraTableRender(paras);
+        List<Load> paras = confLoad(context);
+        paraTableRender(paras); // 渲染出表格
 
-        setOnTouchListener();
+        //setOnTouchListener();
 
     }
 }

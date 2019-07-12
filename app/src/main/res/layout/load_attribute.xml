@@ -100,7 +100,7 @@
             android:layout_height="65px"
             android:layout_gravity="center"
             android:layout_marginLeft="20dp"
-            app:srcCompat="@mipmap/arm_length" />
+            app:srcCompat="@mipmap/distance" />
 
         <com.jaredrummler.materialspinner.MaterialSpinner
             android:id="@+id/arm_length_option"
@@ -114,7 +114,7 @@
             android:layout_height="55px"
             android:layout_gravity="center"
             android:layout_marginLeft="20dp"
-            app:srcCompat="@mipmap/rope" />
+            app:srcCompat="@mipmap/cable" />
 
         <com.jaredrummler.materialspinner.MaterialSpinner
             android:id="@+id/rope_num_option"

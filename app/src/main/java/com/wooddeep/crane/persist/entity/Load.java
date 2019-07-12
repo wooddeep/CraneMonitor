@@ -14,17 +14,17 @@ public class Load {
     private String craneType;
 
     @DatabaseField(columnName = "armLength", useGetSet = true, defaultValue = "50") //臂长
-    private float armLength;
+    private String armLength;
 
-    @DatabaseField(columnName = "power", useGetSet = true, defaultValue = "1") // 倍率
-    private int power;
+    @DatabaseField(columnName = "power", useGetSet = true, defaultValue = "2") // 倍率
+    private String power;
 
     // 对应的数据
     @DatabaseField(columnName = "coordinate", useGetSet = true, defaultValue = "50") // 小车坐标
-    private float coordinate;
+    private String coordinate;
 
-    @DatabaseField(columnName = "weight", useGetSet = true, defaultValue = "1") // 对应吊重量
-    private int weight;
+    @DatabaseField(columnName = "weight", useGetSet = true, defaultValue = "2") // 对应吊重量
+    private String weight;
 
     public Load() {
         super();
@@ -52,35 +52,35 @@ public class Load {
         this.craneType = craneType;
     }
 
-    public float getArmLength() {
+    public String getArmLength() {
         return armLength;
     }
 
-    public void setArmLength(float armLength) {
+    public void setArmLength(String armLength) {
         this.armLength = armLength;
     }
 
-    public int getPower() {
+    public String getPower() {
         return power;
     }
 
-    public void setPower(int power) {
+    public void setPower(String power) {
         this.power = power;
     }
 
-    public float getCoordinate() {
+    public String getCoordinate() {
         return coordinate;
     }
 
-    public void setCoordinate(float coordinate) {
+    public void setCoordinate(String coordinate) {
         this.coordinate = coordinate;
     }
 
-    public int getWeight() {
+    public String getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(String weight) {
         this.weight = weight;
     }
 }
