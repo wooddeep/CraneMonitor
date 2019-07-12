@@ -2,6 +2,7 @@ package com.wooddeep.crane;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -9,16 +10,34 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.wooddeep.crane.ebus.MessageEvent;
+import com.wooddeep.crane.ebus.UserEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.dao.CalibrationDao;
 import com.wooddeep.crane.persist.entity.Calibration;
-import com.wooddeep.crane.tookit.CommTool;
-import com.wooddeep.crane.tookit.Coordinate;
+//import com.wooddeep.crane.tookit.CommTool;
+//import com.wooddeep.crane.tookit.Coordinate;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.locationtech.jts.algorithm.Angle;
+import org.locationtech.jts.geom.Coordinate;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
 
+// https://locationtech.github.io/jts/javadoc/org/locationtech/jts/algorithm/Angle.html
+
+
+//double degrees = 45.0;
+//double radians = Math.toRadians(degrees);
+//System.out.format("pi 的值为 %.4f%n", Math.PI);
+//System.out.format("%.4f 的反正弦值为 %.4f 度 %n", Math.sin(radians), Math.toDegrees(Math.asin(Math.sin(radians))));
+//Math.asin();
+
+@SuppressWarnings("unused")
 public class CalibrationSetting extends AppCompatActivity {
 
     abstract class CalibrationCell {
@@ -59,27 +78,21 @@ public class CalibrationSetting extends AppCompatActivity {
         }
 
         abstract public void setOnClickListener();
-        /*{
-            CalibrationCell cell = this;
-            Button btn = (Button)findViewById(this.buttonId);
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    TextView tv = (TextView) findViewById(cell.uartDataTextViewId);
-                    if (tv != null) {
-                        //tv.setText("xxx"); // TODO 替换为从串口读取数据
-                    }
-                }
-            });
-        }*/
 
     }
 
+    private MessageEvent gevent = null;
+    // 订阅消息, 可以获取串口的数据
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void registerUartDataReceiver(MessageEvent event) {
+        gevent = event;
+    }
+
     // 回转
-    private CalibrationCell  rotateStartX1 =  new CalibrationCell("rotateStartX1", "rotateStartData", "rotateRate", R.id.etx1, R.id.tv_rotate_coord1, R.id.btn_rotate_coord1, R.id.tv_rotate_rate) {
+    private CalibrationCell rotateStartX1 = new CalibrationCell("rotateStartX1", "rotateStartData", "rotateRate", R.id.etx1, R.id.tv_rotate_coord1, R.id.btn_rotate_coord1, R.id.tv_rotate_rate) {
         @Override
         public void setOnClickListener() {
-            Button btn = (Button)findViewById(rotateStartX1.buttonId);
+            Button btn = (Button) findViewById(rotateStartX1.buttonId);
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -93,60 +106,76 @@ public class CalibrationSetting extends AppCompatActivity {
                     float end = Float.parseFloat(tvEnd.getText().toString());
 
                     float dataDelta = end - start; // 读值的delta值
+                    System.out.println("## data delta = " + dataDelta);
 
-                    // TODO 通过圆心，(x1, y1), (x2, y2) 求得角度值
-                    Coordinate center = CommTool.getMainCoordinate(CalibrationSetting.this);
-                    System.out.printf("## center: x: %f, y: %f\n", center.x, center.y);
+                    EditText etStartX = (EditText) findViewById(rotateStartX1.dimValueEditTextId);
+                    EditText etStartY = (EditText) findViewById(rotateStartY1.dimValueEditTextId);
+                    double x1 = Double.parseDouble(etStartX.getText().toString());
+                    double y1 = Double.parseDouble(etStartY.getText().toString());
+                    EditText etEndX = (EditText) findViewById(rotateEndX2.dimValueEditTextId);
+                    EditText etEndY = (EditText) findViewById(rotateEndY2.dimValueEditTextId);
 
-                    EditText etStartX = (EditText)findViewById(rotateStartX1.dimValueEditTextId);
-                    EditText etStartY = (EditText)findViewById(rotateStartY1.dimValueEditTextId);
-                    System.out.printf("## start: x: %s, y: %s\n", etStartX.getText(), etStartY.getText());
+                    // 圆心
+                    double x = 100;
+                    double y = 100;
 
-                    EditText etEndX = (EditText)findViewById(rotateEndX2.dimValueEditTextId);
-                    EditText etEndY = (EditText)findViewById(rotateEndY2.dimValueEditTextId);
-                    System.out.printf("## end: x: %s, y: %s\n", etEndX.getText(), etEndY.getText());
+                    double x2 = Double.parseDouble(etEndX.getText().toString());
+                    double y2 = Double.parseDouble(etEndY.getText().toString());
 
-                    double tanStart = (Double.parseDouble(etStartY.getText().toString()) - center.y) /
-                        (Double.parseDouble(etStartX.getText().toString()) - center.x);
-
-                    double tanEnd = (Double.parseDouble(etEndY.getText().toString()) - center.y) /
-                        (Double.parseDouble(etEndX.getText().toString()) - center.x);
-
-                    System.out.printf("## tanStart: %f, tanEnd: %f\n", tanStart, tanEnd);
-
-                    Double angleStart = Math.toDegrees(Math.atan(tanStart));
-                    Double angleEnd = Math.toDegrees(Math.atan(tanEnd));
-
-                    // https://locationtech.github.io/jts/javadoc/org/locationtech/jts/algorithm/Angle.html
-
-                    System.out.printf("## angleStart: %f, angleEnd: %f\n", angleStart, angleEnd);
-
-                    //double degrees = 45.0;
-                    //double radians = Math.toRadians(degrees);
-                    //System.out.format("pi 的值为 %.4f%n", Math.PI);
-                    //System.out.format("%.4f 的反正弦值为 %.4f 度 %n", Math.sin(radians), Math.toDegrees(Math.asin(Math.sin(radians))));
-                    //Math.asin();
-
+                    double rotate = Angle.angleBetween(new Coordinate(x1, y1), new Coordinate(x, y), new Coordinate(x2, y2)); // [0 - pi]
+                    System.out.println(Math.toDegrees(rotate));
                 }
             });
         }
     };
 
-    private CalibrationCell  rotateStartY1 =  new CalibrationCell("rotateStartY1", "rotateStartData", "rotateRate", R.id.ety1, R.id.tv_rotate_coord1, R.id.btn_rotate_coord1, R.id.tv_rotate_rate) {
+    private CalibrationCell rotateStartY1 = new CalibrationCell("rotateStartY1", "rotateStartData", "rotateRate", R.id.ety1, R.id.tv_rotate_coord1, R.id.btn_rotate_coord1, R.id.tv_rotate_rate) {
         @Override
         public void setOnClickListener() {
-
         }
     };
 
-    private CalibrationCell  rotateEndX2 =  new CalibrationCell("rotateEndX2", "rotateEndData", "rotateRate", R.id.etx2, R.id.tv_rotate_coord2, R.id.btn_rotate_coord2, R.id.tv_rotate_rate) {
+    private CalibrationCell rotateEndX2 = new CalibrationCell("rotateEndX2", "rotateEndData", "rotateRate", R.id.etx2, R.id.tv_rotate_coord2, R.id.btn_rotate_coord2, R.id.tv_rotate_rate) {
         @Override
         public void setOnClickListener() {
+            Button btn = (Button) findViewById(rotateEndX2.buttonId);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    float start = 100; // TODO 替换为从串口读取数据
+                    TextView tvStart = (TextView) findViewById(rotateStartX1.uartDataTextViewId);
+                    if (tvStart != null) {
+                        tvStart.setText(String.valueOf(start));
+                    }
 
+                    TextView tvEnd = (TextView) findViewById(rotateEndX2.uartDataTextViewId);
+                    float end = Float.parseFloat(tvEnd.getText().toString());
+
+                    float dataDelta = end - start; // 读值的delta值
+                    System.out.println("## data delta = " + dataDelta);
+
+                    EditText etStartX = (EditText) findViewById(rotateStartX1.dimValueEditTextId);
+                    EditText etStartY = (EditText) findViewById(rotateStartY1.dimValueEditTextId);
+                    double x1 = Double.parseDouble(etStartX.getText().toString());
+                    double y1 = Double.parseDouble(etStartY.getText().toString());
+                    EditText etEndX = (EditText) findViewById(rotateEndX2.dimValueEditTextId);
+                    EditText etEndY = (EditText) findViewById(rotateEndY2.dimValueEditTextId);
+
+                    // 圆心
+                    double x = 100;
+                    double y = 100;
+
+                    double x2 = Double.parseDouble(etEndX.getText().toString());
+                    double y2 = Double.parseDouble(etEndY.getText().toString());
+
+                    double rotate = Angle.angleBetween(new Coordinate(x1, y1), new Coordinate(x, y), new Coordinate(x2, y2)); // [0 - pi]
+                    System.out.println(Math.toDegrees(rotate));
+                }
+            });
         }
     };
 
-    private CalibrationCell  rotateEndY2 =  new CalibrationCell("rotateEndY2", "rotateEndData", "rotateRate", R.id.ety2, R.id.tv_rotate_coord2, R.id.btn_rotate_coord2, R.id.tv_rotate_rate) {
+    private CalibrationCell rotateEndY2 = new CalibrationCell("rotateEndY2", "rotateEndData", "rotateRate", R.id.ety2, R.id.tv_rotate_coord2, R.id.btn_rotate_coord2, R.id.tv_rotate_rate) {
         @Override
         public void setOnClickListener() {
 
@@ -154,35 +183,61 @@ public class CalibrationSetting extends AppCompatActivity {
     };
 
     // 档位标定
-    private CalibrationCell  GearRate1 =  new CalibrationCell("GearRate1", -1, -1, R.id.btn_first_gear, R.id.tv_first_gear) {
+    private CalibrationCell GearRate1 = new CalibrationCell("GearRate1", -1, -1, R.id.btn_first_gear, R.id.tv_first_gear) {
+        @Override
+        public void setOnClickListener() {
+            Button btn = (Button) findViewById(this.buttonId);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // 1. 读取初始值
+                    double start = 0;  // TODO 从串口读取值
+                    System.out.println("## start value = " + start);
+                    System.out.println(System.currentTimeMillis());
+                    // 2. 延时 3 秒 再读值
+                    Handler mHandler = new Handler();
+                    Runnable readEnd = new Runnable() {
+                        @Override
+                        public void run() {
+                            System.out.println("## end value = " + "??");
+                            System.out.println(System.currentTimeMillis());
+                            if (gevent != null) {
+                                System.out.printf("### %s, %s \n", gevent.name, gevent.password);
+                                TextView tv = (TextView)findViewById(GearRate1.rateShowId);
+                                tv.setText(".......");
+                            }
+                        }
+                    };
+
+                    mHandler.postDelayed(readEnd, 3000);
+                }
+
+            });
+        }
+    };
+
+    private CalibrationCell GearRate2 = new CalibrationCell("GearRate2", -1, -1, R.id.btn_gear2, R.id.tv_gear2) {
         @Override
         public void setOnClickListener() {
 
         }
     };
 
-    private CalibrationCell  GearRate2 =  new CalibrationCell("GearRate2", -1, -1, R.id.btn_gear2, R.id.tv_gear2) {
+    private CalibrationCell GearRate3 = new CalibrationCell("GearRate3", -1, -1, R.id.btn_gear3, R.id.tv_gear3) {
         @Override
         public void setOnClickListener() {
 
         }
     };
 
-    private CalibrationCell  GearRate3 =  new CalibrationCell("GearRate3", -1, -1, R.id.btn_gear3, R.id.tv_gear3) {
+    private CalibrationCell GearRate4 = new CalibrationCell("GearRate4", -1, -1, R.id.btn_gear4, R.id.tv_gear4) {
         @Override
         public void setOnClickListener() {
 
         }
     };
 
-    private CalibrationCell  GearRate4 =  new CalibrationCell("GearRate4", -1, -1, R.id.btn_gear4, R.id.tv_gear4) {
-        @Override
-        public void setOnClickListener() {
-
-        }
-    };
-
-    private CalibrationCell  GearRate5 =  new CalibrationCell("GearRate5", -1, -1, R.id.btn_gear5, R.id.tv_gear5) {
+    private CalibrationCell GearRate5 = new CalibrationCell("GearRate5", -1, -1, R.id.btn_gear5, R.id.tv_gear5) {
         @Override
         public void setOnClickListener() {
 
@@ -190,14 +245,14 @@ public class CalibrationSetting extends AppCompatActivity {
     };
 
     // 倾角
-    private CalibrationCell  dipAngleStart =  new CalibrationCell("dipAngleStart", "dipAngleStartData", "dipAngleRate", R.id.et_dip_angle_start, R.id.tv_dip_angle_start, R.id.btn_dip_angle_start, R.id.tv_dip_angle_rate) {
+    private CalibrationCell dipAngleStart = new CalibrationCell("dipAngleStart", "dipAngleStartData", "dipAngleRate", R.id.et_dip_angle_start, R.id.tv_dip_angle_start, R.id.btn_dip_angle_start, R.id.tv_dip_angle_rate) {
         @Override
         public void setOnClickListener() {
 
         }
     };
 
-    private CalibrationCell  dipAngleEnd =  new CalibrationCell("dipAngleEnd", "dipAngleEndData", "dipAngleRate", R.id.et_dip_angle_end, R.id.tv_dip_angle_end, R.id.btn_dip_angle_end, R.id.tv_dip_angle_rate) {
+    private CalibrationCell dipAngleEnd = new CalibrationCell("dipAngleEnd", "dipAngleEndData", "dipAngleRate", R.id.et_dip_angle_end, R.id.tv_dip_angle_end, R.id.btn_dip_angle_end, R.id.tv_dip_angle_rate) {
         @Override
         public void setOnClickListener() {
 
@@ -205,14 +260,14 @@ public class CalibrationSetting extends AppCompatActivity {
     };
 
     // 重量
-    private CalibrationCell  weightStart =  new CalibrationCell("weightStart", "weightStartData", "weightRate", R.id.et_weight_start, R.id.tv_weight_start, R.id.btn_weight_start, R.id.tv_weight_rate) {
+    private CalibrationCell weightStart = new CalibrationCell("weightStart", "weightStartData", "weightRate", R.id.et_weight_start, R.id.tv_weight_start, R.id.btn_weight_start, R.id.tv_weight_rate) {
         @Override
         public void setOnClickListener() {
 
         }
     };
 
-    private CalibrationCell  weightEnd =  new CalibrationCell("weightEnd", "weightEndData", "weightRate", R.id.et_weight_end, R.id.tv_weight_end, R.id.btn_weight_end, R.id.tv_weight_rate) {
+    private CalibrationCell weightEnd = new CalibrationCell("weightEnd", "weightEndData", "weightRate", R.id.et_weight_end, R.id.tv_weight_end, R.id.btn_weight_end, R.id.tv_weight_rate) {
         @Override
         public void setOnClickListener() {
 
@@ -220,14 +275,14 @@ public class CalibrationSetting extends AppCompatActivity {
     };
 
     // 长度
-    private CalibrationCell  lengthStart =  new CalibrationCell("lengthStart", "lengthStartData", "lengthRate", R.id.et_arm_length_start, R.id.tv_arm_length_start, R.id.btn_arm_length_start, R.id.tv_arm_length_rate) {
+    private CalibrationCell lengthStart = new CalibrationCell("lengthStart", "lengthStartData", "lengthRate", R.id.et_arm_length_start, R.id.tv_arm_length_start, R.id.btn_arm_length_start, R.id.tv_arm_length_rate) {
         @Override
         public void setOnClickListener() {
 
         }
     };
 
-    private CalibrationCell  lengthEnd =  new CalibrationCell("lengthEnd", "lengthEndData", "lengthRate", R.id.et_arm_length_end, R.id.tv_arm_length_end, R.id.btn_arm_length_end, R.id.tv_arm_length_rate) {
+    private CalibrationCell lengthEnd = new CalibrationCell("lengthEnd", "lengthEndData", "lengthRate", R.id.et_arm_length_end, R.id.tv_arm_length_end, R.id.btn_arm_length_end, R.id.tv_arm_length_rate) {
         @Override
         public void setOnClickListener() {
 
@@ -235,14 +290,14 @@ public class CalibrationSetting extends AppCompatActivity {
     };
 
     // 高度
-    private CalibrationCell  heightStart =  new CalibrationCell("heightStart", "heightStartData", "heightRate", R.id.et_tower_height_start, R.id.tv_tower_height_start, R.id.btn_tower_height_start, R.id.tv_tower_height_rate) {
+    private CalibrationCell heightStart = new CalibrationCell("heightStart", "heightStartData", "heightRate", R.id.et_tower_height_start, R.id.tv_tower_height_start, R.id.btn_tower_height_start, R.id.tv_tower_height_rate) {
         @Override
         public void setOnClickListener() {
 
         }
     };
 
-    private CalibrationCell  heightEnd =  new CalibrationCell("heightEnd", "heightEndData", "heightRate", R.id.et_tower_height_end, R.id.tv_tower_height_end, R.id.btn_tower_height_end, R.id.tv_tower_height_rate) {
+    private CalibrationCell heightEnd = new CalibrationCell("heightEnd", "heightEndData", "heightRate", R.id.et_tower_height_end, R.id.tv_tower_height_end, R.id.btn_tower_height_end, R.id.tv_tower_height_rate) {
         @Override
         public void setOnClickListener() {
 
@@ -262,6 +317,8 @@ public class CalibrationSetting extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
+
+        EventBus.getDefault().register(this);
     }
 
     @Override
