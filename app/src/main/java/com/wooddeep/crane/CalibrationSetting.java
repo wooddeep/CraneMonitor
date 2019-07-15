@@ -1,21 +1,25 @@
 package com.wooddeep.crane;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.wooddeep.crane.comm.Protocol;
 import com.wooddeep.crane.ebus.MessageEvent;
+import com.wooddeep.crane.ebus.UartEvent;
 import com.wooddeep.crane.ebus.UserEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.dao.CalibrationDao;
 import com.wooddeep.crane.persist.entity.Calibration;
-//import com.wooddeep.crane.tookit.CommTool;
+import com.wooddeep.crane.tookit.CommTool;
 //import com.wooddeep.crane.tookit.Coordinate;
 
 import org.greenrobot.eventbus.EventBus;
@@ -25,6 +29,7 @@ import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -82,10 +87,26 @@ public class CalibrationSetting extends AppCompatActivity {
     }
 
     private MessageEvent gevent = null;
+
     // 订阅消息, 可以获取串口的数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void registerUartDataReceiver(MessageEvent event) {
         gevent = event;
+    }
+
+    private static Protocol packer = new Protocol();
+    private static Protocol parser = new Protocol();
+
+    // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void commEventBus(UartEvent uartEvent) {
+        try {
+            byte[] data = uartEvent.data;
+            parser.parse(data);
+            System.out.printf("## %d - %d - %d - %d\n", parser.getAmplitude(), parser.getHeight(), parser.getWeight(), parser.getWindSpeed());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // 回转
@@ -122,8 +143,12 @@ public class CalibrationSetting extends AppCompatActivity {
                     double x2 = Double.parseDouble(etEndX.getText().toString());
                     double y2 = Double.parseDouble(etEndY.getText().toString());
 
-                    double rotate = Angle.angleBetween(new Coordinate(x1, y1), new Coordinate(x, y), new Coordinate(x2, y2)); // [0 - pi]
+                    double rotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
+                        new org.locationtech.jts.geom.Coordinate(x, y), new org.locationtech.jts.geom.Coordinate(x2, y2)); // [0 - pi]
                     System.out.println(Math.toDegrees(rotate));
+
+                    TextView tvRate = (TextView) findViewById(rotateStartX1.rateShowId);
+                    tvRate.setText("-1.0");
                 }
             });
         }
@@ -170,6 +195,9 @@ public class CalibrationSetting extends AppCompatActivity {
 
                     double rotate = Angle.angleBetween(new Coordinate(x1, y1), new Coordinate(x, y), new Coordinate(x2, y2)); // [0 - pi]
                     System.out.println(Math.toDegrees(rotate));
+
+                    TextView tvRate = (TextView) findViewById(rotateStartX1.rateShowId);
+                    tvRate.setText("-2.0");
                 }
             });
         }
@@ -203,8 +231,8 @@ public class CalibrationSetting extends AppCompatActivity {
                             System.out.println(System.currentTimeMillis());
                             if (gevent != null) {
                                 System.out.printf("### %s, %s \n", gevent.name, gevent.password);
-                                TextView tv = (TextView)findViewById(GearRate1.rateShowId);
-                                tv.setText(".......");
+                                TextView tv = (TextView) findViewById(GearRate1.rateShowId);
+                                tv.setText("gear1");
                             }
                         }
                     };
@@ -219,43 +247,207 @@ public class CalibrationSetting extends AppCompatActivity {
     private CalibrationCell GearRate2 = new CalibrationCell("GearRate2", -1, -1, R.id.btn_gear2, R.id.tv_gear2) {
         @Override
         public void setOnClickListener() {
+            Button btn = (Button) findViewById(this.buttonId);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // 1. 读取初始值
+                    double start = 0;  // TODO 从串口读取值
+                    System.out.println("## start value = " + start);
+                    System.out.println(System.currentTimeMillis());
+                    // 2. 延时 3 秒 再读值
+                    Handler mHandler = new Handler();
+                    Runnable readEnd = new Runnable() {
+                        @Override
+                        public void run() {
+                            System.out.println("## end value = " + "??");
+                            System.out.println(System.currentTimeMillis());
+                            if (gevent != null) {
+                                System.out.printf("### %s, %s \n", gevent.name, gevent.password);
+                                TextView tv = (TextView) findViewById(GearRate2.rateShowId);
+                                tv.setText("gear2");
+                            }
+                        }
+                    };
 
+                    mHandler.postDelayed(readEnd, 3000);
+                }
+
+            });
         }
     };
 
     private CalibrationCell GearRate3 = new CalibrationCell("GearRate3", -1, -1, R.id.btn_gear3, R.id.tv_gear3) {
         @Override
         public void setOnClickListener() {
+            Button btn = (Button) findViewById(this.buttonId);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // 1. 读取初始值
+                    double start = 0;  // TODO 从串口读取值
+                    System.out.println("## start value = " + start);
+                    System.out.println(System.currentTimeMillis());
+                    // 2. 延时 3 秒 再读值
+                    Handler mHandler = new Handler();
+                    Runnable readEnd = new Runnable() {
+                        @Override
+                        public void run() {
+                            System.out.println("## end value = " + "??");
+                            System.out.println(System.currentTimeMillis());
+                            if (gevent != null) {
+                                System.out.printf("### %s, %s \n", gevent.name, gevent.password);
+                                TextView tv = (TextView) findViewById(GearRate3.rateShowId);
+                                tv.setText("gear3");
+                            }
+                        }
+                    };
 
+                    mHandler.postDelayed(readEnd, 3000);
+                }
+
+            });
         }
     };
 
     private CalibrationCell GearRate4 = new CalibrationCell("GearRate4", -1, -1, R.id.btn_gear4, R.id.tv_gear4) {
         @Override
         public void setOnClickListener() {
+            Button btn = (Button) findViewById(this.buttonId);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // 1. 读取初始值
+                    double start = 0;  // TODO 从串口读取值
+                    System.out.println("## start value = " + start);
+                    System.out.println(System.currentTimeMillis());
+                    // 2. 延时 3 秒 再读值
+                    Handler mHandler = new Handler();
+                    Runnable readEnd = new Runnable() {
+                        @Override
+                        public void run() {
+                            System.out.println("## end value = " + "??");
+                            System.out.println(System.currentTimeMillis());
+                            if (gevent != null) {
+                                System.out.printf("### %s, %s \n", gevent.name, gevent.password);
+                                TextView tv = (TextView) findViewById(GearRate4.rateShowId);
+                                tv.setText("gear4");
+                            }
+                        }
+                    };
 
+                    mHandler.postDelayed(readEnd, 3000);
+                }
+
+            });
         }
     };
 
     private CalibrationCell GearRate5 = new CalibrationCell("GearRate5", -1, -1, R.id.btn_gear5, R.id.tv_gear5) {
         @Override
         public void setOnClickListener() {
+            Button btn = (Button) findViewById(this.buttonId);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // 1. 读取初始值
+                    double start = 0;  // TODO 从串口读取值
+                    System.out.println("## start value = " + start);
+                    System.out.println(System.currentTimeMillis());
+                    // 2. 延时 3 秒 再读值
+                    Handler mHandler = new Handler();
+                    Runnable readEnd = new Runnable() {
+                        @Override
+                        public void run() {
+                            System.out.println("## end value = " + "??");
+                            System.out.println(System.currentTimeMillis());
+                            if (gevent != null) {
+                                System.out.printf("### %s, %s \n", gevent.name, gevent.password);
+                                TextView tv = (TextView) findViewById(GearRate5.rateShowId);
+                                tv.setText("gear5");
+                            }
+                        }
+                    };
 
+                    mHandler.postDelayed(readEnd, 3000);
+                }
+
+            });
         }
     };
 
-    // 倾角
+    // 倾角 ~ 幅度
     private CalibrationCell dipAngleStart = new CalibrationCell("dipAngleStart", "dipAngleStartData", "dipAngleRate", R.id.et_dip_angle_start, R.id.tv_dip_angle_start, R.id.btn_dip_angle_start, R.id.tv_dip_angle_rate) {
         @Override
         public void setOnClickListener() {
+            Button btn = (Button) findViewById(this.buttonId);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView tvStart = (TextView) findViewById(dipAngleStart.uartDataTextViewId);
+                    TextView tvEnd = (TextView) findViewById(dipAngleEnd.uartDataTextViewId);
 
+                    EditText etStart = (EditText) findViewById(dipAngleStart.dimValueEditTextId);
+                    EditText etEnd = (EditText) findViewById(dipAngleEnd.dimValueEditTextId);
+
+                    double currUartData = parser.getAmplitude();
+
+                    tvStart.setText(String.valueOf(currUartData));
+
+                    Double startUartData = Double.parseDouble(tvStart.getText().toString()); // uart 读值
+                    Double endUartData = Double.parseDouble(tvEnd.getText().toString()); // uart 读值
+
+                    Double startDimValue = Double.parseDouble(etStart.getText().toString());
+                    Double endDimValue = Double.parseDouble(etEnd.getText().toString());
+
+                    Double deltaUartData = endUartData - startUartData;
+                    Double deltaDimValue = endDimValue - startDimValue;
+
+                    //Double rate = deltaDimValue / deltaUartData;
+                    Double rate = -1.0;
+
+                    TextView tvRateShow = (TextView) findViewById(dipAngleStart.rateShowId);
+                    tvRateShow.setText(String.valueOf(rate));
+
+                }
+            });
         }
     };
 
     private CalibrationCell dipAngleEnd = new CalibrationCell("dipAngleEnd", "dipAngleEndData", "dipAngleRate", R.id.et_dip_angle_end, R.id.tv_dip_angle_end, R.id.btn_dip_angle_end, R.id.tv_dip_angle_rate) {
         @Override
         public void setOnClickListener() {
+            Button btn = (Button) findViewById(this.buttonId);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView tvStart = (TextView) findViewById(dipAngleStart.uartDataTextViewId);
+                    TextView tvEnd = (TextView) findViewById(dipAngleEnd.uartDataTextViewId);
 
+                    EditText etStart = (EditText) findViewById(dipAngleStart.dimValueEditTextId);
+                    EditText etEnd = (EditText) findViewById(dipAngleEnd.dimValueEditTextId);
+
+                    double currUartData = parser.getAmplitude();
+
+                    tvEnd.setText(String.valueOf(currUartData));
+
+                    Double startUartData = Double.parseDouble(tvStart.getText().toString()); // uart 读值
+                    Double endUartData = Double.parseDouble(tvEnd.getText().toString()); // uart 读值
+
+                    Double startDimValue = Double.parseDouble(etStart.getText().toString());
+                    Double endDimValue = Double.parseDouble(etEnd.getText().toString());
+
+                    Double deltaUartData = endUartData - startUartData;
+                    Double deltaDimValue = endDimValue - startDimValue;
+
+                    //Double rate = deltaDimValue / deltaUartData;
+                    Double rate = -2.0;
+
+                    TextView tvRateShow = (TextView) findViewById(dipAngleStart.rateShowId);
+                    tvRateShow.setText(String.valueOf(rate));
+
+                }
+            });
         }
     };
 
@@ -263,14 +455,74 @@ public class CalibrationSetting extends AppCompatActivity {
     private CalibrationCell weightStart = new CalibrationCell("weightStart", "weightStartData", "weightRate", R.id.et_weight_start, R.id.tv_weight_start, R.id.btn_weight_start, R.id.tv_weight_rate) {
         @Override
         public void setOnClickListener() {
+            Button btn = (Button) findViewById(this.buttonId);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView tvStart = (TextView) findViewById(weightStart.uartDataTextViewId);
+                    TextView tvEnd = (TextView) findViewById(weightEnd.uartDataTextViewId);
 
+                    EditText etStart = (EditText) findViewById(weightStart.dimValueEditTextId);
+                    EditText etEnd = (EditText) findViewById(weightEnd.dimValueEditTextId);
+
+                    double currUartData = parser.getAmplitude();
+
+                    tvStart.setText(String.valueOf(currUartData));
+
+                    Double startUartData = Double.parseDouble(tvStart.getText().toString()); // uart 读值
+                    Double endUartData = Double.parseDouble(tvEnd.getText().toString()); // uart 读值
+
+                    Double startDimValue = Double.parseDouble(etStart.getText().toString());
+                    Double endDimValue = Double.parseDouble(etEnd.getText().toString());
+
+                    Double deltaUartData = endUartData - startUartData;
+                    Double deltaDimValue = endDimValue - startDimValue;
+
+                    //Double rate = deltaDimValue / deltaUartData;
+                    Double rate = -1.0;
+
+                    TextView tvRateShow = (TextView) findViewById(weightStart.rateShowId);
+                    tvRateShow.setText(String.valueOf(rate));
+
+                }
+            });
         }
     };
 
     private CalibrationCell weightEnd = new CalibrationCell("weightEnd", "weightEndData", "weightRate", R.id.et_weight_end, R.id.tv_weight_end, R.id.btn_weight_end, R.id.tv_weight_rate) {
         @Override
         public void setOnClickListener() {
+            Button btn = (Button) findViewById(this.buttonId);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView tvStart = (TextView) findViewById(weightStart.uartDataTextViewId);
+                    TextView tvEnd = (TextView) findViewById(weightEnd.uartDataTextViewId);
 
+                    EditText etStart = (EditText) findViewById(weightStart.dimValueEditTextId);
+                    EditText etEnd = (EditText) findViewById(weightEnd.dimValueEditTextId);
+
+                    double currUartData = parser.getAmplitude();
+
+                    tvEnd.setText(String.valueOf(currUartData));
+
+                    Double startUartData = Double.parseDouble(tvStart.getText().toString()); // uart 读值
+                    Double endUartData = Double.parseDouble(tvEnd.getText().toString()); // uart 读值
+
+                    Double startDimValue = Double.parseDouble(etStart.getText().toString());
+                    Double endDimValue = Double.parseDouble(etEnd.getText().toString());
+
+                    Double deltaUartData = endUartData - startUartData;
+                    Double deltaDimValue = endDimValue - startDimValue;
+
+                    //Double rate = deltaDimValue / deltaUartData;
+                    Double rate = -2.0;
+
+                    TextView tvRateShow = (TextView) findViewById(weightStart.rateShowId);
+                    tvRateShow.setText(String.valueOf(rate));
+
+                }
+            });
         }
     };
 
@@ -278,14 +530,74 @@ public class CalibrationSetting extends AppCompatActivity {
     private CalibrationCell lengthStart = new CalibrationCell("lengthStart", "lengthStartData", "lengthRate", R.id.et_arm_length_start, R.id.tv_arm_length_start, R.id.btn_arm_length_start, R.id.tv_arm_length_rate) {
         @Override
         public void setOnClickListener() {
+            Button btn = (Button) findViewById(this.buttonId);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView tvStart = (TextView) findViewById(lengthStart.uartDataTextViewId);
+                    TextView tvEnd = (TextView) findViewById(lengthEnd.uartDataTextViewId);
 
+                    EditText etStart = (EditText) findViewById(lengthStart.dimValueEditTextId);
+                    EditText etEnd = (EditText) findViewById(lengthEnd.dimValueEditTextId);
+
+                    double currUartData = parser.getAmplitude();
+
+                    tvStart.setText(String.valueOf(currUartData));
+
+                    Double startUartData = Double.parseDouble(tvStart.getText().toString()); // uart 读值
+                    Double endUartData = Double.parseDouble(tvEnd.getText().toString()); // uart 读值
+
+                    Double startDimValue = Double.parseDouble(etStart.getText().toString());
+                    Double endDimValue = Double.parseDouble(etEnd.getText().toString());
+
+                    Double deltaUartData = endUartData - startUartData;
+                    Double deltaDimValue = endDimValue - startDimValue;
+
+                    //Double rate = deltaDimValue / deltaUartData;
+                    Double rate = -1.0;
+
+                    TextView tvRateShow = (TextView) findViewById(lengthStart.rateShowId);
+                    tvRateShow.setText(String.valueOf(rate));
+
+                }
+            });
         }
     };
 
     private CalibrationCell lengthEnd = new CalibrationCell("lengthEnd", "lengthEndData", "lengthRate", R.id.et_arm_length_end, R.id.tv_arm_length_end, R.id.btn_arm_length_end, R.id.tv_arm_length_rate) {
         @Override
         public void setOnClickListener() {
+            Button btn = (Button) findViewById(this.buttonId);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView tvStart = (TextView) findViewById(lengthStart.uartDataTextViewId);
+                    TextView tvEnd = (TextView) findViewById(lengthEnd.uartDataTextViewId);
 
+                    EditText etStart = (EditText) findViewById(lengthStart.dimValueEditTextId);
+                    EditText etEnd = (EditText) findViewById(lengthEnd.dimValueEditTextId);
+
+                    double currUartData = parser.getAmplitude();
+
+                    tvEnd.setText(String.valueOf(currUartData));
+
+                    Double startUartData = Double.parseDouble(tvStart.getText().toString()); // uart 读值
+                    Double endUartData = Double.parseDouble(tvEnd.getText().toString()); // uart 读值
+
+                    Double startDimValue = Double.parseDouble(etStart.getText().toString());
+                    Double endDimValue = Double.parseDouble(etEnd.getText().toString());
+
+                    Double deltaUartData = endUartData - startUartData;
+                    Double deltaDimValue = endDimValue - startDimValue;
+
+                    //Double rate = deltaDimValue / deltaUartData;
+                    Double rate = -2.0;
+
+                    TextView tvRateShow = (TextView) findViewById(lengthStart.rateShowId);
+                    tvRateShow.setText(String.valueOf(rate));
+
+                }
+            });
         }
     };
 
@@ -293,14 +605,74 @@ public class CalibrationSetting extends AppCompatActivity {
     private CalibrationCell heightStart = new CalibrationCell("heightStart", "heightStartData", "heightRate", R.id.et_tower_height_start, R.id.tv_tower_height_start, R.id.btn_tower_height_start, R.id.tv_tower_height_rate) {
         @Override
         public void setOnClickListener() {
+            Button btn = (Button) findViewById(this.buttonId);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView tvStart = (TextView) findViewById(heightStart.uartDataTextViewId);
+                    TextView tvEnd = (TextView) findViewById(heightEnd.uartDataTextViewId);
 
+                    EditText etStart = (EditText) findViewById(heightStart.dimValueEditTextId);
+                    EditText etEnd = (EditText) findViewById(heightEnd.dimValueEditTextId);
+
+                    double currUartData = parser.getAmplitude();
+
+                    tvStart.setText(String.valueOf(currUartData));
+
+                    Double startUartData = Double.parseDouble(tvStart.getText().toString()); // uart 读值
+                    Double endUartData = Double.parseDouble(tvEnd.getText().toString()); // uart 读值
+
+                    Double startDimValue = Double.parseDouble(etStart.getText().toString());
+                    Double endDimValue = Double.parseDouble(etEnd.getText().toString());
+
+                    Double deltaUartData = endUartData - startUartData;
+                    Double deltaDimValue = endDimValue - startDimValue;
+
+                    //Double rate = deltaDimValue / deltaUartData;
+                    Double rate = -1.0;
+
+                    TextView tvRateShow = (TextView) findViewById(heightStart.rateShowId);
+                    tvRateShow.setText(String.valueOf(rate));
+
+                }
+            });
         }
     };
 
     private CalibrationCell heightEnd = new CalibrationCell("heightEnd", "heightEndData", "heightRate", R.id.et_tower_height_end, R.id.tv_tower_height_end, R.id.btn_tower_height_end, R.id.tv_tower_height_rate) {
         @Override
         public void setOnClickListener() {
+            Button btn = (Button) findViewById(this.buttonId);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView tvStart = (TextView) findViewById(heightStart.uartDataTextViewId);
+                    TextView tvEnd = (TextView) findViewById(heightEnd.uartDataTextViewId);
 
+                    EditText etStart = (EditText) findViewById(heightStart.dimValueEditTextId);
+                    EditText etEnd = (EditText) findViewById(heightEnd.dimValueEditTextId);
+
+                    double currUartData = parser.getAmplitude();
+
+                    tvEnd.setText(String.valueOf(currUartData));
+
+                    Double startUartData = Double.parseDouble(tvStart.getText().toString()); // uart 读值
+                    Double endUartData = Double.parseDouble(tvEnd.getText().toString()); // uart 读值
+
+                    Double startDimValue = Double.parseDouble(etStart.getText().toString());
+                    Double endDimValue = Double.parseDouble(etEnd.getText().toString());
+
+                    Double deltaUartData = endUartData - startUartData;
+                    Double deltaDimValue = endDimValue - startDimValue;
+
+                    //Double rate = deltaDimValue / deltaUartData;
+                    Double rate = -2.0;
+
+                    TextView tvRateShow = (TextView) findViewById(heightStart.rateShowId);
+                    tvRateShow.setText(String.valueOf(rate));
+
+                }
+            });
         }
     };
 
@@ -323,14 +695,8 @@ public class CalibrationSetting extends AppCompatActivity {
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        ImageView closeBtn = (ImageView) findViewById(R.id.clock_calibration);
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
         confLoad(getApplicationContext());
+        setOnTouchListener();
     }
 
     private void confLoad(Context contex) {
@@ -385,6 +751,65 @@ public class CalibrationSetting extends AppCompatActivity {
             }
         }
 
+    }
+
+    private void setOnTouchListener(View view) {
+        View.OnTouchListener onTouchListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    ObjectAnimator oa = ObjectAnimator.ofFloat(view,
+                        "scaleX", 0.93f, 1f);
+                    oa.setDuration(500);
+                    ObjectAnimator oa2 = ObjectAnimator.ofFloat(view,
+                        "scaleY", 0.93f, 1f);
+                    oa2.setDuration(700);
+                    oa.start();
+                    oa2.start();
+                }
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    ObjectAnimator oa = ObjectAnimator.ofFloat(view,
+                        "scaleX", 1f, 0.93f);
+                    oa.setDuration(500);
+                    ObjectAnimator oa2 = ObjectAnimator.ofFloat(view,
+                        "scaleY", 1f, 0.93f);
+                    oa2.setDuration(700);
+                    oa.start();
+                    oa2.start();
+                }
+                return false;
+            }
+        };
+        view.setOnTouchListener(onTouchListener);
+    }
+
+    private void setOnClickListener(View view) {
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (view.getId() == R.id.close_logo) {
+                    finish();
+                }
+
+                if (view.getId() == R.id.save_logo) {
+                    // TODO 保存数据
+                    System.out.println("## save !!!!");
+                }
+            }
+        };
+        view.setOnClickListener(onClickListener);
+    }
+
+    private void setOnTouchListener() {
+        List<ImageView> menuButtons = new ArrayList<ImageView>() {{
+            add((ImageView) findViewById(R.id.close_logo));
+            add((ImageView) findViewById(R.id.save_logo));
+        }};
+
+        for (ImageView view : menuButtons) {
+            setOnTouchListener(view);
+            setOnClickListener(view);
+        }
     }
 
 }

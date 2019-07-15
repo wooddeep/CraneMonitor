@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -34,6 +33,7 @@ import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.CranePara;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.DrawTool;
+import com.wooddeep.crane.views.TestCraneView;
 import com.wooddeep.crane.views.Vertex;
 
 import org.greenrobot.eventbus.EventBus;
@@ -174,6 +174,8 @@ public class MainActivity extends AppCompatActivity {
     private static Protocol packer = new Protocol();
     private static Protocol parser = new Protocol();
 
+    private static TestCraneView craneView = null;
+
     Timer timer = new Timer();
     TimerTask task = new TimerTask() {
         public void run() {
@@ -204,6 +206,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        LinearLayout craneViewContainer = (LinearLayout)findViewById(R.id.crane_show);
+        craneView = (TestCraneView) craneViewContainer.getChildAt(0);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -251,12 +256,11 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void messageEventBus(MessageEvent userEvent) {
         //fanRotate();
-        //System.out.println("### event message!");
         elemMap.alramFlink();
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    //@Subscribe(threadMode = ThreadMode.MAIN)
     public void userEventBus(UserEvent userEvent) {
         try {
             //EditText limitEditText = (EditText) findViewById(R.id.alarm_limit);
@@ -268,10 +272,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private static int xxx = 10;
+    private static int yyy = 10;
+
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void commEventBus(UartEvent uartEvent) {
         try {
+
+            craneView.setHook(xxx, yyy);
+            xxx = xxx + 5;
+            yyy = yyy + 5;
 
             byte[] data = uartEvent.data;
 
@@ -622,6 +633,7 @@ public class MainActivity extends AppCompatActivity {
 
     // https://www.cnblogs.com/yongdaimi/p/7943226.html 控件动画
     public void weightAlarm() {
+        /*
         ImageView weight = (ImageView) findViewById(R.id.weight_logo);
 
         ObjectAnimator oa = ObjectAnimator.ofFloat(weight, "scaleX", 0.90f, 1.1f);
@@ -645,6 +657,6 @@ public class MainActivity extends AppCompatActivity {
 
         oa.start();
         oa2.start();
-
+        */
     }
 }

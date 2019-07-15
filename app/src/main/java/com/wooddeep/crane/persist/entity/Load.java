@@ -3,7 +3,7 @@ package com.wooddeep.crane.persist.entity;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "calibration") // 指定数据表的名称
+@DatabaseTable(tableName = "load") // 指定数据表的名称
 public class Load {
 
     @DatabaseField(generatedId = true, columnName = "id", useGetSet = true)

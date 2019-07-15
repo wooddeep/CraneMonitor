@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+ * 自定义progressbar
+ * https://blog.csdn.net/mad1989/article/details/38042875
+ * https://www.jianshu.com/p/8998e381b805
+ * 九点图
+ * https://onlooker.wodemo.net/browse/392022/res/drawable-hdpi-v4/
+
+ * 程序定义进度条
+ * https://blog.csdn.net/u012005313/article/details/76047122
+
+
+ * android:gravity : 控件相对于父容器的位置
+
+ * 相对布局
+ * https://www.cnblogs.com/liter7/p/5178674.html
+-->
+
+<!--suppress ALL -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.wooddeep.crane.views.CraneView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:hook_height="300"
+            app:arm_length="600"
+            app:crane_type="1"/>
+
+    </LinearLayout>
+
+</LinearLayout>
