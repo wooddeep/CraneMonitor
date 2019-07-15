@@ -192,13 +192,21 @@ public class CraneView extends View {
         canvas.drawBitmap(bitmap, hookTail, hookTailDst, null);
         */
 
-        Bitmap nbm = rotateBitmap(bitmap, -10);
+        Bitmap nbm = rotateBitmap(bitmap, -35);
         Rect hookHead = new Rect(0, 0, nbm.getWidth() , nbm.getHeight());
 
+        /*
+        RectF hookHeadDst = new RectF(left,
+            top - nbm.getHeight() * scale,
+            left + nbm.getWidth() * scale,
+            top);
+        */
+
         RectF hookHeadDst = new RectF(left + 240 * scale,
-            top ,
-            nbm.getWidth() * scale + left + 240 * scale,
-            nbm.getHeight() * scale + top);
+            135 * scale - nbm.getHeight() * scale,
+            left + nbm.getWidth() * scale + 240 * scale,
+            135 * scale);
+
 
         canvas.drawBitmap(nbm, hookHead, hookHeadDst, null);
 
