@@ -199,6 +199,9 @@ public class CraneSetting extends AppCompatActivity {
                                     cp.setCraneBodyRadius(Float.parseFloat(gTable.get(9).get(j).getValue()));
                                     cp.setBigArmWidth(Float.parseFloat(gTable.get(10).get(j).getValue()));
                                     cp.setBalancArmWidth(Float.parseFloat(gTable.get(11).get(j).getValue()));
+                                    cp.setMaxAngle(Float.parseFloat(gTable.get(12).get(j).getValue()));
+                                    cp.setMinAngle(Float.parseFloat(gTable.get(13).get(j).getValue()));
+                                    cp.setArchPara(Float.parseFloat(gTable.get(14).get(j).getValue()));
                                     CraneDao dao = new CraneDao(context);
                                     dao.update(cp);
                                 }
@@ -256,6 +259,9 @@ public class CraneSetting extends AppCompatActivity {
         "塔身直径",
         "大臂宽度",
         "平衡臂宽度",
+        "最大仰角(动臂式)",
+        "最小仰角(动臂式)",
+        "结构参数(动臂式)",
     };
 
 
@@ -310,6 +316,9 @@ public class CraneSetting extends AppCompatActivity {
                                         cp.setCraneBodyRadius(Float.parseFloat(gTable.get(9).get(j).getValue()));
                                         cp.setBigArmWidth(Float.parseFloat(gTable.get(10).get(j).getValue()));
                                         cp.setBalancArmWidth(Float.parseFloat(gTable.get(11).get(j).getValue()));
+                                        cp.setMaxAngle(Float.parseFloat(gTable.get(12).get(j).getValue()));
+                                        cp.setMinAngle(Float.parseFloat(gTable.get(13).get(j).getValue()));
+                                        cp.setArchPara(Float.parseFloat(gTable.get(14).get(j).getValue()));
                                         CraneDao dao = new CraneDao(context);
                                         dao.update(cp);
                                     }
@@ -332,7 +341,8 @@ public class CraneSetting extends AppCompatActivity {
                     case 0:
                         JSONObject privData = new JSONObject();
                         try {
-                            JSONArray options = new JSONArray("[\"A类型\", \"B类型\"]");
+                            //JSONArray options = new JSONArray("[\"A类型\", \"B类型\"]");
+                            JSONArray options = new JSONArray("[\"平臂式\", \"动臂式\"]");
                             privData.put("options", options);
                         } catch (Exception e) {
                         }
@@ -367,6 +377,15 @@ public class CraneSetting extends AppCompatActivity {
                         break;
                     case 10:
                         row.add(new DataCell(0, String.valueOf(paras.get(j).getBalancArmWidth())));
+                        break;
+                    case 11:
+                        row.add(new DataCell(0, String.valueOf(paras.get(j).getMaxAngle())));
+                        break;
+                    case 12:
+                        row.add(new DataCell(0, String.valueOf(paras.get(j).getMinAngle())));
+                        break;
+                    case 13:
+                        row.add(new DataCell(0, String.valueOf(paras.get(j).getArchPara())));
                         break;
                 }
             }
@@ -416,6 +435,7 @@ public class CraneSetting extends AppCompatActivity {
                     Log.e("滚动边界", "滚动到最右边");
                 }
             })
+
             .setOnLoadingListener(new LockTableView.OnLoadingListener() {
                 @Override
                 public void onRefresh(final XRecyclerView mXRecyclerView, final ArrayList<ArrayList<DataCell>> mTableDatas) {
@@ -428,6 +448,7 @@ public class CraneSetting extends AppCompatActivity {
                     mLockTableView.setTableDatas(mTableDatas);
                 }
             })
+
             .setOnItemClickListenter(new LockTableView.OnItemClickListenter() {
                 @Override
                 public void onItemClick(View item, int position) {
