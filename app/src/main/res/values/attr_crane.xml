@@ -5,6 +5,7 @@
         <attr name="crane_type" format="integer"></attr>
         <attr name="arm_length" format="integer"></attr>
         <attr name="hook_height" format="integer"></attr>
+        <attr name="arm_angle" format="float"></attr>
     </declare-styleable>
 
 </resources>

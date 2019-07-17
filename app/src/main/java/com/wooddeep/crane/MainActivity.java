@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         LinearLayout craneViewContainer = (LinearLayout)findViewById(R.id.crane_show);
-        craneView = (TestCraneView) craneViewContainer.getChildAt(0);
+        //craneView = (TestCraneView) craneViewContainer.getChildAt(0);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -280,9 +280,9 @@ public class MainActivity extends AppCompatActivity {
     public void commEventBus(UartEvent uartEvent) {
         try {
 
-            craneView.setHook(xxx, yyy);
-            xxx = xxx + 5;
-            yyy = yyy + 5;
+            //craneView.setHook(xxx, yyy);
+            //xxx = xxx + 5;
+            //yyy = yyy + 5;
 
             byte[] data = uartEvent.data;
 
@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
             System.out.printf("## %d - %d - %d - %d\n", parser.getAmplitude(), parser.getHeight(),
                 parser.getWeight(), parser.getWindSpeed());
 
-            weightAlarm();
+            //weightAlarm();
             //System.out.println("## I have get uart0 data!");
 
         } catch (Exception e) {

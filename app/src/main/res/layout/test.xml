@@ -28,18 +28,19 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:gravity="center"
+        android:background="@color/gray"
+        android:layout_margin="0dp">
 
-        <com.wooddeep.crane.views.CraneView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleX="1.0"
-            android:scaleY="1.0"
-            app:arm_angle="15"
-            app:arm_length="300"
-            app:crane_type="1"
-            app:hook_height="200" />
-
+        <com.wooddeep.crane.views.TestView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="1"
+            android:scaleY="1" />
     </LinearLayout>
+
+
 
 </LinearLayout>

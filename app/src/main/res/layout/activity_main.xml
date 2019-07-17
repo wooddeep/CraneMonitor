@@ -240,8 +240,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_gravity="bottom"
-                android:layout_marginLeft="5dp"
                 android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
                 android:background="@drawable/frame_border"
                 android:elevation="10dp"
                 android:orientation="horizontal"
@@ -359,191 +359,196 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:background="@drawable/spliter_background">
+            android:background="@drawable/spliter_background"
+            android:orientation="vertical">
 
             <com.wooddeep.crane.views.CraneView
+                android:id="@+id/crane"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:arm_length="600"
+                app:hook_height="300"
+                android:layout_margin="5dp"
+                android:background="@drawable/spliter_background"/>
+
+
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:hook_height="300"
-                app:arm_length="600"/>
+                android:layout_margin="5dp"
+                android:background="@drawable/spliter_background">
+
+                <!--
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/distance_logo"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/distance" />
+
+                    <TextView
+                        android:id="@+id/clock_logo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="5M"
+                        android:textSize="20dp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/rotation_logo"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/home_height" />
+
+                    <TextView
+                        android:id="@+id/clock_logo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="10M"
+                        android:textSize="20dp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/weight_logo"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/weight" />
+
+                    <TextView
+                        android:id="@+id/clock_logo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="10T"
+                        android:textSize="20dp" />
+
+                </TableRow>
+                -->
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/rotation_logo"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/rate" />
+
+                    <TextView
+                        android:id="@+id/clock_logo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="40%"
+                        android:textSize="20dp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/rotation_logo"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/forward" />
+
+                    <ImageView
+                        android:id="@+id/rotation_logo"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/backoff" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/rotation_logo"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/left_rotation" />
+
+                    <ImageView
+                        android:id="@+id/rotation_logo"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/right_rotation" />
+                </TableRow>
+
+            </TableLayout>
+
 
         </LinearLayout>
-
-        <!--
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:layout_margin="5dp"
-            android:background="@drawable/spliter_background">
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/distance_logo"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_centerInParent="true"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/distance" />
-
-                <TextView
-                    android:id="@+id/clock_logo"
-                    android:layout_width="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="5M"
-                    android:textSize="20dp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/rotation_logo"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/home_height" />
-
-                <TextView
-                    android:id="@+id/clock_logo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="10M"
-                    android:textSize="20dp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/weight_logo"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/weight" />
-
-                <TextView
-                    android:id="@+id/clock_logo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="10T"
-                    android:textSize="20dp" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/rotation_logo"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/rate" />
-
-                <TextView
-                    android:id="@+id/clock_logo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="40%"
-                    android:textSize="20dp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/rotation_logo"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/forward" />
-
-                <ImageView
-                    android:id="@+id/rotation_logo"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/backoff" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/rotation_logo"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/left_rotation" />
-
-                <ImageView
-                    android:id="@+id/rotation_logo"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/right_rotation" />
-            </TableRow>
-
-        </TableLayout>
-        -->
 
     </LinearLayout>
 
