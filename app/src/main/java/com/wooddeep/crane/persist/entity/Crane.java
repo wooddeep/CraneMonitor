@@ -51,6 +51,15 @@ public class Crane {
     @DatabaseField(columnName = "BalancArmWidth", useGetSet = true, defaultValue = "0")
     private float BalancArmWidth;
 
+    @DatabaseField(columnName = "maxAngle", useGetSet = true, defaultValue = "15.0")
+    private float maxAngle;
+
+    @DatabaseField(columnName = "minAngle", useGetSet = true, defaultValue = "85.0")
+    private float minAngle;
+
+    @DatabaseField(columnName = "archPara", useGetSet = true, defaultValue = "0.0")
+    private float archPara;
+
     public int getId() {
         return id;
     }
@@ -157,6 +166,38 @@ public class Crane {
 
     public float getBalancArmWidth() {
         return BalancArmWidth;
+    }
+
+    public boolean isMain() {
+        return isMain;
+    }
+
+    public void setMain(boolean main) {
+        isMain = main;
+    }
+
+    public float getMaxAngle() {
+        return maxAngle;
+    }
+
+    public void setMaxAngle(float maxAngle) {
+        this.maxAngle = maxAngle;
+    }
+
+    public float getMinAngle() {
+        return minAngle;
+    }
+
+    public void setMinAngle(float minAngle) {
+        this.minAngle = minAngle;
+    }
+
+    public float getArchPara() {
+        return archPara;
+    }
+
+    public void setArchPara(float archPara) {
+        this.archPara = archPara;
     }
 
     public void setBalancArmWidth(float balancArmWidth) {

@@ -316,4 +316,14 @@ public class CraneView extends View {
         this.hookHeight = hookHeight;
         invalidate();
     }
+
+    public void setArmAngle(float armAngle) {
+        this.armAngle = armAngle;
+        invalidate();
+    }
+
+    public void setCraneType(int craneType) {
+        this.craneType = craneType;
+        invalidate();
+    }
 }

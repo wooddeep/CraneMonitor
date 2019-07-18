@@ -34,6 +34,7 @@ public class AlarmSetting extends AppCompatActivity {
 
     AlarmCell [] alarmCells = new AlarmCell[] {
         new AlarmCell("t2tDistGear1", R.id.et_gear1, 0),
+        
     };
 
     @Override

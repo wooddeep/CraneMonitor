@@ -15,6 +15,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.x6.serial.SerialPort;
 import com.wooddeep.crane.comm.Protocol;
@@ -33,6 +34,7 @@ import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.CranePara;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.DrawTool;
+import com.wooddeep.crane.views.CraneView;
 import com.wooddeep.crane.views.TestCraneView;
 import com.wooddeep.crane.views.Vertex;
 
@@ -43,8 +45,10 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
@@ -174,8 +178,6 @@ public class MainActivity extends AppCompatActivity {
     private static Protocol packer = new Protocol();
     private static Protocol parser = new Protocol();
 
-    private static TestCraneView craneView = null;
-
     Timer timer = new Timer();
     TimerTask task = new TimerTask() {
         public void run() {
@@ -206,9 +208,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        LinearLayout craneViewContainer = (LinearLayout)findViewById(R.id.crane_show);
-        //craneView = (TestCraneView) craneViewContainer.getChildAt(0);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -272,24 +271,43 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private static int xxx = 10;
-    private static int yyy = 10;
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    private static int yyy = 20; // TODO 修改为实际的数据
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void commEventBus(UartEvent uartEvent) {
         try {
 
-            //craneView.setHook(xxx, yyy);
-            //xxx = xxx + 5;
-            //yyy = yyy + 5;
+
+            TextView currTime = (TextView)findViewById(R.id.currTime);
+            TextView currDate = (TextView)findViewById(R.id.currDate);
+
+            Date date = new Date();
+            String dateNowStr = sdf.format(date);
+
+            String [] cells = dateNowStr.split(" ");
+            currDate.setText(cells[0]);
+            currTime.setText(cells[1]);
 
             byte[] data = uartEvent.data;
-
             parser.parse(data);
 
-            System.out.printf("## %d - %d - %d - %d\n", parser.getAmplitude(), parser.getHeight(),
-                parser.getWeight(), parser.getWindSpeed());
+            TextView weight = (TextView)findViewById(R.id.weight);
+            weight.setText(String.valueOf(parser.getWeight()) + "T");
+
+            TextView armLength = (TextView)findViewById(R.id.length);
+            armLength.setText(String.valueOf(parser.getAmplitude()) + "M");
+
+            TextView height = (TextView)findViewById(R.id.height);
+            height.setText(String.valueOf(parser.getHeight()) + "M");
+
+            TextView windSpeed = (TextView)findViewById(R.id.wind_speed);
+            windSpeed.setText(String.valueOf(parser.getWindSpeed()) + "m/s");
+
+            yyy = yyy + 1;
+            CraneView craneView = findViewById(R.id.crane);
+            craneView.setArmAngle(yyy % 85);
 
             //weightAlarm();
             //System.out.println("## I have get uart0 data!");
@@ -410,7 +428,7 @@ public class MainActivity extends AppCompatActivity {
             1);
 
         List<Crane> paras = craneDao.selectAll();
-        if (paras.size() == 0) {
+        if (paras == null || paras.size() == 0) {
             craneDao.insert(crane);
         }
         paras = craneDao.selectAll();
@@ -544,7 +562,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         // 跳到区域设置页面
         ImageView areaSetting = (ImageView) viewMap.get("R.id.area_setting");
         areaSetting.setOnClickListener(new View.OnClickListener() {
@@ -602,7 +619,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         renderMain(oscale);
+
+        CraneDao craneDao = new CraneDao(MainActivity.this);
+        List<Crane> cranes = craneDao.selectAll();
+
+        // 查询主塔基的塔基类型
+        craneType = cranes.get(0).getType();
+        for (Crane temp : cranes) {
+            if (temp.isMain()) {
+                craneType = temp.getType();
+            }
+        }
+
+        CraneView craneView = (CraneView)findViewById(R.id.crane);
+        craneView.setCraneType(craneType);
+
     }
+
+    private static int craneType = 0; // 塔基类型: 0 ~ 平臂式, 2动臂式
 
     // 初始化数据
     private void initTable() {
@@ -628,6 +662,7 @@ public class MainActivity extends AppCompatActivity {
         if (cranes == null) {
             new CraneDao(MainActivity.this).insert(crane);
         }
+
     }
 
 
