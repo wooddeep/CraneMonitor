@@ -62,6 +62,16 @@
                 android:text="load attribute" />
         </LinearLayout>
 
+
+        <ImageView
+            android:id="@+id/load_data"
+            android:layout_width="45px"
+            android:layout_height="45px"
+            android:layout_centerInParent="true"
+            android:layout_toLeftOf="@+id/close_logo"
+            android:layout_marginRight="20dp"
+            app:srcCompat="@mipmap/load_conf" />
+
         <ImageView
             android:id="@+id/close_logo"
             android:layout_width="45px"

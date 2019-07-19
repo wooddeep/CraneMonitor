@@ -4,14 +4,19 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.bigkoo.alertview.AlertView;
+import com.bigkoo.alertview.OnItemClickListener;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.rmondjone.locktableview.DataCell;
 import com.rmondjone.locktableview.DisplayUtil;
@@ -23,6 +28,10 @@ import com.wooddeep.crane.persist.entity.Load;
 
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,12 +106,46 @@ public class LoadAttribute extends AppCompatActivity {
         return paras;
     }
 
+    // // 在SD卡目录下创建文件
+    private void createConfIfNotExist() throws Exception {
+        File file = new File(Environment.getExternalStorageDirectory(), "load_conf.csv");
+        Log.d("LoadAttribute", "file.exists():" + file.exists() + " file.getAbsolutePath():" + file.getAbsolutePath());
+        if (!file.exists()) {
+            //file.delete();
+            file.createNewFile();
+        }
+        //Toast.makeText(LoadAttribute.this, "SD卡目录下创建文件成功...", Toast.LENGTH_LONG).show();
+    }
+
+    // 在SD卡目录下的文件，写入内容
+    private void write(File file) throws Exception {
+        FileWriter fw = new FileWriter(file);
+        fw.write("我的sdcard内容.....");
+        fw.close();
+        Toast.makeText(LoadAttribute.this, "SD卡写入内容完成...", Toast.LENGTH_LONG).show();
+        Log.d("LoadAttribute", "SD卡写入内容完成...");
+    }
+
+    // 读取SD卡文件里面的内容
+    private void read() throws Exception {
+        FileReader fr = new FileReader("/mnt/sdcard/mysdcard.txt");
+        BufferedReader r = new BufferedReader(fr);
+        String result = r.readLine();
+        Log.d("LoadAttribute", "SD卡文件里面的内容:" + result);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.load_attribute);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
+        }
+
+        try {
+            createConfIfNotExist();
+        } catch (Exception e) {
+            // Do nothing!
         }
 
         confLoad(getApplicationContext());
@@ -194,88 +237,37 @@ public class LoadAttribute extends AppCompatActivity {
     }
 
     private void setOnClickListener(View view) {
-        /*
-        View.OnClickListener onClickListener = new View.OnClickListener() {
 
+        View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (view.getId() == R.id.add_logo) {
-                    AreaDao dao = new AreaDao(context);
-                    int rowCnt = dao.selectAll().size();
-                    dao.insert(new Area(
-                        100,
-                        0,
-                        0,
-                        50,
-                        50,
-                        100,
-                        100,
-                        150,
-                        150,
-                        200,
-                        200,
-                        250,
-                        250)
-                    );
-                    List<Area> paras = confLoad(context);
-                    paraTableRender(paras);
-                } else if (view.getId() == R.id.minus_logo) {
-                    List<Area> paras = confLoad(context);
-                    if (paras.size() <= 1) {
-                        Toast toast = Toast.makeText(LoadAttribute.this, "不能全删除!", Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
-                    }
-                    AreaDao dao = new AreaDao(context);
-                    dao.delete(paras.get(paras.size() - 1));
-                    paras = confLoad(context);
-                    paraTableRender(paras);
-
-                } else if (view.getId() == R.id.save_logo) { // 保存数据
-                    AlertView alertView = new AlertView("保存塔基参数", "", null,
-                        new String[]{"确定", "取消"}, null, activity,
-                        AlertView.Style.Alert, new OnItemClickListener() {
-                        @Override
-                        public void onItemClick(Object o, int position) {
-                            if (position == 0 && gTable != null) { // 确认
-                                for (int j = 1; j < gTable.get(j).size(); j++) {
-                                    Area cp = new Area();
-                                    int id = gTable.get(0).get(j).getPrivData().optInt("id");
-                                    cp.setId(id);
-                                    cp.setHeight(Float.parseFloat(gTable.get(1).get(j).getValue()));
-                                    cp.setX1(Float.parseFloat(gTable.get(2).get(j).getValue()));
-                                    cp.setY1(Float.parseFloat(gTable.get(3).get(j).getValue()));
-                                    cp.setX2(Float.parseFloat(gTable.get(4).get(j).getValue()));
-                                    cp.setY2(Float.parseFloat(gTable.get(5).get(j).getValue()));
-                                    cp.setX3(Float.parseFloat(gTable.get(6).get(j).getValue()));
-                                    cp.setY3(Float.parseFloat(gTable.get(7).get(j).getValue()));
-                                    cp.setX4(Float.parseFloat(gTable.get(8).get(j).getValue()));
-                                    cp.setY4(Float.parseFloat(gTable.get(9).get(j).getValue()));
-                                    cp.setX5(Float.parseFloat(gTable.get(10).get(j).getValue()));
-                                    cp.setY5(Float.parseFloat(gTable.get(11).get(j).getValue()));
-                                    cp.setX6(Float.parseFloat(gTable.get(12).get(j).getValue()));
-                                    cp.setY6(Float.parseFloat(gTable.get(13).get(j).getValue()));
-                                    AreaDao dao = new AreaDao(context);
-                                    dao.update(cp);
-                                }
+                if (view.getId() == R.id.load_data) {
+                    LoadDao dao = new LoadDao(context);
+                    if (view.getId() == R.id.save_logo) { // 保存数据
+                        AlertView alertView = new AlertView("加载负荷特性参数", "", null,
+                            new String[]{"确定", "取消"}, null, activity,
+                            AlertView.Style.Alert, new OnItemClickListener() {
+                            @Override
+                            public void onItemClick(Object o, int position) {
+                                // TODO, 从配置文件读取数据
                             }
-                        }
-                    });
-                    alertView.show();
-
+                        });
+                        alertView.show();
+                    }
+                    
                 } else if (view.getId() == R.id.close_logo) {
                     finish();
                 }
             }
         };
+
         view.setOnClickListener(onClickListener);
-        */
     }
 
     private void setOnTouchListener() {
         List<ImageView> menuButtons = new ArrayList<ImageView>() {{
+            add((ImageView) findViewById(R.id.load_data));
             add((ImageView) findViewById(R.id.close_logo));
-
         }};
 
         for (ImageView view : menuButtons) {
@@ -375,7 +367,7 @@ public class LoadAttribute extends AppCompatActivity {
                 }
             })
             .setOnItemSeletor(R.color.dashline_color);//设置Item被选中颜色
-        
+
         mLockTableView.setColumnWidth(1, screenWidth - firstColumnWidth); //设置指定列文本宽度(从0开始计算,宽度单位dp)
         mLockTableView.show(); //显示表格,此方法必须调用
 
@@ -394,7 +386,6 @@ public class LoadAttribute extends AppCompatActivity {
         List<Load> paras = confLoad(context);
         paraTableRender(paras); // 渲染出表格
 
-        //setOnTouchListener();
-
+        setOnTouchListener();
     }
 }

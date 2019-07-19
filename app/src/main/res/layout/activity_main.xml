@@ -62,16 +62,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="No.:19026"
-                android:textStyle="bold"
-                android:textSize="14dp" />
+                android:textSize="14dp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/craneType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SCT16014A"
-                android:textStyle="bold"
-                android:textSize="14dp" />
+                android:textSize="14dp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <ImageView
@@ -80,9 +80,9 @@
             android:layout_height="50dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:paddingBottom="2dp"
             android:layout_toLeftOf="@+id/weight"
             android:gravity="center"
+            android:paddingBottom="2dp"
             app:srcCompat="@mipmap/weight" />
 
         <TextView
@@ -90,12 +90,12 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_centerInParent="true"
-            android:gravity="center"
             android:layout_marginLeft="5dp"
             android:layout_toLeftOf="@+id/length_logo"
+            android:gravity="center"
             android:text="10T"
-            android:textStyle="bold"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/length_logo"
@@ -104,8 +104,8 @@
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:layout_marginLeft="40dp"
-            android:layout_weight="1"
             android:layout_toLeftOf="@+id/length"
+            android:layout_weight="1"
             android:gravity="center"
             app:srcCompat="@mipmap/distance" />
 
@@ -118,8 +118,8 @@
             android:layout_toLeftOf="@+id/height_logo"
             android:gravity="center"
             android:text="10M"
-            android:textStyle="bold"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/height_logo"
@@ -128,8 +128,8 @@
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:layout_marginLeft="40dp"
-            android:layout_weight="1"
             android:layout_toLeftOf="@+id/height"
+            android:layout_weight="1"
             android:gravity="center"
             app:srcCompat="@mipmap/home_height" />
 
@@ -142,8 +142,8 @@
             android:layout_toLeftOf="@+id/wind_speed_log"
             android:gravity="center"
             android:text="10M"
-            android:textStyle="bold"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/wind_speed_log"
@@ -165,8 +165,8 @@
             android:layout_toLeftOf="@+id/clock_logo"
             android:gravity="center"
             android:text="5.0m/s"
-            android:textStyle="bold"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/clock_logo"
@@ -195,8 +195,8 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:text="13:15:05"
-                android:textStyle="bold"
-                android:textSize="14dp" />
+                android:textSize="14dp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/currDate"
@@ -204,8 +204,8 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:text="2019-04-27"
-                android:textStyle="bold"
-                android:textSize="14dp" />
+                android:textSize="14dp"
+                android:textStyle="bold" />
         </LinearLayout>
 
     </RelativeLayout>
@@ -439,32 +439,45 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="4"
-            android:background="@drawable/spliter_background"
+            android:background="@color/gray"
             android:orientation="vertical">
 
-            <com.wooddeep.crane.views.CraneView
-                android:padding="0dp"
-                android:id="@+id/crane"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                app:arm_length="600"
-                app:hook_height="300"
-                app:arm_angle="30"
-                app:crane_type="1"
-                android:layout_margin="5dp"/>
+                android:orientation="vertical"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/spliter_background">
+                <com.wooddeep.crane.views.CraneView
+                    android:id="@+id/crane"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:padding="0dp"
+                    app:arm_angle="30"
+                    app:arm_length="600"
+                    app:crane_type="1"
+                    app:hook_height="300" />
+            </LinearLayout>
 
+            <!--
             <View
                 android:id="@+id/vdivider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/gray" />
+                android:background="@color/deep_gray" />
+            -->
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_margin="5dp"
+                android:layout_marginTop="0dp"
                 android:layout_weight="1"
-                android:layout_margin="5dp">
+                android:background="@drawable/spliter_background">
 
                 <!--
                 <TableRow

@@ -352,11 +352,12 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_ta_gear1"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="6.00" />
+                        android:text="1.00" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -385,11 +386,12 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_ta_gear2"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="6.00" />
+                        android:text="2.00" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -418,11 +420,12 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_ta_gear3"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="6.00" />
+                        android:text="3.00" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -451,11 +454,12 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_ta_gear4"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="6.00" />
+                        android:text="4.00" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -484,11 +488,12 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_ta_gear5"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="6.00" />
+                        android:text="5.00" />
 
                 </LinearLayout>
             </TableRow>
@@ -571,11 +576,12 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_hook_dist1"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="6.00" />
+                        android:text="1.00" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -605,12 +611,12 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_hook_dist2"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="6.00" />
-
+                        android:text="2.00" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -640,6 +646,7 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_moment1"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
@@ -675,6 +682,7 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_moment2"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
@@ -710,6 +718,7 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_moment3"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
@@ -797,6 +806,7 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_wind_speed1"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
@@ -831,6 +841,7 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_wind_speed2"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
@@ -866,6 +877,7 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_weight_gear1"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
@@ -901,6 +913,7 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_weight_gear2"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
@@ -936,6 +949,7 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_weight_gear3"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
@@ -1023,6 +1037,7 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_arm_min"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
@@ -1057,6 +1072,7 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_arm_max"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
@@ -1092,6 +1108,7 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_height_min"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
@@ -1127,6 +1144,7 @@
                     </LinearLayout>
 
                     <EditText
+                        android:id="@+id/et_height_max"
                         android:layout_width="0dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"

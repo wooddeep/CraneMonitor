@@ -51,11 +51,11 @@ public class AlarmSet {
     @DatabaseField(columnName = "moment1", useGetSet = true, defaultValue = "4.0f") // 小车减速距离
     public float moment1;
 
-    @DatabaseField(columnName = "monent2", useGetSet = true, defaultValue = "5.0f") // 小车停车距离
-    public float monent2;
+    @DatabaseField(columnName = "moment2", useGetSet = true, defaultValue = "5.0f") // 小车停车距离
+    public float moment2;
 
-    @DatabaseField(columnName = "monent3", useGetSet = true, defaultValue = "5.0f") // 小车停车距离
-    public float monent3;
+    @DatabaseField(columnName = "moment3", useGetSet = true, defaultValue = "5.0f") // 小车停车距离
+    public float moment3;
 
     // 风速
     @DatabaseField(columnName = "windSpeed1", useGetSet = true, defaultValue = "4.0f") // 小车减速距离
@@ -209,20 +209,20 @@ public class AlarmSet {
         this.moment1 = moment1;
     }
 
-    public float getMonent2() {
-        return monent2;
+    public float getMoment2() {
+        return moment2;
     }
 
-    public void setMonent2(float monent2) {
-        this.monent2 = monent2;
+    public void setMoment2(float monent2) {
+        this.moment2 = monent2;
     }
 
-    public float getMonent3() {
-        return monent3;
+    public float getMoment3() {
+        return moment3;
     }
 
-    public void setMonent3(float monent3) {
-        this.monent3 = monent3;
+    public void setMoment3(float monent3) {
+        this.moment3 = monent3;
     }
 
     public float getWindSpeed1() {

@@ -306,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
             windSpeed.setText(String.valueOf(parser.getWindSpeed()) + "m/s");
 
             yyy = yyy + 1;
-            CraneView craneView = findViewById(R.id.crane);
+            CraneView craneView = (CraneView)findViewById(R.id.crane);
             craneView.setArmAngle(yyy % 85);
 
             //weightAlarm();
@@ -562,6 +562,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         // 跳到区域设置页面
         ImageView areaSetting = (ImageView) viewMap.get("R.id.area_setting");
         areaSetting.setOnClickListener(new View.OnClickListener() {
@@ -662,7 +663,6 @@ public class MainActivity extends AppCompatActivity {
         if (cranes == null) {
             new CraneDao(MainActivity.this).insert(crane);
         }
-
     }
 
 
