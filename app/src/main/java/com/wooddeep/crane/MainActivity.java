@@ -45,6 +45,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -214,40 +215,86 @@ public class MainActivity extends AppCompatActivity {
         }
 
         EventBus.getDefault().register(this);
-        timer.schedule(task, 1000, 500);
+        //timer.schedule(task, 1000, 500);
 
         initTable();
+
+
+        UartEvent uartEvent = new UartEvent();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    //SerialPort serialttyS0 = new SerialPort(new File("/dev/ttyS0"), 115200, 0);
+                    // 01 04 00 01 00 04 A0 09
+                    /*
+                    SerialPort serialttySX = new SerialPort(new File("/dev/ttyS1"), 19200, 0); // 19200
+                    while (true) {
+                        OutputStream ttySXOutputStream = serialttySX.getOutputStream();
+                        ttySXOutputStream.write("hello world".getBytes());
+                    }*/
+
+                    SerialPort serialttyS0 = new SerialPort(new File("/dev/ttyS0"), 19200, 0); // 19200
                     SerialPort serialttyS1 = new SerialPort(new File("/dev/ttyS1"), 115200, 0);
-                    //OutputStream ttyS0OutputStream = serialttyS0.getOutputStream();
+                    OutputStream ttyS0OutputStream = serialttyS0.getOutputStream();
                     InputStream ttyS1InputStream = serialttyS1.getInputStream();
+
+                    InputStream ttySXInputStream = serialttyS0.getInputStream();
+
                     while (true) {
 
-                        //ttyS0OutputStream.write("hello world".getBytes());
+                        /*
+                        ttyS0OutputStream.write("hello world".getBytes());
+                        */
+
+                        ttyS0OutputStream.write(new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B});
+                        byte[] in = new byte[1024];
+
+                        /*
+                        if (ttySXInputStream.available()) {
+
+
+                            int len = ttySXInputStream.read(in, 0, 1024);
+                            byte[] real = Arrays.copyOf(in, len);
+
+                            System.out.println("\n#########################");
+                            for (byte data : real) {
+                                System.out.printf("%02x ", data);
+                            }
+                            System.out.println("\n#########################");
+
+                        }
+                        */
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e) {
+                            // TODO
+                        }
+
+                        /*
                         byte[] in = new byte[1024];
                         int len = ttyS1InputStream.read(in, 0, 1024);
                         byte[] real = Arrays.copyOf(in, len);
-                        //String res = new String(real, "UTF-8");
-                        //System.out.println("## read data: " + res);
+                        String res = new String(real, "UTF-8");
+                        System.out.println("## read data: " + res);
 
                         System.out.println("\n#########################");
                         for (byte data : real) {
                             System.out.printf("%02x ", data);
                         }
                         System.out.println("\n#########################");
-
+                        //parser.parse(in);
+                        uartEvent.setData(in);
+                        EventBus.getDefault().post(uartEvent);
+                        */
                     }
+
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
-
 
     }
 

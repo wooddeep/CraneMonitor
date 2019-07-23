@@ -465,7 +465,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     EditText etStart = (EditText) findViewById(weightStart.dimValueEditTextId);
                     EditText etEnd = (EditText) findViewById(weightEnd.dimValueEditTextId);
 
-                    double currUartData = parser.getAmplitude();
+                    double currUartData = parser.getWeight();
 
                     tvStart.setText(String.valueOf(currUartData));
 
@@ -502,7 +502,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     EditText etStart = (EditText) findViewById(weightStart.dimValueEditTextId);
                     EditText etEnd = (EditText) findViewById(weightEnd.dimValueEditTextId);
 
-                    double currUartData = parser.getAmplitude();
+                    double currUartData = parser.getWeight();
 
                     tvEnd.setText(String.valueOf(currUartData));
 
@@ -615,7 +615,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     EditText etStart = (EditText) findViewById(heightStart.dimValueEditTextId);
                     EditText etEnd = (EditText) findViewById(heightEnd.dimValueEditTextId);
 
-                    double currUartData = parser.getAmplitude();
+                    double currUartData = parser.getHeight();
 
                     tvStart.setText(String.valueOf(currUartData));
 
@@ -652,7 +652,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     EditText etStart = (EditText) findViewById(heightStart.dimValueEditTextId);
                     EditText etEnd = (EditText) findViewById(heightEnd.dimValueEditTextId);
 
-                    double currUartData = parser.getAmplitude();
+                    double currUartData = parser.getHeight();
 
                     tvEnd.setText(String.valueOf(currUartData));
 

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
@@ -261,6 +262,7 @@ public class UnLockColumnAdapter extends RecyclerView.Adapter<UnLockColumnAdapte
     private void createEditTextCell(LinearLayout linearLayout, List<DataCell> datas, boolean isFristRow, int mMaxHeight, int rowNum, int colNum) {
         //构造单元格
         EditText widget = new EditText(mContext); // 单元格是 编辑框
+        widget.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         widget.setBackgroundColor(Color.TRANSPARENT);
         try {
             widget.setTag(new JSONObject().put("row", rowNum).put("col", colNum)); // 列编号
@@ -290,6 +292,7 @@ public class UnLockColumnAdapter extends RecyclerView.Adapter<UnLockColumnAdapte
         if (isFristRow) {
             widget.setTextColor(ContextCompat.getColor(mContext, mTableHeadTextColor));
         } else {
+            //widget.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
             widget.setTextColor(ContextCompat.getColor(mContext, mTableContentTextColor));
         }
         widget.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextViewSize);
@@ -325,7 +328,7 @@ public class UnLockColumnAdapter extends RecyclerView.Adapter<UnLockColumnAdapte
 
         try {
             widget.setTag(new JSONObject().put("row", rowNum).put("col", colNum) // 列编号
-                .put("options", new JSONArray("[\"A类型\", \"B类型\"]")).put("index", 0));
+                .put("options", new JSONArray("[\"平臂式\", \"动臂式\"]")).put("index", 0));
 
             if (isFristRow) {
                 widget.setTextColor(ContextCompat.getColor(mContext, mTableHeadTextColor));
@@ -334,6 +337,7 @@ public class UnLockColumnAdapter extends RecyclerView.Adapter<UnLockColumnAdapte
             }
             //widget.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextViewSize);
             widget.setGravity(Gravity.CENTER);
+            widget.setBackgroundColor(0x00000000);
             int index = Integer.parseInt(datas.get(colNum).getValue());
             String option = ((JSONObject) widget.getTag()).optJSONArray("options").getString(index);
             widget.setText(option);
