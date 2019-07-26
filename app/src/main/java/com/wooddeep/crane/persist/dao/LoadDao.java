@@ -78,6 +78,7 @@ public class LoadDao {
         List<Load> out = new ArrayList<>();
 
         try {
+            
             List<Load> loads = dao.queryBuilder().where().eq("craneType", craneType)
                 .and().eq("armLength", armLength).and().eq("power", power).query();
             out = loads;
@@ -100,6 +101,14 @@ public class LoadDao {
     public void delete(Load data) {
         try {
             dao.delete(data);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteAll() {
+        try {
+            dao.executeRaw("delete from load;");
         } catch (SQLException e) {
             e.printStackTrace();
         }

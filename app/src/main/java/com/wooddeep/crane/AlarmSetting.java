@@ -36,35 +36,35 @@ public class AlarmSetting extends AppCompatActivity {
 
     private AlarmCell [] alarmCells = new AlarmCell[] {
 
-        // Ëş»ùÓëËş»ù¸æ¾¯
+        // å¡”åŸºä¸å¡”åŸºå‘Šè­¦
         new AlarmCell("t2tDistGear1", R.id.et_gear1, 0),
         new AlarmCell("t2tDistGear2", R.id.et_gear2, 0),
         new AlarmCell("t2tDistGear3", R.id.et_gear3, 0),
         new AlarmCell("t2tDistGear4", R.id.et_gear4, 0),
         new AlarmCell("t2tDistGear5", R.id.et_gear5, 0),
 
-        // Ëş»ùÓëÇøÓò¸æ¾¯
+        // å¡”åŸºä¸åŒºåŸŸå‘Šè­¦
         new AlarmCell("t2cDistGear1", R.id.et_ta_gear1, 0),
         new AlarmCell("t2cDistGear2", R.id.et_ta_gear2, 0),
         new AlarmCell("t2cDistGear3", R.id.et_ta_gear3, 0),
         new AlarmCell("t2cDistGear4", R.id.et_ta_gear4, 0),
         new AlarmCell("t2cDistGear5", R.id.et_ta_gear5, 0),
 
-        // Ğ¡³µ±ä·ù¼õËÙ¾àÀë, Í£³µ¾àÀë, Á¦¾Ø
+        // å°è½¦å˜å¹…å‡é€Ÿè·ç¦», åœè½¦è·ç¦», åŠ›çŸ©
         new AlarmCell("carSpeedDownDist", R.id.et_hook_dist1, 0),
         new AlarmCell("carStopDist", R.id.et_hook_dist2, 0),
         new AlarmCell("moment1", R.id.et_moment1, 0),
         new AlarmCell("moment2", R.id.et_moment2, 0),
         new AlarmCell("moment3", R.id.et_moment3, 0),
 
-        // ·çËÙ µõÖØ°Ù·Ö±È
+        // é£é€Ÿ åŠé‡ç™¾åˆ†æ¯”
         new AlarmCell("windSpeed1", R.id.et_wind_speed1, 0),
         new AlarmCell("windSpeed2", R.id.et_wind_speed2, 0),
         new AlarmCell("weight1", R.id.et_weight_gear1, 0),
         new AlarmCell("weight2", R.id.et_weight_gear2, 0),
         new AlarmCell("weight3", R.id.et_weight_gear3, 0),
 
-        // ·ù¶È£¬¸ß¶È
+        // å¹…åº¦ï¼Œé«˜åº¦
         new AlarmCell("armLengthMin", R.id.et_arm_min, 0),
         new AlarmCell("armLengthMax", R.id.et_arm_max, 0),
         new AlarmCell("hookHeightMin", R.id.et_height_min, 0),
@@ -122,9 +122,9 @@ public class AlarmSetting extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                if (view.getId() == R.id.save_logo) { // ±£´æÊı¾İ
-                    AlertView alertView = new AlertView("±£´æ¸æ¾¯²ÎÊı", "", null,
-                        new String[]{"È·¶¨", "È¡Ïû"}, null, activity,
+                if (view.getId() == R.id.save_logo) { // ä¿å­˜æ•°æ®
+                    AlertView alertView = new AlertView("ä¿å­˜å‘Šè­¦å‚æ•°", "", null,
+                        new String[]{"ç¡®å®š", "å–æ¶ˆ"}, null, activity,
                         AlertView.Style.Alert, new OnItemClickListener() {
                         @Override
                         public void onItemClick(Object o, int position) {

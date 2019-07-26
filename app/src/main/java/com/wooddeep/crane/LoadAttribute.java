@@ -32,6 +32,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +72,10 @@ public class LoadAttribute extends AppCompatActivity {
     private ArrayList<Integer> gColId = null;
 
     private Activity activity = this;
+
+    private List<String> craneTypes = new ArrayList<>();
+    private List<String> armLengths =  new ArrayList<>();
+    private List<String> cables =  new ArrayList<>();
 
     private List<Load> confLoad(Context contex) {
         DatabaseHelper.getInstance(contex).createTable(Load.class);
@@ -151,42 +157,64 @@ public class LoadAttribute extends AppCompatActivity {
         confLoad(getApplicationContext());
 
         LoadDao dao = new LoadDao(getApplicationContext());
-        List<String> craneTypes = dao.getCraneTypes();
-        List<String> armLengths = dao.getArmLengths(craneTypes.get(0));
-        List<String> cables = dao.getCables(craneTypes.get(0), armLengths.get(0));
+        craneTypes = dao.getCraneTypes();
+        armLengths = dao.getArmLengths(craneTypes.get(0));
+        cables = dao.getCables(craneTypes.get(0), armLengths.get(0));
 
-        MaterialSpinner spinner = (MaterialSpinner) findViewById(R.id.crane_type_option);
+        MaterialSpinner spinner = (MaterialSpinner) findViewById(R.id.crane_type_option); // 塔基类型
+        MaterialSpinner armLenSpinner = (MaterialSpinner) findViewById(R.id.arm_length_option); // 臂长
+        MaterialSpinner cableSpiner = (MaterialSpinner) findViewById(R.id.rope_num_option); // 吊绳倍率
+
         spinner.setItems(craneTypes);
         spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                MaterialSpinner armLenSpinner = (MaterialSpinner) findViewById(R.id.arm_length_option);
-                List<String> armLens = dao.getArmLengths(item);
-                armLenSpinner.setItems(armLens);
+            public void onItemSelected(MaterialSpinner view, int position, long id, String currCraneType) {
+                armLengths = dao.getArmLengths(currCraneType);
+                armLenSpinner.setItems(armLengths);
                 armLenSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
                     @Override
-                    public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                        // TODO
+                    public void onItemSelected(MaterialSpinner view, int position, long id, String currArmLen) {
+                        cables = dao.getCables(currCraneType, currArmLen);
+                        cableSpiner.setItems(cables);
+                        cableSpiner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
+                            @Override
+                            public void onItemSelected(MaterialSpinner view, int position, long id, String currPower) {
+                                // TODO
+                            }
+                        });
                     }
                 });
+
+                //List<Load> paras = confLoad(context);
+                paraTableRender(); // 渲染出表格
             }
         });
 
-        MaterialSpinner armLenSpinner = (MaterialSpinner) findViewById(R.id.arm_length_option);
         armLenSpinner.setItems(armLengths);
         armLenSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                //Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
+            public void onItemSelected(MaterialSpinner view, int position, long id, String currArmLen) {
+                String currCraneType = spinner.getText().toString();//spinner
+                cables = dao.getCables(currCraneType, currArmLen);
+                cableSpiner.setItems(cables);
+                cableSpiner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
+                    @Override
+                    public void onItemSelected(MaterialSpinner view, int position, long id, String currPower) {
+                        // TODO
+                    }
+                });
+                List<Load> paras = confLoad(context);
+                paraTableRender(); // 渲染出表格
             }
         });
 
-        MaterialSpinner cableSpiner = (MaterialSpinner) findViewById(R.id.rope_num_option);
         cableSpiner.setItems(cables);
         cableSpiner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
                 //Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
+                List<Load> paras = confLoad(context);
+                paraTableRender(); // 渲染出表格
             }
         });
     }
@@ -243,18 +271,41 @@ public class LoadAttribute extends AppCompatActivity {
             public void onClick(View view) {
                 if (view.getId() == R.id.load_data) {
                     LoadDao dao = new LoadDao(context);
-                    if (view.getId() == R.id.save_logo) { // 保存数据
-                        AlertView alertView = new AlertView("加载负荷特性参数", "", null,
-                            new String[]{"确定", "取消"}, null, activity,
-                            AlertView.Style.Alert, new OnItemClickListener() {
-                            @Override
-                            public void onItemClick(Object o, int position) {
-                                // TODO, 从配置文件读取数据
+                    AlertView alertView = new AlertView("加载负荷特性参数", "", null,
+                        new String[]{"确定", "取消"}, null, activity,
+                        AlertView.Style.Alert, new OnItemClickListener() {
+                        @Override
+                        public void onItemClick(Object o, int position) {
+                            if (position == 0) {
+                                InputStream is = context.getResources().openRawResource(R.raw.load_attr); // 暂时放在这里
+                                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
+                                try {
+                                    dao.deleteAll();
+                                    String str;
+                                    while ((str = bufferedReader.readLine()) != null) {
+                                        System.out.println(str);
+                                        String[] cells = str.split(",");
+                                        if (cells.length != 5) continue;
+                                        Load load = new Load();
+                                        // D5523, 4	,50	,0 ,10
+                                        load.setCraneType(cells[0]);
+                                        load.setPower(cells[1]);
+                                        load.setArmLength(cells[2]);
+                                        load.setCoordinate(cells[3]);
+                                        load.setWeight(cells[4]);
+                                        dao.insert(load);
+                                    }
+
+                                    craneTypes = dao.getCraneTypes();
+                                    armLengths = dao.getArmLengths(craneTypes.get(0));
+                                    cables = dao.getCables(craneTypes.get(0), armLengths.get(0));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        });
-                        alertView.show();
-                    }
-                    
+                        }
+                    });
+                    alertView.show();
                 } else if (view.getId() == R.id.close_logo) {
                     finish();
                 }
@@ -277,7 +328,7 @@ public class LoadAttribute extends AppCompatActivity {
     }
 
 
-    public ArrayList<ArrayList<DataCell>> areaParaArrange(List<Load> paras) {
+    public ArrayList<ArrayList<DataCell>> areaParaArrange() {
 
         ArrayList<ArrayList<DataCell>> table = new ArrayList<ArrayList<DataCell>>();
 
@@ -294,6 +345,7 @@ public class LoadAttribute extends AppCompatActivity {
             ArrayList<DataCell> row = new ArrayList<DataCell>();
             row.add(new DataCell(0, load.getCoordinate()));
             row.add(new DataCell(0, load.getWeight()));
+            System.out.printf("@@@@@@@@@@@@@@@@@@@@ : %s\n", load.getCoordinate());
             table.add(row);
 
         }
@@ -301,10 +353,10 @@ public class LoadAttribute extends AppCompatActivity {
         return table;
     }
 
-    public void paraTableRender(List<Load> paras) {
+    public void paraTableRender() {
 
         LinearLayout loadAttrContainer = (LinearLayout) findViewById(R.id.load_attri_container);
-        ArrayList<ArrayList<DataCell>> table = areaParaArrange(paras);
+        ArrayList<ArrayList<DataCell>> table = areaParaArrange();
 
         gTable = table;
         final LockTableView mLockTableView = new LockTableView(this, loadAttrContainer, table);
@@ -384,7 +436,7 @@ public class LoadAttribute extends AppCompatActivity {
         context = getApplicationContext();
         screenWidth = DisplayUtil.px2dip(context, screenWidthPx); // 转换为dp
         List<Load> paras = confLoad(context);
-        paraTableRender(paras); // 渲染出表格
+        paraTableRender(); // 渲染出表格
 
         setOnTouchListener();
     }
