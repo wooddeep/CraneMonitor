@@ -5,7 +5,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.util.AttributeSet;
 import android.view.View;
+
+// https://stackoverflow.com/questions/18931679/dotted-line-is-actually-not-dotted-when-app-is-running-on-real-android-device
 
 @SuppressWarnings("unused")
 public class GridLineView extends View {
@@ -37,7 +40,20 @@ public class GridLineView extends View {
     public GridLineView(Context context) {
         super(context);
         paint = new Paint();
-        paint.setColor(Color.GREEN);
+        paint.setColor(Color.BLACK);
+        //paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setStyle(Paint.Style.STROKE);
+        //paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStrokeWidth(1);
+        paint.setAntiAlias(true);
+        paint.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
+    }
+
+
+    public GridLineView(Context context, AttributeSet attrs) {
+        super(context);
+        paint = new Paint();
+        paint.setColor(Color.BLACK);
         //paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStyle(Paint.Style.STROKE);
         //paint.setStrokeCap(Paint.Cap.ROUND);
@@ -49,6 +65,8 @@ public class GridLineView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(Color.TRANSPARENT);
+        widthSize = getMeasuredWidth();
+        heighSize = getMeasuredHeight();
         final int space = 100;
         int grids = Math.max(widthSize, heighSize) / space + 1;
         int vertz = 0;

@@ -33,8 +33,15 @@
         android:gravity="center"
         android:background="@color/gray"
         android:layout_margin="0dp">
-
+        <!--
         <com.wooddeep.crane.views.TestView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="1"
+            android:scaleY="1" />
+         -->
+
+        <com.wooddeep.crane.views.GridLineView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleX="1"

@@ -455,7 +455,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void renderMain(float oscale) {
         FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
-        DrawTool.drawGrid(this, mainFrame);
+        //DrawTool.drawGrid(this, mainFrame);
         CraneDao craneDao = new CraneDao(MainActivity.this);
 
         Crane crane = new Crane(
