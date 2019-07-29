@@ -45,6 +45,7 @@ import com.wooddeep.crane.persist.entity.CranePara;
 import com.wooddeep.crane.persist.entity.Load;
 import com.wooddeep.crane.persist.entity.Protect;
 import com.wooddeep.crane.tookit.AnimUtil;
+import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.views.CraneView;
 import com.wooddeep.crane.views.TestCraneView;
@@ -649,6 +650,7 @@ public class MainActivity extends AppCompatActivity {
                 vertex.add(new Vertex(area.getX4(), area.getY4()));
                 vertex.add(new Vertex(area.getX5(), area.getY5()));
                 vertex.add(new Vertex(area.getX6(), area.getY6()));
+                vertex = CommTool.arrangeVertexList(vertex);
                 SideArea sideArea = new SideArea(centerCycle, Color.rgb(	95,158,160), vertex);
                 elemMap.addElem(sideArea.getUuid(), sideArea);
                 sideArea.drawSideArea(this, mainFrame);
@@ -668,6 +670,7 @@ public class MainActivity extends AppCompatActivity {
                 vertex.add(new Vertex(protect.getX4(), protect.getY4()));
                 vertex.add(new Vertex(protect.getX5(), protect.getY5()));
                 vertex.add(new Vertex(protect.getX6(), protect.getY6()));
+                vertex = CommTool.arrangeVertexList(vertex);
                 SideArea sideArea = new SideArea(centerCycle, Color.rgb(	0,0,139), vertex);
                 elemMap.addElem(sideArea.getUuid(), sideArea);
                 sideArea.drawSideArea(this, mainFrame, 1);

@@ -13,8 +13,11 @@ import android.widget.LinearLayout;
 
 import com.wooddeep.crane.R;
 import com.wooddeep.crane.views.GridLineView;
+import com.wooddeep.crane.views.Vertex;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @SuppressWarnings("unused")
 public class DrawTool {
@@ -131,15 +134,15 @@ public class DrawTool {
         return viewMap;
     }
 
-    public static void eraseMenu(Activity activity, ViewGroup parent,  HashMap<String, Object> map){
-        LinearLayout icontainer = (LinearLayout)map.get("R.id.menu_expand");
+    public static void eraseMenu(Activity activity, ViewGroup parent, HashMap<String, Object> map) {
+        LinearLayout icontainer = (LinearLayout) map.get("R.id.menu_expand");
         //ImageView craneSetting = (ImageView)map.get("R.id.crane_setting");
         //ImageView areaSetting = (ImageView)map.get("R.id.area_setting");
         //ImageView carlibrationSetting = (ImageView)map.get("R.id.calibration_setting");
         //ImageView alarmSetting = (ImageView)map.get("R.id.alarm_setting");
         icontainer.removeAllViews();
         parent.removeView(icontainer);
-        ImageView menu =  (ImageView)map.get("R.id.menu");
+        ImageView menu = (ImageView) map.get("R.id.menu");
         parent.removeView(menu);
     }
 
@@ -180,8 +183,8 @@ public class DrawTool {
         return viewMap;
     }
 
-    public static void eraseZoom(Activity activity, ViewGroup parent,  HashMap<String, Object> map){
-        LinearLayout icontainer = (LinearLayout)map.get("R.id.zoom_container");
+    public static void eraseZoom(Activity activity, ViewGroup parent, HashMap<String, Object> map) {
+        LinearLayout icontainer = (LinearLayout) map.get("R.id.zoom_container");
         icontainer.removeAllViews();
         parent.removeView(icontainer);
     }

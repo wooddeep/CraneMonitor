@@ -4,7 +4,9 @@ import android.content.Context;
 
 import com.wooddeep.crane.persist.dao.CraneDao;
 import com.wooddeep.crane.persist.entity.Crane;
+import com.wooddeep.crane.views.Vertex;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommTool {
@@ -28,5 +30,16 @@ public class CommTool {
         return out;
     }
 
+    public static List<Vertex>  arrangeVertexList(List<Vertex> vertexs) {
+        List<Vertex> out = new ArrayList<>();
+        for (Vertex vertex : vertexs) {
+            Vertex pointer = vertex;
+            if ((int) pointer.x <= 0 || (int) pointer.y <= 0) {
+                continue;
+            }
 
+            out.add(vertex);
+        }
+        return out;
+    }
 }
