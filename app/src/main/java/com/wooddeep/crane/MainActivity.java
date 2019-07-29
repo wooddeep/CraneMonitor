@@ -624,7 +624,7 @@ public class MainActivity extends AppCompatActivity {
         protectSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ProtectArea.class);
+                Intent intent = new Intent(MainActivity.this, ProtectSetting.class);
                 startActivity(intent);
             }
         });

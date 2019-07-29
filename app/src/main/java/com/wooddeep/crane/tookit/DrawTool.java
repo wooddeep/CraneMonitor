@@ -89,7 +89,7 @@ public class DrawTool {
         params.setMargins(15, 0, 0, 0);
         params.gravity = Gravity.CENTER;
         protectAreaSetting.setLayoutParams(params);
-        protectAreaSetting.setImageResource(R.mipmap.protect_area_setting);
+        protectAreaSetting.setImageResource(R.mipmap.protect_area_log);
         icontainer.addView(protectAreaSetting);
         viewMap.put("R.id.protect_area_setting", protectAreaSetting);
 

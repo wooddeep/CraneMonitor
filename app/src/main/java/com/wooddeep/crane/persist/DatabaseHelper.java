@@ -13,6 +13,7 @@ import com.wooddeep.crane.persist.entity.Area;
 import com.wooddeep.crane.persist.entity.Calibration;
 import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.Load;
+import com.wooddeep.crane.persist.entity.Protect;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -94,6 +95,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
             TableUtils.createTableIfNotExists(connectionSource, Crane.class);  // 塔基
             TableUtils.createTableIfNotExists(connectionSource, Area.class);   // 区域
+            TableUtils.createTableIfNotExists(connectionSource, Protect.class);   // 区域
             //TableUtils.createTableIfNotExists(connectionSource, ProtectArea.class);   // 保护区域
             //TableUtils.createTableIfNotExists(connectionSource, Calibration.class); // 标定
             //TableUtils.createTableIfNotExists(connectionSource, Load.class);  // 负荷特性

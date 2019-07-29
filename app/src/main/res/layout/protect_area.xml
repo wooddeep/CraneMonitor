@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+ * 自定义progressbar
+ * https://blog.csdn.net/mad1989/article/details/38042875
+ * https://www.jianshu.com/p/8998e381b805
+ * 九点图
+ * https://onlooker.wodemo.net/browse/392022/res/drawable-hdpi-v4/
+
+ * 程序定义进度条
+ * https://blog.csdn.net/u012005313/article/details/76047122
+
+
+ * android:gravity : 控件相对于父容器的位置
+
+ * 相对布局
+ * https://www.cnblogs.com/liter7/p/5178674.html
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/banner"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/banner_height"
+        android:layout_gravity="center"
+        android:background="@drawable/spliter_background"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/area_logo"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            app:srcCompat="@mipmap/protect_area_log" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/area_logo"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="保护区设置"
+                android:textColor="#506946" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="protect area setting" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/add_logo"
+            android:layout_width="40px"
+            android:layout_height="40px"
+            android:layout_centerInParent="true"
+            android:layout_toLeftOf="@+id/minus_logo"
+            android:layout_marginRight="20dp"
+            app:srcCompat="@mipmap/add_logo" />
+
+        <ImageView
+            android:id="@+id/minus_logo"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@+id/save_logo"
+            app:srcCompat="@mipmap/minus_logo" />
+
+        <ImageView
+            android:id="@+id/save_logo"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="40dp"
+            android:layout_toLeftOf="@+id/close_logo"
+            app:srcCompat="@drawable/save_logo" />
+
+        <ImageView
+            android:id="@+id/close_logo"
+            android:layout_width="45px"
+            android:layout_height="45px"
+            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            app:srcCompat="@mipmap/close_logo" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/area_setting_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    </LinearLayout>
+
+
+</LinearLayout>

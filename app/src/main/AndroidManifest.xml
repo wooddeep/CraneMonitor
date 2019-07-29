@@ -27,6 +27,8 @@
         </activity>
         <activity android:name="com.wooddeep.crane.LoadAttribute">
         </activity>
+        <activity android:name="com.wooddeep.crane.ProtectSetting">
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
