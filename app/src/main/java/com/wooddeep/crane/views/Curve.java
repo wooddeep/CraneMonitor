@@ -85,7 +85,7 @@ public class Curve extends View {
         super.onDraw(canvas);
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         Paint paint = new Paint();//创建画笔
-        paint.setColor(this.color);//为画笔设置颜色
+        paint.setColor(Color.BLACK);//为画笔设置颜色
         if (flink) {
             paint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
         }
@@ -94,7 +94,7 @@ public class Curve extends View {
             paint.setColor(Color.rgb(225, 140, 0));
         } else {
             paint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
-            paint.setColor(Color.rgb(46, 139, 87));
+            //paint.setColor(Color.rgb(46, 139, 87));
         }
 
         //paint.setStyle(Paint.Style.FILL);
@@ -103,15 +103,19 @@ public class Curve extends View {
         //paint.setColor(Color.LTGRAY);
         //canvas.drawColor(Color.GREEN);//为画布设置颜色
         //设置等腰三角形的三点坐标
-        Path path = new Path();//绘制多边形的类
-        Vertex start = vertexs.get(0);
-        path.moveTo(start.x, start.y);//起始点
-        for (int i = 1; i < vertexs.size(); i++) {
-            Vertex pointer = vertexs.get(i);
-            path.lineTo(pointer.x, pointer.y);//右下角
+        //Path path = new Path();//绘制多边形的类
+        //Vertex start = vertexs.get(0);
+        //path.moveTo(start.x, start.y);//起始点
+        for (int i = 0; i < vertexs.size() - 1; i++) {
+            Vertex start = vertexs.get(i);
+            Vertex end = vertexs.get(i + 1);
+            canvas.drawLine(start.x, start.y, end.x, end.y, paint);
         }
+
+        System.out.println("####### draw protect area!!");
+
         //path.close();//闭合图形
-        canvas.drawPath(path, paint);
+        //canvas.drawPath(path, paint);
     }
 
     /**

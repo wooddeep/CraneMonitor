@@ -20,18 +20,30 @@ import android.widget.TextView;
 import com.example.x6.serial.SerialPort;
 import com.wooddeep.crane.comm.Protocol;
 import com.wooddeep.crane.ebus.MessageEvent;
+import com.wooddeep.crane.ebus.ParaChangeEvent;
 import com.wooddeep.crane.ebus.UartEvent;
 import com.wooddeep.crane.ebus.UserEvent;
 import com.wooddeep.crane.element.CenterCycle;
 import com.wooddeep.crane.element.ElemMap;
 import com.wooddeep.crane.element.SideArea;
 import com.wooddeep.crane.element.SideCycle;
+import com.wooddeep.crane.element.SideProtect;
+import com.wooddeep.crane.persist.DatabaseHelper;
+import com.wooddeep.crane.persist.dao.AlarmSetDao;
 import com.wooddeep.crane.persist.dao.AreaDao;
+import com.wooddeep.crane.persist.dao.CalibrationDao;
 import com.wooddeep.crane.persist.dao.CraneDao;
 import com.wooddeep.crane.persist.dao.CraneParaDao;
+import com.wooddeep.crane.persist.dao.LoadDao;
+import com.wooddeep.crane.persist.dao.ProtectAreaDao;
+import com.wooddeep.crane.persist.dao.ProtectDao;
+import com.wooddeep.crane.persist.entity.AlarmSet;
 import com.wooddeep.crane.persist.entity.Area;
+import com.wooddeep.crane.persist.entity.Calibration;
 import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.CranePara;
+import com.wooddeep.crane.persist.entity.Load;
+import com.wooddeep.crane.persist.entity.Protect;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.views.CraneView;
@@ -165,6 +177,7 @@ try {
 @SuppressWarnings("unused")
 public class MainActivity extends AppCompatActivity {
 
+    private Context context;
     private static final String TAG = "MainActivity";
     private static final ElemMap elemMap = new ElemMap();
 
@@ -178,6 +191,13 @@ public class MainActivity extends AppCompatActivity {
 
     private static Protocol packer = new Protocol();
     private static Protocol parser = new Protocol();
+
+    private static int craneType = 0; // 塔基类型: 0 ~ 平臂式, 2动臂式
+    private static AlarmSet alarmSet = null;
+    private static Calibration calibration = null;
+
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static int yyy = 20; // TODO 修改为实际的数据
 
     Timer timer = new Timer();
     TimerTask task = new TimerTask() {
@@ -205,96 +225,84 @@ public class MainActivity extends AppCompatActivity {
         this.oscale = oscale;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
-
-        EventBus.getDefault().register(this);
-        //timer.schedule(task, 1000, 500);
-
-        initTable();
-
-
-        UartEvent uartEvent = new UartEvent();
-
+    private void startUartThread() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     // 01 04 00 01 00 04 A0 09
-                    /*
-                    SerialPort serialttySX = new SerialPort(new File("/dev/ttyS1"), 19200, 0); // 19200
+                    //SerialPort serialttyS0 = new SerialPort(new File("/dev/ttyS0"), 19200, 0); // 19200
+                    //SerialPort serialttyS1 = new SerialPort(new File("/dev/ttyS1"), 115200, 0);
+                    SerialPort serialttyS2 = new SerialPort(new File("/dev/ttyS2"), 115200, 0);
+                    SerialPort serialttyS3 = new SerialPort(new File("/dev/ttyS3"), 115200, 0);
+                    //OutputStream ttyS0OutputStream = serialttyS0.getOutputStream();
+                    //InputStream ttyS1InputStream = serialttyS1.getInputStream();
+
+                    OutputStream ttyS2OutputStream = serialttyS2.getOutputStream();
+                    InputStream ttyS2InputStream = serialttyS2.getInputStream();
+
+                    OutputStream ttyS3OutputStream = serialttyS3.getOutputStream();
+                    InputStream ttyS3InputStream = serialttyS3.getInputStream();
+
+                    byte[] in = new byte[1024];
+
                     while (true) {
-                        OutputStream ttySXOutputStream = serialttySX.getOutputStream();
-                        ttySXOutputStream.write("hello world".getBytes());
-                    }*/
+                        ttyS2OutputStream.write("hello world".getBytes());
+                        int len = ttyS3InputStream.read(in, 0, 1024);
+                        byte[] real = Arrays.copyOf(in, len);
+                        //for (byte data : real) {
+                        //    System.out.printf("%02x ", data);
+                        //}
+                        //System.out.println(new String(real));
 
-                    SerialPort serialttyS0 = new SerialPort(new File("/dev/ttyS0"), 19200, 0); // 19200
-                    SerialPort serialttyS1 = new SerialPort(new File("/dev/ttyS1"), 115200, 0);
-                    OutputStream ttyS0OutputStream = serialttyS0.getOutputStream();
-                    InputStream ttyS1InputStream = serialttyS1.getInputStream();
-
-                    InputStream ttySXInputStream = serialttyS0.getInputStream();
-
-                    while (true) {
-
-                        /*
-                        ttyS0OutputStream.write("hello world".getBytes());
-                        */
-
-                        ttyS0OutputStream.write(new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B});
-                        byte[] in = new byte[1024];
-
-                        /*
-                        if (ttySXInputStream.available()) {
-
-
-                            int len = ttySXInputStream.read(in, 0, 1024);
-                            byte[] real = Arrays.copyOf(in, len);
-
-                            System.out.println("\n#########################");
-                            for (byte data : real) {
-                                System.out.printf("%02x ", data);
-                            }
-                            System.out.println("\n#########################");
-
-                        }
-                        */
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(200);
                         } catch (Exception e) {
-                            // TODO
-                        }
 
-                        /*
-                        byte[] in = new byte[1024];
+                        }
+                    }
+
+                    /*
+                    ttyS0OutputStream.write("hello world".getBytes());
+                    //ttyS0OutputStream.write(new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B});
+                    if (ttyS1InputStream.available() > 0) {
                         int len = ttyS1InputStream.read(in, 0, 1024);
                         byte[] real = Arrays.copyOf(in, len);
-                        String res = new String(real, "UTF-8");
-                        System.out.println("## read data: " + res);
-
-                        System.out.println("\n#########################");
                         for (byte data : real) {
                             System.out.printf("%02x ", data);
                         }
-                        System.out.println("\n#########################");
-                        //parser.parse(in);
-                        uartEvent.setData(in);
-                        EventBus.getDefault().post(uartEvent);
-                        */
+                    } else {
+                        System.out.println("############# no data !############");
                     }
-
+                    */
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        context = getApplicationContext();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+        EventBus.getDefault().register(this);
+        //timer.schedule(task, 1000, 500);
+        initTable(); // 初始化表
+        //UartEvent uartEvent = new UartEvent();
+        startUartThread();
+    }
+
+    // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void ParaChangeEventBus(ParaChangeEvent userEvent) {
+        System.out.printf("######## userEvent = %f\n", userEvent.alarmSet.t2cDistGear1);
+        alarmSet = userEvent.alarmSet; // 更新配置
 
     }
 
@@ -318,42 +326,38 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    private static int yyy = 20; // TODO 修改为实际的数据
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void commEventBus(UartEvent uartEvent) {
         try {
 
-
-            TextView currTime = (TextView)findViewById(R.id.currTime);
-            TextView currDate = (TextView)findViewById(R.id.currDate);
+            TextView currTime = (TextView) findViewById(R.id.currTime);
+            TextView currDate = (TextView) findViewById(R.id.currDate);
 
             Date date = new Date();
             String dateNowStr = sdf.format(date);
 
-            String [] cells = dateNowStr.split(" ");
+            String[] cells = dateNowStr.split(" ");
             currDate.setText(cells[0]);
             currTime.setText(cells[1]);
 
             byte[] data = uartEvent.data;
             parser.parse(data);
 
-            TextView weight = (TextView)findViewById(R.id.weight);
-            weight.setText(String.valueOf(parser.getWeight()) + "T");
+            TextView weight = (TextView) findViewById(R.id.weight);
+            weight.setText(String.valueOf(parser.getWeight()) + "t");
 
-            TextView armLength = (TextView)findViewById(R.id.length);
-            armLength.setText(String.valueOf(parser.getAmplitude()) + "M");
+            TextView armLength = (TextView) findViewById(R.id.length);
+            armLength.setText(String.valueOf(parser.getAmplitude()) + "m");
 
-            TextView height = (TextView)findViewById(R.id.height);
-            height.setText(String.valueOf(parser.getHeight()) + "M");
+            TextView height = (TextView) findViewById(R.id.height);
+            height.setText(String.valueOf(parser.getHeight()) + "m");
 
-            TextView windSpeed = (TextView)findViewById(R.id.wind_speed);
+            TextView windSpeed = (TextView) findViewById(R.id.wind_speed);
             windSpeed.setText(String.valueOf(parser.getWindSpeed()) + "m/s");
 
             yyy = yyy + 1;
-            CraneView craneView = (CraneView)findViewById(R.id.crane);
+            CraneView craneView = (CraneView) findViewById(R.id.crane);
             craneView.setArmAngle(yyy % 85);
 
             //weightAlarm();
@@ -453,97 +457,9 @@ public class MainActivity extends AppCompatActivity {
         return paras;
     }
 
-    private void renderMain(float oscale) {
+
+    private void renderMenu() {
         FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
-        //DrawTool.drawGrid(this, mainFrame);
-        CraneDao craneDao = new CraneDao(MainActivity.this);
-
-        Crane crane = new Crane(
-            true,
-            0,
-            String.format("%d号塔基", 1),
-            0,
-            100,
-            100,
-            1,
-            1,
-            1,
-            40,
-            10,
-            1,
-            1,
-            1);
-
-        List<Crane> paras = craneDao.selectAll();
-        if (paras == null || paras.size() == 0) {
-            craneDao.insert(crane);
-        }
-        paras = craneDao.selectAll();
-        elemMap.delElems(mainFrame);
-
-        Crane mainCrane = paras.get(0);
-        for (Crane iterator : paras) {
-            if (iterator.getIsMain() == true) {
-                mainCrane = iterator;
-                break;
-            }
-        }
-
-        // 画中心圆环
-        final CenterCycle centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(),
-            mainCrane.getBigArmLength(), mainCrane.getBalancArmLength(), 0, 0);
-        elemMap.addElem(centerCycle.getUuid(), centerCycle);
-        mainCycleId = centerCycle.getUuid();
-        centerCycle.drawCenterCycle(this, mainFrame);
-
-        // 根据数据库的数据画图
-        for (Crane cp : paras) {
-            if (cp == mainCrane) continue;
-            float scale = centerCycle.scale;
-            SideCycle sideCycle = new SideCycle(scale, mainCrane.getCoordX1(), mainCrane.getCoordY1(), cp.getCoordX1(),
-                cp.getCoordY1(), cp.getBigArmLength(), mainCrane.getBalancArmLength(), 0, 0);
-
-            elemMap.addElem(sideCycle.getUuid(), sideCycle);
-            sideCycleId = sideCycle.getUuid();
-            sideCycle.drawSideCycle(this, mainFrame);
-        }
-
-        AreaDao areaDao = new AreaDao(MainActivity.this);
-        List<Area> areas = areaDao.selectAll();
-        if (areas != null && areas.size() > 0) {
-            List<Vertex> vertex = new ArrayList<Vertex>();
-            for (Area area : areas) {
-                vertex.add(new Vertex(area.getX1(), area.getY1()));
-                vertex.add(new Vertex(area.getX2(), area.getY2()));
-                vertex.add(new Vertex(area.getX3(), area.getY3()));
-                vertex.add(new Vertex(area.getX4(), area.getY4()));
-                vertex.add(new Vertex(area.getX5(), area.getY5()));
-                vertex.add(new Vertex(area.getX6(), area.getY6()));
-            }
-            float scale = centerCycle.scale;
-            SideArea sideArea = new SideArea(Color.GRAY, scale, mainCrane.getCoordX1(), mainCrane.getCoordY1(), vertex);
-            elemMap.addElem(sideArea.getUuid(), sideArea);
-            sideArea.drawSideArea(this, mainFrame);
-        }
-
-        // 画保护区
-        ProtectDao protectDao = new ProtectDao(MainActivity.this);
-        List<Protect> protects = protectDao.selectAll();
-        if (protects != null && protects.size() > 0) {
-            List<Vertex> vertex = new ArrayList<Vertex>();
-            for (Protect protect : protects) {
-                vertex.add(new Vertex(protect.getX1(), protect.getY1()));
-                vertex.add(new Vertex(protect.getX2(), protect.getY2()));
-                vertex.add(new Vertex(protect.getX3(), protect.getY3()));
-                vertex.add(new Vertex(protect.getX4(), protect.getY4()));
-                vertex.add(new Vertex(protect.getX5(), protect.getY5()));
-                vertex.add(new Vertex(protect.getX6(), protect.getY6()));
-            }
-            float scale = centerCycle.scale;
-            SideProtect sideProtect = new SideProtect(Color.GRAY, scale, mainCrane.getCoordX1(), mainCrane.getCoordY1(), vertex);
-            elemMap.addElem(sideProtect.getUuid(), sideProtect);
-            sideProtect.drawSideProtect(this, mainFrame);
-        }
 
         HashMap<String, Object> viewMap = DrawTool.drawMenu(this, mainFrame);
         HashMap<String, Object> zoomMap = DrawTool.drawZoom(this, mainFrame);
@@ -602,6 +518,7 @@ public class MainActivity extends AppCompatActivity {
                 oscale = oscale + 0.1f;
                 setOscale(oscale);
                 renderMain(oscale);
+                renderMenu();
             }
         });
 
@@ -611,9 +528,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 float oscale = getOscale();
+                if (oscale < 0.2) return;
                 oscale = oscale - 0.1f;
                 setOscale(oscale);
                 renderMain(oscale);
+                renderMenu();
             }
         });
 
@@ -679,15 +598,97 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    private void renderMain(float oscale) {
+        FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
+        //DrawTool.drawGrid(this, mainFrame);
+        CraneDao craneDao = new CraneDao(MainActivity.this);
+
+        List<Crane> paras = craneDao.selectAll();
+        if (paras.size() == 0) return;
+
+        elemMap.delElems(mainFrame);
+
+        Crane mainCrane = paras.get(0);
+        for (Crane iterator : paras) {
+            if (iterator.getIsMain() == true) {
+                mainCrane = iterator;
+                break;
+            }
+        }
+
+        // 画中心圆环
+        final CenterCycle centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(),
+            mainCrane.getBigArmLength(), mainCrane.getBalancArmLength(), 0, 0, 100);
+        elemMap.addElem(centerCycle.getUuid(), centerCycle);
+        mainCycleId = centerCycle.getUuid();
+        centerCycle.drawCenterCycle(this, mainFrame);
+
+        // 根据数据库的数据画图
+        for (Crane cp : paras) {
+            if (cp == mainCrane) continue;
+            float scale = centerCycle.scale;
+            SideCycle sideCycle = new SideCycle(centerCycle, cp.getCoordX1(), cp.getCoordY1(), cp.getBigArmLength(),
+                mainCrane.getBalancArmLength(), 0, 0, 10);
+
+            elemMap.addElem(sideCycle.getUuid(), sideCycle);
+            sideCycleId = sideCycle.getUuid();
+            sideCycle.drawSideCycle(this, mainFrame);
+        }
+
+        // 区域
+
+        AreaDao areaDao = new AreaDao(MainActivity.this);
+        List<Area> areas = areaDao.selectAll();
+        if (areas != null && areas.size() > 0) {
+            for (Area area : areas) {
+                List<Vertex> vertex = new ArrayList<Vertex>();
+                vertex.add(new Vertex(area.getX1(), area.getY1()));
+                vertex.add(new Vertex(area.getX2(), area.getY2()));
+                vertex.add(new Vertex(area.getX3(), area.getY3()));
+                vertex.add(new Vertex(area.getX4(), area.getY4()));
+                vertex.add(new Vertex(area.getX5(), area.getY5()));
+                vertex.add(new Vertex(area.getX6(), area.getY6()));
+                SideArea sideArea = new SideArea(centerCycle, Color.GRAY, vertex);
+                elemMap.addElem(sideArea.getUuid(), sideArea);
+                sideArea.drawSideArea(this, mainFrame);
+            }
+
+        }
+
+
+        // 保护区
+
+        ProtectDao protectDao = new ProtectDao(MainActivity.this);
+        List<Protect> protects = protectDao.selectAll();
+        if (protects != null && protects.size() > 0) {
+            for (Protect protect : protects) {
+                List<Vertex> vertex = new ArrayList<Vertex>();
+                vertex.add(new Vertex(protect.getX1(), protect.getY1()));
+                vertex.add(new Vertex(protect.getX2(), protect.getY2()));
+                vertex.add(new Vertex(protect.getX3(), protect.getY3()));
+                vertex.add(new Vertex(protect.getX4(), protect.getY4()));
+                vertex.add(new Vertex(protect.getX5(), protect.getY5()));
+                vertex.add(new Vertex(protect.getX6(), protect.getY6()));
+                SideArea sideArea = new SideArea(centerCycle, Color.GRAY, vertex);
+                elemMap.addElem(sideArea.getUuid(), sideArea);
+                sideArea.drawSideArea(this, mainFrame, 1);
+            }
+        }
+
+    }
+
     /**
      * 获取主界面FrameLayout的坐标及长宽
      **/
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         renderMain(oscale);
+        renderMenu();
 
         CraneDao craneDao = new CraneDao(MainActivity.this);
         List<Crane> cranes = craneDao.selectAll();
+        if (cranes.size() == 0) return;
 
         // 查询主塔基的塔基类型
         craneType = cranes.get(0).getType();
@@ -697,37 +698,41 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        CraneView craneView = (CraneView)findViewById(R.id.crane);
+        CraneView craneView = (CraneView) findViewById(R.id.crane);
         craneView.setCraneType(craneType);
 
     }
 
-    private static int craneType = 0; // 塔基类型: 0 ~ 平臂式, 2动臂式
-
     // 初始化数据
     private void initTable() {
-        Crane crane = new Crane(
-            true,
-            0,
-            String.format("%d号塔基", 1),
-            0,
-            100,
-            100,
-            1,
-            1,
-            1,
-            40,
-            10,
-            1,
-            1,
-            1);
-
-        // 创建表！为什么只能写怎么恶心的代码? ormlite
         CraneDao craneDao = new CraneDao(MainActivity.this);
+        AreaDao areaDao = new AreaDao(MainActivity.this);
+        ProtectAreaDao protectAreaDao = new ProtectAreaDao(MainActivity.this);
+        AlarmSetDao alarmSetDao = new AlarmSetDao(MainActivity.this);
+        CalibrationDao calibrationDao = new CalibrationDao(MainActivity.this);
+        LoadDao loadDao = new LoadDao(MainActivity.this);
+
         List<Crane> cranes = craneDao.selectAll();
-        if (cranes == null) {
-            new CraneDao(MainActivity.this).insert(crane);
+        if (cranes == null || cranes.size() == 0) { // 初始状态, 创建表
+            DatabaseHelper.getInstance(context).createTable(Crane.class);
+
+            DatabaseHelper.getInstance(context).createTable(Area.class); // 区域
+
+            DatabaseHelper.getInstance(context).createTable(Protect.class); // 保护区
+
+            DatabaseHelper.getInstance(context).createTable(AlarmSet.class); // 告警
+            alarmSetDao.insert(AlarmSet.getInitData());
+
+            DatabaseHelper.getInstance(context).createTable(Load.class); // 负载
+            loadDao.insert(Load.getInitData());
+
+            DatabaseHelper.getInstance(context).createTable(Calibration.class); // 标定
+            calibrationDao.insert(Calibration.getInitData());
         }
+
+        alarmSet = alarmSetDao.selectAll().get(0);
+        calibration = calibrationDao.selectAll().get(0);
+
     }
 
 

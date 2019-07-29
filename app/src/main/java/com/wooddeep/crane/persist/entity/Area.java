@@ -187,4 +187,21 @@ public class Area {
     public void setY6(float y6) {
         this.y6 = y6;
     }
+
+    public static Area getInitData() {
+        return new Area(
+            0,
+            -10000,
+            -10000,
+            -10000,
+            -10000,
+            -10000,
+            -10000,
+            -10000,
+            -10000,
+            -10000,
+            -10000,
+            -10000,
+            -10000);
+    }
 }

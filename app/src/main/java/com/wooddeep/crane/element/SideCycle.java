@@ -11,37 +11,34 @@ import com.wooddeep.crane.views.SuperCircleView;
 import org.locationtech.jts.geom.Geometry;
 
 public class SideCycle  extends BaseElem{
-    public float scale;
-    public float cx;
-    public float cy;
     public float x;
     public float y;
     public float r;
     public float ir;
     public float hAngle;            // 水平方向夹角
     public float vAngle;            // 垂直方向夹角
+    public float carRange;
+    public CenterCycle centerCycle;
     public SuperCircleView cycle;
 
     public SideCycle(
-        float scale,
-        float cx,
-        float cy,
+        CenterCycle cc,
         float x,
         float y,
         float r,
         float ir,
         float hAngle,            // 水平方向夹角
-        float vAngle            // 垂直方向夹角
+        float vAngle,            // 垂直方向夹角
+        float carRange
     ) {
-        this.scale = scale;
-        this.cx = cx;
-        this.cy = cy;
+        this.centerCycle = cc;
         this.x = x;
         this.y = y;
         this.r = r;
         this.ir = ir;
         this.hAngle = hAngle;
         this.vAngle = vAngle;
+        this.carRange = carRange * cc.scale;
     }
 
     public void drawSideCycle(
@@ -54,32 +51,24 @@ public class SideCycle  extends BaseElem{
 
         // 1号塔机坐标100.100圆环直径55。2号塔机坐标130.123圆环直径60
         int ringWidth = 2; // 固定圆环宽度
-        float originRadius = (scale * r);
-        float originBackWidth = originRadius * 2 + ringWidth * 2 + 4; // 默认圆环正方形背景高度
-        float originBackHeight = originBackWidth + 4; // 默认圆环正方形背景宽度
-        float centerX = width / 2;   // 中心点x坐标(到左边距的长度)，相对于FrameLayout的左下角
-        float centerY = height / 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
-
-        float deltaX = (scale * (x - cx));
-        float deltaY = (scale * (y - cy));
-
-        float leftMargin = centerX - originRadius + deltaX;  // 左偏
-        float topMagin = height - (centerY + originRadius) - deltaY;   // 下偏
-
+        float originRadius = (centerCycle.scale * r);
         SuperCircleView cycle = new SuperCircleView(context);
-        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams((int)originBackWidth, (int)originBackHeight);
-        paras.leftMargin = (int)leftMargin;
-        paras.topMargin = (int)topMagin;
+
+        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(width, height);
         cycle.setLayoutParams(paras);
         parent.addView(cycle);
-        cycle.setDefMinRadio((int)originRadius);
+        cycle.setDefMinRadio(originRadius);
         float orgInnerRadius = originRadius / r * ir;
-        cycle.setmInnerRadio((int) orgInnerRadius);
+        cycle.setmInnerRadio(orgInnerRadius);
         cycle.setBackgroundColor(0x00000000); // 透明色
         cycle.setDefRingWidth(ringWidth);
-        cycle.setmRingNormalColor(Color.GREEN);
+        cycle.setmRingNormalColor(Color.rgb(46, 139, 87));
         cycle.sethAngle(hAngle);
         cycle.setvAngle(vAngle);
+        cycle.setCarRange(carRange);
+        cycle.setScale(centerCycle.scale);
+        cycle.setmViewCenterX(x * centerCycle.scale + centerCycle.deltaX);
+        cycle.setmViewCenterY(height - y * centerCycle.scale - centerCycle.delatY);
         this.cycle = cycle;
         cycle.show();
     }

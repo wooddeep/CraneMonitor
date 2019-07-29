@@ -37,6 +37,7 @@ public class Polygon extends View {
     private int boderColer = Color.GRAY;
     private boolean alarm = false;
     private boolean flink = false;
+    private int type = 0;
 
     public int getBoderColer() {
         return boderColer;
@@ -94,7 +95,7 @@ public class Polygon extends View {
             paint.setColor(Color.rgb(225, 140, 0));
         } else {
             paint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
-            paint.setColor(Color.rgb(46, 139, 87));
+            paint.setColor(Color.rgb(		189,183,107));
         }
 
         //paint.setStyle(Paint.Style.FILL);
@@ -108,9 +109,14 @@ public class Polygon extends View {
         path.moveTo(start.x, start.y);//起始点
         for (int i = 1; i < vertexs.size(); i++) {
             Vertex pointer = vertexs.get(i);
+            if (pointer.x < 0 || pointer.y < 0) continue;
             path.lineTo(pointer.x, pointer.y);//右下角
         }
-        path.close();//闭合图形
+
+        if (this.type == 0) {
+            path.close();//闭合图形
+        }
+
         //绘制三角形
         canvas.drawPath(path, paint);
     }
@@ -127,6 +133,11 @@ public class Polygon extends View {
 
     public void setColor(int color) {
         this.color = color;
+        invalidate();
+    }
+
+    public void setType(int t) {
+        this.type = t;
         invalidate();
     }
 

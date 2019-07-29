@@ -12,9 +12,13 @@ import android.widget.ImageView;
 
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
+import com.wooddeep.crane.ebus.ParaChangeEvent;
+import com.wooddeep.crane.ebus.UartEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.dao.AlarmSetDao;
 import com.wooddeep.crane.persist.entity.AlarmSet;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -144,6 +148,8 @@ public class AlarmSetting extends AppCompatActivity {
                                 }
                             }
                             dao.update(alarmSet);
+
+                            EventBus.getDefault().post(new ParaChangeEvent(alarmSet));
                         }
                     });
                     alertView.show();

@@ -20,7 +20,12 @@ public class CenterCycle extends BaseElem{
     public float ir;                  // 原始小臂半径
     public float hAngle;            // 水平方向夹角
     public float vAngle;             // 垂直方向夹角
+    public float carRange;
+    public float deltaX;
+    public float delatY;
+
     public SuperCircleView cycle;
+
     private Geometry geometry; // 几何坐标
 
     public CenterCycle(
@@ -30,7 +35,8 @@ public class CenterCycle extends BaseElem{
         float r,
         float ir,
         float hAngle,
-        float vAngle
+        float vAngle,
+        float carRange
     ) {
         this.oscale = oscale;
         this.r = r;
@@ -39,6 +45,7 @@ public class CenterCycle extends BaseElem{
         this.y = y;
         this.hAngle = hAngle;
         this.vAngle = vAngle;
+        this.carRange = carRange;
     }
 
     public void drawCenterCycle(
@@ -54,31 +61,35 @@ public class CenterCycle extends BaseElem{
         float originRadius = Math.min(width, height) / 4; // 默认圆的直径为屏幕的一半
         originRadius = oscale * originRadius; // 比例变化
 
-        float originBackWidth = originRadius * 2 + ringWidth * 2; // 默认圆环正方形背景高度
+        float originBackWidth = originRadius * 2 + ringWidth * 2 + 10; // 默认圆环正方形背景高度
         float originBackHeight = originBackWidth; // 默认圆环正方形背景宽度
         float scale = originRadius / r;
-        int centerX = width / 2;   // 中心点x坐标(到左边距的长度)，相对于FrameLayout的左下角
-        int centerY = height / 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
+        float centerX = width / 2;   // 中心点x坐标(到左边距的长度)，相对于FrameLayout的左下角
+        float centerY = height / 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
 
-        float leftMargin = centerX - originRadius;  // 左偏
-        float topMagin = height - (centerY + originRadius);   // 下偏
         SuperCircleView cycle = new SuperCircleView(context);
-        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams((int) originBackWidth, (int) originBackHeight);
-        paras.leftMargin = (int) leftMargin;
-        paras.topMargin = (int) topMagin;
+
+        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(width, height);
+
         cycle.setLayoutParams(paras);
         parent.addView(cycle);
-        cycle.setDefMinRadio((int) originRadius);
+        cycle.setDefMinRadio(originRadius);
+        cycle.setmViewCenterX(centerX);
+        cycle.setmViewCenterY(centerY);
         cycle.setBackgroundColor(0x00000000); // 透明色
         cycle.setDefRingWidth(ringWidth);
-        cycle.setmRingNormalColor(Color.GREEN);
+        cycle.setmRingNormalColor(Color.rgb(30,144,255));
         float orgInnerRadius = originRadius / r * ir;
-        cycle.setmInnerRadio((int) orgInnerRadius);
+        cycle.setmInnerRadio(orgInnerRadius);
         cycle.sethAngle(hAngle);
         cycle.setvAngle(vAngle);
+        cycle.setCarRange(carRange * scale);
+        cycle.setScale(scale);
         cycle.show();
-        this.scale = scale;
+        this.deltaX = centerX - x * scale;
+        this.delatY = height - centerY - y * scale;
         this.cycle = cycle;
+        this.scale = scale;
     }
 
     public void hAngleAdd(float added) {

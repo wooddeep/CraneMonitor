@@ -65,6 +65,7 @@ public class AreaSetting extends AppCompatActivity {
         AreaDao dao = new AreaDao(contex);
 
         List<Area> paras = dao.selectAll();
+        /*
         if (paras == null || paras.size() == 0) {
             dao.insert(new Area(
                 100,
@@ -84,6 +85,7 @@ public class AreaSetting extends AppCompatActivity {
         }
 
         paras = dao.selectAll();
+        */
         return paras;
     }
 
@@ -133,22 +135,7 @@ public class AreaSetting extends AppCompatActivity {
             public void onClick(View view) {
                 if (view.getId() == R.id.add_logo) {
                     AreaDao dao = new AreaDao(context);
-                    int rowCnt = dao.selectAll().size();
-                    dao.insert(new Area(
-                        100,
-                        0,
-                        0,
-                        50,
-                        50,
-                        100,
-                        100,
-                        150,
-                        150,
-                        200,
-                        200,
-                        250,
-                        250)
-                    );
+                    dao.insert(Area.getInitData());
                     List<Area> paras = confLoad(context);
                     paraTableRender(paras);
                 } else if (view.getId() == R.id.minus_logo) {

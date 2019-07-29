@@ -25,10 +25,10 @@ public class SuperCircleView extends View {
     private final String TAG = "SuperCircleView";
 
     private ValueAnimator valueAnimator;
-    private int mViewCenterX;   //view宽的中心点(可以暂时理解为圆心)
-    private int mViewCenterY;   //view高的中心点(可以暂时理解为圆心)
+    private float mViewCenterX;   //view宽的中心点(可以暂时理解为圆心)
+    private float mViewCenterY;   //view高的中心点(可以暂时理解为圆心)
 
-    private int mMinRadio; //最里面白色圆的半径
+    private float mMinRadio; //最里面白色圆的半径
     private float mRingWidth; //圆环的宽度
     private int mMinCircleColor;    //最里面圆的颜色
     private int mRingNormalColor;    //默认圆环的颜色
@@ -36,18 +36,24 @@ public class SuperCircleView extends View {
     private int color[] = new int[3];   //渐变颜色
 
     private RectF mRectF; //圆环的矩形区域
-    private int mSelectRing = 0;        //要显示几段彩色
+    private float mSelectRing = 0;        //要显示几段彩色
     private int mMaxValue;
 
-    private int defMinRadio = 50;
-    private int defRingWidth = 2;
-    private int mInnerRadio = 20;
+    private float defMinRadio = 50;
+    private float defRingWidth = 2;
+    private float mInnerRadio = 20;
     private float hAngle = 30;    // 大臂水平方向的倾角
     private float vAngle = 0; // 垂直方向夹角
+
+    private float carRange = 50; // 小车位置
+
+    private float scale = 1.0f;
 
     private boolean alarm = false;
 
     private boolean flink = false;
+
+    //private boolean drawed = false;
 
     public boolean getFlink() {
         return flink;
@@ -55,16 +61,17 @@ public class SuperCircleView extends View {
 
     public void setFlink(boolean flink) {
         this.flink = flink;
-        invalidate();
+        //invalidate();
     }
 
-    public void setmInnerRadio(int mInnerRadio) {
+    public void setmInnerRadio(float mInnerRadio) {
         this.mInnerRadio = mInnerRadio;
+        //invalidate();
     }
 
     public void setAlarm(boolean alarm) {
         this.alarm = alarm;
-        invalidate();
+        //invalidate();
     }
 
     public boolean getAlarm() {
@@ -73,32 +80,51 @@ public class SuperCircleView extends View {
 
     public void sethAngle(float hAngle) {
         this.hAngle = hAngle;
-        invalidate();
+        //invalidate();
     }
 
     public void setvAngle(float vAngle) {
         this.vAngle = vAngle;
-        invalidate();
+        //invalidate();
     }
 
-    public void setDefMinRadio(int defMinRadio) {
+    public void setDefMinRadio(float defMinRadio) {
         this.defMinRadio = defMinRadio;
         this.mMinRadio = defMinRadio;
-        invalidate();
+        //invalidate();
     }
 
-    public void setDefRingWidth(int defRingWidth) {
+    public void setDefRingWidth(float defRingWidth) {
         this.defRingWidth = defRingWidth;
         this.mRingWidth = defRingWidth;
-        invalidate();
+        //invalidate();
     }
 
     public void setmRingNormalColor(int mRingNormalColor) {
         this.mRingNormalColor = mRingNormalColor;
-        invalidate();
+        //invalidate();
     }
 
-    public SuperCircleView(Context context, int defMinRadio, int defRingWidth) {
+    public void setCarRange(float carRange) {
+        this.carRange = carRange;
+        //invalidate();
+    }
+
+    public void setmViewCenterX(float mViewCenterX) {
+        this.mViewCenterX = mViewCenterX;
+        //invalidate();
+    }
+
+    public void setmViewCenterY(float mViewCenterY) {
+        this.mViewCenterY = mViewCenterY;
+        //invalidate();
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+
+    public SuperCircleView(Context context, float defMinRadio, float defRingWidth) {
         this(context, null);
     }
 
@@ -116,7 +142,7 @@ public class SuperCircleView extends View {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SuperCircleView);
 
         //最里面白色圆的半径
-        mMinRadio = a.getInteger(R.styleable.SuperCircleView_min_circle_radio, defMinRadio);
+        mMinRadio = a.getFloat(R.styleable.SuperCircleView_min_circle_radio, defMinRadio);
         //圆环宽度
         mRingWidth = a.getFloat(R.styleable.SuperCircleView_ring_width, defRingWidth);
 
@@ -146,65 +172,33 @@ public class SuperCircleView extends View {
         color[2] = Color.parseColor("#16FF00");
     }
 
-    private RectF calRingRectArea(int radio) {
+    private RectF calRingRectArea(float radio) {
         return new RectF(mViewCenterX - radio - mRingWidth / 2,
-          mViewCenterY - radio - mRingWidth / 2,
-          mViewCenterX + radio + mRingWidth / 2,
-          mViewCenterY + radio + mRingWidth / 2);
+            mViewCenterY - radio - mRingWidth / 2,
+            mViewCenterX + radio + mRingWidth / 2,
+            mViewCenterY + radio + mRingWidth / 2);
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         //view的宽和高,相对于父布局(用于确定圆心)
-        int viewWidth = getMeasuredWidth();
-        int viewHeight = getMeasuredHeight();
-        mViewCenterX = viewWidth / 2;
-        mViewCenterY = viewHeight / 2;
         mRectF = calRingRectArea(mMinRadio);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        //if (drawed) return;
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         mPaint.setColor(mMinCircleColor);
-        //canvas.drawCircle(mViewCenterX, mViewCenterY, mMinRadio, mPaint);
         //画默认圆环
         drawNormalRing(canvas);
-        //画彩色圆环
-        drawRingCenter(canvas);
         // draw radio
         drawRadio(canvas);
+        //drawed = true;
     }
 
-    /**
-     * 画彩色圆环
-     *
-     * @param canvas
-     */
-    private void drawColorRing(Canvas canvas) {
-        Paint ringColorPaint = new Paint(mPaint);
-        ringColorPaint.setStyle(Paint.Style.STROKE);
-        ringColorPaint.setStrokeWidth(mRingWidth);
-        ringColorPaint.setShader(new SweepGradient(mViewCenterX, mViewCenterX, color, null));
-        //左边旋转90度
-        canvas.rotate(-90, mViewCenterX, mViewCenterY);
-        canvas.drawArc(mRectF, 360, mSelectRing, false, ringColorPaint);
-        ringColorPaint.setShader(null);
-    }
-
-    private void drawRingCenter(Canvas canvas) {
-        Paint ringColorPaint = new Paint(mPaint);
-        ringColorPaint.setStyle(Paint.Style.STROKE);
-        ringColorPaint.setColor(Color.DKGRAY);
-        //ringColorPaint.setStrokeWidth(mRingWidth);
-        //ringColorPaint.setShader(new SweepGradient(mViewCenterX, mViewCenterX, color, null));
-        //canvas.rotate(-90, mViewCenterX, mViewCenterY);
-        //canvas.drawArc(mRectF, 360, mSelectRing, false, ringColorPaint);
-        canvas.drawCircle(mViewCenterX, mViewCenterX, 4, ringColorPaint);
-        ringColorPaint.setShader(null);
-    }
 
     /**
      * 画默认圆环
@@ -222,19 +216,8 @@ public class SuperCircleView extends View {
         Paint ringRealPaint = new Paint(mPaint);
         ringRealPaint.setStyle(Paint.Style.STROKE);
         ringRealPaint.setStrokeWidth(mRingWidth);
-        ringRealPaint.setColor(Color.rgb(46, 139, 87));
-
+        ringRealPaint.setColor(mRingNormalColor);
         ringRealPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
-        //if (flink) {
-        //    ringRealPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
-        //}
-
-        //if (alarm) {
-        //    ringRealPaint.setColor(Color.rgb(225, 140, 0));
-        //} else {
-        //    ringRealPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
-            ringRealPaint.setColor(Color.rgb(46, 139, 87));
-        //}
 
         // 大臂环
         canvas.drawArc(mRectF, 360, 360, false, ringMaxPaint);
@@ -242,18 +225,9 @@ public class SuperCircleView extends View {
         // 大臂环 * cos(夹角)
         double cos = Math.cos(Math.toRadians(vAngle));
         double realRadio = cos * mMinRadio;
-        RectF realRectF = calRingRectArea((int)realRadio);
+        RectF realRectF = calRingRectArea((float)realRadio);
         canvas.drawArc(realRectF, 360, 360, false, ringRealPaint);
 
-        // 小臂环
-        RectF innerRectF = calRingRectArea(mInnerRadio);
-        //ringRealPaint.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
-        canvas.drawArc(innerRectF, 360, 360, false, ringMaxPaint);
-
-        // 小臂环 * cos(夹角)
-        double realMinRadio = cos * mInnerRadio;
-        RectF realMinRectF = calRingRectArea((int)realMinRadio);
-        canvas.drawArc(realMinRectF, 360, 360, false, ringRealPaint);
     }
 
     /**
@@ -268,14 +242,13 @@ public class SuperCircleView extends View {
         if (flink) {
             radioPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
         }
-        
+
         if (alarm) {
             radioPaint.setColor(Color.rgb(225, 140, 0));
         } else {
             radioPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
-            radioPaint.setColor(Color.rgb(46, 139, 87));
+            radioPaint.setColor(mRingNormalColor);
         }
-        //radioPaint.setShadowLayer(2, 1, 1, Color.RED);
 
         // long arm
         double sin = Math.sin(Math.toRadians(hAngle + 90));
@@ -288,50 +261,48 @@ public class SuperCircleView extends View {
         float yoffset = (float) (mMinRadio * cosRate * cos);
         canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY + yoffset, radioPaint);
 
-        // short arm
+        // 画小车
+        Paint carPaint = new Paint(mPaint);
+        carPaint.setColor(Color.rgb(255,165,0));
+        carPaint.setStyle(Paint.Style.FILL);
+        float carXCoord = mViewCenterX + Math.min((float) (carRange * cosRate * sin), (float)(xoffset - 8 * cosRate * sin));
+        float carYCoord = mViewCenterY + Math.min((float) (carRange * cosRate * cos), (float)(yoffset - 8 * cosRate * cos));
+
+        carPaint.setStrokeWidth(8); // 车宽6， 车长12
+        float carHeadXCoord = carXCoord + (float) (8 * cosRate * sin); // 车头X坐标
+        float carHeadYCoord = carYCoord + (float) (8 * cosRate * cos); // 车头Y坐标
+
+
+        if (scale < 1.0f) {
+            carPaint.setStrokeWidth(8 * scale); // 车宽6， 车长12
+            carHeadXCoord = carXCoord +  Math.min((float) (float) (8 * cosRate * sin * scale), xoffset); // 车头X坐标
+            carHeadYCoord = carYCoord +  Math.min((float) (float) (8 * cosRate * cos * scale), yoffset); // 车头Y坐标
+        }
+
+        canvas.drawLine(carXCoord, carYCoord, carHeadXCoord, carHeadYCoord, carPaint);
+
+        // 平衡臂相关参数
+        Paint shortArmPaint = new Paint(mPaint);
+        shortArmPaint.setColor(Color.BLACK);
+        shortArmPaint.setStyle(Paint.Style.STROKE);
+        shortArmPaint.setStrokeWidth(4.0f);
         double isin = Math.sin(Math.toRadians(hAngle + 90 + 180));
         double icos = Math.cos(Math.toRadians(hAngle + 90 + 180));
         float ixoffset = (float) (mInnerRadio * cosRate * isin);
         float iyoffset = (float) (mInnerRadio * cosRate * icos);
 
-        canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + ixoffset, mViewCenterY + iyoffset, radioPaint);
-    }
+        canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + ixoffset, mViewCenterY + iyoffset, shortArmPaint);
 
-
-    //***************************************用于更新圆环表示的数值*****************************************************
-
-    /**
-     * 设置当前值
-     *
-     * @param value
-     */
-    public void
-    setValue(int value) {
-        if (value > mMaxValue) {
-            value = mMaxValue;
-        }
-        int start = 0;
-        int end = value;
-        startAnimator(start, end, 2000);
-    }
-
-    private void startAnimator(int start, int end, long animTime) {
-        valueAnimator = ValueAnimator.ofInt(start, end);
-        valueAnimator.setDuration(animTime);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int i = Integer.valueOf(String.valueOf(animation.getAnimatedValue()));
-                //每个单位长度占多少度
-                mSelectRing = (int) (360 * (i / 100f));
-                //Log.i(TAG, "onAnimationUpdate: mSelectRing::" + mSelectRing);
-                invalidate(); // 调用onDraw方法
-            }
-        });
-        valueAnimator.start();
+        // 圆心
+        Paint ringColorPaint = new Paint(mPaint);
+        ringColorPaint.setStyle(Paint.Style.FILL);
+        ringColorPaint.setColor(Color.DKGRAY);
+        RectF mRectF = calRingRectArea(3);
+        canvas.drawArc(mRectF, 360, 360, false, ringColorPaint);
     }
 
     public void show() {
+        //drawed = false;
         invalidate();
     }
 }

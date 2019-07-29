@@ -20,9 +20,7 @@ import com.rmondjone.locktableview.DataCell;
 import com.rmondjone.locktableview.DisplayUtil;
 import com.rmondjone.locktableview.LockTableView;
 import com.rmondjone.xrecyclerview.XRecyclerView;
-import com.wooddeep.crane.persist.dao.AreaDao;
 import com.wooddeep.crane.persist.dao.ProtectDao;
-import com.wooddeep.crane.persist.entity.Area;
 import com.wooddeep.crane.persist.entity.Protect;
 
 import org.json.JSONObject;
@@ -65,27 +63,7 @@ public class ProtectSetting extends AppCompatActivity {
 
     private List<Protect> confLoad(Context contex) {
         ProtectDao dao = new ProtectDao(contex);
-
         List<Protect> paras = dao.selectAll();
-        if (paras == null || paras.size() == 0) {
-            dao.insert(new Protect(
-                100,
-                0,
-                0,
-                50,
-                50,
-                100,
-                100,
-                150,
-                150,
-                200,
-                200,
-                250,
-                250)
-            );
-        }
-
-        paras = dao.selectAll();
         return paras;
     }
 
@@ -134,31 +112,18 @@ public class ProtectSetting extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (view.getId() == R.id.add_logo) {
-                    AreaDao dao = new AreaDao(context);
+                    ProtectDao dao = new ProtectDao(context);
                     int rowCnt = dao.selectAll().size();
-                    dao.insert(new Area(
-                        100,
-                        0,
-                        0,
-                        50,
-                        50,
-                        100,
-                        100,
-                        150,
-                        150,
-                        200,
-                        200,
-                        250,
-                        250)
-                    );
+                    dao.insert(Protect.getInitData());
                     List<Protect> paras = confLoad(context);
                     paraTableRender(paras);
                 } else if (view.getId() == R.id.minus_logo) {
                     List<Protect> paras = confLoad(context);
-                    if (paras.size() <= 1) {
+                    if (paras.size() <= 0) {
                         Toast toast = Toast.makeText(ProtectSetting.this, "不能全删除!", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
+                        return;
                     }
                     ProtectDao dao = new ProtectDao(context);
                     dao.delete(paras.get(paras.size() - 1));
@@ -173,7 +138,7 @@ public class ProtectSetting extends AppCompatActivity {
                         public void onItemClick(Object o, int position) {
                             if (position == 0 && gTable != null) { // 确认
                                 for (int j = 1; j < gTable.get(j).size(); j++) {
-                                    Area cp = new Area();
+                                    Protect cp = new Protect();
                                     int id = gTable.get(0).get(j).getPrivData().optInt("id");
                                     cp.setId(id);
                                     cp.setHeight(Float.parseFloat(gTable.get(1).get(j).getValue()));
@@ -189,7 +154,7 @@ public class ProtectSetting extends AppCompatActivity {
                                     cp.setY5(Float.parseFloat(gTable.get(11).get(j).getValue()));
                                     cp.setX6(Float.parseFloat(gTable.get(12).get(j).getValue()));
                                     cp.setY6(Float.parseFloat(gTable.get(13).get(j).getValue()));
-                                    AreaDao dao = new AreaDao(context);
+                                    ProtectDao dao = new ProtectDao(context);
                                     dao.update(cp);
                                 }
                             }

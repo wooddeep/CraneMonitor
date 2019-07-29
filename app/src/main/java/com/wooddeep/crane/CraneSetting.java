@@ -69,27 +69,6 @@ public class CraneSetting extends AppCompatActivity {
         CraneDao dao = new CraneDao(contex);
 
         List<Crane> paras = dao.selectAll();
-        if (paras.size() == 0) {
-
-            dao.insert(new Crane(
-                false,
-                1,
-                "1号塔基",
-                0,
-                100,
-                100,
-                1,
-                1,
-                1,
-                40,
-                1,
-                1,
-                1,
-                1)
-            );
-        }
-
-        paras = dao.selectAll();
         return paras;
     }
 

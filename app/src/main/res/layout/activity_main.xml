@@ -473,7 +473,7 @@
                     android:padding="0dp"
                     app:arm_angle="30"
                     app:arm_length="600"
-                    app:crane_type="1"
+                    app:crane_type="0"
                     app:hook_height="300" />
             </LinearLayout>
 

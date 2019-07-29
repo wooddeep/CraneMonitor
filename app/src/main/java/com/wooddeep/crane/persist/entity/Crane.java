@@ -233,4 +233,23 @@ public class Crane {
         return "";
     }
 
+    public static Crane getInitData() {
+        Crane crane = new Crane(
+            true,
+            0,
+            String.format("%d号塔基", 1),
+            0,
+            100,
+            100,
+            1,
+            1,
+            1,
+            40,
+            10,
+            1,
+            1,
+            1);
+        return crane;
+    }
+
 }

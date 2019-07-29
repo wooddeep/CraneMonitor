@@ -19,11 +19,11 @@
         <attr name="ring_normal_color" format="color"/>
 
         <!-- 圆环要显示的彩色的区域(随着数值的改变,显示不同大小的彩色区域)-->
-        <attr name="ring_color_select" format="integer"/>
+        <attr name="ring_color_select" format="float"/>
 
         <!-- 绘制内容的数值 -->
-        <attr name="maxValue" format="integer" />
-        <attr name="value" format="integer" />
+        <attr name="maxValue" format="float" />
+        <attr name="value" format="float" />
 
     </declare-styleable>
 

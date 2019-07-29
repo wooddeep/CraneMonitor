@@ -386,4 +386,55 @@ public class Calibration {
     public void setHeightRate(float heightRate) {
         this.heightRate = heightRate;
     }
+
+    public Calibration(
+        float rotateStartX1, float rotateStartY1, float rotateStartData,
+        float rotateEndX2, float rotateEndY2, float rotateEndData,
+        float rotateRate,
+        float gearRate1, float gearRate2, float gearRate3, float gearRate4, float gearRate5,
+        float dipAngleStart, float dipAngleStartData, float dipAngleEnd, float dipAngleEndData, float dipAngleRate,
+        float weightStart, float weightStartData, float weightEnd, float weightEndData, float weightRate,
+        float lengthStart, float lengthStartData, float lengthEnd, float lengthEndData, float lengthRate,
+        float heightStart, float heightStartData, float heightEnd, float heightEndData, float heightRate)
+    {
+        this.rotateStartX1 = rotateStartX1;
+        this.rotateStartY1 = rotateStartY1;
+        this.rotateStartData = rotateStartData;
+        this.rotateEndX2 = rotateEndX2;
+        this.rotateEndY2 = rotateEndY2;
+        this.rotateEndData = rotateEndData;
+        this.rotateRate = rotateRate;
+        GearRate1 = gearRate1;
+        GearRate2 = gearRate2;
+        GearRate3 = gearRate3;
+        GearRate4 = gearRate4;
+        GearRate5 = gearRate5;
+        this.dipAngleStart = dipAngleStart;
+        this.dipAngleStartData = dipAngleStartData;
+        this.dipAngleEnd = dipAngleEnd;
+        this.dipAngleEndData = dipAngleEndData;
+        this.dipAngleRate = dipAngleRate;
+        this.weightStart = weightStart;
+        this.weightStartData = weightStartData;
+        this.weightEnd = weightEnd;
+        this.weightEndData = weightEndData;
+        this.weightRate = weightRate;
+        this.lengthStart = lengthStart;
+        this.lengthStartData = lengthStartData;
+        this.lengthEnd = lengthEnd;
+        this.lengthEndData = lengthEndData;
+        this.lengthRate = lengthRate;
+        this.heightStart = heightStart;
+        this.heightStartData = heightStartData;
+        this.heightEnd = heightEnd;
+        this.heightEndData = heightEndData;
+        this.heightRate = heightRate;
+    }
+
+    public static Calibration getInitData() {
+        return new Calibration(
+
+        );
+    }
+
 }

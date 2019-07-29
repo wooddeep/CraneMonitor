@@ -83,4 +83,23 @@ public class Load {
     public void setWeight(String weight) {
         this.weight = weight;
     }
+
+    public Load(String craneType, String armLength, String power, String coordinate, String weight) {
+        this.craneType = craneType;
+        this.armLength = armLength;
+        this.power = power;
+        this.coordinate = coordinate;
+        this.weight = weight;
+    }
+
+    public static Load getInitData() {
+        return new Load(
+            "JL186/12",
+            "2",
+            "50",
+            "35",
+            "5.6"
+        );
+    }
+
 }

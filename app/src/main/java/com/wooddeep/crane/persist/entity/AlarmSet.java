@@ -296,4 +296,41 @@ public class AlarmSet {
     public void setHookHeightMax(float hookHeightMax) {
         this.hookHeightMax = hookHeightMax;
     }
+
+    public AlarmSet(float t2tDistGear1, float t2tDistGear2, float t2tDistGear3, float t2tDistGear4, float t2tDistGear5, float t2cDistGear1, float t2cDistGear2, float t2cDistGear3, float t2cDistGear4, float t2cDistGear5, float carSpeedDownDist, float carStopDist, float moment1, float moment2, float moment3, float windSpeed1, float windSpeed2, float weight1, float weight2, float weight3, float armLengthMin, float armLengthMax, float hookHeightMin, float hookHeightMax) {
+        this.t2tDistGear1 = t2tDistGear1;
+        this.t2tDistGear2 = t2tDistGear2;
+        this.t2tDistGear3 = t2tDistGear3;
+        this.t2tDistGear4 = t2tDistGear4;
+        this.t2tDistGear5 = t2tDistGear5;
+        this.t2cDistGear1 = t2cDistGear1;
+        this.t2cDistGear2 = t2cDistGear2;
+        this.t2cDistGear3 = t2cDistGear3;
+        this.t2cDistGear4 = t2cDistGear4;
+        this.t2cDistGear5 = t2cDistGear5;
+        this.carSpeedDownDist = carSpeedDownDist;
+        this.carStopDist = carStopDist;
+        this.moment1 = moment1;
+        this.moment2 = moment2;
+        this.moment3 = moment3;
+        this.windSpeed1 = windSpeed1;
+        this.windSpeed2 = windSpeed2;
+        this.weight1 = weight1;
+        this.weight2 = weight2;
+        this.weight3 = weight3;
+        this.armLengthMin = armLengthMin;
+        this.armLengthMax = armLengthMax;
+        this.hookHeightMin = hookHeightMin;
+        this.hookHeightMax = hookHeightMax;
+    }
+
+    public static AlarmSet getInitData() {
+        return new AlarmSet(
+            10, 20, 30, 40, 50,
+            10, 20, 30, 40, 50,
+            10, 20, 80, 100, 120,
+            10, 20, 10, 20, 30,
+            10, 40, 10, 40
+        );
+    }
 }

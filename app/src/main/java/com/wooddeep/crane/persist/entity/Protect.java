@@ -187,4 +187,21 @@ public class Protect {
     public void setY6(float y6) {
         this.y6 = y6;
     }
+
+    public static Protect getInitData() {
+        return new Protect(
+            0,
+            -10000,
+            -10000,
+            -10000,
+            -10000,
+            -10000,
+            -10000,
+            -10000,
+            -10000,
+            -10000,
+            -10000,
+            -10000,
+            -10000);
+    }
 }
