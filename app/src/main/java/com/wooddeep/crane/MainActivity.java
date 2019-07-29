@@ -526,6 +526,24 @@ public class MainActivity extends AppCompatActivity {
             sideArea.drawSideArea(this, mainFrame);
         }
 
+        // 画保护区
+        ProtectDao protectDao = new ProtectDao(MainActivity.this);
+        List<Protect> protects = protectDao.selectAll();
+        if (protects != null && protects.size() > 0) {
+            List<Vertex> vertex = new ArrayList<Vertex>();
+            for (Protect protect : protects) {
+                vertex.add(new Vertex(protect.getX1(), protect.getY1()));
+                vertex.add(new Vertex(protect.getX2(), protect.getY2()));
+                vertex.add(new Vertex(protect.getX3(), protect.getY3()));
+                vertex.add(new Vertex(protect.getX4(), protect.getY4()));
+                vertex.add(new Vertex(protect.getX5(), protect.getY5()));
+                vertex.add(new Vertex(protect.getX6(), protect.getY6()));
+            }
+            float scale = centerCycle.scale;
+            SideProtect sideProtect = new SideProtect(Color.GRAY, scale, mainCrane.getCoordX1(), mainCrane.getCoordY1(), vertex);
+            elemMap.addElem(sideProtect.getUuid(), sideProtect);
+            sideProtect.drawSideProtect(this, mainFrame);
+        }
 
         HashMap<String, Object> viewMap = DrawTool.drawMenu(this, mainFrame);
         HashMap<String, Object> zoomMap = DrawTool.drawZoom(this, mainFrame);
