@@ -217,7 +217,7 @@ public class SuperCircleView extends View {
         ringRealPaint.setStyle(Paint.Style.STROKE);
         ringRealPaint.setStrokeWidth(mRingWidth);
         ringRealPaint.setColor(mRingNormalColor);
-        ringRealPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
+        ringRealPaint.setMaskFilter(new BlurMaskFilter(3f, BlurMaskFilter.Blur.SOLID));
 
         // 大臂环
         canvas.drawArc(mRectF, 360, 360, false, ringMaxPaint);

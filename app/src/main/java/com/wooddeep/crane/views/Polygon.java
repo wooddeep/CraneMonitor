@@ -88,14 +88,15 @@ public class Polygon extends View {
         Paint paint = new Paint();//创建画笔
         paint.setColor(this.color);//为画笔设置颜色
         if (flink) {
-            paint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
+            paint.setMaskFilter(new BlurMaskFilter(3f, BlurMaskFilter.Blur.SOLID));
         }
 
         if (alarm) {
             paint.setColor(Color.rgb(225, 140, 0));
         } else {
-            paint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
-            paint.setColor(Color.rgb(		189,183,107));
+            paint.setMaskFilter(new BlurMaskFilter(3f, BlurMaskFilter.Blur.SOLID));
+            //paint.setColor(Color.rgb(		189,183,107));
+            paint.setColor(this.color);
         }
 
         //paint.setStyle(Paint.Style.FILL);
@@ -106,15 +107,20 @@ public class Polygon extends View {
         //设置等腰三角形的三点坐标
         Path path = new Path();//绘制多边形的类
         Vertex start = vertexs.get(0);
+        Vertex end = new Vertex(0, 0);
         path.moveTo(start.x, start.y);//起始点
         for (int i = 1; i < vertexs.size(); i++) {
             Vertex pointer = vertexs.get(i);
-            if (pointer.x < 0 || pointer.y < 0) continue;
+            if (((int)(pointer.x)) <= 10 || ((int)(pointer.y)) <= 10) continue;
             path.lineTo(pointer.x, pointer.y);//右下角
+            end.x = pointer.x;
+            end.y = pointer.y;
         }
 
         if (this.type == 0) {
-            path.close();//闭合图形
+            path.close(); //闭合图形
+        } else {
+            //path.lineTo(225, 125);//右下角
         }
 
         //绘制三角形

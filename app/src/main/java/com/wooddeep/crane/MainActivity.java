@@ -649,16 +649,14 @@ public class MainActivity extends AppCompatActivity {
                 vertex.add(new Vertex(area.getX4(), area.getY4()));
                 vertex.add(new Vertex(area.getX5(), area.getY5()));
                 vertex.add(new Vertex(area.getX6(), area.getY6()));
-                SideArea sideArea = new SideArea(centerCycle, Color.GRAY, vertex);
+                SideArea sideArea = new SideArea(centerCycle, Color.rgb(	95,158,160), vertex);
                 elemMap.addElem(sideArea.getUuid(), sideArea);
                 sideArea.drawSideArea(this, mainFrame);
             }
 
         }
 
-
         // 保护区
-
         ProtectDao protectDao = new ProtectDao(MainActivity.this);
         List<Protect> protects = protectDao.selectAll();
         if (protects != null && protects.size() > 0) {
@@ -670,7 +668,7 @@ public class MainActivity extends AppCompatActivity {
                 vertex.add(new Vertex(protect.getX4(), protect.getY4()));
                 vertex.add(new Vertex(protect.getX5(), protect.getY5()));
                 vertex.add(new Vertex(protect.getX6(), protect.getY6()));
-                SideArea sideArea = new SideArea(centerCycle, Color.GRAY, vertex);
+                SideArea sideArea = new SideArea(centerCycle, Color.rgb(	0,0,139), vertex);
                 elemMap.addElem(sideArea.getUuid(), sideArea);
                 sideArea.drawSideArea(this, mainFrame, 1);
             }

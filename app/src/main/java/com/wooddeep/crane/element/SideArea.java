@@ -46,7 +46,7 @@ public class SideArea extends BaseElem{
         int height = parent.getMeasuredHeight(); // 获取组件高度
 
         for (Vertex vertex : vertexs) {
-            //if (vertex.x < 0 || vertex.y < 0) continue;
+            //if ((int)(vertex.x) < 0 || (int)(vertex.y) < 0) break;
             vertex.x = vertex.x * centerCycle.scale + centerCycle.deltaX;
             vertex.y = height - vertex.y * centerCycle.scale - centerCycle.delatY;  // y 轴转换
         }
