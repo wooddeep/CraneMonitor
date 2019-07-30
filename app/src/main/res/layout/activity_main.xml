@@ -88,8 +88,8 @@
         -->
         <ImageView
             android:id="@+id/weight_logo"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:layout_toLeftOf="@+id/weight"
@@ -99,14 +99,14 @@
 
         <TextView
             android:id="@+id/weight"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="40dp"
             android:layout_centerInParent="true"
             android:layout_marginLeft="5dp"
             android:layout_toLeftOf="@+id/length_logo"
             android:gravity="center"
-            android:text="10T"
-            android:textSize="20dp"
+            android:text="10t"
+            android:textSize="16dp"
             android:textStyle="bold" />
 
         <ImageView
@@ -115,7 +115,7 @@
             android:layout_height="40px"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="40dp"
+            android:layout_marginLeft="10dp"
             android:layout_toLeftOf="@+id/length"
             android:layout_weight="1"
             android:gravity="center"
@@ -123,23 +123,24 @@
 
         <TextView
             android:id="@+id/length"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="40dp"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:layout_toLeftOf="@+id/height_logo"
             android:gravity="center"
-            android:text="10M"
-            android:textSize="20dp"
+            android:text="10m"
+            android:textSize="16dp"
             android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/height_logo"
-            android:layout_width="40px"
-            android:layout_height="40px"
+            android:layout_width="35px"
+            android:layout_height="35px"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
             android:layout_toLeftOf="@+id/height"
             android:layout_weight="1"
             android:gravity="center"
@@ -147,14 +148,14 @@
 
         <TextView
             android:id="@+id/height"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="40dp"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:layout_toLeftOf="@+id/wind_speed_log"
             android:gravity="center"
-            android:text="10M"
-            android:textSize="20dp"
+            android:text="10m"
+            android:textSize="16dp"
             android:textStyle="bold" />
 
         <ImageView
@@ -163,21 +164,21 @@
             android:layout_height="40px"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="40dp"
+            android:layout_marginLeft="10dp"
             android:layout_toLeftOf="@+id/wind_speed"
             android:gravity="center"
             app:srcCompat="@mipmap/wind_speed" />
 
         <TextView
             android:id="@+id/wind_speed"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="40dp"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:layout_toLeftOf="@+id/clock_logo"
             android:gravity="center"
             android:text="5.0m/s"
-            android:textSize="20dp"
+            android:textSize="16dp"
             android:textStyle="bold" />
 
         <ImageView
@@ -238,95 +239,8 @@
                 android:id="@+id/grid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layerType="software"
-                />
+                android:layerType="software"/>
 
-
-            <!--
-            <Button
-                android:id="@+id/adjust_hangle_add"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:text="大臂角度+"
-                android:textColor="#506946" />
-
-            <Button
-                android:id="@+id/adjust_hangle_sub"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="100dp"
-                android:text="大臂角度-"
-                android:textColor="#506946" />
-
-            <TextView
-                android:id="@+id/distance_lable"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="200dp"
-                android:gravity="center"
-                android:text="距离"
-                android:textColor="#506946" />
-
-            <EditText
-                android:id="@+id/distance"
-                android:layout_width="80dp"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="240dp"
-                android:focusable="false"
-                android:gravity="center"
-                android:textColor="#506946" />
-
-            <TextView
-                android:id="@+id/alarm_limit_lable"
-                android:layout_width="60dp"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="320dp"
-                android:gravity="center"
-                android:text="告警门限"
-                android:textColor="#506946" />
-
-            <EditText
-                android:id="@+id/alarm_limit"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="380dp"
-                android:gravity="center"
-                android:text="5"
-                android:textColor="#506946" />
-
-            <Button
-                android:id="@+id/adjust_vangle_add"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="35dp"
-                android:text="大臂倾角+"
-                android:textColor="#506946" />
-
-            <Button
-                android:id="@+id/adjust_vangle_sub"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="100dp"
-                android:layout_marginTop="35dp"
-                android:text="大臂倾角-"
-                android:textColor="#506946" />
-            -->
             <!-- 菜单容器 -->
             <LinearLayout
                 android:id="@+id/menu_container"
@@ -492,91 +406,6 @@
                 android:layout_marginTop="0dp"
                 android:layout_weight="1"
                 android:background="@drawable/spliter_background">
-
-                <!--
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
-                    <ImageView
-                        android:id="@+id/distance_logo"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        app:srcCompat="@mipmap/distance" />
-
-                    <TextView
-                        android:id="@+id/clock_logo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="5M"
-                        android:textSize="20dp" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
-                    <ImageView
-                        android:id="@+id/rotation_logo"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        app:srcCompat="@mipmap/home_height" />
-
-                    <TextView
-                        android:id="@+id/clock_logo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="10M"
-                        android:textSize="20dp" />
-                </TableRow>
-
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
-                    <ImageView
-                        android:id="@+id/weight_logo"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        app:srcCompat="@mipmap/weight" />
-
-                    <TextView
-                        android:id="@+id/clock_logo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="10T"
-                        android:textSize="20dp" />
-
-                </TableRow>
-                -->
 
                 <TableRow
                     android:layout_width="match_parent"

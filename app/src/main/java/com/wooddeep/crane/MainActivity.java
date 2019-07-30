@@ -1,6 +1,7 @@
 package com.wooddeep.crane;
 
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -19,15 +20,16 @@ import android.widget.TextView;
 
 import com.example.x6.serial.SerialPort;
 import com.wooddeep.crane.comm.Protocol;
+import com.wooddeep.crane.ebus.CalibrationEvent;
 import com.wooddeep.crane.ebus.MessageEvent;
-import com.wooddeep.crane.ebus.ParaChangeEvent;
+import com.wooddeep.crane.ebus.AlarmSetEvent;
+import com.wooddeep.crane.ebus.SimulatorEvent;
 import com.wooddeep.crane.ebus.UartEvent;
 import com.wooddeep.crane.ebus.UserEvent;
 import com.wooddeep.crane.element.CenterCycle;
 import com.wooddeep.crane.element.ElemMap;
 import com.wooddeep.crane.element.SideArea;
 import com.wooddeep.crane.element.SideCycle;
-import com.wooddeep.crane.element.SideProtect;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.dao.AlarmSetDao;
 import com.wooddeep.crane.persist.dao.AreaDao;
@@ -44,11 +46,12 @@ import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.CranePara;
 import com.wooddeep.crane.persist.entity.Load;
 import com.wooddeep.crane.persist.entity.Protect;
+import com.wooddeep.crane.simulator.SimulatorFlags;
+import com.wooddeep.crane.simulator.UartEmitter;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.views.CraneView;
-import com.wooddeep.crane.views.TestCraneView;
 import com.wooddeep.crane.views.Vertex;
 
 import org.greenrobot.eventbus.EventBus;
@@ -56,7 +59,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -93,6 +95,9 @@ import java.util.TimerTask;
 
 // ormlite
 // https://blog.csdn.net/u013501637/article/details/52388802
+
+// 颜色值查询
+// https://www.colorhexa.com/d4237a
 
 /*
 dependencies {
@@ -186,19 +191,21 @@ public class MainActivity extends AppCompatActivity {
     private static HashMap<String, Object> zoomMapBak = new HashMap<>();
 
     private float oscale = 1.0f;
-
     private String mainCycleId = null; // 主环的uuid
     private String sideCycleId = null;
 
     private static Protocol packer = new Protocol();
     private static Protocol parser = new Protocol();
 
-    private static int craneType = 0; // 塔基类型: 0 ~ 平臂式, 2动臂式
-    private static AlarmSet alarmSet = null;
-    private static Calibration calibration = null;
-
+    private int craneType = 0; // 塔基类型: 0 ~ 平臂式, 2动臂式
+    private Crane mainCrane;   // 本塔基参数
+    private CenterCycle centerCycle; // 本塔基圆环
+    private AlarmSet alarmSet = null;
+    private Calibration calibration = null;
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private static int yyy = 20; // TODO 修改为实际的数据
+
+    private SimulatorFlags flags = new SimulatorFlags();
+    private UartEmitter emitter = new UartEmitter();
 
     Timer timer = new Timer();
     TimerTask task = new TimerTask() {
@@ -206,11 +213,23 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    EventBus.getDefault().post(new MessageEvent("x", "y"));
-                    packer.setAmplitude(100);
-                    packer.setHeight(201);
-                    packer.setWeight(301);
-                    packer.setWindSpeed(401);
+                    EventBus.getDefault().post(new MessageEvent(".", ".")); // 告警消息
+
+                    if (flags.isStart() || flags.isStop()) {
+                        packer.setAmplitude(emitter.getsAmplitude());
+                        packer.setHeight(emitter.getsHeight());
+                        packer.setWeight(emitter.getsWeight());
+                        packer.setWindSpeed(emitter.getsWindSpeed());
+                    }
+
+                    if (flags.isRuning()) {
+                        packer.setAmplitude(emitter.getsAmplitude());
+                        packer.setHeight(emitter.getsHeight());
+                        packer.setWeight(emitter.getsWeight());
+                        packer.setWindSpeed(emitter.getsWindSpeed());
+                        emitter.emitter(); // 累计
+                    }
+
                     byte[] data = packer.pack();
                     EventBus.getDefault().post(new UartEvent(data));
                 }
@@ -234,14 +253,25 @@ public class MainActivity extends AppCompatActivity {
                     // 01 04 00 01 00 04 A0 09
                     //SerialPort serialttyS0 = new SerialPort(new File("/dev/ttyS0"), 19200, 0); // 19200
                     //SerialPort serialttyS1 = new SerialPort(new File("/dev/ttyS1"), 115200, 0);
-                    SerialPort serialttyS2 = new SerialPort(new File("/dev/ttyS2"), 115200, 0);
-                    SerialPort serialttyS3 = new SerialPort(new File("/dev/ttyS3"), 115200, 0);
                     //OutputStream ttyS0OutputStream = serialttyS0.getOutputStream();
                     //InputStream ttyS1InputStream = serialttyS1.getInputStream();
+                    //ttyS0OutputStream.write("hello world".getBytes());
+                    //ttyS0OutputStream.write(new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B});
+                    //if (ttyS1InputStream.available() > 0) {
+                    //    int len = ttyS1InputStream.read(in, 0, 1024);
+                    //    byte[] real = Arrays.copyOf(in, len);
+                    //    for (byte data : real) {
+                    //        System.out.printf("%02x ", data);
+                    //    }
+                    //} else {
+                    //    System.out.println("############# no data !############");
+                    //}
 
+                    // 485测试
+                    SerialPort serialttyS2 = new SerialPort(new File("/dev/ttyS2"), 115200, 0);
+                    SerialPort serialttyS3 = new SerialPort(new File("/dev/ttyS3"), 115200, 0);
                     OutputStream ttyS2OutputStream = serialttyS2.getOutputStream();
                     InputStream ttyS2InputStream = serialttyS2.getInputStream();
-
                     OutputStream ttyS3OutputStream = serialttyS3.getOutputStream();
                     InputStream ttyS3InputStream = serialttyS3.getInputStream();
 
@@ -251,11 +281,10 @@ public class MainActivity extends AppCompatActivity {
                         ttyS2OutputStream.write("hello world".getBytes());
                         int len = ttyS3InputStream.read(in, 0, 1024);
                         byte[] real = Arrays.copyOf(in, len);
-                        //for (byte data : real) {
-                        //    System.out.printf("%02x ", data);
-                        //}
-                        //System.out.println(new String(real));
-
+                        for (byte data : real) {
+                            System.out.printf("%02x ", data);
+                        }
+                        System.out.println(new String(real));
                         try {
                             Thread.sleep(200);
                         } catch (Exception e) {
@@ -263,21 +292,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    /*
-                    ttyS0OutputStream.write("hello world".getBytes());
-                    //ttyS0OutputStream.write(new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B});
-                    if (ttyS1InputStream.available() > 0) {
-                        int len = ttyS1InputStream.read(in, 0, 1024);
-                        byte[] real = Arrays.copyOf(in, len);
-                        for (byte data : real) {
-                            System.out.printf("%02x ", data);
-                        }
-                    } else {
-                        System.out.println("############# no data !############");
-                    }
-                    */
-
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -293,21 +308,26 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
         EventBus.getDefault().register(this);
-        //timer.schedule(task, 1000, 500);
+
+        timer.schedule(task, 1000, 500); // 测试数据发生器
         initTable(); // 初始化表
-        //UartEvent uartEvent = new UartEvent();
-        startUartThread();
+        //startUartThread(); // 初始化串口线程
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void ParaChangeEventBus(ParaChangeEvent userEvent) {
-        System.out.printf("######## userEvent = %f\n", userEvent.alarmSet.t2cDistGear1);
-        alarmSet = userEvent.alarmSet; // 更新配置
+    public void AlarmSetEventBus(AlarmSetEvent event) {
+        System.out.printf("######## userEvent = %f\n", event.alarmSet.t2cDistGear1);
+        alarmSet = event.alarmSet; // 更新配置
 
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void CalibrationEventBus(CalibrationEvent event) {
+        calibration = event.calibration;
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void messageEventBus(MessageEvent userEvent) {
         //fanRotate();
@@ -345,27 +365,69 @@ public class MainActivity extends AppCompatActivity {
             byte[] data = uartEvent.data;
             parser.parse(data);
 
-            TextView weight = (TextView) findViewById(R.id.weight);
-            weight.setText(String.valueOf(parser.getWeight()) + "t");
-
-            TextView armLength = (TextView) findViewById(R.id.length);
-            armLength.setText(String.valueOf(parser.getAmplitude()) + "m");
-
-            TextView height = (TextView) findViewById(R.id.height);
-            height.setText(String.valueOf(parser.getHeight()) + "m");
-
-            TextView windSpeed = (TextView) findViewById(R.id.wind_speed);
-            windSpeed.setText(String.valueOf(parser.getWindSpeed()) + "m/s");
-
-            yyy = yyy + 1;
             CraneView craneView = (CraneView) findViewById(R.id.crane);
-            craneView.setArmAngle(yyy % 85);
+
+            // 重量
+            TextView weight = (TextView) findViewById(R.id.weight);
+            float weightValue = calibration.getWeightStart() + calibration.getWeightRate() * (parser.getWeight() - calibration.getWeightStartData());
+            weightValue = Math.round(weightValue * 10) / 10;
+            weight.setText(String.valueOf(weightValue) + "t");
+
+            // 小车位置(length) or 动臂幅度(amplitude)
+            TextView armLength = (TextView) findViewById(R.id.length);
+            float armLengthValue = calibration.getLengthStart() + calibration.getLengthRate() * (parser.getAmplitude() - calibration.getLengthStartData());
+            armLengthValue = Math.round(armLengthValue * 10) / 10;
+            armLength.setText(String.valueOf(armLengthValue) + "m");
+
+            // 吊钩高度
+            TextView height = (TextView) findViewById(R.id.height);
+            float heightValue = calibration.getHeightStart() + calibration.getHeightRate() * (parser.getHeight() - calibration.getHeightStartData());
+            heightValue = Math.round(heightValue * 10) / 10;
+            height.setText(String.valueOf(heightValue) + "m");
+
+            // 风速 TODO
+            TextView windSpeed = (TextView) findViewById(R.id.wind_speed);
+            //float windSpeedValue = calibration.getWeightStart() + calibration.getWeightRate() * (parser.getWeight() - calibration.getWeightStartData());
+            //windSpeedValue = Math.round(windSpeedValue * 10) / 10;
+            //windSpeed.setText(String.valueOf(parser.getWindSpeed()) + "m/s");
+
+            if (mainCrane.getType() == 0) { // 平臂式
+                float lenStart = calibration.getLengthStart();
+                float lenEnd = calibration.getLengthEnd();
+                float rate = (CraneView.maxArmLength - CraneView.minArmLength) / (lenEnd - lenStart);
+                craneView.setArmLenth((int)(rate * armLengthValue));
+
+                centerCycle.setCarRange(armLengthValue); // 圆环中的小车显示 TODO 根据实际值来修改
+
+                System.out.printf("### rate * mainCrane.getBigArmLength() = %f\n", rate * mainCrane.getBigArmLength());
+
+                float hiStart = calibration.getHeightStart();
+                float hiEnd = calibration.getHeightEnd();
+                float currHookHi = CraneView.minHookHeight + (CraneView.maxHookHeight - CraneView.minHookHeight) * armLengthValue/ (hiEnd - hiStart);
+                craneView.setHookHeight((int)currHookHi);
+            }
 
             //weightAlarm();
             //System.out.println("## I have get uart0 data!");
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void simulatorEventBus(SimulatorEvent simEvent) {
+        flags.setStart(simEvent.isStart());
+        flags.setStop(simEvent.isStop());
+        flags.setRuning(simEvent.isRunning());
+
+        if (flags.isStop()) {
+            emitter.adjust(simEvent.getStopValue());
+        }
+
+        if (flags.isStart()) {
+            emitter.initData();
         }
     }
 
@@ -422,31 +484,6 @@ public class MainActivity extends AppCompatActivity {
                 EventBus.getDefault().post(
                     new UserEvent("Mr.sorrow", "123456", centerCycle.getUuid(), null)
                 );
-            }
-        });
-
-        findViewById(R.id.adjust_hangle_sub).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                centerCycle.hAngleSub(1);
-                EventBus.getDefault().post(
-                    new UserEvent("Mr.sorrow", "123456", centerCycle.getUuid(), null)
-                );
-
-            }
-        });
-
-        findViewById(R.id.adjust_vangle_add).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                centerCycle.vAngleAdd(1);
-            }
-        });
-
-        findViewById(R.id.adjust_vangle_sub).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                centerCycle.vAngleSub(1);
             }
         });
         */
@@ -602,7 +639,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void renderMain(float oscale) {
         FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
-        //DrawTool.drawGrid(this, mainFrame);
         CraneDao craneDao = new CraneDao(MainActivity.this);
 
         List<Crane> paras = craneDao.selectAll();
@@ -610,7 +646,7 @@ public class MainActivity extends AppCompatActivity {
 
         elemMap.delElems(mainFrame);
 
-        Crane mainCrane = paras.get(0);
+        mainCrane = paras.get(0);
         for (Crane iterator : paras) {
             if (iterator.getIsMain() == true) {
                 mainCrane = iterator;
@@ -619,7 +655,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 画中心圆环
-        final CenterCycle centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(),
+        centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(),
             mainCrane.getBigArmLength(), mainCrane.getBalancArmLength(), 0, 0, 100);
         elemMap.addElem(centerCycle.getUuid(), centerCycle);
         mainCycleId = centerCycle.getUuid();
@@ -638,7 +674,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 区域
-
         AreaDao areaDao = new AreaDao(MainActivity.this);
         List<Area> areas = areaDao.selectAll();
         if (areas != null && areas.size() > 0) {
@@ -651,7 +686,7 @@ public class MainActivity extends AppCompatActivity {
                 vertex.add(new Vertex(area.getX5(), area.getY5()));
                 vertex.add(new Vertex(area.getX6(), area.getY6()));
                 vertex = CommTool.arrangeVertexList(vertex);
-                SideArea sideArea = new SideArea(centerCycle, Color.rgb(	95,158,160), vertex);
+                SideArea sideArea = new SideArea(centerCycle, Color.rgb(19, 34, 122), vertex);
                 elemMap.addElem(sideArea.getUuid(), sideArea);
                 sideArea.drawSideArea(this, mainFrame);
             }
@@ -671,7 +706,7 @@ public class MainActivity extends AppCompatActivity {
                 vertex.add(new Vertex(protect.getX5(), protect.getY5()));
                 vertex.add(new Vertex(protect.getX6(), protect.getY6()));
                 vertex = CommTool.arrangeVertexList(vertex);
-                SideArea sideArea = new SideArea(centerCycle, Color.rgb(	0,0,139), vertex);
+                SideArea sideArea = new SideArea(centerCycle, Color.rgb(212, 35, 122), vertex);
                 elemMap.addElem(sideArea.getUuid(), sideArea);
                 sideArea.drawSideArea(this, mainFrame, 1);
             }
@@ -737,32 +772,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // https://www.cnblogs.com/yongdaimi/p/7943226.html 控件动画
-    public void weightAlarm() {
-        /*
-        ImageView weight = (ImageView) findViewById(R.id.weight_logo);
-
-        ObjectAnimator oa = ObjectAnimator.ofFloat(weight, "scaleX", 0.90f, 1.1f);
-        oa.setDuration(1000);
-        ObjectAnimator oa2 = ObjectAnimator.ofFloat(weight, "scaleY", 0.90f, 1.1f);
-        oa2.setDuration(1000);
-
-        weight.setImageDrawable(getResources().getDrawable(R.mipmap.weight_alarm));
-        //weight.setBackgroundDrawable(getResources().getDrawable(R.mipmap.weight_alarm));
-        //ObjectAnimator oa3 = ObjectAnimator.ofInt(weight, "backgroundColor", Color.BLACK, Color.RED, Color.BLACK);
-        //oa3.setDuration(1000);
-
-        oa.start();
-        oa2.start();
-        //oa3.start();
-
-        oa = ObjectAnimator.ofFloat(weight, "scaleX", 1.1f, 0.90f);
-        oa.setDuration(1000);
-        oa2 = ObjectAnimator.ofFloat(weight, "scaleY", 1.1f, 0.90f);
-        oa2.setDuration(1000);
-
-        oa.start();
-        oa2.start();
-        */
-    }
 }

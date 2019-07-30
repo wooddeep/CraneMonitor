@@ -13,7 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wooddeep.crane.comm.Protocol;
+import com.wooddeep.crane.ebus.AlarmSetEvent;
+import com.wooddeep.crane.ebus.CalibrationEvent;
 import com.wooddeep.crane.ebus.MessageEvent;
+import com.wooddeep.crane.ebus.SimulatorEvent;
 import com.wooddeep.crane.ebus.UartEvent;
 import com.wooddeep.crane.ebus.UserEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
@@ -38,31 +41,31 @@ import java.util.List;
 
 //double degrees = 45.0;
 //double radians = Math.toRadians(degrees);
-//System.out.format("pi µÄÖµÎª %.4f%n", Math.PI);
-//System.out.format("%.4f µÄ·´ÕıÏÒÖµÎª %.4f ¶È %n", Math.sin(radians), Math.toDegrees(Math.asin(Math.sin(radians))));
+//System.out.format("pi çš„å€¼ä¸º %.4f%n", Math.PI);
+//System.out.format("%.4f çš„åæ­£å¼¦å€¼ä¸º %.4f åº¦ %n", Math.sin(radians), Math.toDegrees(Math.asin(Math.sin(radians))));
 //Math.asin();
 
 @SuppressWarnings("unused")
 public class CalibrationSetting extends AppCompatActivity {
 
     abstract class CalibrationCell {
-        public String dimValueName = null; // ¶ÔÓ¦µÄ Î¬¶ÈÆğÊ¼Öµ Ãû³Æ
-        public String uartDataName = null; // ¶ÔÓ¦µÄ uartÆğÊ¼Öµ Ãû³Æ
+        public String dimValueName = null; // å¯¹åº”çš„ ç»´åº¦èµ·å§‹å€¼ åç§°
+        public String uartDataName = null; // å¯¹åº”çš„ uartèµ·å§‹å€¼ åç§°
 
-        public String rateValueName = null; // ¶ÔÓ¦µÄĞ±ÂÊÖµÃû³Æ
+        public String rateValueName = null; // å¯¹åº”çš„æ–œç‡å€¼åç§°
 
-        public int dimValueEditTextId = -1;  // ÓÃÓÚ±à¼­Î³¶ÈÖµÊäÈë¿ò
-        public int uartDataTextViewId = -1;  // ÓÃÓÚÏÔÊ¾´®¿ÚÖµÎÄ±¾¿ò
-        public int buttonId = -1;            // ´¥·¢»ñÈ¡´®¿ÚÖµµÄ°´Å¥
+        public int dimValueEditTextId = -1;  // ç”¨äºç¼–è¾‘çº¬åº¦å€¼è¾“å…¥æ¡†
+        public int uartDataTextViewId = -1;  // ç”¨äºæ˜¾ç¤ºä¸²å£å€¼æ–‡æœ¬æ¡†
+        public int buttonId = -1;            // è§¦å‘è·å–ä¸²å£å€¼çš„æŒ‰é’®
 
-        public int rateShowId = -1;  // ÓÃÓÚÏÔÊ¾Ğ±ÂÊÖµµÄTextViewµÄID
+        public int rateShowId = -1;  // ç”¨äºæ˜¾ç¤ºæ–œç‡å€¼çš„TextViewçš„ID
 
-        public float dimValue; // ÎïÀíÖµ£¬Èç¸ß¶È£¬³¤¶È, ×ø±êÖµµÈ
+        public float dimValue; // ç‰©ç†å€¼ï¼Œå¦‚é«˜åº¦ï¼Œé•¿åº¦, åæ ‡å€¼ç­‰
         public int uartData; // read from uart
 
-        public float rateValue; // ×îÖÕ¼ÆËãµÄĞ±ÂÊÖµ
+        public float rateValue; // æœ€ç»ˆè®¡ç®—çš„æ–œç‡å€¼
 
-        public boolean calcRate = false; // µã»÷°´Å¥ºóÊÇ·ñ¼ÆËãĞ±ÂÊ
+        public boolean calcRate = false; // ç‚¹å‡»æŒ‰é’®åæ˜¯å¦è®¡ç®—æ–œç‡
 
         public CalibrationCell(String name, int dveti, int udtvi, int bi, int rsi) {
             this.dimValueName = name;
@@ -88,7 +91,7 @@ public class CalibrationSetting extends AppCompatActivity {
 
     private MessageEvent gevent = null;
 
-    // ¶©ÔÄÏûÏ¢, ¿ÉÒÔ»ñÈ¡´®¿ÚµÄÊı¾İ
+    // è®¢é˜…æ¶ˆæ¯, å¯ä»¥è·å–ä¸²å£çš„æ•°æ®
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void registerUartDataReceiver(MessageEvent event) {
         gevent = event;
@@ -97,19 +100,19 @@ public class CalibrationSetting extends AppCompatActivity {
     private static Protocol packer = new Protocol();
     private static Protocol parser = new Protocol();
 
-    // ¶¨Òå´¦Àí´®¿ÚÊı¾İµÄ·½·¨, MAIN·½·¨: ÊÂ¼ş´¦Àí·ÅÔÚmain·½·¨ÖĞ
+    // å®šä¹‰å¤„ç†ä¸²å£æ•°æ®çš„æ–¹æ³•, MAINæ–¹æ³•: äº‹ä»¶å¤„ç†æ”¾åœ¨mainæ–¹æ³•ä¸­
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void commEventBus(UartEvent uartEvent) {
         try {
             byte[] data = uartEvent.data;
             parser.parse(data);
-            System.out.printf("## %d - %d - %d - %d\n", parser.getAmplitude(), parser.getHeight(), parser.getWeight(), parser.getWindSpeed());
+            //System.out.printf("## %d - %d - %d - %d\n", parser.getAmplitude(), parser.getHeight(), parser.getWeight(), parser.getWindSpeed());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // »Ø×ª
+    // å›è½¬
     private CalibrationCell rotateStartX1 = new CalibrationCell("rotateStartX1", "rotateStartData", "rotateRate", R.id.etx1, R.id.tv_rotate_coord1, R.id.btn_rotate_coord1, R.id.tv_rotate_rate) {
         @Override
         public void setOnClickListener() {
@@ -117,7 +120,7 @@ public class CalibrationSetting extends AppCompatActivity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    float start = 100; // TODO Ìæ»»Îª´Ó´®¿Ú¶ÁÈ¡Êı¾İ
+                    float start = 100; // TODO æ›¿æ¢ä¸ºä»ä¸²å£è¯»å–æ•°æ®
                     TextView tvStart = (TextView) findViewById(rotateStartX1.uartDataTextViewId);
                     if (tvStart != null) {
                         tvStart.setText(String.valueOf(start));
@@ -126,7 +129,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     TextView tvEnd = (TextView) findViewById(rotateEndX2.uartDataTextViewId);
                     float end = Float.parseFloat(tvEnd.getText().toString());
 
-                    float dataDelta = end - start; // ¶ÁÖµµÄdeltaÖµ
+                    float dataDelta = end - start; // è¯»å€¼çš„deltaå€¼
                     System.out.println("## data delta = " + dataDelta);
 
                     EditText etStartX = (EditText) findViewById(rotateStartX1.dimValueEditTextId);
@@ -136,7 +139,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     EditText etEndX = (EditText) findViewById(rotateEndX2.dimValueEditTextId);
                     EditText etEndY = (EditText) findViewById(rotateEndY2.dimValueEditTextId);
 
-                    // Ô²ĞÄ
+                    // åœ†å¿ƒ
                     double x = 100;
                     double y = 100;
 
@@ -167,7 +170,7 @@ public class CalibrationSetting extends AppCompatActivity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    float start = 100; // TODO Ìæ»»Îª´Ó´®¿Ú¶ÁÈ¡Êı¾İ
+                    float start = 100; // TODO æ›¿æ¢ä¸ºä»ä¸²å£è¯»å–æ•°æ®
                     TextView tvStart = (TextView) findViewById(rotateStartX1.uartDataTextViewId);
                     if (tvStart != null) {
                         tvStart.setText(String.valueOf(start));
@@ -176,7 +179,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     TextView tvEnd = (TextView) findViewById(rotateEndX2.uartDataTextViewId);
                     float end = Float.parseFloat(tvEnd.getText().toString());
 
-                    float dataDelta = end - start; // ¶ÁÖµµÄdeltaÖµ
+                    float dataDelta = end - start; // è¯»å€¼çš„deltaå€¼
                     System.out.println("## data delta = " + dataDelta);
 
                     EditText etStartX = (EditText) findViewById(rotateStartX1.dimValueEditTextId);
@@ -186,7 +189,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     EditText etEndX = (EditText) findViewById(rotateEndX2.dimValueEditTextId);
                     EditText etEndY = (EditText) findViewById(rotateEndY2.dimValueEditTextId);
 
-                    // Ô²ĞÄ
+                    // åœ†å¿ƒ
                     double x = 100;
                     double y = 100;
 
@@ -210,7 +213,7 @@ public class CalibrationSetting extends AppCompatActivity {
         }
     };
 
-    // µµÎ»±ê¶¨
+    // æ¡£ä½æ ‡å®š
     private CalibrationCell GearRate1 = new CalibrationCell("GearRate1", -1, -1, R.id.btn_first_gear, R.id.tv_first_gear) {
         @Override
         public void setOnClickListener() {
@@ -218,11 +221,11 @@ public class CalibrationSetting extends AppCompatActivity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // 1. ¶ÁÈ¡³õÊ¼Öµ
-                    double start = 0;  // TODO ´Ó´®¿Ú¶ÁÈ¡Öµ
+                    // 1. è¯»å–åˆå§‹å€¼
+                    double start = 0;  // TODO ä»ä¸²å£è¯»å–å€¼
                     System.out.println("## start value = " + start);
                     System.out.println(System.currentTimeMillis());
-                    // 2. ÑÓÊ± 3 Ãë ÔÙ¶ÁÖµ
+                    // 2. å»¶æ—¶ 3 ç§’ å†è¯»å€¼
                     Handler mHandler = new Handler();
                     Runnable readEnd = new Runnable() {
                         @Override
@@ -251,11 +254,11 @@ public class CalibrationSetting extends AppCompatActivity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // 1. ¶ÁÈ¡³õÊ¼Öµ
-                    double start = 0;  // TODO ´Ó´®¿Ú¶ÁÈ¡Öµ
+                    // 1. è¯»å–åˆå§‹å€¼
+                    double start = 0;  // TODO ä»ä¸²å£è¯»å–å€¼
                     System.out.println("## start value = " + start);
                     System.out.println(System.currentTimeMillis());
-                    // 2. ÑÓÊ± 3 Ãë ÔÙ¶ÁÖµ
+                    // 2. å»¶æ—¶ 3 ç§’ å†è¯»å€¼
                     Handler mHandler = new Handler();
                     Runnable readEnd = new Runnable() {
                         @Override
@@ -284,11 +287,11 @@ public class CalibrationSetting extends AppCompatActivity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // 1. ¶ÁÈ¡³õÊ¼Öµ
-                    double start = 0;  // TODO ´Ó´®¿Ú¶ÁÈ¡Öµ
+                    // 1. è¯»å–åˆå§‹å€¼
+                    double start = 0;  // TODO ä»ä¸²å£è¯»å–å€¼
                     System.out.println("## start value = " + start);
                     System.out.println(System.currentTimeMillis());
-                    // 2. ÑÓÊ± 3 Ãë ÔÙ¶ÁÖµ
+                    // 2. å»¶æ—¶ 3 ç§’ å†è¯»å€¼
                     Handler mHandler = new Handler();
                     Runnable readEnd = new Runnable() {
                         @Override
@@ -317,11 +320,11 @@ public class CalibrationSetting extends AppCompatActivity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // 1. ¶ÁÈ¡³õÊ¼Öµ
-                    double start = 0;  // TODO ´Ó´®¿Ú¶ÁÈ¡Öµ
+                    // 1. è¯»å–åˆå§‹å€¼
+                    double start = 0;  // TODO ä»ä¸²å£è¯»å–å€¼
                     System.out.println("## start value = " + start);
                     System.out.println(System.currentTimeMillis());
-                    // 2. ÑÓÊ± 3 Ãë ÔÙ¶ÁÖµ
+                    // 2. å»¶æ—¶ 3 ç§’ å†è¯»å€¼
                     Handler mHandler = new Handler();
                     Runnable readEnd = new Runnable() {
                         @Override
@@ -350,11 +353,11 @@ public class CalibrationSetting extends AppCompatActivity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // 1. ¶ÁÈ¡³õÊ¼Öµ
-                    double start = 0;  // TODO ´Ó´®¿Ú¶ÁÈ¡Öµ
+                    // 1. è¯»å–åˆå§‹å€¼
+                    double start = 0;  // TODO ä»ä¸²å£è¯»å–å€¼
                     System.out.println("## start value = " + start);
                     System.out.println(System.currentTimeMillis());
-                    // 2. ÑÓÊ± 3 Ãë ÔÙ¶ÁÖµ
+                    // 2. å»¶æ—¶ 3 ç§’ å†è¯»å€¼
                     Handler mHandler = new Handler();
                     Runnable readEnd = new Runnable() {
                         @Override
@@ -376,7 +379,7 @@ public class CalibrationSetting extends AppCompatActivity {
         }
     };
 
-    // Çã½Ç ~ ·ù¶È
+    // å€¾è§’ ~ å¹…åº¦
     private CalibrationCell dipAngleStart = new CalibrationCell("dipAngleStart", "dipAngleStartData", "dipAngleRate", R.id.et_dip_angle_start, R.id.tv_dip_angle_start, R.id.btn_dip_angle_start, R.id.tv_dip_angle_rate) {
         @Override
         public void setOnClickListener() {
@@ -393,22 +396,28 @@ public class CalibrationSetting extends AppCompatActivity {
                     double currUartData = parser.getAmplitude();
 
                     tvStart.setText(String.valueOf(currUartData));
+                    float startUartData = Float.parseFloat(tvStart.getText().toString());
+                    float endUartData = Float.parseFloat(tvEnd.getText().toString());
 
-                    Double startUartData = Double.parseDouble(tvStart.getText().toString()); // uart ¶ÁÖµ
-                    Double endUartData = Double.parseDouble(tvEnd.getText().toString()); // uart ¶ÁÖµ
+                    float startDimValue = Float.parseFloat(etStart.getText().toString());
+                    float endDimValue = Float.parseFloat(etEnd.getText().toString());
 
-                    Double startDimValue = Double.parseDouble(etStart.getText().toString());
-                    Double endDimValue = Double.parseDouble(etEnd.getText().toString());
+                    float deltaUartData = endUartData - startUartData;
+                    float deltaDimValue = endDimValue - startDimValue;
+                    float rate = deltaDimValue / deltaUartData;
 
-                    Double deltaUartData = endUartData - startUartData;
-                    Double deltaDimValue = endDimValue - startDimValue;
-
-                    //Double rate = deltaDimValue / deltaUartData;
-                    Double rate = -1.0;
+                    calibration.setDipAngleStartData(startUartData);
+                    calibration.setDipAngleEndData(endUartData);
+                    calibration.setDipAngleStart(startDimValue);
+                    calibration.setDipAngleEnd(endDimValue);
+                    calibration.setDipAngleRate(rate);
 
                     TextView tvRateShow = (TextView) findViewById(dipAngleStart.rateShowId);
                     tvRateShow.setText(String.valueOf(rate));
 
+                    calibrationDao.update(calibration);
+
+                    EventBus.getDefault().post(new CalibrationEvent(calibration));
                 }
             });
         }
@@ -431,27 +440,32 @@ public class CalibrationSetting extends AppCompatActivity {
 
                     tvEnd.setText(String.valueOf(currUartData));
 
-                    Double startUartData = Double.parseDouble(tvStart.getText().toString()); // uart ¶ÁÖµ
-                    Double endUartData = Double.parseDouble(tvEnd.getText().toString()); // uart ¶ÁÖµ
+                    float startUartData = Float.parseFloat(tvStart.getText().toString()); // uart ???
+                    float endUartData = Float.parseFloat(tvEnd.getText().toString()); // uart ???
+                    float startDimValue = Float.parseFloat(etStart.getText().toString());
+                    float endDimValue = Float.parseFloat(etEnd.getText().toString());
 
-                    Double startDimValue = Double.parseDouble(etStart.getText().toString());
-                    Double endDimValue = Double.parseDouble(etEnd.getText().toString());
+                    float deltaUartData = endUartData - startUartData;
+                    float deltaDimValue = endDimValue - startDimValue;
+                    float rate = deltaDimValue / deltaUartData;
 
-                    Double deltaUartData = endUartData - startUartData;
-                    Double deltaDimValue = endDimValue - startDimValue;
-
-                    //Double rate = deltaDimValue / deltaUartData;
-                    Double rate = -2.0;
+                    calibration.setDipAngleStartData(startUartData);
+                    calibration.setDipAngleEndData(endUartData);
+                    calibration.setDipAngleStart(startDimValue);
+                    calibration.setDipAngleEnd(endDimValue);
+                    calibration.setDipAngleRate(rate);
 
                     TextView tvRateShow = (TextView) findViewById(dipAngleStart.rateShowId);
                     tvRateShow.setText(String.valueOf(rate));
+                    calibrationDao.update(calibration);
 
+                    EventBus.getDefault().post(new CalibrationEvent(calibration));
                 }
             });
         }
     };
 
-    // ÖØÁ¿
+    // é‡é‡
     private CalibrationCell weightStart = new CalibrationCell("weightStart", "weightStartData", "weightRate", R.id.et_weight_start, R.id.tv_weight_start, R.id.btn_weight_start, R.id.tv_weight_rate) {
         @Override
         public void setOnClickListener() {
@@ -469,17 +483,21 @@ public class CalibrationSetting extends AppCompatActivity {
 
                     tvStart.setText(String.valueOf(currUartData));
 
-                    Double startUartData = Double.parseDouble(tvStart.getText().toString()); // uart ¶ÁÖµ
-                    Double endUartData = Double.parseDouble(tvEnd.getText().toString()); // uart ¶ÁÖµ
+                    float startUartData = Float.parseFloat(tvStart.getText().toString());
+                    float endUartData = Float.parseFloat(tvEnd.getText().toString());
+                    float startDimValue = Float.parseFloat(etStart.getText().toString());
+                    float endDimValue = Float.parseFloat(etEnd.getText().toString());
+                    float deltaUartData = endUartData - startUartData;
+                    float deltaDimValue = endDimValue - startDimValue;
+                    Float rate = deltaDimValue / deltaUartData;
 
-                    Double startDimValue = Double.parseDouble(etStart.getText().toString());
-                    Double endDimValue = Double.parseDouble(etEnd.getText().toString());
-
-                    Double deltaUartData = endUartData - startUartData;
-                    Double deltaDimValue = endDimValue - startDimValue;
-
-                    //Double rate = deltaDimValue / deltaUartData;
-                    Double rate = -1.0;
+                    calibration.setWeightStartData(startUartData);
+                    calibration.setWeightEndData(endUartData);
+                    calibration.setWeightStart(startDimValue);
+                    calibration.setWeightEnd(endDimValue);
+                    calibration.setWeightRate(rate);
+                    calibrationDao.update(calibration);
+                    EventBus.getDefault().post(new CalibrationEvent(calibration));
 
                     TextView tvRateShow = (TextView) findViewById(weightStart.rateShowId);
                     tvRateShow.setText(String.valueOf(rate));
@@ -506,17 +524,21 @@ public class CalibrationSetting extends AppCompatActivity {
 
                     tvEnd.setText(String.valueOf(currUartData));
 
-                    Double startUartData = Double.parseDouble(tvStart.getText().toString()); // uart ¶ÁÖµ
-                    Double endUartData = Double.parseDouble(tvEnd.getText().toString()); // uart ¶ÁÖµ
+                    float startUartData = Float.parseFloat(tvStart.getText().toString()); // uart ???
+                    float endUartData = Float.parseFloat(tvEnd.getText().toString()); // uart ???
+                    float startDimValue = Float.parseFloat(etStart.getText().toString());
+                    float endDimValue = Float.parseFloat(etEnd.getText().toString());
+                    float deltaUartData = endUartData - startUartData;
+                    float deltaDimValue = endDimValue - startDimValue;
+                    float rate = deltaDimValue / deltaUartData;
 
-                    Double startDimValue = Double.parseDouble(etStart.getText().toString());
-                    Double endDimValue = Double.parseDouble(etEnd.getText().toString());
-
-                    Double deltaUartData = endUartData - startUartData;
-                    Double deltaDimValue = endDimValue - startDimValue;
-
-                    //Double rate = deltaDimValue / deltaUartData;
-                    Double rate = -2.0;
+                    calibration.setWeightStartData(startUartData);
+                    calibration.setWeightEndData(endUartData);
+                    calibration.setWeightStart(startDimValue);
+                    calibration.setWeightEnd(endDimValue);
+                    calibration.setWeightRate(rate);
+                    calibrationDao.update(calibration);
+                    EventBus.getDefault().post(new CalibrationEvent(calibration));
 
                     TextView tvRateShow = (TextView) findViewById(weightStart.rateShowId);
                     tvRateShow.setText(String.valueOf(rate));
@@ -526,7 +548,7 @@ public class CalibrationSetting extends AppCompatActivity {
         }
     };
 
-    // ³¤¶È
+    // é•¿åº¦
     private CalibrationCell lengthStart = new CalibrationCell("lengthStart", "lengthStartData", "lengthRate", R.id.et_arm_length_start, R.id.tv_arm_length_start, R.id.btn_arm_length_start, R.id.tv_arm_length_rate) {
         @Override
         public void setOnClickListener() {
@@ -541,20 +563,23 @@ public class CalibrationSetting extends AppCompatActivity {
                     EditText etEnd = (EditText) findViewById(lengthEnd.dimValueEditTextId);
 
                     double currUartData = parser.getAmplitude();
-
                     tvStart.setText(String.valueOf(currUartData));
 
-                    Double startUartData = Double.parseDouble(tvStart.getText().toString()); // uart ¶ÁÖµ
-                    Double endUartData = Double.parseDouble(tvEnd.getText().toString()); // uart ¶ÁÖµ
+                    float startUartData = Float.parseFloat(tvStart.getText().toString()); // uart è¯»å€¼
+                    float endUartData = Float.parseFloat(tvEnd.getText().toString()); // uart è¯»å€¼
+                    float startDimValue = Float.parseFloat(etStart.getText().toString());
+                    float endDimValue = Float.parseFloat(etEnd.getText().toString());
+                    float deltaUartData = endUartData - startUartData;
+                    float deltaDimValue = endDimValue - startDimValue;
+                    float rate = deltaDimValue / deltaUartData;
 
-                    Double startDimValue = Double.parseDouble(etStart.getText().toString());
-                    Double endDimValue = Double.parseDouble(etEnd.getText().toString());
-
-                    Double deltaUartData = endUartData - startUartData;
-                    Double deltaDimValue = endDimValue - startDimValue;
-
-                    //Double rate = deltaDimValue / deltaUartData;
-                    Double rate = -1.0;
+                    calibration.setLengthStartData(startUartData);
+                    calibration.setLengthEndData(endUartData);
+                    calibration.setLengthStart(startDimValue);
+                    calibration.setLengthEnd(endDimValue);
+                    calibration.setLengthRate(rate);
+                    calibrationDao.update(calibration);
+                    EventBus.getDefault().post(new CalibrationEvent(calibration));
 
                     TextView tvRateShow = (TextView) findViewById(lengthStart.rateShowId);
                     tvRateShow.setText(String.valueOf(rate));
@@ -581,17 +606,21 @@ public class CalibrationSetting extends AppCompatActivity {
 
                     tvEnd.setText(String.valueOf(currUartData));
 
-                    Double startUartData = Double.parseDouble(tvStart.getText().toString()); // uart ¶ÁÖµ
-                    Double endUartData = Double.parseDouble(tvEnd.getText().toString()); // uart ¶ÁÖµ
+                    float startUartData = Float.parseFloat(tvStart.getText().toString()); // uart è¯»å€¼
+                    float endUartData = Float.parseFloat(tvEnd.getText().toString()); // uart è¯»å€¼
+                    float startDimValue = Float.parseFloat(etStart.getText().toString());
+                    float endDimValue = Float.parseFloat(etEnd.getText().toString());
+                    float deltaUartData = endUartData - startUartData;
+                    float deltaDimValue = endDimValue - startDimValue;
+                    float rate = deltaDimValue / deltaUartData;
 
-                    Double startDimValue = Double.parseDouble(etStart.getText().toString());
-                    Double endDimValue = Double.parseDouble(etEnd.getText().toString());
-
-                    Double deltaUartData = endUartData - startUartData;
-                    Double deltaDimValue = endDimValue - startDimValue;
-
-                    //Double rate = deltaDimValue / deltaUartData;
-                    Double rate = -2.0;
+                    calibration.setLengthStartData(startUartData);
+                    calibration.setLengthEndData(endUartData);
+                    calibration.setLengthStart(startDimValue);
+                    calibration.setLengthEnd(endDimValue);
+                    calibration.setLengthRate(rate);
+                    calibrationDao.update(calibration);
+                    EventBus.getDefault().post(new CalibrationEvent(calibration));
 
                     TextView tvRateShow = (TextView) findViewById(lengthStart.rateShowId);
                     tvRateShow.setText(String.valueOf(rate));
@@ -601,7 +630,7 @@ public class CalibrationSetting extends AppCompatActivity {
         }
     };
 
-    // ¸ß¶È
+    // é«˜åº¦
     private CalibrationCell heightStart = new CalibrationCell("heightStart", "heightStartData", "heightRate", R.id.et_tower_height_start, R.id.tv_tower_height_start, R.id.btn_tower_height_start, R.id.tv_tower_height_rate) {
         @Override
         public void setOnClickListener() {
@@ -616,20 +645,23 @@ public class CalibrationSetting extends AppCompatActivity {
                     EditText etEnd = (EditText) findViewById(heightEnd.dimValueEditTextId);
 
                     double currUartData = parser.getHeight();
-
                     tvStart.setText(String.valueOf(currUartData));
 
-                    Double startUartData = Double.parseDouble(tvStart.getText().toString()); // uart ¶ÁÖµ
-                    Double endUartData = Double.parseDouble(tvEnd.getText().toString()); // uart ¶ÁÖµ
+                    float startUartData = Float.parseFloat(tvStart.getText().toString()); // uart è¯»å€¼
+                    float endUartData = Float.parseFloat(tvEnd.getText().toString()); // uart è¯»å€¼
+                    float startDimValue = Float.parseFloat(etStart.getText().toString());
+                    float endDimValue = Float.parseFloat(etEnd.getText().toString());
+                    float deltaUartData = endUartData - startUartData;
+                    float deltaDimValue = endDimValue - startDimValue;
+                    float rate = deltaDimValue / deltaUartData;
 
-                    Double startDimValue = Double.parseDouble(etStart.getText().toString());
-                    Double endDimValue = Double.parseDouble(etEnd.getText().toString());
-
-                    Double deltaUartData = endUartData - startUartData;
-                    Double deltaDimValue = endDimValue - startDimValue;
-
-                    //Double rate = deltaDimValue / deltaUartData;
-                    Double rate = -1.0;
+                    calibration.setHeightStartData(startUartData);
+                    calibration.setHeightEndData(endUartData);
+                    calibration.setHeightStart(startDimValue);
+                    calibration.setHeightEnd(endDimValue);
+                    calibration.setHeightRate(rate);
+                    calibrationDao.update(calibration);
+                    EventBus.getDefault().post(new CalibrationEvent(calibration));
 
                     TextView tvRateShow = (TextView) findViewById(heightStart.rateShowId);
                     tvRateShow.setText(String.valueOf(rate));
@@ -653,20 +685,23 @@ public class CalibrationSetting extends AppCompatActivity {
                     EditText etEnd = (EditText) findViewById(heightEnd.dimValueEditTextId);
 
                     double currUartData = parser.getHeight();
-
                     tvEnd.setText(String.valueOf(currUartData));
 
-                    Double startUartData = Double.parseDouble(tvStart.getText().toString()); // uart ¶ÁÖµ
-                    Double endUartData = Double.parseDouble(tvEnd.getText().toString()); // uart ¶ÁÖµ
+                    float startUartData = Float.parseFloat(tvStart.getText().toString()); // uart è¯»å€¼
+                    float endUartData = Float.parseFloat(tvEnd.getText().toString()); // uart è¯»å€¼
+                    float startDimValue = Float.parseFloat(etStart.getText().toString());
+                    float endDimValue = Float.parseFloat(etEnd.getText().toString());
+                    float deltaUartData = endUartData - startUartData;
+                    float deltaDimValue = endDimValue - startDimValue;
+                    float rate = deltaDimValue / deltaUartData;
 
-                    Double startDimValue = Double.parseDouble(etStart.getText().toString());
-                    Double endDimValue = Double.parseDouble(etEnd.getText().toString());
-
-                    Double deltaUartData = endUartData - startUartData;
-                    Double deltaDimValue = endDimValue - startDimValue;
-
-                    //Double rate = deltaDimValue / deltaUartData;
-                    Double rate = -2.0;
+                    calibration.setHeightStartData(startUartData);
+                    calibration.setHeightEndData(endUartData);
+                    calibration.setHeightStart(startDimValue);
+                    calibration.setHeightEnd(endDimValue);
+                    calibration.setHeightRate(rate);
+                    calibrationDao.update(calibration);
+                    EventBus.getDefault().post(new CalibrationEvent(calibration));
 
                     TextView tvRateShow = (TextView) findViewById(heightStart.rateShowId);
                     tvRateShow.setText(String.valueOf(rate));
@@ -681,6 +716,9 @@ public class CalibrationSetting extends AppCompatActivity {
         rotateStartX1, rotateStartY1, rotateEndX2, rotateEndY2, GearRate1, GearRate2, GearRate3, GearRate4, GearRate5, dipAngleStart, dipAngleEnd, weightStart, weightEnd, lengthStart, lengthEnd, heightStart, heightEnd
     };
 
+    private Calibration calibration = new Calibration();
+    private CalibrationDao calibrationDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -691,6 +729,29 @@ public class CalibrationSetting extends AppCompatActivity {
         }
 
         EventBus.getDefault().register(this);
+
+        // start
+        ((Button) findViewById(R.id.start_value)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new SimulatorEvent(true, false, false, 3));
+            }
+        });
+        // stop
+        ((Button) findViewById(R.id.stop_value)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new SimulatorEvent(false, true, false, 100));
+            }
+        });
+        // running
+        ((Button) findViewById(R.id.running)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new SimulatorEvent(false, false, true, 3));
+            }
+        });
+
     }
 
     @Override
@@ -700,17 +761,17 @@ public class CalibrationSetting extends AppCompatActivity {
     }
 
     private void confLoad(Context contex) {
-        CalibrationDao dao = new CalibrationDao(contex);
+        calibrationDao = new CalibrationDao(contex);
         DatabaseHelper.getInstance(contex).createTable(Calibration.class);
-        List<Calibration> paras = dao.selectAll();
+        List<Calibration> paras = calibrationDao.selectAll();
         if (paras == null || paras.size() == 0) {
-            dao.insert(new Calibration(1.0f));
+            calibrationDao.insert(new Calibration(1.0f));
         }
 
-        paras = dao.selectAll();
+        paras = calibrationDao.selectAll();
         if (paras.size() < 1) return;
         Calibration para = paras.get(0);
-
+        calibration = para; // ä»ç³»ç»Ÿä¸­å¯¼å‡ºé…ç½®
 
         for (int i = 0; i < ccs.length; i++) {
             CalibrationCell cell = ccs[i];
@@ -792,7 +853,7 @@ public class CalibrationSetting extends AppCompatActivity {
                 }
 
                 if (view.getId() == R.id.save_logo) {
-                    // TODO ±£´æÊı¾İ
+                    // TODO ä¿å­˜æ•°æ®
                     System.out.println("## save !!!!");
                 }
             }

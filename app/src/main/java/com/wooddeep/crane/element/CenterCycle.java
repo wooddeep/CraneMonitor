@@ -78,7 +78,7 @@ public class CenterCycle extends BaseElem{
         cycle.setmViewCenterY(centerY);
         cycle.setBackgroundColor(0x00000000); // 透明色
         cycle.setDefRingWidth(ringWidth);
-        cycle.setmRingNormalColor(Color.rgb(30,144,255));
+        cycle.setmRingNormalColor(Color.rgb(18,150,219));
         float orgInnerRadius = originRadius / r * ir;
         cycle.setmInnerRadio(orgInnerRadius);
         cycle.sethAngle(hAngle);
@@ -126,6 +126,12 @@ public class CenterCycle extends BaseElem{
 
     public void setFlink(boolean flink) {
         this.cycle.setFlink(flink);
+    }
+
+    public void setCarRange(float range) {
+        this.carRange = range;
+        //this.cycle.setCarRange(range);
+        cycle.setCarRange(range * scale);
     }
 
     @Override

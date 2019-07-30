@@ -107,7 +107,7 @@ public class SuperCircleView extends View {
 
     public void setCarRange(float carRange) {
         this.carRange = carRange;
-        //invalidate();
+        invalidate();
     }
 
     public void setmViewCenterX(float mViewCenterX) {

@@ -50,6 +50,11 @@ public class CraneView extends View {
     public int hookHeight = 100;
     public float armAngle = 0;
 
+    public final static int minArmLength = 240;
+    public final static int maxArmLength = 630;
+    public final static int minHookHeight = 0;
+    public final static int maxHookHeight = 600;
+
     /*一定要重写这个构造方法*/
     public CraneView(Context context, AttributeSet attrs) {
         super(context, attrs);
