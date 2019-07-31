@@ -80,12 +80,12 @@ public class SuperCircleView extends View {
 
     public void sethAngle(float hAngle) {
         this.hAngle = hAngle;
-        //invalidate();
+        invalidate();
     }
 
     public void setvAngle(float vAngle) {
         this.vAngle = vAngle;
-        //invalidate();
+        invalidate();
     }
 
     public void setDefMinRadio(float defMinRadio) {

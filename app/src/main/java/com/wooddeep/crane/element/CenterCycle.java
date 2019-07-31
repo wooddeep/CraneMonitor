@@ -112,6 +112,12 @@ public class CenterCycle extends BaseElem{
         this.cycle.setvAngle(this.vAngle);
     }
 
+    public void setHAngle(float angle) {
+        if (this.hAngle == angle) return;
+        this.hAngle = angle;
+        this.cycle.sethAngle(angle);
+    }
+
     public void setAlarm(boolean alarm) {
         this.cycle.setAlarm(alarm);
     }

@@ -13,9 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wooddeep.crane.comm.Protocol;
+import com.wooddeep.crane.comm.RotateProto;
 import com.wooddeep.crane.ebus.AlarmSetEvent;
 import com.wooddeep.crane.ebus.CalibrationEvent;
 import com.wooddeep.crane.ebus.MessageEvent;
+import com.wooddeep.crane.ebus.RotateEvent;
 import com.wooddeep.crane.ebus.SimulatorEvent;
 import com.wooddeep.crane.ebus.UartEvent;
 import com.wooddeep.crane.ebus.UserEvent;
@@ -100,16 +102,33 @@ public class CalibrationSetting extends AppCompatActivity {
     private static Protocol packer = new Protocol();
     private static Protocol parser = new Protocol();
 
+    private static RotateProto rotateProto = new RotateProto();
+
+
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void commEventBus(UartEvent uartEvent) {
+    public void commEventBus(UartEvent event) {
         try {
-            byte[] data = uartEvent.data;
+            byte[] data = event.data;
             parser.parse(data);
             //System.out.printf("## %d - %d - %d - %d\n", parser.getAmplitude(), parser.getHeight(), parser.getWeight(), parser.getWindSpeed());
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static float centerX = 0f;
+    private static float centerY = 0f;
+
+    // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void RotateDateEventBus(RotateEvent event) {
+        byte[] data = event.data;
+        rotateProto.parse(data);
+        centerX = event.centerX;
+        centerY = event.centerY;
+        //System.out.printf("## %d, x = %f, y = %f \n", rotateProto.getData(), event.centerX, event.centerY);
+
     }
 
     // 回转
@@ -120,38 +139,43 @@ public class CalibrationSetting extends AppCompatActivity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    float start = 100; // TODO 替换为从串口读取数据
-                    TextView tvStart = (TextView) findViewById(rotateStartX1.uartDataTextViewId);
-                    if (tvStart != null) {
-                        tvStart.setText(String.valueOf(start));
-                    }
 
+                    // 串口数据
+                    float start = rotateProto.getData();
+                    TextView tvStart = (TextView) findViewById(rotateStartX1.uartDataTextViewId);
+                    tvStart.setText(String.valueOf(start));
                     TextView tvEnd = (TextView) findViewById(rotateEndX2.uartDataTextViewId);
                     float end = Float.parseFloat(tvEnd.getText().toString());
 
-                    float dataDelta = end - start; // 读值的delta值
-                    System.out.println("## data delta = " + dataDelta);
-
+                    // 用户设置的 首尾 两个 坐标点
                     EditText etStartX = (EditText) findViewById(rotateStartX1.dimValueEditTextId);
                     EditText etStartY = (EditText) findViewById(rotateStartY1.dimValueEditTextId);
-                    double x1 = Double.parseDouble(etStartX.getText().toString());
-                    double y1 = Double.parseDouble(etStartY.getText().toString());
+                    float x1 = Float.parseFloat(etStartX.getText().toString());
+                    float y1 = Float.parseFloat(etStartY.getText().toString());
                     EditText etEndX = (EditText) findViewById(rotateEndX2.dimValueEditTextId);
                     EditText etEndY = (EditText) findViewById(rotateEndY2.dimValueEditTextId);
-
-                    // 圆心
-                    double x = 100;
-                    double y = 100;
-
-                    double x2 = Double.parseDouble(etEndX.getText().toString());
-                    double y2 = Double.parseDouble(etEndY.getText().toString());
+                    float x2 = Float.parseFloat(etEndX.getText().toString());
+                    float y2 = Float.parseFloat(etEndY.getText().toString());
 
                     double rotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
-                        new org.locationtech.jts.geom.Coordinate(x, y), new org.locationtech.jts.geom.Coordinate(x2, y2)); // [0 - pi]
+                        new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(x2, y2)); // [0 - pi]
                     System.out.println(Math.toDegrees(rotate));
 
+                    float rate = (float)rotate / (end - start);
+
                     TextView tvRate = (TextView) findViewById(rotateStartX1.rateShowId);
-                    tvRate.setText("-1.0");
+                    tvRate.setText(String.valueOf(rate));
+
+                    calibration.setRotateStartX1(x1);
+                    calibration.setRotateStartY1(y1);
+                    calibration.setRotateEndX2(x2);
+                    calibration.setRotateEndY2(y2);
+                    calibration.setRotateStartData(start);
+                    calibration.setRotateEndData(end);
+                    calibration.setRotateRate(rate);
+                    calibrationDao.update(calibration);
+                    EventBus.getDefault().post(new CalibrationEvent(calibration));
+
                 }
             });
         }
@@ -170,37 +194,44 @@ public class CalibrationSetting extends AppCompatActivity {
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    float start = 100; // TODO 替换为从串口读取数据
+
+                    // 串口数据
+                    float end = rotateProto.getData();
                     TextView tvStart = (TextView) findViewById(rotateStartX1.uartDataTextViewId);
-                    if (tvStart != null) {
-                        tvStart.setText(String.valueOf(start));
-                    }
-
+                    float start = Float.parseFloat(tvStart.getText().toString());
+                    System.out.printf("## %f- %f\n", start, end);
                     TextView tvEnd = (TextView) findViewById(rotateEndX2.uartDataTextViewId);
-                    float end = Float.parseFloat(tvEnd.getText().toString());
+                    tvEnd.setText(String.valueOf(end));
 
-                    float dataDelta = end - start; // 读值的delta值
-                    System.out.println("## data delta = " + dataDelta);
-
+                    // 用户设置的 首尾 两个 坐标点
                     EditText etStartX = (EditText) findViewById(rotateStartX1.dimValueEditTextId);
                     EditText etStartY = (EditText) findViewById(rotateStartY1.dimValueEditTextId);
-                    double x1 = Double.parseDouble(etStartX.getText().toString());
-                    double y1 = Double.parseDouble(etStartY.getText().toString());
+                    float x1 = Float.parseFloat(etStartX.getText().toString());
+                    float y1 = Float.parseFloat(etStartY.getText().toString());
                     EditText etEndX = (EditText) findViewById(rotateEndX2.dimValueEditTextId);
                     EditText etEndY = (EditText) findViewById(rotateEndY2.dimValueEditTextId);
+                    float x2 = Float.parseFloat(etEndX.getText().toString());
+                    float y2 = Float.parseFloat(etEndY.getText().toString());
 
-                    // 圆心
-                    double x = 100;
-                    double y = 100;
-
-                    double x2 = Double.parseDouble(etEndX.getText().toString());
-                    double y2 = Double.parseDouble(etEndY.getText().toString());
-
-                    double rotate = Angle.angleBetween(new Coordinate(x1, y1), new Coordinate(x, y), new Coordinate(x2, y2)); // [0 - pi]
+                    double rotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
+                        new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(x2, y2)); // [0 - pi]
                     System.out.println(Math.toDegrees(rotate));
 
+                    float rate = (float)rotate / (end - start);
+
                     TextView tvRate = (TextView) findViewById(rotateStartX1.rateShowId);
-                    tvRate.setText("-2.0");
+                    tvRate.setText(String.valueOf(rate));
+
+                    calibration.setRotateStartX1(x1);
+                    calibration.setRotateStartY1(y1);
+                    calibration.setRotateEndX2(x2);
+                    calibration.setRotateEndY2(y2);
+                    calibration.setRotateStartData(start);
+                    calibration.setRotateEndData(end);
+                    calibration.setRotateRate(rate);
+                    calibrationDao.update(calibration);
+                    EventBus.getDefault().post(new CalibrationEvent(calibration));
+
                 }
             });
         }

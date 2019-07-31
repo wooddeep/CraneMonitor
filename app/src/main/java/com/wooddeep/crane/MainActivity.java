@@ -20,9 +20,11 @@ import android.widget.TextView;
 
 import com.example.x6.serial.SerialPort;
 import com.wooddeep.crane.comm.Protocol;
+import com.wooddeep.crane.comm.RotateProto;
 import com.wooddeep.crane.ebus.CalibrationEvent;
 import com.wooddeep.crane.ebus.MessageEvent;
 import com.wooddeep.crane.ebus.AlarmSetEvent;
+import com.wooddeep.crane.ebus.RotateEvent;
 import com.wooddeep.crane.ebus.SimulatorEvent;
 import com.wooddeep.crane.ebus.UartEvent;
 import com.wooddeep.crane.ebus.UserEvent;
@@ -197,6 +199,8 @@ public class MainActivity extends AppCompatActivity {
     private static Protocol packer = new Protocol();
     private static Protocol parser = new Protocol();
 
+    private static RotateProto rotateProto = new RotateProto();
+
     private int craneType = 0; // 塔基类型: 0 ~ 平臂式, 2动臂式
     private Crane mainCrane;   // 本塔基参数
     private CenterCycle centerCycle; // 本塔基圆环
@@ -206,6 +210,8 @@ public class MainActivity extends AppCompatActivity {
 
     private SimulatorFlags flags = new SimulatorFlags();
     private UartEmitter emitter = new UartEmitter();
+
+    private EventBus eventBus = EventBus.getDefault();
 
     Timer timer = new Timer();
     TimerTask task = new TimerTask() {
@@ -220,6 +226,8 @@ public class MainActivity extends AppCompatActivity {
                         packer.setHeight(emitter.getsHeight());
                         packer.setWeight(emitter.getsWeight());
                         packer.setWindSpeed(emitter.getsWindSpeed());
+
+                        rotateProto.setData(emitter.getsAmplitude()); // TODO 单独做回转数据的发射器, 现在借用幅度值的发射器
                     }
 
                     if (flags.isRuning()) {
@@ -227,11 +235,15 @@ public class MainActivity extends AppCompatActivity {
                         packer.setHeight(emitter.getsHeight());
                         packer.setWeight(emitter.getsWeight());
                         packer.setWindSpeed(emitter.getsWindSpeed());
+
+                        rotateProto.setData(emitter.getsAmplitude()); // TODO 单独做回转数据的发射器, 现在借用幅度值的发射器
+
                         emitter.emitter(); // 累计
                     }
 
                     byte[] data = packer.pack();
-                    EventBus.getDefault().post(new UartEvent(data));
+                    eventBus.post(new UartEvent(data));
+                    eventBus.post(new RotateEvent(rotateProto.pack(), mainCrane.getCoordX1(), mainCrane.getCoordY1()));
                 }
             });
         }
@@ -351,21 +363,16 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void commEventBus(UartEvent uartEvent) {
         try {
-
-            TextView currTime = (TextView) findViewById(R.id.currTime);
-            TextView currDate = (TextView) findViewById(R.id.currDate);
-
             Date date = new Date();
             String dateNowStr = sdf.format(date);
-
             String[] cells = dateNowStr.split(" ");
+            TextView currTime = (TextView) findViewById(R.id.currTime);
+            TextView currDate = (TextView) findViewById(R.id.currDate);
             currDate.setText(cells[0]);
             currTime.setText(cells[1]);
 
             byte[] data = uartEvent.data;
             parser.parse(data);
-
-            CraneView craneView = (CraneView) findViewById(R.id.crane);
 
             // 重量
             TextView weight = (TextView) findViewById(R.id.weight);
@@ -392,24 +399,84 @@ public class MainActivity extends AppCompatActivity {
             //windSpeed.setText(String.valueOf(parser.getWindSpeed()) + "m/s");
 
             if (mainCrane.getType() == 0) { // 平臂式
-                float lenStart = calibration.getLengthStart();
-                float lenEnd = calibration.getLengthEnd();
-                float rate = (CraneView.maxArmLength - CraneView.minArmLength) / (lenEnd - lenStart);
-                craneView.setArmLenth((int)(rate * armLengthValue));
+                float bigArmLength0 = mainCrane.getBigArmLength(); // 大臂总长度
+                float bigArmLength1 = CraneView.maxArmLength - CraneView.minArmLength;
 
-                centerCycle.setCarRange(armLengthValue); // 圆环中的小车显示 TODO 根据实际值来修改
+                float startCarRange = calibration.getLengthStart(); // 起始小车位置
+                float endCarRange = calibration.getLengthEnd(); // 终止小车位置
+                float valueDelat = endCarRange - startCarRange;
+                float rate = valueDelat / bigArmLength0; // 距离差 和 大臂的比例 (圆环)
+                float ratePerData0 = rate / (calibration.getLengthEndData() - calibration.getLengthStartData()); // 每一个Uart Data 和 大臂的比例
+                float ratePerData1 = rate / (calibration.getLengthEndData() - calibration.getLengthStartData());
+                float carRange0 = (parser.getAmplitude() - calibration.getLengthStartData()) * ratePerData0 * bigArmLength0; // 圆环的小车当前坐标
+                float carRange1 = (parser.getAmplitude() - calibration.getLengthStartData()) * ratePerData1 * bigArmLength1 + CraneView.minArmLength;
 
-                System.out.printf("### rate * mainCrane.getBigArmLength() = %f\n", rate * mainCrane.getBigArmLength());
+                centerCycle.setCarRange(carRange0);
+                centerCycle.setHAngle(rotateProto.getData()); // TODO 根据比例值计算角度
 
-                float hiStart = calibration.getHeightStart();
-                float hiEnd = calibration.getHeightEnd();
-                float currHookHi = CraneView.minHookHeight + (CraneView.maxHookHeight - CraneView.minHookHeight) * armLengthValue/ (hiEnd - hiStart);
-                craneView.setHookHeight((int)currHookHi);
+
+                craneView.setArmLenth((int)(carRange1));
+                float craneHeight = mainCrane.getCraneHeight(); // 塔身高度
+                float craneHeight1 = CraneView.maxHookHeight - CraneView.minHookHeight;
+                float startHeight = calibration.getHeightStart(); // 吊钩起始位置
+                float endHeight = calibration.getHeightEnd(); // 吊钩终止位置
+                float heightDelat = endHeight - startHeight;
+                float hrate = heightDelat / craneHeight;
+                float hratePerData = hrate / (calibration.getHeightEndData() - calibration.getHeightStartData());
+                float hookHeight = (parser.getHeight() - calibration.getHeightStartData()) * hratePerData * craneHeight1 + CraneView.minHookHeight;
+                craneView.setHookHeight((int)hookHeight);
+
+
             }
 
             //weightAlarm();
             //System.out.println("## I have get uart0 data!");
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void RotateDateEventBus(RotateEvent event) {
+        try {
+
+            byte[] data = event.data;
+            rotateProto.parse(data);
+
+            // 重量
+            //TextView weight = (TextView) findViewById(R.id.weight);
+            //float weightValue = calibration.getWeightStart() + calibration.getWeightRate() * (parser.getWeight() - calibration.getWeightStartData());
+
+            if (mainCrane.getType() == 0) { // 平臂式
+                /*
+                float bigArmLength0 = mainCrane.getBigArmLength(); // 大臂总长度
+                float bigArmLength1 = CraneView.maxArmLength - CraneView.minArmLength;
+
+                float startCarRange = calibration.getLengthStart(); // 起始小车位置
+                float endCarRange = calibration.getLengthEnd(); // 终止小车位置
+                float valueDelat = endCarRange - startCarRange;
+                float rate = valueDelat / bigArmLength0; // 距离差 和 大臂的比例 (圆环)
+                float ratePerData0 = rate / (calibration.getLengthEndData() - calibration.getLengthStartData()); // 每一个Uart Data 和 大臂的比例
+                float ratePerData1 = rate / (calibration.getLengthEndData() - calibration.getLengthStartData());
+                float carRange0 = (parser.getAmplitude() - calibration.getLengthStartData()) * ratePerData0 * bigArmLength0; // 圆环的小车当前坐标
+                float carRange1 = (parser.getAmplitude() - calibration.getLengthStartData()) * ratePerData1 * bigArmLength1 + CraneView.minArmLength;
+
+                centerCycle.setCarRange(carRange0);
+                craneView.setArmLenth((int)(carRange1));
+
+                float craneHeight = mainCrane.getCraneHeight(); // 塔身高度
+                float craneHeight1 = CraneView.maxHookHeight - CraneView.minHookHeight;
+                float startHeight = calibration.getHeightStart(); // 吊钩起始位置
+                float endHeight = calibration.getHeightEnd(); // 吊钩终止位置
+                float heightDelat = endHeight - startHeight;
+                float hrate = heightDelat / craneHeight;
+                float hratePerData = hrate / (calibration.getHeightEndData() - calibration.getHeightStartData());
+                float hookHeight = (parser.getHeight() - calibration.getHeightStartData()) * hratePerData * craneHeight1 + CraneView.minHookHeight;
+                craneView.setHookHeight((int)hookHeight);
+                */
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -714,6 +781,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private CraneView craneView;
+
     /**
      * 获取主界面FrameLayout的坐标及长宽
      **/
@@ -734,7 +803,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        CraneView craneView = (CraneView) findViewById(R.id.crane);
+        craneView = (CraneView) findViewById(R.id.crane);
         craneView.setCraneType(craneType);
 
     }

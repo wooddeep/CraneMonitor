@@ -4,8 +4,8 @@ package com.wooddeep.crane.simulator;
  * Created by niuto on 2019/7/30.
  */
 
-public class UartEmitter {
-
+// 回转数据发射器
+public class RotateEmitter {
     private int sAmplitude = 3;
     private int sHeight = 3;
     private int sWeight = 3;
@@ -16,7 +16,7 @@ public class UartEmitter {
     private int eWeight = 100;
     private int eWindSpeed = 100;
 
-    public UartEmitter() {
+    public RotateEmitter() {
         this.sAmplitude = 3;
         this.sHeight = 3;
         this.sWeight = 3;
