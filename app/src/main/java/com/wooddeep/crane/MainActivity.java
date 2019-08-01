@@ -428,11 +428,7 @@ public class MainActivity extends AppCompatActivity {
                 float hookHeight = (parser.getHeight() - calibration.getHeightStartData()) * hratePerData * craneHeight1 + CraneView.minHookHeight;
                 craneView.setHookHeight((int)hookHeight);
 
-
             }
-
-            //weightAlarm();
-            //System.out.println("## I have get uart0 data!");
 
         } catch (Exception e) {
             e.printStackTrace();

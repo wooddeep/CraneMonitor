@@ -32,9 +32,8 @@ public class SuperCircleView extends View {
     private float mRingWidth; //圆环的宽度
     private int mMinCircleColor;    //最里面圆的颜色
     private int mRingNormalColor;    //默认圆环的颜色
-    private Paint mPaint;
-    private int color[] = new int[3];   //渐变颜色
 
+    private int color[] = new int[3];   //渐变颜色
     private RectF mRectF; //圆环的矩形区域
     private float mSelectRing = 0;        //要显示几段彩色
     private int mMaxValue;
@@ -46,14 +45,18 @@ public class SuperCircleView extends View {
     private float vAngle = 0; // 垂直方向夹角
 
     private float carRange = 50; // 小车位置
-
     private float scale = 1.0f;
-
     private boolean alarm = false;
-
     private boolean flink = false;
 
-    //private boolean drawed = false;
+    private Paint mPaint = null;
+
+    private Paint ringMaxPaint;
+    private Paint ringRealPaint;
+    private Paint radioPaint;
+    private Paint carPaint;
+    private Paint shortArmPaint;
+    private Paint ringColorPaint;
 
     public boolean getFlink() {
         return flink;
@@ -61,17 +64,17 @@ public class SuperCircleView extends View {
 
     public void setFlink(boolean flink) {
         this.flink = flink;
-        //invalidate();
+        invalidate();
     }
 
     public void setmInnerRadio(float mInnerRadio) {
         this.mInnerRadio = mInnerRadio;
-        //invalidate();
+        invalidate();
     }
 
     public void setAlarm(boolean alarm) {
         this.alarm = alarm;
-        //invalidate();
+        invalidate();
     }
 
     public boolean getAlarm() {
@@ -91,18 +94,18 @@ public class SuperCircleView extends View {
     public void setDefMinRadio(float defMinRadio) {
         this.defMinRadio = defMinRadio;
         this.mMinRadio = defMinRadio;
-        //invalidate();
+        invalidate();
     }
 
     public void setDefRingWidth(float defRingWidth) {
         this.defRingWidth = defRingWidth;
         this.mRingWidth = defRingWidth;
-        //invalidate();
+        invalidate();
     }
 
     public void setmRingNormalColor(int mRingNormalColor) {
         this.mRingNormalColor = mRingNormalColor;
-        //invalidate();
+        invalidate();
     }
 
     public void setCarRange(float carRange) {
@@ -112,12 +115,12 @@ public class SuperCircleView extends View {
 
     public void setmViewCenterX(float mViewCenterX) {
         this.mViewCenterX = mViewCenterX;
-        //invalidate();
+        invalidate();
     }
 
     public void setmViewCenterY(float mViewCenterY) {
         this.mViewCenterY = mViewCenterY;
-        //invalidate();
+        invalidate();
     }
 
     public void setScale(float scale) {
@@ -166,10 +169,13 @@ public class SuperCircleView extends View {
         //需要重写onDraw就得调用此
         this.setWillNotDraw(false);
 
-        //圆环渐变的颜色
-        color[0] = Color.parseColor("#FFD300");
-        color[1] = Color.parseColor("#FF0084");
-        color[2] = Color.parseColor("#16FF00");
+        ringMaxPaint= new Paint(Paint.ANTI_ALIAS_FLAG);
+        ringRealPaint= new Paint(Paint.ANTI_ALIAS_FLAG);
+        radioPaint= new Paint(Paint.ANTI_ALIAS_FLAG);
+        carPaint= new Paint(Paint.ANTI_ALIAS_FLAG);
+        shortArmPaint= new Paint(Paint.ANTI_ALIAS_FLAG);
+        ringColorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
     }
 
     private RectF calRingRectArea(float radio) {
@@ -189,14 +195,10 @@ public class SuperCircleView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //if (drawed) return;
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         mPaint.setColor(mMinCircleColor);
-        //画默认圆环
         drawNormalRing(canvas);
-        // draw radio
         drawRadio(canvas);
-        //drawed = true;
     }
 
 
@@ -206,13 +208,13 @@ public class SuperCircleView extends View {
      * @param canvas
      */
     private void drawNormalRing(Canvas canvas) {
-        Paint ringMaxPaint = new Paint(mPaint);
+        //Paint ringMaxPaint = mPaint;// new Paint(mPaint);
         ringMaxPaint.setStyle(Paint.Style.STROKE);
         ringMaxPaint.setStrokeWidth(1);
         ringMaxPaint.setColor(Color.GRAY);//圆环默认颜色为灰色
         ringMaxPaint.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
 
-        Paint ringRealPaint = new Paint(mPaint);
+        //Paint ringRealPaint = mPaint; //new Paint(mPaint);
         ringRealPaint.setStyle(Paint.Style.STROKE);
         ringRealPaint.setStrokeWidth(mRingWidth);
         ringRealPaint.setColor(mRingNormalColor);
@@ -235,7 +237,7 @@ public class SuperCircleView extends View {
      * @param canvas
      */
     private void drawRadio(Canvas canvas) {
-        Paint radioPaint = new Paint(mPaint);
+        //Paint radioPaint = mPaint; //new Paint(mPaint);
         radioPaint.setStyle(Paint.Style.STROKE);
         radioPaint.setStrokeWidth(2.0f);
         if (flink) {
@@ -261,7 +263,7 @@ public class SuperCircleView extends View {
         canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY + yoffset, radioPaint);
 
         // 画小车
-        Paint carPaint = new Paint(mPaint);
+        //Paint carPaint = mPaint; //new Paint(mPaint);
         carPaint.setColor(Color.rgb(255,165,0));
         carPaint.setStyle(Paint.Style.FILL);
         carPaint.setStrokeWidth(8); // 车宽8， 车长8
@@ -278,7 +280,7 @@ public class SuperCircleView extends View {
         canvas.drawLine(carStartX, carStartY, carEndX, carEndY, carPaint);
 
         // 平衡臂相关参数
-        Paint shortArmPaint = new Paint(mPaint);
+        //Paint shortArmPaint = mPaint; //new Paint(mPaint);
         shortArmPaint.setColor(Color.BLACK);
         shortArmPaint.setStyle(Paint.Style.STROKE);
         shortArmPaint.setStrokeWidth(4.0f);
@@ -290,7 +292,7 @@ public class SuperCircleView extends View {
         canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + ixoffset, mViewCenterY + iyoffset, shortArmPaint);
 
         // 圆心
-        Paint ringColorPaint = new Paint(mPaint);
+        //Paint ringColorPaint = mPaint; //new Paint(mPaint);
         ringColorPaint.setStyle(Paint.Style.FILL);
         ringColorPaint.setColor(Color.DKGRAY);
         RectF mRectF = calRingRectArea(3);
@@ -298,7 +300,6 @@ public class SuperCircleView extends View {
     }
 
     public void show() {
-        //drawed = false;
         invalidate();
     }
 }
