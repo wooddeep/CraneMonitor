@@ -206,7 +206,6 @@ public class SuperCircleView extends View {
      * @param canvas
      */
     private void drawNormalRing(Canvas canvas) {
-
         Paint ringMaxPaint = new Paint(mPaint);
         ringMaxPaint.setStyle(Paint.Style.STROKE);
         ringMaxPaint.setStrokeWidth(1);
@@ -257,29 +256,26 @@ public class SuperCircleView extends View {
         // 大臂环 * cos(夹角)
         double cosRate = Math.cos(Math.toRadians(vAngle));
 
-        float xoffset = (float) (mMinRadio * cosRate * sin);
-        float yoffset = (float) (mMinRadio * cosRate * cos);
+        float xoffset = (float) (mMinRadio * cosRate * sin); // 大臂终点 X坐标
+        float yoffset = (float) (mMinRadio * cosRate * cos); // 大臂终点 Y坐标
         canvas.drawLine(mViewCenterX, mViewCenterY, mViewCenterX + xoffset, mViewCenterY + yoffset, radioPaint);
 
         // 画小车
         Paint carPaint = new Paint(mPaint);
         carPaint.setColor(Color.rgb(255,165,0));
         carPaint.setStyle(Paint.Style.FILL);
-        float carXCoord = mViewCenterX + Math.min((float) (carRange * cosRate * sin), (float)(xoffset - 8 * cosRate * sin));
-        float carYCoord = mViewCenterY + Math.min((float) (carRange * cosRate * cos), (float)(yoffset - 8 * cosRate * cos));
+        carPaint.setStrokeWidth(8); // 车宽8， 车长8
 
-        carPaint.setStrokeWidth(8); // 车宽6， 车长12
-        float carHeadXCoord = carXCoord + (float) (8 * cosRate * sin); // 车头X坐标
-        float carHeadYCoord = carYCoord + (float) (8 * cosRate * cos); // 车头Y坐标
+        float armPureLen = mMinRadio - 4 - 8; // 4 为圆心的半径, 8 为小车的长度
+        float lenRate = armPureLen / mMinRadio; // 实际长度和 配置的大臂长度的比例
 
+        float carStartX = mViewCenterX + (float) ((carRange * lenRate + 4) * cosRate * sin);
+        float carStartY = mViewCenterY + (float) ((carRange * lenRate + 4) * cosRate * cos);
 
-        if (scale < 1.0f) {
-            carPaint.setStrokeWidth(8 * scale); // 车宽6， 车长12
-            carHeadXCoord = carXCoord +  Math.min((float) (float) (8 * cosRate * sin * scale), xoffset); // 车头X坐标
-            carHeadYCoord = carYCoord +  Math.min((float) (float) (8 * cosRate * cos * scale), yoffset); // 车头Y坐标
-        }
+        float carEndX = mViewCenterX + (float) ((carRange * lenRate + 4 + 8) * cosRate * sin);
+        float carEndY = mViewCenterY + (float) ((carRange * lenRate + 4 + 8) * cosRate * cos);
 
-        canvas.drawLine(carXCoord, carYCoord, carHeadXCoord, carHeadYCoord, carPaint);
+        canvas.drawLine(carStartX, carStartY, carEndX, carEndY, carPaint);
 
         // 平衡臂相关参数
         Paint shortArmPaint = new Paint(mPaint);
