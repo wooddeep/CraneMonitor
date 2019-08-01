@@ -198,8 +198,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static Protocol packer = new Protocol();
     private static Protocol parser = new Protocol();
-
     private static RotateProto rotateProto = new RotateProto();
+    private static RadioProto radioProto = new RadioProto();
 
     private int craneType = 0; // 塔基类型: 0 ~ 平臂式, 2动臂式
     private Crane mainCrane;   // 本塔基参数
@@ -207,6 +207,10 @@ public class MainActivity extends AppCompatActivity {
     private AlarmSet alarmSet = null;
     private Calibration calibration = null;
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    private boolean isMasterCrane = false; // 是否主塔机
+    private String myCraneNo = "1N";
+    private List<String> craneNumbers = new ArrayList<>();
 
     private SimulatorFlags flags = new SimulatorFlags();
     private UartEmitter emitter = new UartEmitter();
@@ -280,6 +284,12 @@ public class MainActivity extends AppCompatActivity {
                     //} else {
                     //    System.out.println("############# no data !############");
                     //}
+                    // TODO
+                    // 1. 系统初始化时候，读取电台报文，如果一直没有报文，则自己做主节点， 分别轮训其他节点
+                    // 2. 如果读取到了主机请求报文，则知道主机的 编号，并判断主机是否发请求命令给自己，
+                    // 2.1 如果主机发送命令给 自己，则根据自己的数据，回应给主机， 且提出主机的数据， 刷新主节点显示；
+                    // 2.2 如果主机发送命令给 其他节点，则不管；
+                    // 3. 如果读取到了 从机 回应报文，则从报文中读取从节点的数据，且刷新从节点；
 
                     // 485测试
                     SerialPort serialttyS2 = new SerialPort(new File("/dev/ttyS2"), 115200, 0);
@@ -345,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void messageEventBus(MessageEvent userEvent) {
         //fanRotate();
-        elemMap.alramFlink();
+        //elemMap.alramFlink();
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
@@ -400,6 +410,10 @@ public class MainActivity extends AppCompatActivity {
             //windSpeedValue = Math.round(windSpeedValue * 10) / 10;
             //windSpeed.setText(String.valueOf(parser.getWindSpeed()) + "m/s");
 
+            RadioProto.test();
+
+            if (mainCrane == null) return;
+
             if (mainCrane.getType() == 0) { // 平臂式
                 float bigArmLength0 = mainCrane.getBigArmLength(); // 大臂总长度
                 float bigArmLength1 = CraneView.maxArmLength - CraneView.minArmLength;
@@ -416,8 +430,7 @@ public class MainActivity extends AppCompatActivity {
                 centerCycle.setCarRange(carRange0);
                 centerCycle.setHAngle(rotateProto.getData()); // TODO 根据比例值计算角度
 
-
-                craneView.setArmLenth((int)(carRange1));
+                craneView.setArmLenth((int) (carRange1));
                 float craneHeight = mainCrane.getCraneHeight(); // 塔身高度
                 float craneHeight1 = CraneView.maxHookHeight - CraneView.minHookHeight;
                 float startHeight = calibration.getHeightStart(); // 吊钩起始位置
@@ -426,7 +439,7 @@ public class MainActivity extends AppCompatActivity {
                 float hrate = heightDelat / craneHeight;
                 float hratePerData = hrate / (calibration.getHeightEndData() - calibration.getHeightStartData());
                 float hookHeight = (parser.getHeight() - calibration.getHeightStartData()) * hratePerData * craneHeight1 + CraneView.minHookHeight;
-                craneView.setHookHeight((int)hookHeight);
+                craneView.setHookHeight((int) hookHeight);
 
             }
 
@@ -715,6 +728,9 @@ public class MainActivity extends AppCompatActivity {
         for (Crane iterator : paras) {
             if (iterator.getIsMain() == true) {
                 mainCrane = iterator;
+                String number = mainCrane.getName().replaceAll("[^0-9]+", "") + "N";
+                myCraneNo = number;
+                craneNumbers.add(number); // 本机的编号
                 break;
             }
         }
@@ -736,6 +752,8 @@ public class MainActivity extends AppCompatActivity {
             elemMap.addElem(sideCycle.getUuid(), sideCycle);
             sideCycleId = sideCycle.getUuid();
             sideCycle.drawSideCycle(this, mainFrame);
+            String number = cp.getName().replaceAll("[^0-9]+", "") + "N";
+            craneNumbers.add(number);
         }
 
         // 区域
@@ -803,9 +821,6 @@ public class MainActivity extends AppCompatActivity {
 
         craneView = (CraneView) findViewById(R.id.crane);
         craneView.setCraneType(craneType);
-
-        //RadioProto radioProto = new RadioProto();
-        RadioProto.test();
     }
 
     // 初始化数据

@@ -284,6 +284,7 @@ public class CraneSetting extends AppCompatActivity {
                                             cp.setIsMain(false);
                                         }
 
+                                        cp.setName(gTable.get(0).get(j).getValue());
                                         cp.setType(Integer.parseInt(gTable.get(1).get(j).getValue()));
                                         cp.setCoordX1(Float.parseFloat(gTable.get(2).get(j).getValue()));
                                         cp.setCoordY1(Float.parseFloat(gTable.get(3).get(j).getValue()));

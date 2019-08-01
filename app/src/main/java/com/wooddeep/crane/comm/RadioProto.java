@@ -36,12 +36,12 @@ public class RadioProto {
         this.range  = Float.parseFloat(cells[4].replace("N", ""));
 
         if (targetNo.compareToIgnoreCase("0N") == 0) { // 其他其他的回应报文
-            System.out.printf("# reply: %s -> %s ", sourceNo, targetNo);
-            System.out.printf("slave: %s - rotate: %f, range: %f\n", sourceNo, rotate, range);
+            //System.out.printf("# reply: %s -> %s ", sourceNo, targetNo);
+            //System.out.printf("slave: %s - rotate: %f, range: %f\n", sourceNo, rotate, range);
             isQuery = false; // 从机的回文
         } else {
-            System.out.printf("# request: %s -> %s ", sourceNo, targetNo);
-            System.out.printf("master: %s - rotate: %f, range: %f\n", sourceNo, rotate, range);
+            //System.out.printf("# request: %s -> %s ", sourceNo, targetNo);
+            //System.out.printf("master: %s - rotate: %f, range: %f\n", sourceNo, rotate, range);
             this.masterNo = sourceNo;
         }
 
@@ -49,14 +49,10 @@ public class RadioProto {
     }
 
     // 打包报文 如果是主机 则 轮训 其他所有从机，如果是从机 则回应
-    public void packReply() {
-        String replay = String.format("%% %s %s %fN %fN 0.00N 0.00N 0N#", sourceNo,  targetNo, rotate, range);
-
-        //StringBuffer sb = new StringBuffer();
-        //sb.append("% ");
-        //sb.append(Str)
-
-        System.out.println(replay);
+    public byte [] packReply() {
+        String replay = String.format("%% %s %s %.2fN %.2fN 0.00N 0.00N 0N#", sourceNo,  targetNo, rotate, range);
+        //System.out.println(replay);
+        return replay.getBytes();
     }
 
     public static void test() {
