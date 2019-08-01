@@ -11,7 +11,7 @@ import com.wooddeep.crane.views.SuperCircleView;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTReader;
 
-public class CenterCycle extends BaseElem{
+public class CenterCycle extends CycleElem {
     public float scale;
     public float oscale;            // 原始尺寸比例
     public float x;
@@ -112,6 +112,7 @@ public class CenterCycle extends BaseElem{
         this.cycle.setvAngle(this.vAngle);
     }
 
+    @Override
     public void setHAngle(float angle) {
         if (this.hAngle == angle) return;
         this.hAngle = angle;
@@ -134,6 +135,7 @@ public class CenterCycle extends BaseElem{
         this.cycle.setFlink(flink);
     }
 
+    @Override
     public void setCarRange(float range) {
         this.carRange = range;
         //this.cycle.setCarRange(range);

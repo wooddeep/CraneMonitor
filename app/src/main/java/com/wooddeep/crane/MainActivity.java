@@ -24,11 +24,14 @@ import com.wooddeep.crane.comm.RotateProto;
 import com.wooddeep.crane.ebus.AlarmSetEvent;
 import com.wooddeep.crane.ebus.CalibrationEvent;
 import com.wooddeep.crane.ebus.MessageEvent;
+import com.wooddeep.crane.ebus.RadioEvent;
 import com.wooddeep.crane.ebus.RotateEvent;
 import com.wooddeep.crane.ebus.SimulatorEvent;
 import com.wooddeep.crane.ebus.UartEvent;
 import com.wooddeep.crane.ebus.UserEvent;
+import com.wooddeep.crane.element.BaseElem;
 import com.wooddeep.crane.element.CenterCycle;
+import com.wooddeep.crane.element.CycleElem;
 import com.wooddeep.crane.element.ElemMap;
 import com.wooddeep.crane.element.SideArea;
 import com.wooddeep.crane.element.SideCycle;
@@ -211,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isMasterCrane = false; // 是否主塔机
     private String myCraneNo = "1N";
     private List<String> craneNumbers = new ArrayList<>();
-
+    private HashMap<String, CycleElem> craneMap = new HashMap<>();
     private SimulatorFlags flags = new SimulatorFlags();
     private UartEmitter emitter = new UartEmitter();
 
@@ -242,6 +245,9 @@ public class MainActivity extends AppCompatActivity {
 
                         rotateProto.setData(emitter.getsAmplitude()); // TODO 单独做回转数据的发射器, 现在借用幅度值的发射器
 
+                        radioProto.rotate = emitter.getsAmplitude();
+                        radioProto.range = emitter.getsAmplitude();
+
                         emitter.emitter(); // 累计
                     }
 
@@ -249,6 +255,9 @@ public class MainActivity extends AppCompatActivity {
                     eventBus.post(new UartEvent(data));
                     if (mainCrane != null) {
                         eventBus.post(new RotateEvent(rotateProto.pack(), mainCrane.getCoordX1(), mainCrane.getCoordY1()));
+                        radioProto.setSourceNo("2N"); // 从机的ID为2N
+                        radioProto.setTargetNo("0N"); // 从机回应
+                        eventBus.post(new RadioEvent(radioProto.packReply()));
                     }
                 }
             });
@@ -493,6 +502,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void RadioDateEventBus(RadioEvent event) {
+        byte [] data = event.getData();
+        radioProto.parse(data);
+
+        if (radioProto.isQuery()) { // 主机的报文
+           // TODO 回应主机，并且刷新主机的位置
+        } else { // 从机的报文, 刷新从机的数据
+            System.out.printf("### slave: %s, rotate: %s\n", radioProto.sourceNo ,radioProto.rotate);
+            CycleElem cycleElem = craneMap.get(radioProto.sourceNo);
+            if (cycleElem == null) return;
+            cycleElem.setCarRange(radioProto.range);
+            cycleElem.setHAngle(radioProto.rotate);
+
+        }
+    }
+
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void simulatorEventBus(SimulatorEvent simEvent) {
@@ -728,7 +754,7 @@ public class MainActivity extends AppCompatActivity {
         for (Crane iterator : paras) {
             if (iterator.getIsMain() == true) {
                 mainCrane = iterator;
-                String number = mainCrane.getName().replaceAll("[^0-9]+", "") + "N";
+                String number = Integer.parseInt(mainCrane.getName().replaceAll("[^0-9]+", "")) + "N";
                 myCraneNo = number;
                 craneNumbers.add(number); // 本机的编号
                 break;
@@ -741,6 +767,7 @@ public class MainActivity extends AppCompatActivity {
         elemMap.addElem(centerCycle.getUuid(), centerCycle);
         mainCycleId = centerCycle.getUuid();
         centerCycle.drawCenterCycle(this, mainFrame);
+        craneMap.put(myCraneNo, centerCycle);
 
         // 根据数据库的数据画图
         for (Crane cp : paras) {
@@ -752,8 +779,9 @@ public class MainActivity extends AppCompatActivity {
             elemMap.addElem(sideCycle.getUuid(), sideCycle);
             sideCycleId = sideCycle.getUuid();
             sideCycle.drawSideCycle(this, mainFrame);
-            String number = cp.getName().replaceAll("[^0-9]+", "") + "N";
+            String number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "N";
             craneNumbers.add(number);
+            craneMap.put(number, sideCycle);
         }
 
         // 区域

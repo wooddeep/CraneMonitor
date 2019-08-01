@@ -43,6 +43,7 @@ public class RadioProto {
             //System.out.printf("# request: %s -> %s ", sourceNo, targetNo);
             //System.out.printf("master: %s - rotate: %f, range: %f\n", sourceNo, rotate, range);
             this.masterNo = sourceNo;
+            isQuery = true;
         }
 
         return 0;
@@ -69,6 +70,61 @@ public class RadioProto {
         radioProto.range = 2.345f;
 
         radioProto.packReply();
+    }
 
+    public String getCraneNo() {
+        return craneNo;
+    }
+
+    public void setCraneNo(String craneNo) {
+        this.craneNo = craneNo;
+    }
+
+    public String getMasterNo() {
+        return masterNo;
+    }
+
+    public void setMasterNo(String masterNo) {
+        this.masterNo = masterNo;
+    }
+
+    public String getSourceNo() {
+        return sourceNo;
+    }
+
+    public void setSourceNo(String sourceNo) {
+        this.sourceNo = sourceNo;
+    }
+
+    public String getTargetNo() {
+        return targetNo;
+    }
+
+    public void setTargetNo(String targetNo) {
+        this.targetNo = targetNo;
+    }
+
+    public float getRotate() {
+        return rotate;
+    }
+
+    public void setRotate(float rotate) {
+        this.rotate = rotate;
+    }
+
+    public float getRange() {
+        return range;
+    }
+
+    public void setRange(float range) {
+        this.range = range;
+    }
+
+    public boolean isQuery() {
+        return isQuery;
+    }
+
+    public void setQuery(boolean query) {
+        isQuery = query;
     }
 }

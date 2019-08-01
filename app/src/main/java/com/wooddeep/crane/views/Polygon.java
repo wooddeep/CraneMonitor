@@ -84,6 +84,7 @@ public class Polygon extends View {
     @Override
     protected synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+            if (vertexs.size() <= 0 ) return;
             setLayerType(LAYER_TYPE_SOFTWARE, null);
             //Paint paint = new Paint();//创建画笔
             paint.setColor(this.color);//为画笔设置颜色

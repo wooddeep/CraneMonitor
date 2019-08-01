@@ -10,7 +10,7 @@ import com.wooddeep.crane.views.SuperCircleView;
 
 import org.locationtech.jts.geom.Geometry;
 
-public class SideCycle  extends BaseElem{
+public class SideCycle  extends CycleElem {
     public float x;
     public float y;
     public float r;
@@ -112,5 +112,18 @@ public class SideCycle  extends BaseElem{
     @Override
     public Geometry getGeometry() {
         return null;
+    }
+
+    @Override
+    public void setHAngle(float angle) {
+        if (this.hAngle == angle) return;
+        this.hAngle = angle;
+        this.cycle.sethAngle(angle);
+    }
+
+    @Override
+    public void setCarRange(float range) {
+        this.carRange = range;
+        cycle.setCarRange(range * this.centerCycle.scale);
     }
 }
