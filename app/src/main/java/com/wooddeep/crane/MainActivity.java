@@ -1,7 +1,6 @@
 package com.wooddeep.crane;
 
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,10 +19,11 @@ import android.widget.TextView;
 
 import com.example.x6.serial.SerialPort;
 import com.wooddeep.crane.comm.Protocol;
+import com.wooddeep.crane.comm.RadioProto;
 import com.wooddeep.crane.comm.RotateProto;
+import com.wooddeep.crane.ebus.AlarmSetEvent;
 import com.wooddeep.crane.ebus.CalibrationEvent;
 import com.wooddeep.crane.ebus.MessageEvent;
-import com.wooddeep.crane.ebus.AlarmSetEvent;
 import com.wooddeep.crane.ebus.RotateEvent;
 import com.wooddeep.crane.ebus.SimulatorEvent;
 import com.wooddeep.crane.ebus.UartEvent;
@@ -804,6 +804,8 @@ public class MainActivity extends AppCompatActivity {
         craneView = (CraneView) findViewById(R.id.crane);
         craneView.setCraneType(craneType);
 
+        //RadioProto radioProto = new RadioProto();
+        RadioProto.test();
     }
 
     // 初始化数据
