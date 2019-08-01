@@ -243,7 +243,9 @@ public class MainActivity extends AppCompatActivity {
 
                     byte[] data = packer.pack();
                     eventBus.post(new UartEvent(data));
-                    eventBus.post(new RotateEvent(rotateProto.pack(), mainCrane.getCoordX1(), mainCrane.getCoordY1()));
+                    if (mainCrane != null) {
+                        eventBus.post(new RotateEvent(rotateProto.pack(), mainCrane.getCoordX1(), mainCrane.getCoordY1()));
+                    }
                 }
             });
         }

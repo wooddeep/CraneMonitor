@@ -55,6 +55,9 @@ public class CraneView extends View {
     public final static int minHookHeight = 0;
     public final static int maxHookHeight = 600;
 
+    private static Bitmap hCraneBitmap = null;
+    private static Bitmap hHoookBitMap = null;
+
     /*一定要重写这个构造方法*/
     public CraneView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -66,8 +69,10 @@ public class CraneView extends View {
     }
 
     private Offset drawHCrane(Canvas canvas, int id) {
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), id);
-
+        if (hCraneBitmap == null) {
+            hCraneBitmap = BitmapFactory.decodeResource(getResources(), id);
+        }
+        Bitmap bitmap = hCraneBitmap;
         int realWidth = getMeasuredWidth();
         int realHeight = getMeasuredHeight();
         int picWidth = bitmap.getWidth();
@@ -87,7 +92,6 @@ public class CraneView extends View {
         RectF dst = new RectF(centerX - showWidth / 2, centerY - showHeight / 2,
             centerX + showWidth / 2, centerY + showHeight / 2);
         canvas.drawBitmap(bitmap, src, dst, null);
-
 
         return new Offset(centerX - (int) showWidth / 2, centerY - (int) showHeight / 2, showWidth / picWidth);
     }
@@ -148,8 +152,10 @@ public class CraneView extends View {
 
     // 135 为固定值, 无需修改
     private void drawHHook(Canvas canvas, int id, float scale, int left, int top, int armLen, int cableLen) {
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), id);
-
+        if (hHoookBitMap == null) {
+            hHoookBitMap = BitmapFactory.decodeResource(getResources(), id);
+        }
+        Bitmap bitmap = hHoookBitMap;
         int realWidth = getMeasuredWidth();
         int realHeight = getMeasuredHeight();
         int picWidth = bitmap.getWidth();
