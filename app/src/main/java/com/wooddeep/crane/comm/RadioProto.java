@@ -11,6 +11,8 @@ public class RadioProto {
     //回应
     // % 2N 0N  0.88N 51.51N  0.00N  0.00N 0N#
 
+    public final static int CMD_START_MASTER = 1;
+
     public String craneNo;
     public String masterNo;
     public String sourceNo;
@@ -26,6 +28,10 @@ public class RadioProto {
     public int parse(byte[] data) {
         if (data[0] != '%' || data[data.length - 1] != '#') return -1;
         String cmd = new String(data);
+        if (cmd.equals("%master#")) {
+            return CMD_START_MASTER;
+        }
+
         String [] cells = cmd.split("\\s+");
         if (cells.length != 8) return -2;
         this.sourceNo = cells[1];
@@ -54,6 +60,14 @@ public class RadioProto {
         String replay = String.format("%% %s %s %.2fN %.2fN 0.00N 0.00N 0N#", sourceNo,  targetNo, rotate, range);
         //System.out.println(replay);
         return replay.getBytes();
+    }
+
+    public byte [] startMaster() {
+        return "%master#".getBytes();
+    }
+
+    public boolean startMasterCmd(String cmd) {
+        return cmd.equals("master");
     }
 
     public static void test() {
