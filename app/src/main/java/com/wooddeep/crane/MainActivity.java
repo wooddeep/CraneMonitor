@@ -31,6 +31,7 @@ import com.wooddeep.crane.ebus.RotateEvent;
 import com.wooddeep.crane.ebus.SimulatorEvent;
 import com.wooddeep.crane.ebus.UartEvent;
 import com.wooddeep.crane.ebus.UserEvent;
+import com.wooddeep.crane.element.BaseElem;
 import com.wooddeep.crane.element.CenterCycle;
 import com.wooddeep.crane.element.CycleElem;
 import com.wooddeep.crane.element.ElemMap;
@@ -189,8 +190,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Context context;
     private static final String TAG = "MainActivity";
-    private static final ElemMap elemMap = new ElemMap();
 
+    private List<BaseElem> elemList = new ArrayList<>();
+    private ElemMap elemMap = new ElemMap();
     private static HashMap<String, Object> viewMapBak = new HashMap<>();
     private static HashMap<String, Object> zoomMapBak = new HashMap<>();
 
@@ -273,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     try {
-                        Thread.sleep(200);
+                        Thread.sleep(500);
                     } catch (Exception e) {
 
                     }
@@ -454,12 +456,9 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void AlarmJudgeEventBus(UartEvent uartEvent) {
 
-        for (String craneNo : craneNumbers ) {
-            CycleElem cycleElem = craneMap.get(craneNo);
-            //System.out.printf("## %s  angle: %f\n", craneNo, cycleElem.getHAngle());
-        }
         try {
-            Alarm.craneToCraneAlarm(craneMap, myCraneNo, 1);
+            CenterCycle cc = Alarm.craneToCraneAlarm(craneMap, myCraneNo, 1);
+            Alarm.craneToAreaAlarm(elemList, cc, 1);
         } catch (Exception e) {
 
         }
@@ -799,7 +798,7 @@ public class MainActivity extends AppCompatActivity {
             SideCycle sideCycle = new SideCycle(centerCycle, cp.getCoordX1(), cp.getCoordY1(), cp.getBigArmLength(),
                 mainCrane.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight());
 
-            //elemMap.addElem(sideCycle.getUuid(), sideCycle);
+            elemMap.addElem(sideCycle.getUuid(), sideCycle);
             sideCycleId = sideCycle.getUuid();
             sideCycle.drawSideCycle(this, mainFrame);
             number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "N";
@@ -822,6 +821,7 @@ public class MainActivity extends AppCompatActivity {
                 vertex = CommTool.arrangeVertexList(vertex);
                 SideArea sideArea = new SideArea(centerCycle, Color.rgb(19, 34, 122), vertex, 0);
                 elemMap.addElem(sideArea.getUuid(), sideArea);
+                elemList.add(sideArea);
                 sideArea.drawSideArea(this, mainFrame);
             }
 
@@ -842,10 +842,10 @@ public class MainActivity extends AppCompatActivity {
                 vertex = CommTool.arrangeVertexList(vertex);
                 SideArea sideArea = new SideArea(centerCycle, Color.rgb(212, 35, 122), vertex, 1);
                 elemMap.addElem(sideArea.getUuid(), sideArea);
+                elemList.add(sideArea);
                 sideArea.drawSideArea(this, mainFrame);
             }
         }
-
     }
 
     private CraneView craneView;
