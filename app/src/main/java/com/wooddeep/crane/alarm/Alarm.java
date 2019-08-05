@@ -14,44 +14,53 @@ import java.util.Set;
 
 public class Alarm {
 
-    public static void craneToCraneAlarm(HashMap<String, CycleElem> craneMap, String no, float limit) {
+    public static void craneToCraneAlarm(HashMap<String, CycleElem> craneMap, String no, float limit) throws Exception {
 
         CenterCycle cc = (CenterCycle) craneMap.get(no);
 
-        float cx = cc.x;
-        float cy = cc.y;
-        float cr = cc.r;
         float cos = (float) Math.cos(Math.toRadians(cc.hAngle));
         float sin = (float) Math.sin(Math.toRadians(cc.hAngle));
 
-        float endpointX = cx + cos * cr; // 本塔基 大臂端点 X 坐标
-        float endpointY = cy + sin * cr; // 本塔基 大臂端点 Y 坐标
+        float endpointX = cc.x + cos * cc.r; // 本塔基 大臂端点 X 坐标
+        float endpointY = cc.y + sin * cc.r; // 本塔基 大臂端点 Y 坐标
 
-        double isin = Math.sin(Math.toRadians(cc.hAngle + 180));
-        double icos = Math.cos(Math.toRadians(cc.hAngle + 180));
-        float iendpointX = cx + (float) (cc.ir * icos); // todo 添加垂直方向的斜率计算
-        float iendpointY = cy + (float) (cc.ir * isin);
+        float icos = (float)Math.cos(Math.toRadians(cc.hAngle + 180));
+        float isin = (float)Math.sin(Math.toRadians(cc.hAngle + 180));
+
+        float startpointX = cc.x + (float) (cc.ir * icos); // todo 添加垂直方向的斜率计算
+        float startpointY = cc.y + (float) (cc.ir * isin);
 
         float myHeight = cc.height; // 本塔高度
 
-        //Geometry gcc = new WKTReader().read(String.format("POINTSTRING (%f %f)", endpointX, endpointY)); // 本环端点
+        Geometry gcc = new WKTReader().read(String.format("LINESTRING (%f %f, %f %f)", startpointX, startpointY, endpointX, endpointY));
+
         Set<String> idSet = craneMap.keySet();
         for (String id : idSet) {
             if (id.equals(no)) continue;
-
             BaseElem elem = craneMap.get(id);
             if (elem instanceof SideCycle) { // cycle
                 SideCycle sc = (SideCycle) craneMap.get(id);
                 float sideHeight = sc.height;
-                float sx = sc.x;
-                float sy = sc.y;
-                float sr = sc.r;
-                float scos = (float) Math.cos(Math.toRadians(sc.hAngle));
-                float ssin = (float) Math.sin(Math.toRadians(sc.hAngle));
+                float cos2 = (float) Math.cos(Math.toRadians(sc.hAngle));
+                float sin2 = (float) Math.sin(Math.toRadians(sc.hAngle));
 
-                float sendpointX = sx + scos * sr;
-                float sendpointY = sy + ssin * sr;
+                float xendpointX = sc.x + cos2 * sc.r;
+                float xendpointY = sc.y + sin2 * sc.r;
 
+                float icos2 = (float) Math.cos(Math.toRadians(sc.hAngle + 180));
+                float isin2 = (float) Math.sin(Math.toRadians(sc.hAngle + 180));
+
+                float xstartpointX = sc.x + sc.ir * icos2;
+                float xstartpointY = sc.y + sc.ir * isin2;
+
+                Geometry gsc = new WKTReader().read(String.format("LINESTRING (%f %f, %f %f)", xstartpointX, xstartpointY, xendpointX, xendpointY));
+
+                boolean intersect = gcc.intersects(gsc);
+                float distance = (float)gcc.distance(gsc);
+
+                System.out.printf("### intersect: %b, distance = %f\n", intersect, distance);
+
+                /*
                 if (Math.abs(myHeight - sideHeight) <= 1) { // 高度差相差1m, 当成等高, 查看当前圆心和对端 大臂端点的距离
                     Coordinate coord1 = new Coordinate(cx, cy);
                     Coordinate coord2 = new Coordinate(sendpointX, sendpointY);
@@ -70,6 +79,7 @@ public class Alarm {
                 } else {
 
                 }
+                */
             }
         }
     }

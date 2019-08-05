@@ -20,14 +20,17 @@ public class SideArea extends BaseElem{
     public List<Vertex> vertexs;
     public CenterCycle centerCycle;
     public Polygon area;
+    public int type; // 闭合多边形
 
     public SideArea(
         CenterCycle cc,
         int color,
-        List<Vertex> vertexs
+        List<Vertex> vertexs,
+        int t
     ) {
         this.centerCycle = cc;
         this.color = color;
+        this.type = t;
         this.vertexs = vertexs;
 
         this.overtexs = new ArrayList<>();
@@ -59,9 +62,11 @@ public class SideArea extends BaseElem{
 
         area.setBackgroundColor(0x00000000); // 透明色
         area.setColor(color);
+        area.setType(type);
         area.setValue(vertexs);
     }
 
+    /*
     public void drawSideArea(
         Activity activity,
         ViewGroup parent,
@@ -88,6 +93,7 @@ public class SideArea extends BaseElem{
         area.setType(type);
         area.setValue(vertexs);
     }
+    */
 
     @Override
     public Geometry getGeometry() {

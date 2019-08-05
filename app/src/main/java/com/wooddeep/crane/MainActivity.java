@@ -273,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(200);
                     } catch (Exception e) {
 
                     }
@@ -458,8 +458,11 @@ public class MainActivity extends AppCompatActivity {
             CycleElem cycleElem = craneMap.get(craneNo);
             //System.out.printf("## %s  angle: %f\n", craneNo, cycleElem.getHAngle());
         }
+        try {
+            Alarm.craneToCraneAlarm(craneMap, myCraneNo, 1);
+        } catch (Exception e) {
 
-        Alarm.craneToCraneAlarm(craneMap, myCraneNo, 1);
+        }
 
         /*
         try {
@@ -781,9 +784,9 @@ public class MainActivity extends AppCompatActivity {
         craneNumbers.add(number); // 本机的编号
 
         // 画中心圆环
-        centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(),
-            mainCrane.getBigArmLength(), mainCrane.getBalancArmLength(), 0,
-            0, 0, mainCrane.getCraneHeight(), mainCrane.getBigArmLength());
+        centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(), mainCrane.getBigArmLength(),
+            mainCrane.getBalancArmLength(), 0, 0, 0, mainCrane.getCraneHeight());
+
         elemMap.addElem(centerCycle.getUuid(), centerCycle);
         mainCycleId = centerCycle.getUuid();
         centerCycle.drawCenterCycle(this, mainFrame);
@@ -794,16 +797,15 @@ public class MainActivity extends AppCompatActivity {
             if (cp == mainCrane) continue;
             float scale = centerCycle.scale;
             SideCycle sideCycle = new SideCycle(centerCycle, cp.getCoordX1(), cp.getCoordY1(), cp.getBigArmLength(),
-                mainCrane.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight(), cp.getBigArmLength());
+                mainCrane.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight());
 
-            elemMap.addElem(sideCycle.getUuid(), sideCycle);
+            //elemMap.addElem(sideCycle.getUuid(), sideCycle);
             sideCycleId = sideCycle.getUuid();
             sideCycle.drawSideCycle(this, mainFrame);
             number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "N";
             craneNumbers.add(number);
             craneMap.put(number, sideCycle);
         }
-
 
         // 区域
         AreaDao areaDao = new AreaDao(MainActivity.this);
@@ -818,7 +820,7 @@ public class MainActivity extends AppCompatActivity {
                 vertex.add(new Vertex(area.getX5(), area.getY5()));
                 vertex.add(new Vertex(area.getX6(), area.getY6()));
                 vertex = CommTool.arrangeVertexList(vertex);
-                SideArea sideArea = new SideArea(centerCycle, Color.rgb(19, 34, 122), vertex);
+                SideArea sideArea = new SideArea(centerCycle, Color.rgb(19, 34, 122), vertex, 0);
                 elemMap.addElem(sideArea.getUuid(), sideArea);
                 sideArea.drawSideArea(this, mainFrame);
             }
@@ -838,9 +840,9 @@ public class MainActivity extends AppCompatActivity {
                 vertex.add(new Vertex(protect.getX5(), protect.getY5()));
                 vertex.add(new Vertex(protect.getX6(), protect.getY6()));
                 vertex = CommTool.arrangeVertexList(vertex);
-                SideArea sideArea = new SideArea(centerCycle, Color.rgb(212, 35, 122), vertex);
+                SideArea sideArea = new SideArea(centerCycle, Color.rgb(212, 35, 122), vertex, 1);
                 elemMap.addElem(sideArea.getUuid(), sideArea);
-                sideArea.drawSideArea(this, mainFrame, 1);
+                sideArea.drawSideArea(this, mainFrame);
             }
         }
 
