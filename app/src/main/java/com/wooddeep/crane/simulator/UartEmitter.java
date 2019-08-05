@@ -15,15 +15,20 @@ public class UartEmitter {
     private int eHeight = 100;
     private int eWeight = 100;
     private int eWindSpeed = 100;
+    private int eCarRange = 35;
+
+    private int carRange = 0;
 
     public UartEmitter() {
         this.sAmplitude = 3;
         this.sHeight = 3;
         this.sWeight = 3;
         this.sWindSpeed = 3;
+        this.carRange = 0;
     }
 
     private boolean increase = true;
+    private boolean rangeInc = true;
     public int getsAmplitude() {
         return sAmplitude;
     }
@@ -56,11 +61,20 @@ public class UartEmitter {
         this.sWindSpeed = sWindSpeed;
     }
 
+    public int getCarRange() {
+        return carRange;
+    }
+
+    public void setCarRange(int carRange) {
+        this.carRange = carRange;
+    }
+
     public void initData() {
         this.sAmplitude = 3;
         this.sHeight = 3;
         this.sWeight = 3;
         this.sWindSpeed = 3;
+        this.carRange = 0;
     }
 
     public void emitter() {
@@ -83,6 +97,21 @@ public class UartEmitter {
         if (this.sAmplitude <= 3) {
             increase = true;
         }
+
+        if (rangeInc) {
+            this.carRange++;
+        } else {
+            this.carRange--;
+        }
+
+        if (this.carRange >= this.eCarRange) {
+            rangeInc = false;
+        }
+
+        if (this.carRange <= 0) {
+            rangeInc = true;
+        }
+
     }
 
     public void adjust(int value) {

@@ -18,6 +18,8 @@ public class SideCycle  extends CycleElem {
     public float hAngle;            // 水平方向夹角
     public float vAngle;            // 垂直方向夹角
     public float carRange;
+    public float height;
+    public float bigAram;
     public CenterCycle centerCycle;
     public SuperCircleView cycle;
 
@@ -29,7 +31,9 @@ public class SideCycle  extends CycleElem {
         float ir,
         float hAngle,            // 水平方向夹角
         float vAngle,            // 垂直方向夹角
-        float carRange
+        float carRange,
+        float h,
+        float ba
     ) {
         this.centerCycle = cc;
         this.x = x;
@@ -39,6 +43,8 @@ public class SideCycle  extends CycleElem {
         this.hAngle = hAngle;
         this.vAngle = vAngle;
         this.carRange = carRange * cc.scale;
+        this.height = h;
+        this.bigAram = ba;
     }
 
     public void drawSideCycle(
@@ -119,6 +125,11 @@ public class SideCycle  extends CycleElem {
         if (this.hAngle == angle) return;
         this.hAngle = angle;
         this.cycle.sethAngle(angle);
+    }
+
+    @Override
+    public float getHAngle() {
+        return this.hAngle;
     }
 
     @Override

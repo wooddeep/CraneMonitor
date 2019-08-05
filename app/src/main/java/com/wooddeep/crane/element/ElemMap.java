@@ -70,31 +70,47 @@ public class ElemMap {
         float cos = (float) Math.cos(Math.toRadians(cc.hAngle));
         float sin = (float) Math.sin(Math.toRadians(cc.hAngle));
 
-        float endpointX = cx + cos * cr;
-        float endpointY = cy + sin * cr;
+        float endpointX = cx + cos * cr; // 本塔基 大臂端点 X 坐标
+        float endpointY = cy + sin * cr; // 本塔基 大臂端点 Y 坐标
 
         double isin = Math.sin(Math.toRadians(cc.hAngle + 180));
         double icos = Math.cos(Math.toRadians(cc.hAngle + 180));
         float iendpointX = cx + (float) (cc.ir * icos); // todo 添加垂直方向的斜率计算
         float iendpointY = cy + (float) (cc.ir * isin);
 
-        Geometry gcc = new WKTReader().read(String.format("POINTSTRING (%f %f)", endpointX, endpointY));
+        float myHeight = cc.height; // 本塔高度
+
+        Geometry gcc = new WKTReader().read(String.format("POINTSTRING (%f %f)", endpointX, endpointY)); // 本环端点
         Set<String> idSet = elemMap.keySet();
         for (String id : idSet) {
             if (id.equals(mid)) continue;
             BaseElem elem = elemMap.get(id);
             if (elem instanceof SideCycle) { // cycle
                 SideCycle sc = (SideCycle) elemMap.get(id);
+                float sideHeight = sc.height;
+
                 float sx = sc.x;
                 float sy = sc.y;
                 float sr = sc.r;
                 float scos = (float) Math.cos(Math.toRadians(sc.hAngle));
                 float ssin = (float) Math.sin(Math.toRadians(sc.hAngle));
 
+                System.out.printf("#### angle = %f\n", sc.hAngle);
+
+                /*
                 float sendpointX = sx + scos * sr;
                 float sendpointY = sy + ssin * sr;
 
-                Geometry gsc = new WKTReader().read(String.format("LINESTRING (%f %f, %f %f)", sx, sy, sendpointX, sendpointY));
+                if (Math.abs(myHeight - sideHeight) <= 1) { // 高度差相差1m, 当成等高, 查看当前圆心和对端 大臂端点的距离
+                    Coordinate coord1 = new Coordinate(cx, cy);
+                    Coordinate coord2 = new Coordinate(sendpointX, sendpointY);
+                } else if ((myHeight - sideHeight) > 1) {
+
+                } else {
+
+                }
+
+                Geometry gsc = new WKTReader().read(String.format("LINESTRING (%f %f, %f %f)", sx, sy, sendpointX, sendpointY)); // 侧环大臂
                 double d = gcc.distance(gsc);
                 distanceMap.put(id, (float) d);
                 if (limit >= (float)d) {
@@ -102,8 +118,10 @@ public class ElemMap {
                 } else {
                     sc.setAlarm(false);
                 }
+                */
             }
 
+            /*
             if (elem instanceof SideArea) { // polygon
                 SideArea sa = (SideArea) elemMap.get(id);
                 List<Vertex> vertexs = sa.overtexs;
@@ -132,6 +150,7 @@ public class ElemMap {
                 }
                 //System.out.println(String.format("### distance: %f, intersected status: %b", distance, intersected));
             }
+            */
         }
     }
 

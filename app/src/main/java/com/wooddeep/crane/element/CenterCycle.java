@@ -23,7 +23,8 @@ public class CenterCycle extends CycleElem {
     public float carRange;
     public float deltaX;
     public float delatY;
-
+    public float height;
+    public float bigArm;
     public SuperCircleView cycle;
 
     private Geometry geometry; // 几何坐标
@@ -36,7 +37,9 @@ public class CenterCycle extends CycleElem {
         float ir,
         float hAngle,
         float vAngle,
-        float carRange
+        float carRange,
+        float h,
+        float ba
     ) {
         this.oscale = oscale;
         this.r = r;
@@ -46,6 +49,8 @@ public class CenterCycle extends CycleElem {
         this.hAngle = hAngle;
         this.vAngle = vAngle;
         this.carRange = carRange;
+        this.height = h;
+        this.bigArm = ba;
     }
 
     public void drawCenterCycle(
@@ -117,6 +122,11 @@ public class CenterCycle extends CycleElem {
         if (this.hAngle == angle) return;
         this.hAngle = angle;
         this.cycle.sethAngle(angle);
+    }
+
+    @Override
+    public float getHAngle() {
+        return this.hAngle;
     }
 
     public void setAlarm(boolean alarm) {

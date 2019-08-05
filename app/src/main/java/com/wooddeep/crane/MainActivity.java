@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.x6.serial.SerialPort;
+import com.wooddeep.crane.alarm.Alarm;
 import com.wooddeep.crane.comm.Protocol;
 import com.wooddeep.crane.comm.RadioProto;
 import com.wooddeep.crane.comm.RotateProto;
@@ -221,6 +222,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean iAmMaster = false; // 本机是否为通信主机
     private boolean waitFlag = true; // 等待主机信号标识
 
+    private RadioProto slaveRadioProto = new RadioProto();  // 本机作为从机时，需要radio通信的对象
+    private RadioProto masterRadioProto = new RadioProto(); // 本机作为主机时，需要radio通信的对象
+    private int currSlaveIndex = 0; // 当前和本主机通信的从机名称
 
     public float getOscale() {
         return oscale;
@@ -252,27 +256,24 @@ public class MainActivity extends AppCompatActivity {
                         packer.setHeight(emitter.getsHeight());
                         packer.setWeight(emitter.getsWeight());
                         packer.setWindSpeed(emitter.getsWindSpeed());
-
                         rotateProto.setData(emitter.getsAmplitude()); // TODO 单独做回转数据的发射器, 现在借用幅度值的发射器
-
-                        radioProto.rotate = emitter.getsAmplitude();
-                        radioProto.range = emitter.getsAmplitude();
-
                         emitter.emitter(); // 累计
                     }
 
                     byte[] data = packer.pack();
                     eventBus.post(new UartEvent(data));
-                    if (mainCrane != null) {
+                    if (mainCrane != null) {  // 次环
                         eventBus.post(new RotateEvent(rotateProto.pack(), mainCrane.getCoordX1(), mainCrane.getCoordY1()));
                         radioProto.setSourceNo("2N"); // 从机的ID为2N
                         radioProto.setTargetNo("0N"); // 从机回应
+                        radioProto.setRange(emitter.getCarRange());
+                        radioProto.setRotate(-emitter.getsAmplitude());
                         eventBus.post(new RadioEvent(radioProto.packReply()));
                         //System.out.println("### <0>execute thread id: " + Thread.currentThread().getName());
                     }
 
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                     } catch (Exception e) {
 
                     }
@@ -281,16 +282,24 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    private RadioProto slaveRadioProto = new RadioProto();
-
     // 侦听电台数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void RadioDateEventBus(RadioEvent event) {
         int cmdRet = radioProto.parse(event.getData());
         if (cmdRet == RadioProto.CMD_START_MASTER && waitFlag == true) { // 启动主机命令
             iAmMaster = true;
-            System.out.println("### I will be master, execute thread id: " + Thread.currentThread().getName());
-            // TODO 发消息, 启动轮训从机
+            // 发消息, 启动轮训从机
+            if (craneNumbers.size() <= 0) return;
+            currSlaveIndex = 0;
+            String currSlaveNo = craneNumbers.get(currSlaveIndex);
+            if (currSlaveNo.equals(myCraneNo)) return;
+            masterRadioProto.setSourceNo(myCraneNo);
+            masterRadioProto.setTargetNo(currSlaveNo);
+            masterRadioProto.setRotate(centerCycle.hAngle);  // 实际的物理维度值，不是按比例值的值
+            masterRadioProto.setRange(centerCycle.carRange); // 实际的物理维度值，不是按比例值的值
+
+            // TODO 发送消息，通知查询第一个从机
+
             return;
         }
 
@@ -312,17 +321,21 @@ public class MainActivity extends AppCompatActivity {
         if (!radioProto.isQuery) { // 收到其他从机的回应命令 & 分自己的 主从 身份
             waitFlag = false;
 
+            // 更新从机
+            CycleElem slave = craneMap.get(radioProto.getSourceNo());
+            if (slave != null) {
+                //System.out.printf("slave: %s, rotate: %f, range: %f\n", radioProto.sourceNo, radioProto.rotate, radioProto.range);
+                slave.setCarRange(radioProto.getRange());
+                slave.setHAngle(radioProto.getRotate());
+            }
+
             if (iAmMaster) {
+                masterRadioProto.setSourceNo(myCraneNo);
+                currSlaveIndex = (currSlaveIndex + 1) % craneNumbers.size();
+                masterRadioProto.setTargetNo(craneNumbers.get(currSlaveIndex));
+                masterRadioProto.setRotate(centerCycle.hAngle);  // 实际的物理维度值，不是按比例值的值
+                masterRadioProto.setRange(centerCycle.carRange); // 实际的物理维度值，不是按比例值的值
                 // TODO 发消息 触发 轮训，携带 当前从机ID， 进行下一个从机的发送
-
-            } else { // 更新从机数据
-
-                CycleElem slave = craneMap.get("2N" /*radioProto.getSourceNo()*/);
-                if (slave != null) {
-                    System.out.printf("slave: %s, rotate: %f, range: %f\n", radioProto.sourceNo, radioProto.rotate, radioProto.range);
-                    slave.setCarRange(radioProto.getRange());
-                    slave.setHAngle(radioProto.getRotate());
-                }
             }
 
             return;
@@ -379,7 +392,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         System.out.println(new String(real));
                         try {
-                            Thread.sleep(200);
+                            Thread.sleep(1000);
                         } catch (Exception e) {
 
                         }
@@ -413,8 +426,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 3000);
 
-    }
+        System.out.println("$$$$$$ in main activity on create function!");
 
+    }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -437,16 +451,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
-    //@Subscribe(threadMode = ThreadMode.MAIN)
-    public void userEventBus(UserEvent userEvent) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void AlarmJudgeEventBus(UartEvent uartEvent) {
+
+        for (String craneNo : craneNumbers ) {
+            CycleElem cycleElem = craneMap.get(craneNo);
+            //System.out.printf("## %s  angle: %f\n", craneNo, cycleElem.getHAngle());
+        }
+
+        Alarm.craneToCraneAlarm(craneMap, myCraneNo, 1);
+
+        /*
         try {
-            //EditText limitEditText = (EditText) findViewById(R.id.alarm_limit);
-            //float limit = Float.parseFloat(limitEditText.getText().toString());
-            float limit = 5;
+            float limit = alarmSet.t2tDistGear1; // 一档 塔基 到 塔基 的安全告警距离
             elemMap.alarmJudge(mainCycleId, limit); // 告警判断
         } catch (Exception e) {
             e.printStackTrace();
         }
+        */
+
     }
 
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
@@ -530,32 +553,7 @@ public class MainActivity extends AppCompatActivity {
         rotateProto.parse(data);
         centerCycle.setHAngle(rotateProto.getData()); // TODO 根据比例值计算角度
 
-        CycleElem slave = craneMap.get(radioProto.getSourceNo());
-        if (slave != null) {
-            System.out.printf("slave: %s, rotate: %f, range: %f\n", radioProto.sourceNo, radioProto.rotate, radioProto.range);
-            slave.setCarRange(rotateProto.getData());
-            slave.setHAngle(rotateProto.getData());
-        }
     }
-
-    /*
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void RadioDateEventBus(RadioEvent event) {
-        byte[] data = event.getData();
-        radioProto.parse(data);
-
-        if (radioProto.isQuery()) { // 主机的报文
-            // TODO 回应主机，并且刷新主机的位置
-        } else { // 从机的报文, 刷新从机的数据
-            System.out.printf("### slave: %s, rotate: %s\n", radioProto.sourceNo, radioProto.rotate);
-            CycleElem cycleElem = craneMap.get(radioProto.sourceNo);
-            if (cycleElem == null) return;
-            cycleElem.setCarRange(radioProto.range);
-            cycleElem.setHAngle(radioProto.rotate);
-
-        }
-    }
-    */
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -775,16 +773,17 @@ public class MainActivity extends AppCompatActivity {
         for (Crane iterator : paras) {
             if (iterator.getIsMain() == true) {
                 mainCrane = iterator;
-                String number = Integer.parseInt(mainCrane.getName().replaceAll("[^0-9]+", "")) + "N";
-                myCraneNo = number;
-                craneNumbers.add(number); // 本机的编号
                 break;
             }
         }
+        String number = Integer.parseInt(mainCrane.getName().replaceAll("[^0-9]+", "")) + "N";
+        myCraneNo = number;
+        craneNumbers.add(number); // 本机的编号
 
         // 画中心圆环
         centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(),
-            mainCrane.getBigArmLength(), mainCrane.getBalancArmLength(), 0, 0, 100);
+            mainCrane.getBigArmLength(), mainCrane.getBalancArmLength(), 0,
+            0, 0, mainCrane.getCraneHeight(), mainCrane.getBigArmLength());
         elemMap.addElem(centerCycle.getUuid(), centerCycle);
         mainCycleId = centerCycle.getUuid();
         centerCycle.drawCenterCycle(this, mainFrame);
@@ -795,12 +794,12 @@ public class MainActivity extends AppCompatActivity {
             if (cp == mainCrane) continue;
             float scale = centerCycle.scale;
             SideCycle sideCycle = new SideCycle(centerCycle, cp.getCoordX1(), cp.getCoordY1(), cp.getBigArmLength(),
-                mainCrane.getBalancArmLength(), 0, 0, 10);
+                mainCrane.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight(), cp.getBigArmLength());
 
             elemMap.addElem(sideCycle.getUuid(), sideCycle);
             sideCycleId = sideCycle.getUuid();
             sideCycle.drawSideCycle(this, mainFrame);
-            String number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "N";
+            number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "N";
             craneNumbers.add(number);
             craneMap.put(number, sideCycle);
         }
