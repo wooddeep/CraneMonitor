@@ -440,7 +440,7 @@
                     android:layout_weight="1">
 
                     <ImageView
-                        android:id="@+id/rotation_logo"
+                        android:id="@+id/forward_alarm"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_centerInParent="true"
@@ -451,7 +451,7 @@
                         app:srcCompat="@mipmap/forward" />
 
                     <ImageView
-                        android:id="@+id/rotation_logo"
+                        android:id="@+id/back_alarm"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_centerInParent="true"
@@ -469,8 +469,8 @@
 
                     <ImageView
                         android:id="@+id/left_alarm"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_margin="5dp"
@@ -480,8 +480,8 @@
 
                     <ImageView
                         android:id="@+id/right_alarm"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_margin="5dp"

@@ -17,6 +17,8 @@ public class SideCycle  extends CycleElem {
     public float ir;
     public float hAngle;            // 水平方向夹角
     public float vAngle;            // 垂直方向夹角
+    public float prvCarRange = -1f;
+    public float prvHangle = -1f;
     public float carRange;
     public float height;
     public CenterCycle centerCycle;

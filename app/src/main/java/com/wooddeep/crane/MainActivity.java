@@ -25,6 +25,7 @@ import com.wooddeep.crane.comm.RadioProto;
 import com.wooddeep.crane.comm.RotateProto;
 import com.wooddeep.crane.ebus.AlarmEvent;
 import com.wooddeep.crane.ebus.AlarmSetEvent;
+import com.wooddeep.crane.ebus.AlarmShowEvent;
 import com.wooddeep.crane.ebus.CalibrationEvent;
 import com.wooddeep.crane.ebus.MessageEvent;
 import com.wooddeep.crane.ebus.RadioEvent;
@@ -190,10 +191,9 @@ try {
 @SuppressWarnings("unused")
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private Context context;
     private android.app.Activity  activity = this;
-    private static final String TAG = "MainActivity";
-
     private List<BaseElem> elemList = new ArrayList<>();
     private ElemMap elemMap = new ElemMap();
     private static HashMap<String, Object> viewMapBak = new HashMap<>();
@@ -212,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
     private Crane mainCrane;   // 本塔基参数
     private CenterCycle centerCycle; // 本塔基圆环
     private AlarmSet alarmSet = null;
+    private AlarmEvent alarmEvent = null;
     private Calibration calibration = null;
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -230,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
     private RadioProto slaveRadioProto = new RadioProto();  // 本机作为从机时，需要radio通信的对象
     private RadioProto masterRadioProto = new RadioProto(); // 本机作为主机时，需要radio通信的对象
     private int currSlaveIndex = 0; // 当前和本主机通信的从机名称
+    private AlarmTool alarmTool = new AlarmTool();
 
     public float getOscale() {
         return oscale;
@@ -243,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                int alarmTimes = 0;
                 while (true) {
 
                     EventBus.getDefault().post(new MessageEvent(".", ".")); // 告警消息
@@ -278,7 +281,12 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(100);
+                        if (alarmTimes % 5 == 0) {
+                            eventBus.post(new AlarmShowEvent()); // 发送alarm展示消息
+                        }
+                        alarmTimes++;
+
                     } catch (Exception e) {
 
                     }
@@ -376,14 +384,6 @@ public class MainActivity extends AppCompatActivity {
                     // 2.2 如果主机发送命令给 其他节点，则不管；
                     // 3. 如果读取到了 从机 回应报文，则从报文中读取从节点的数据，且刷新从节点；
 
-                    while (true) {
-                        eventBus.post(new AlarmEvent());
-                        try {
-                            Thread.sleep(500);
-                        } catch (Exception e) {
-
-                        }
-                    }
                     /*
                     // 485测试
                     SerialPort serialttyS2 = new SerialPort(new File("/dev/ttyS2"), 115200, 0);
@@ -465,19 +465,37 @@ public class MainActivity extends AppCompatActivity {
         //elemMap.alramFlink();
     }
 
-    private AlarmTool alarmTool = new AlarmTool();
-
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void alarmShowEventBus(AlarmEvent event) {
-        //if (event.leftAlarm == true) {
-            alarmTool.leftAlarm(activity);
-        //}
-
-        if (event.rightAlarm == true) {
-
-        }
+    public void alarmSetEventBus(AlarmEvent event) {
+        alarmEvent = event;
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void alarmShowEventBus(AlarmShowEvent event) {
+        if (alarmEvent.leftAlarm == true) {
+            alarmTool.leftAlarm(activity);
+        } else {
+            alarmTool.leftAlarmClear(activity);
+        }
+
+        if (alarmEvent.rightAlarm == true) {
+            alarmTool.rightAlarm(activity);
+        } else {
+            alarmTool.rightAlarmClear(activity);
+        }
+
+        if (alarmEvent.forwardAlarm == true) {
+            alarmTool.fwdAlarm(activity);
+        } else {
+            alarmTool.fwdAlarmClear(activity);
+        }
+
+        if (alarmEvent.backendAlarm == true) {
+            alarmTool.backAlarm(activity);
+        } else {
+            alarmTool.backAlarmClear(activity);
+        }
+    }
 
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
@@ -485,20 +503,11 @@ public class MainActivity extends AppCompatActivity {
     public void AlarmJudgeEventBus(UartEvent uartEvent) {
 
         try {
-            CenterCycle cc = Alarm.craneToCraneAlarm(craneMap, myCraneNo, alarmSet);
-            Alarm.craneToAreaAlarm(elemList, cc, alarmSet);
+            CenterCycle cc = Alarm.craneToCraneAlarm(craneMap, myCraneNo, alarmSet, eventBus);
+            Alarm.craneToAreaAlarm(elemList, cc, alarmSet, eventBus);
         } catch (Exception e) {
 
         }
-
-        /*
-        try {
-            float limit = alarmSet.t2tDistGear1; // 一档 塔基 到 塔基 的安全告警距离
-            elemMap.alarmJudge(mainCycleId, limit); // 告警判断
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        */
 
     }
 
