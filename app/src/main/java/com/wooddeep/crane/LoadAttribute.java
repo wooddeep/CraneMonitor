@@ -217,9 +217,11 @@ public class LoadAttribute extends AppCompatActivity {
                 paraTableRender(); // 渲染出表格
             }
         });
+
     }
 
     public List<Load> queryLoadByCondition() {
+
         MaterialSpinner craneTypeSpinner = (MaterialSpinner) findViewById(R.id.crane_type_option);
         MaterialSpinner armLenSpinner = (MaterialSpinner) findViewById(R.id.arm_length_option);
         MaterialSpinner cableNumSpinner = (MaterialSpinner) findViewById(R.id.rope_num_option);
@@ -232,6 +234,7 @@ public class LoadAttribute extends AppCompatActivity {
 
         LoadDao dao = new LoadDao(getApplicationContext());
         return dao.getLoads(craneType, armLength, cableNum);
+
     }
 
     private void setOnTouchListener(View view) {

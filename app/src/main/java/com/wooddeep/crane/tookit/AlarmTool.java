@@ -23,18 +23,36 @@ public class AlarmTool {
         oa2.setDuration(1000);
 
         weight.setImageDrawable(activity.getResources().getDrawable(R.mipmap.weight_alarm));
-        //weight.setBackgroundDrawable(getResources().getDrawable(R.mipmap.weight_alarm));
-        //ObjectAnimator oa3 = ObjectAnimator.ofInt(weight, "backgroundColor", Color.BLACK, Color.RED, Color.BLACK);
-        //oa3.setDuration(1000);
 
         oa.start();
         oa2.start();
-        //oa3.start();
 
         oa = ObjectAnimator.ofFloat(weight, "scaleX", 1.1f, 0.90f);
         oa.setDuration(1000);
         oa2 = ObjectAnimator.ofFloat(weight, "scaleY", 1.1f, 0.90f);
         oa2.setDuration(1000);
+
+        oa.start();
+        oa2.start();
+    }
+
+    public void leftAlarm(Activity activity) {
+        ImageView left = (ImageView) activity.findViewById(R.id.left_alarm);
+
+        ObjectAnimator oa = ObjectAnimator.ofFloat(left, "scaleX", 0.90f, 1.1f);
+        oa.setDuration(500);
+        ObjectAnimator oa2 = ObjectAnimator.ofFloat(left, "scaleY", 0.90f, 1.1f);
+        oa2.setDuration(500);
+
+        left.setImageDrawable(activity.getResources().getDrawable(R.mipmap.left_rotation_alarm));
+
+        oa.start();
+        oa2.start();
+
+        oa = ObjectAnimator.ofFloat(left, "scaleX", 1.1f, 0.90f);
+        oa.setDuration(500);
+        oa2 = ObjectAnimator.ofFloat(left, "scaleY", 1.1f, 0.90f);
+        oa2.setDuration(500);
 
         oa.start();
         oa2.start();

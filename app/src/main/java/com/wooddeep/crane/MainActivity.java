@@ -23,6 +23,7 @@ import com.wooddeep.crane.alarm.Alarm;
 import com.wooddeep.crane.comm.Protocol;
 import com.wooddeep.crane.comm.RadioProto;
 import com.wooddeep.crane.comm.RotateProto;
+import com.wooddeep.crane.ebus.AlarmEvent;
 import com.wooddeep.crane.ebus.AlarmSetEvent;
 import com.wooddeep.crane.ebus.CalibrationEvent;
 import com.wooddeep.crane.ebus.MessageEvent;
@@ -55,6 +56,7 @@ import com.wooddeep.crane.persist.entity.Load;
 import com.wooddeep.crane.persist.entity.Protect;
 import com.wooddeep.crane.simulator.SimulatorFlags;
 import com.wooddeep.crane.simulator.UartEmitter;
+import com.wooddeep.crane.tookit.AlarmTool;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DrawTool;
@@ -189,6 +191,7 @@ try {
 public class MainActivity extends AppCompatActivity {
 
     private Context context;
+    private android.app.Activity  activity = this;
     private static final String TAG = "MainActivity";
 
     private List<BaseElem> elemList = new ArrayList<>();
@@ -279,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
                     } catch (Exception e) {
 
                     }
+
                 }
             }
         }).start();
@@ -372,6 +376,15 @@ public class MainActivity extends AppCompatActivity {
                     // 2.2 如果主机发送命令给 其他节点，则不管；
                     // 3. 如果读取到了 从机 回应报文，则从报文中读取从节点的数据，且刷新从节点；
 
+                    while (true) {
+                        eventBus.post(new AlarmEvent());
+                        try {
+                            Thread.sleep(500);
+                        } catch (Exception e) {
+
+                        }
+                    }
+                    /*
                     // 485测试
                     SerialPort serialttyS2 = new SerialPort(new File("/dev/ttyS2"), 115200, 0);
 
@@ -399,7 +412,7 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     }
-
+                    */
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -452,13 +465,28 @@ public class MainActivity extends AppCompatActivity {
         //elemMap.alramFlink();
     }
 
+    private AlarmTool alarmTool = new AlarmTool();
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void alarmShowEventBus(AlarmEvent event) {
+        //if (event.leftAlarm == true) {
+            alarmTool.leftAlarm(activity);
+        //}
+
+        if (event.rightAlarm == true) {
+
+        }
+    }
+
+
+
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void AlarmJudgeEventBus(UartEvent uartEvent) {
 
         try {
-            CenterCycle cc = Alarm.craneToCraneAlarm(craneMap, myCraneNo, 1);
-            Alarm.craneToAreaAlarm(elemList, cc, 1);
+            CenterCycle cc = Alarm.craneToCraneAlarm(craneMap, myCraneNo, alarmSet);
+            Alarm.craneToAreaAlarm(elemList, cc, alarmSet);
         } catch (Exception e) {
 
         }

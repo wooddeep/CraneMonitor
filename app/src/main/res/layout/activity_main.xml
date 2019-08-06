@@ -468,7 +468,7 @@
                     android:layout_weight="1">
 
                     <ImageView
-                        android:id="@+id/rotation_logo"
+                        android:id="@+id/left_alarm"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_centerInParent="true"
@@ -479,7 +479,7 @@
                         app:srcCompat="@mipmap/left_rotation" />
 
                     <ImageView
-                        android:id="@+id/rotation_logo"
+                        android:id="@+id/right_alarm"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_centerInParent="true"
