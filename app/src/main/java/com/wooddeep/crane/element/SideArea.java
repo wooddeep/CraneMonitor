@@ -8,7 +8,9 @@ import android.widget.FrameLayout;
 import com.wooddeep.crane.views.Polygon;
 import com.wooddeep.crane.views.Vertex;
 
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,17 +22,20 @@ public class SideArea extends BaseElem{
     public List<Vertex> vertexs;
     public CenterCycle centerCycle;
     public Polygon area;
-    public int type; // 闭合多边形
+    public int type;
+    public float height; // 高度
 
     public SideArea(
         CenterCycle cc,
         int color,
         List<Vertex> vertexs,
-        int t
+        int t,
+        float h
     ) {
         this.centerCycle = cc;
         this.color = color;
         this.type = t;
+        this.height = h;
         this.vertexs = vertexs;
 
         this.overtexs = new ArrayList<>();
@@ -95,11 +100,6 @@ public class SideArea extends BaseElem{
     }
     */
 
-    @Override
-    public Geometry getGeometry() {
-        return null;
-    }
-
     public void setAlarm(boolean alarm) {
         this.area.setAlarm(alarm);
     }
@@ -119,4 +119,30 @@ public class SideArea extends BaseElem{
     public void setBoderColer(int boderColer) {
         this.area.setBoderColer(boderColer);
     }
+
+    @Override
+    public Geometry getGeometry() {
+        Geometry geometry = null;
+        if (this.type == 0) {
+            List<Vertex> vertexs = this.overtexs;
+            Coordinate[] coordPolygon = new Coordinate[vertexs.size() + 1];
+            for (int i = 0; i < vertexs.size(); i++) {
+                coordPolygon[i] = new Coordinate(vertexs.get(i).x, vertexs.get(i).y);
+            }
+            coordPolygon[vertexs.size()] = new Coordinate(vertexs.get(0).x, vertexs.get(0).y);
+            geometry = new GeometryFactory().createPolygon(coordPolygon);
+        }
+
+        if (this.type == 1) {
+            List<Vertex> vertexs = this.overtexs;
+            Coordinate[] coordCurve = new Coordinate[vertexs.size()];
+            for (int i = 0; i < vertexs.size(); i++) {
+                coordCurve[i] = new Coordinate(vertexs.get(i).x, vertexs.get(i).y);
+            }
+            geometry = new GeometryFactory().createLineString(coordCurve);
+        }
+
+        return geometry;
+    }
+
 }

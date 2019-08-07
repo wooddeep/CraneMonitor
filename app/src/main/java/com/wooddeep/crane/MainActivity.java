@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.x6.serial.SerialPort;
 import com.wooddeep.crane.alarm.Alarm;
 import com.wooddeep.crane.comm.Protocol;
 import com.wooddeep.crane.comm.RadioProto;
@@ -32,7 +31,6 @@ import com.wooddeep.crane.ebus.RadioEvent;
 import com.wooddeep.crane.ebus.RotateEvent;
 import com.wooddeep.crane.ebus.SimulatorEvent;
 import com.wooddeep.crane.ebus.UartEvent;
-import com.wooddeep.crane.ebus.UserEvent;
 import com.wooddeep.crane.element.BaseElem;
 import com.wooddeep.crane.element.CenterCycle;
 import com.wooddeep.crane.element.CycleElem;
@@ -57,7 +55,6 @@ import com.wooddeep.crane.persist.entity.Load;
 import com.wooddeep.crane.persist.entity.Protect;
 import com.wooddeep.crane.simulator.SimulatorFlags;
 import com.wooddeep.crane.simulator.UartEmitter;
-import com.wooddeep.crane.tookit.AlarmTool;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DrawTool;
@@ -68,12 +65,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -231,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
     private RadioProto slaveRadioProto = new RadioProto();  // 本机作为从机时，需要radio通信的对象
     private RadioProto masterRadioProto = new RadioProto(); // 本机作为主机时，需要radio通信的对象
     private int currSlaveIndex = 0; // 当前和本主机通信的从机名称
-    private AlarmTool alarmTool = new AlarmTool();
 
     public float getOscale() {
         return oscale;
@@ -473,27 +465,27 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void alarmShowEventBus(AlarmShowEvent event) {
         if (alarmEvent.leftAlarm == true) {
-            alarmTool.leftAlarm(activity);
+            Alarm.startAlarm(activity, R.id.left_alarm, R.mipmap.left_rotation_alarm);
         } else {
-            alarmTool.leftAlarmClear(activity);
+            Alarm.stopAlarm(activity, R.id.left_alarm, R.mipmap.left_rotation);
         }
 
         if (alarmEvent.rightAlarm == true) {
-            alarmTool.rightAlarm(activity);
+            Alarm.startAlarm(activity, R.id.right_alarm, R.mipmap.right_rotation_alarm);
         } else {
-            alarmTool.rightAlarmClear(activity);
+            Alarm.stopAlarm(activity, R.id.right_alarm, R.mipmap.right_rotation);
         }
 
         if (alarmEvent.forwardAlarm == true) {
-            alarmTool.fwdAlarm(activity);
+            Alarm.startAlarm(activity, R.id.forward_alarm, R.mipmap.forward_alarm);
         } else {
-            alarmTool.fwdAlarmClear(activity);
+            Alarm.stopAlarm(activity, R.id.forward_alarm, R.mipmap.forward);
         }
 
         if (alarmEvent.backendAlarm == true) {
-            alarmTool.backAlarm(activity);
+            Alarm.startAlarm(activity, R.id.back_alarm, R.mipmap.backoff_alarm);
         } else {
-            alarmTool.backAlarmClear(activity);
+            Alarm.stopAlarm(activity, R.id.back_alarm, R.mipmap.backoff);
         }
     }
 
@@ -501,14 +493,11 @@ public class MainActivity extends AppCompatActivity {
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void AlarmJudgeEventBus(UartEvent uartEvent) {
-
         try {
-            CenterCycle cc = Alarm.craneToCraneAlarm(craneMap, myCraneNo, alarmSet, eventBus);
-            Alarm.craneToAreaAlarm(elemList, cc, alarmSet, eventBus);
+            Alarm.alarmDetect(elemList, craneMap, myCraneNo, alarmSet, eventBus);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
-
     }
 
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
@@ -856,7 +845,7 @@ public class MainActivity extends AppCompatActivity {
                 vertex.add(new Vertex(area.getX5(), area.getY5()));
                 vertex.add(new Vertex(area.getX6(), area.getY6()));
                 vertex = CommTool.arrangeVertexList(vertex);
-                SideArea sideArea = new SideArea(centerCycle, Color.rgb(19, 34, 122), vertex, 0);
+                SideArea sideArea = new SideArea(centerCycle, Color.rgb(19, 34, 122), vertex, 0, area.getHeight());
                 elemMap.addElem(sideArea.getUuid(), sideArea);
                 elemList.add(sideArea);
                 sideArea.drawSideArea(this, mainFrame);
@@ -877,7 +866,7 @@ public class MainActivity extends AppCompatActivity {
                 vertex.add(new Vertex(protect.getX5(), protect.getY5()));
                 vertex.add(new Vertex(protect.getX6(), protect.getY6()));
                 vertex = CommTool.arrangeVertexList(vertex);
-                SideArea sideArea = new SideArea(centerCycle, Color.rgb(212, 35, 122), vertex, 1);
+                SideArea sideArea = new SideArea(centerCycle, Color.rgb(212, 35, 122), vertex, 1, protect.getHeight());
                 elemMap.addElem(sideArea.getUuid(), sideArea);
                 elemList.add(sideArea);
                 sideArea.drawSideArea(this, mainFrame);

@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import com.wooddeep.crane.views.SuperCircleView;
 
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.WKTReader;
 
 public class SideCycle  extends CycleElem {
     public float x;
@@ -135,5 +136,34 @@ public class SideCycle  extends CycleElem {
     public void setCarRange(float range) {
         this.carRange = range;
         cycle.setCarRange(range * this.centerCycle.scale);
+    }
+
+    @Override
+    public Geometry getCenterGeo() throws Exception {
+        Geometry geo = new WKTReader().read(String.format("POINTSTRING (%f %f)", this.x, this.y));
+        return geo;
+    }
+
+    @Override
+    public Geometry getArmGeo(float dAngle) throws Exception {
+        float cos = (float) Math.cos(Math.toRadians(this.hAngle + dAngle));
+        float sin = (float) Math.sin(Math.toRadians(this.hAngle + dAngle));
+        float endpointX = this.x + cos * this.r; // 本塔基 大臂端点 X 坐标
+        float endpointY = this.y + sin * this.r; // 本塔基 大臂端点 Y 坐标
+        float icos = (float) Math.cos(Math.toRadians(this.hAngle + 180 + dAngle));
+        float isin = (float) Math.sin(Math.toRadians(this.hAngle + 180 + dAngle));
+        float startpointX = this.x + (float) (this.ir * icos); // todo 添加垂直方向的斜率计算
+        float startpointY = this.y + (float) (this.ir * isin);
+        Geometry gcc = new WKTReader().read(String.format("LINESTRING (%f %f, %f %f)", startpointX, startpointY, endpointX, endpointY));
+        return gcc;
+    }
+
+    @Override
+    public Geometry getCarGeo(float dAngle, float dDist) throws Exception {
+        float cos = (float) Math.cos(Math.toRadians(this.hAngle + dAngle));
+        float sin = (float) Math.sin(Math.toRadians(this.hAngle + dAngle));
+        Geometry carPos = new WKTReader().read(String.format("POINTSTRING (%f %f)",
+            this.x + cos * (this.carRange + dDist), this.y + sin * (this.carRange + dDist)));
+        return carPos;
     }
 }
