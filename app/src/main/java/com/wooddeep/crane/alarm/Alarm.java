@@ -173,7 +173,6 @@ public class Alarm {
             Geometry sideGeo = sa.getGeometry();
 
             if ((cc.height - sa.height) > 1) { // 本机高于区域， 判断小车和区域的距离
-                System.out.println("@@@@@@@@@@@@");
                 Geometry carPos = cc.getCarGeo(0f, 0f);
                 float carToAreaDis = (float) carPos.distance(sideGeo); // 本机小车 到 旁机 大臂的距离
                 //System.out.printf("### center car to side[%s] arm distance: %f \n", "TODO", carToAreaDis);

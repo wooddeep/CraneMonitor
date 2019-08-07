@@ -10,6 +10,7 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.SweepGradient;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -57,6 +58,13 @@ public class SuperCircleView extends View {
     private Paint carPaint;
     private Paint shortArmPaint;
     private Paint ringColorPaint;
+    private Paint textPaint;
+    private String name = "0N";
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public boolean getFlink() {
         return flink;
@@ -176,6 +184,10 @@ public class SuperCircleView extends View {
         shortArmPaint= new Paint(Paint.ANTI_ALIAS_FLAG);
         ringColorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+        textPaint = new Paint();
+        textPaint.setTextSize(14);
+        textPaint.setFakeBoldText(true);
+
     }
 
     private RectF calRingRectArea(float radio) {
@@ -198,6 +210,9 @@ public class SuperCircleView extends View {
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         mPaint.setColor(mMinCircleColor);
         drawNormalRing(canvas);
+
+        canvas.drawText(this.name, mViewCenterX, mViewCenterY + 18, textPaint);
+
         drawRadio(canvas);
     }
 

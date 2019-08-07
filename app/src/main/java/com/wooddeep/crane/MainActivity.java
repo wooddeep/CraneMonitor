@@ -433,8 +433,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 3000);
 
-        System.out.println("$$$$$$ in main activity on create function!");
-
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
@@ -810,7 +808,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 画中心圆环
         centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(), mainCrane.getBigArmLength(),
-            mainCrane.getBalancArmLength(), 0, 0, 0, mainCrane.getCraneHeight());
+            mainCrane.getBalancArmLength(), 0, 0, 0, mainCrane.getCraneHeight(), number);
 
         elemMap.addElem(centerCycle.getUuid(), centerCycle);
         mainCycleId = centerCycle.getUuid();
@@ -821,18 +819,19 @@ public class MainActivity extends AppCompatActivity {
         for (Crane cp : paras) {
             if (cp == mainCrane) continue;
             float scale = centerCycle.scale;
+            number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "N";
             SideCycle sideCycle = new SideCycle(centerCycle, cp.getCoordX1(), cp.getCoordY1(), cp.getBigArmLength(),
-                mainCrane.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight());
+                mainCrane.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight(), number);
 
             elemMap.addElem(sideCycle.getUuid(), sideCycle);
             sideCycleId = sideCycle.getUuid();
             sideCycle.drawSideCycle(this, mainFrame);
-            number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "N";
             craneNumbers.add(number);
             craneMap.put(number, sideCycle);
         }
 
         // 区域
+        int areaIndex = 1;
         AreaDao areaDao = new AreaDao(MainActivity.this);
         List<Area> areas = areaDao.selectAll();
         if (areas != null && areas.size() > 0) {
@@ -845,7 +844,9 @@ public class MainActivity extends AppCompatActivity {
                 vertex.add(new Vertex(area.getX5(), area.getY5()));
                 vertex.add(new Vertex(area.getX6(), area.getY6()));
                 vertex = CommTool.arrangeVertexList(vertex);
-                SideArea sideArea = new SideArea(centerCycle, Color.rgb(19, 34, 122), vertex, 0, area.getHeight());
+                //number = Integer.parseInt(area..replaceAll("[^0-9]+", "")) + "N";
+                SideArea sideArea = new SideArea(centerCycle, Color.rgb(19, 34, 122),
+                    vertex, 0, area.getHeight(), String.format("%dA", areaIndex++));
                 elemMap.addElem(sideArea.getUuid(), sideArea);
                 elemList.add(sideArea);
                 sideArea.drawSideArea(this, mainFrame);
@@ -854,6 +855,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 保护区
+        int protectIndex = 1;
         ProtectDao protectDao = new ProtectDao(MainActivity.this);
         List<Protect> protects = protectDao.selectAll();
         if (protects != null && protects.size() > 0) {
@@ -866,7 +868,8 @@ public class MainActivity extends AppCompatActivity {
                 vertex.add(new Vertex(protect.getX5(), protect.getY5()));
                 vertex.add(new Vertex(protect.getX6(), protect.getY6()));
                 vertex = CommTool.arrangeVertexList(vertex);
-                SideArea sideArea = new SideArea(centerCycle, Color.rgb(212, 35, 122), vertex, 1, protect.getHeight());
+                SideArea sideArea = new SideArea(centerCycle, Color.rgb(212, 35, 122),
+                    vertex, 1, protect.getHeight(), String.format("%dP", protectIndex++));
                 elemMap.addElem(sideArea.getUuid(), sideArea);
                 elemList.add(sideArea);
                 sideArea.drawSideArea(this, mainFrame);

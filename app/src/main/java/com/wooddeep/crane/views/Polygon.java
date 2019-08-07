@@ -31,6 +31,7 @@ public class Polygon extends View {
     private ValueAnimator valueAnimator;
     private List<Vertex> vertexs = new ArrayList<>();
     private Paint paint;
+    private Paint textPaint;
     private int unreachedColor;
     private int reachedColor;
     private int color = Color.RED;
@@ -38,6 +39,12 @@ public class Polygon extends View {
     private boolean alarm = false;
     private boolean flink = false;
     private int type = 0;
+    private String name = "0A";
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public int getBoderColer() {
         return boderColer;
@@ -79,6 +86,9 @@ public class Polygon extends View {
         paint = new Paint();
         unreachedColor = DEFAULT_UNREACHED_COLOR;
         reachedColor = DEFAULT_REACHED_COLOR;
+        textPaint = new Paint();
+        textPaint.setTextSize(14);
+        textPaint.setFakeBoldText(true);
     }
 
     @Override
@@ -117,6 +127,8 @@ public class Polygon extends View {
         if (this.type == 0) {
             path.close(); //闭合图形
         }
+
+        canvas.drawText(name, vertexs.get(0).x, vertexs.get(0).y - 2, textPaint);
 
         //绘制三角形
         canvas.drawPath(path, paint);

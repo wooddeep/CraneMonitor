@@ -26,6 +26,7 @@ public class CenterCycle extends CycleElem {
     public float deltaX;
     public float delatY;
     public float height;
+    public String name;
     public SuperCircleView cycle;
 
     private Geometry geometry; // 几何坐标
@@ -39,7 +40,8 @@ public class CenterCycle extends CycleElem {
         float hAngle,
         float vAngle,
         float carRange,
-        float h
+        float h,
+        String name
     ) {
         this.oscale = oscale;
         this.r = r;
@@ -50,6 +52,7 @@ public class CenterCycle extends CycleElem {
         this.vAngle = vAngle;
         this.carRange = carRange;
         this.height = h;
+        this.name = name;
     }
 
     public void drawCenterCycle(
@@ -89,6 +92,7 @@ public class CenterCycle extends CycleElem {
         cycle.setvAngle(vAngle);
         cycle.setCarRange(carRange * scale);
         cycle.setScale(scale);
+        cycle.setName(name);
         cycle.show();
         this.deltaX = centerX - x * scale;
         this.delatY = height - centerY - y * scale;

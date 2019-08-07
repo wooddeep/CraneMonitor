@@ -22,6 +22,7 @@ public class SideCycle  extends CycleElem {
     public float prvHangle = -1f;
     public float carRange;
     public float height;
+    public String name;
     public CenterCycle centerCycle;
     public SuperCircleView cycle;
 
@@ -34,7 +35,8 @@ public class SideCycle  extends CycleElem {
         float hAngle,            // 水平方向夹角
         float vAngle,            // 垂直方向夹角
         float carRange,
-        float h
+        float h,
+        String name
     ) {
         this.centerCycle = cc;
         this.x = x;
@@ -45,6 +47,7 @@ public class SideCycle  extends CycleElem {
         this.vAngle = vAngle;
         this.carRange = carRange * cc.scale;
         this.height = h;
+        this.name = name;
     }
 
     public void drawSideCycle(
@@ -71,6 +74,7 @@ public class SideCycle  extends CycleElem {
         cycle.setmRingNormalColor(Color.rgb(46, 139, 87));
         cycle.sethAngle(hAngle);
         cycle.setvAngle(vAngle);
+        cycle.setName(name);
         cycle.setCarRange(carRange);
         cycle.setScale(centerCycle.scale);
         cycle.setmViewCenterX(x * centerCycle.scale + centerCycle.deltaX);

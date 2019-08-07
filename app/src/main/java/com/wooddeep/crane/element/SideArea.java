@@ -24,18 +24,21 @@ public class SideArea extends BaseElem{
     public Polygon area;
     public int type;
     public float height; // 高度
+    public String name;
 
     public SideArea(
         CenterCycle cc,
         int color,
         List<Vertex> vertexs,
         int t,
-        float h
+        float h,
+        String name
     ) {
         this.centerCycle = cc;
         this.color = color;
         this.type = t;
         this.height = h;
+        this.name = name;
         this.vertexs = vertexs;
 
         this.overtexs = new ArrayList<>();
@@ -69,6 +72,7 @@ public class SideArea extends BaseElem{
         area.setColor(color);
         area.setType(type);
         area.setValue(vertexs);
+        area.setName(name);
     }
 
     /*
