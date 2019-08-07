@@ -4,22 +4,17 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.widget.ImageView;
 
-import com.wooddeep.crane.R;
 import com.wooddeep.crane.ebus.AlarmEvent;
-import com.wooddeep.crane.ebus.AlarmShowEvent;
 import com.wooddeep.crane.element.BaseElem;
 import com.wooddeep.crane.element.CenterCycle;
 import com.wooddeep.crane.element.CycleElem;
 import com.wooddeep.crane.element.SideArea;
 import com.wooddeep.crane.element.SideCycle;
 import com.wooddeep.crane.persist.entity.AlarmSet;
-import com.wooddeep.crane.views.Vertex;
 
 import org.greenrobot.eventbus.EventBus;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.io.WKTReader;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,9 +25,9 @@ public class Alarm {
     public static void startAlarm(Activity activity, int weightId, int picId) {
         ImageView left = (ImageView) activity.findViewById(weightId);
 
-        ObjectAnimator oa = ObjectAnimator.ofFloat(left, "scaleX", 0.99f, 1.01f);
+        ObjectAnimator oa = ObjectAnimator.ofFloat(left, "scaleX", 0.98f, 1.02f);
         oa.setDuration(500);
-        ObjectAnimator oa2 = ObjectAnimator.ofFloat(left, "scaleY", 0.99f, 1.01f);
+        ObjectAnimator oa2 = ObjectAnimator.ofFloat(left, "scaleY", 0.98f, 1.02f);
         oa2.setDuration(500);
 
         left.setImageDrawable(activity.getResources().getDrawable(picId));
@@ -40,9 +35,9 @@ public class Alarm {
         oa.start();
         oa2.start();
 
-        oa = ObjectAnimator.ofFloat(left, "scaleX", 1.01f, 0.99f);
+        oa = ObjectAnimator.ofFloat(left, "scaleX", 1.02f, 0.98f);
         oa.setDuration(500);
-        oa2 = ObjectAnimator.ofFloat(left, "scaleY", 1.01f, 0.99f);
+        oa2 = ObjectAnimator.ofFloat(left, "scaleY", 1.02f, 0.98f);
         oa2.setDuration(500);
 
         oa.start();
@@ -83,74 +78,89 @@ public class Alarm {
                 if (Math.abs(myHeight - sideHeight) <= 1) { // 高度差相差1m, 当成等高, 查看当前圆心和对端 大臂端点的距离, 无前后告警, 只有左右告警
                     float distance = (float) gcc.distance(gsc);
                     if (distance < alarmSet.getT2tDistGear1()) { // TODO: 此处告警距离采取的是1挡告警距离，需要根据实际的档位来设定告警距离
-
-                        // 判断左告警 还是 右告警
-                        Geometry gPredect = cc.getArmGeo(0.1f); // 逆时针旋转
-                        float distPred = (float) gPredect.distance(gsc);
-                        if (distPred < distance) { // 逆时针旋转 距离告警，则是 左转告警
-                            System.out.printf("### center turn left to [%s] alarm!!!\n", id);
-                            alarmEvent.leftAlarm = true;
-                        } else {
-                            alarmEvent.rightAlarm = true;
-                            System.out.printf("### center turn right to [%s] alarm!!!\n", id);
+                        if (cc.prvHangle < cc.hAngle) {
+                            Geometry gPredect = cc.getArmGeo(0.1f); // 逆时针旋转
+                            float distPred = (float) gPredect.distance(gsc);
+                            if (distPred < distance) { // 逆时针旋转 距离告警，则是 左转告警
+                                System.out.printf("### center turn left to [%s] alarm!!!\n", id);
+                                alarmEvent.leftAlarm = true;
+                            }
                         }
-
+                        if (cc.prvHangle > cc.hAngle) {
+                            Geometry gPredect = cc.getArmGeo(-0.1f); // 逆时针旋转
+                            float distPred = (float) gPredect.distance(gsc);
+                            if (distPred < distance) { // 逆时针旋转 距离告警，则是 左转告警
+                                alarmEvent.rightAlarm = true;
+                                System.out.printf("### center turn right to [%s] alarm!!!\n", id);
+                            }
+                        }
                     }
 
                 } else if ((myHeight - sideHeight) > 1) { // 中心塔基比边缘塔基高, 计算中心塔基小车位置和 边缘塔基距离
                     Geometry carPos = cc.getCarGeo(0f, 0f);
                     float carToArmDis = (float) carPos.distance(gsc); // 本机小车 到 旁机 大臂的距离
-                    System.out.printf("### center car to side[%s] arm distance: %f \n", id, carToArmDis);
+                    //System.out.printf("### center car to side[%s] arm distance: %f \n", id, carToArmDis);
                     if (carToArmDis < alarmSet.getT2tDistGear1()) { // TODO: 此处告警距离采取的是1挡告警距离，需要根据实际的档位来设定告警距离
-
-                        // 判断左告警 还是 右告警
-                        Geometry gPredect = cc.getCarGeo(0.1f, 0f); // 逆时针旋转
-                        float distPred = (float) gPredect.distance(gsc);
-                        if (distPred < carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
-                            System.out.printf("### center turn left to [%s] alarm!!!\n", id);
-                            alarmEvent.leftAlarm = true;
-                        } else {
-                            alarmEvent.rightAlarm = true;
-                            System.out.printf("### center turn right to [%s] alarm!!!\n", id);
+                        if (cc.prvHangle < cc.hAngle) {
+                            Geometry gPredect = cc.getCarGeo(0.1f, 0f); // 逆时针旋转
+                            float distPred = (float) gPredect.distance(gsc);
+                            if (distPred < carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
+                                System.out.printf("### center turn left to [%s] alarm!!!\n", id);
+                                alarmEvent.leftAlarm = true;
+                            }
+                        }
+                        if (cc.prvHangle > cc.hAngle) {
+                            Geometry gPredect = cc.getCarGeo(-0.1f, 0f); // 逆时针旋转
+                            float distPred = (float) gPredect.distance(gsc);
+                            if (distPred < carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
+                                alarmEvent.rightAlarm = true;
+                                System.out.printf("### center turn right to [%s] alarm!!!\n", id);
+                            }
                         }
 
-                        gPredect = cc.getCarGeo(0.0f, 0.1f); // 向外运行
-                        distPred = (float) gPredect.distance(gsc);
-                        if (distPred < carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
-                            System.out.printf("### center turn left to [%s] alarm!!!\n", id);
-                            alarmEvent.forwardAlarm = true;
-                        } else {
-                            alarmEvent.backendAlarm = true;
-                            System.out.printf("### center turn right to [%s] alarm!!!\n", id);
+                        if (cc.prvCarRange < cc.carRange) {
+                            Geometry gPredect = cc.getCarGeo(0.0f, 0.1f); // 向外运行
+                            float distPred = (float) gPredect.distance(gsc);
+                            if (distPred < carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
+                                System.out.printf("### center turn left to [%s] alarm!!!\n", id);
+                                alarmEvent.forwardAlarm = true;
+                            }
+                        }
+                        if (cc.prvCarRange > cc.carRange) {
+                            Geometry gPredect = cc.getCarGeo(0.0f, -0.1f); // 向外运行
+                            float distPred = (float) gPredect.distance(gsc);
+                            if (distPred < carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
+                                alarmEvent.backendAlarm = true;
+                                System.out.printf("### center turn right to [%s] alarm!!!\n", id);
+                            }
                         }
                     }
 
                 } else { // 中心塔基低于旁边塔基, 以中心塔基的臂和 旁机的小车 计算距离
                     Geometry carPos = sc.getCarGeo(0f, 0f);
                     float armToCarDis = (float) gcc.distance(carPos); // 本机大臂 到 旁机 小车的距离
-                    System.out.printf("### center car to side[%s] car distance: %f \n", id, armToCarDis);
+                    //System.out.printf("### center car to side[%s] car distance: %f \n", id, armToCarDis);
                     if (armToCarDis < alarmSet.getT2tDistGear1()) { // TODO: 此处告警距离采取的是1挡告警距离，需要根据实际的档位来设定告警距离
-
-                        // 判断左告警 还是 右告警
-                        Geometry gPredect = cc.getArmGeo(0.1f); // 逆时针旋转
-                        float distPred = (float) gPredect.distance(carPos);
-                        if (distPred < armToCarDis) { // 逆时针旋转 距离告警，则是 左转告警
-                            System.out.printf("### center turn left to [%s] alarm!!!\n", id);
-                            alarmEvent.leftAlarm = true;
-                        } else {
-                            alarmEvent.rightAlarm = true;
-                            System.out.printf("### center turn right to [%s] alarm!!!\n", id);
+                        if (cc.prvHangle < cc.hAngle) {
+                            Geometry gPredect = cc.getArmGeo(0.1f); // 逆时针旋转
+                            float distPred = (float) gPredect.distance(carPos);
+                            if (distPred < armToCarDis) { // 逆时针旋转 距离告警，则是 左转告警
+                                System.out.printf("### center turn left to [%s] alarm!!!\n", id);
+                                alarmEvent.leftAlarm = true;
+                            }
+                        }
+                        if (cc.prvHangle > cc.hAngle) {
+                            Geometry gPredect = cc.getArmGeo(-0.1f); // 逆时针旋转
+                            float distPred = (float) gPredect.distance(carPos);
+                            if (distPred < armToCarDis) { // 逆时针旋转 距离告警，则是 左转告警
+                                alarmEvent.rightAlarm = true;
+                                System.out.printf("### center turn right to [%s] alarm!!!\n", id);
+                            }
                         }
                     }
                 }
-
-                sc.prvCarRange = sc.carRange; // 记录上一次小车位置
-                sc.prvHangle = cc.hAngle; // 记录上一次回转
             }
         }
-
-        cc.prvCarRange = cc.carRange; // 记录上一次小车位置
-        cc.prvHangle = cc.hAngle; // 记录上一次回转
 
         return cc;
     }
@@ -162,44 +172,78 @@ public class Alarm {
             SideArea sa = (SideArea) elem;
             Geometry sideGeo = sa.getGeometry();
 
-            if (Math.abs(cc.height - sa.height) <= 1) { // 本塔与 区域高度等高, 查看当前圆心 区域的距离
+            if ((cc.height - sa.height) > 1) { // 本机高于区域， 判断小车和区域的距离
+                System.out.println("@@@@@@@@@@@@");
+                Geometry carPos = cc.getCarGeo(0f, 0f);
+                float carToAreaDis = (float) carPos.distance(sideGeo); // 本机小车 到 旁机 大臂的距离
+                //System.out.printf("### center car to side[%s] arm distance: %f \n", "TODO", carToAreaDis);
+                if (carToAreaDis < alarmSet.getT2cDistGear1()) { // TODO: 此处告警距离采取的是1挡告警距离，需要根据实际的档位来设定告警距离
+                    // 判断左告警 还是 右告警
+                    if (cc.prvHangle < cc.hAngle) {
+                        Geometry gPredect = cc.getCarGeo(0.1f, 0f); // 小车旋转后的位置
+                        float distPred = (float) gPredect.distance(sideGeo);
+                        if (distPred < carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
+                            System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
+                            alarmEvent.leftAlarm = true;
+                        }
+                    }
+
+                    if (cc.prvHangle > cc.hAngle) {
+                        Geometry gPredect = cc.getCarGeo(-0.1f, 0f); // 小车旋转后的位置
+                        float distPred = (float) gPredect.distance(sideGeo);
+                        if (distPred < carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
+                            alarmEvent.rightAlarm = true;
+                            System.out.printf("### center turn right to [%s] alarm!!!\n", "TODO");
+                        }
+                    }
+
+                    if (cc.prvCarRange < cc.carRange) {
+                        Geometry gPredect = cc.getCarGeo(0.0f, 0.1f); // 向外运行
+                        float distPred = (float) gPredect.distance(sideGeo);
+                        if (distPred < carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
+                            System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
+                            alarmEvent.forwardAlarm = true;
+                        }
+                    }
+
+                    if (cc.prvCarRange > cc.carRange) {
+                        Geometry gPredect = cc.getCarGeo(0.0f, -0.1f); // 向外运行
+                        float distPred = (float) gPredect.distance(sideGeo);
+                        if (distPred < carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
+                            alarmEvent.backendAlarm = true;
+                            System.out.printf("### [1]center turn right to [%s] alarm!!!\n", "TODO");
+                        }
+                    }
+                }
+
+            } else {
                 Geometry core = cc.getCenterGeo(); // 本塔圆心
                 float ctoaDis = (float) core.distance(sideGeo); // 圆心到区域的距离
                 if (ctoaDis > cc.r) continue; // 永远不会撞上
 
                 float dis = (float) gcc.distance(sideGeo); // 本机大臂到区域的距离
                 if (dis <= alarmSet.getT2cDistGear1()) {  // TODO 此处告警距离采取的是1挡告警距离，需要根据实际的档位来设定告警距离
-                    System.out.println("##### distance alarm .....");
-                }
-
-            } else if ((cc.height - sa.height) > 1) { // 本机高于区域， 判断小车和区域的距离
-                Geometry carPos = cc.getCarGeo(0f, 0f);
-                float carToAreaDis = (float) carPos.distance(sideGeo); // 本机小车 到 旁机 大臂的距离
-                System.out.printf("### center car to side[%s] arm distance: %f \n", "TODO", carToAreaDis);
-                if (carToAreaDis < alarmSet.getT2cDistGear1()) { // TODO: 此处告警距离采取的是1挡告警距离，需要根据实际的档位来设定告警距离
-                    // 判断左告警 还是 右告警
-                    Geometry gPredect = cc.getCarGeo(0.1f, 0f); // 逆时针旋转
-                    float distPred = (float) gPredect.distance(sideGeo);
-                    if (distPred < carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
-                        System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
-                        alarmEvent.leftAlarm = true;
-                    } else {
-                        alarmEvent.rightAlarm = true;
-                        System.out.printf("### center turn right to [%s] alarm!!!\n", "TODO");
+                    //System.out.println("##### distance alarm .....");
+                    // 根据数据的变化方向判断
+                    if (cc.prvHangle < cc.hAngle) {
+                        Geometry gPredect = cc.getArmGeo(0.1f); // 逆时针旋转
+                        float distPred = (float) gPredect.distance(sideGeo);
+                        if (distPred < dis) {
+                            System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
+                            alarmEvent.leftAlarm = true;
+                        }
                     }
 
-                    gPredect = cc.getCarGeo(0.0f, 0.1f); // 向外运行
-                    distPred = (float) gPredect.distance(sideGeo);
-                    if (distPred < carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
-                        System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
-                        alarmEvent.forwardAlarm = true;
-                    } else {
-                        alarmEvent.backendAlarm = true;
-                        System.out.printf("### center turn right to [%s] alarm!!!\n", "TODO");
+                    if (cc.prvHangle > cc.hAngle) {
+                        Geometry gPredect = cc.getArmGeo(-0.1f); // 顺时针旋转
+                        float distPred = (float) gPredect.distance(sideGeo);
+                        if (distPred < dis) {
+                            alarmEvent.rightAlarm = true;
+                            System.out.printf("### [2]center turn right to [%s] alarm!!!\n", "TODO");
+                        }
                     }
                 }
-            } else {
-                System.out.println("### ERROR");
+
             }
 
         }
@@ -217,5 +261,8 @@ public class Alarm {
         Alarm.craneToAreaAlarm(elemList, cc, alarmSet);
 
         eventBus.post(alarmEvent);
+
+        cc.prvCarRange = cc.carRange; // 记录上一次小车位置
+        cc.prvHangle = cc.hAngle; // 记录上一次回转
     }
 }
