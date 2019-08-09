@@ -87,7 +87,8 @@ public class Polygon extends View {
         unreachedColor = DEFAULT_UNREACHED_COLOR;
         reachedColor = DEFAULT_REACHED_COLOR;
         textPaint = new Paint();
-        textPaint.setTextSize(14);
+        textPaint.setTextSize(16);
+        textPaint.setAntiAlias(true);
         textPaint.setFakeBoldText(true);
     }
 
@@ -128,7 +129,9 @@ public class Polygon extends View {
             path.close(); //闭合图形
         }
 
-        canvas.drawText(name, vertexs.get(0).x, vertexs.get(0).y - 2, textPaint);
+        if (vertexs.size() >= 2) {
+            canvas.drawText(name, (vertexs.get(0).x + vertexs.get(1).x) / 2 - 8, vertexs.get(0).y - 5, textPaint);
+        }
 
         //绘制三角形
         canvas.drawPath(path, paint);

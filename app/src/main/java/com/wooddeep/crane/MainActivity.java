@@ -462,6 +462,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void alarmShowEventBus(AlarmShowEvent event) {
+        if (alarmEvent == null) return;
         if (alarmEvent.leftAlarm == true) {
             Alarm.startAlarm(activity, R.id.left_alarm, R.mipmap.left_rotation_alarm);
         } else {
@@ -492,7 +493,8 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void AlarmJudgeEventBus(UartEvent uartEvent) {
         try {
-            Alarm.alarmDetect(elemList, craneMap, myCraneNo, alarmSet, eventBus);
+            if (elemList.size() == 0) return;
+            Alarm.alarmDetect(calibration, elemList, craneMap, myCraneNo, alarmSet, eventBus);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -577,7 +579,11 @@ public class MainActivity extends AppCompatActivity {
     public void RotateDateEventBus(RotateEvent event) {
         byte[] data = event.data;
         rotateProto.parse(data);
-        centerCycle.setHAngle(rotateProto.getData()); // TODO 根据比例值计算角度
+
+        float startAngle = calibration.getRotateStartAngle();
+        double currentAngle = startAngle + (rotateProto.getData() - calibration.getRotateStartData()) * calibration.getRotateRate();
+
+        centerCycle.setHAngle((float)Math.toDegrees(currentAngle)); // TODO 根据比例值计算角度
 
     }
 
@@ -868,7 +874,7 @@ public class MainActivity extends AppCompatActivity {
                 vertex.add(new Vertex(protect.getX5(), protect.getY5()));
                 vertex.add(new Vertex(protect.getX6(), protect.getY6()));
                 vertex = CommTool.arrangeVertexList(vertex);
-                SideArea sideArea = new SideArea(centerCycle, Color.rgb(212, 35, 122),
+                SideArea sideArea = new SideArea(centerCycle, Color.BLACK,
                     vertex, 1, protect.getHeight(), String.format("%dP", protectIndex++));
                 elemMap.addElem(sideArea.getUuid(), sideArea);
                 elemList.add(sideArea);

@@ -15,6 +15,9 @@ public class Calibration {
     @DatabaseField(columnName = "rotateStartY1", useGetSet = true, defaultValue = "-1.0f")
     public float rotateStartY1;
 
+    @DatabaseField(columnName = "rotateStartAngle", useGetSet = true, defaultValue = "1.0f")
+    public float rotateStartAngle;
+
     @DatabaseField(columnName = "rotateStartData", useGetSet = true, defaultValue = "-1.0f") // data代表从串口中解析到的数据
     public float rotateStartData;
 
@@ -387,8 +390,16 @@ public class Calibration {
         this.heightRate = heightRate;
     }
 
+    public float getRotateStartAngle() {
+        return rotateStartAngle;
+    }
+
+    public void setRotateStartAngle(float rotateStartAngle) {
+        this.rotateStartAngle = rotateStartAngle;
+    }
+
     public Calibration(
-        float rotateStartX1, float rotateStartY1, float rotateStartData,
+        float rotateStartX1, float rotateStartY1, float rotateStartData, float rotateStartAngle,
         float rotateEndX2, float rotateEndY2, float rotateEndData,
         float rotateRate,
         float gearRate1, float gearRate2, float gearRate3, float gearRate4, float gearRate5,
@@ -399,6 +410,7 @@ public class Calibration {
     {
         this.rotateStartX1 = rotateStartX1;
         this.rotateStartY1 = rotateStartY1;
+        this.rotateStartAngle = rotateStartAngle;
         this.rotateStartData = rotateStartData;
         this.rotateEndX2 = rotateEndX2;
         this.rotateEndY2 = rotateEndY2;

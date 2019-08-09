@@ -11,6 +11,7 @@ import com.wooddeep.crane.element.CycleElem;
 import com.wooddeep.crane.element.SideArea;
 import com.wooddeep.crane.element.SideCycle;
 import com.wooddeep.crane.persist.entity.AlarmSet;
+import com.wooddeep.crane.persist.entity.Calibration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.locationtech.jts.geom.Coordinate;
@@ -246,8 +247,11 @@ public class Alarm {
         }
     }
 
-    public static void alarmDetect(List<BaseElem> elemList, HashMap<String, CycleElem>
+    public static void alarmDetect(Calibration calibration, List<BaseElem> elemList, HashMap<String, CycleElem>
         craneMap, String no, AlarmSet alarmSet, EventBus eventBus) throws Exception {
+
+        CenterCycle cc = (CenterCycle) craneMap.get(no);
+        if (cc == null) return;
 
         // 告警清零
         alarmEvent.backendAlarm = false;
@@ -255,8 +259,14 @@ public class Alarm {
         alarmEvent.rightAlarm = false;
         alarmEvent.leftAlarm = false;
 
-        CenterCycle cc = (CenterCycle) craneMap.get(no);
-        float rotateRage = (cc.hAngle - cc.prvHangle) * 1000/ (System.currentTimeMillis() - cc.prvMsec); // 回转变化率 TODO ~ 转化为角度
+        // 角度 -> 幅度 -> 采样值
+        double angleDelta = cc.hAngle - cc.prvHangle;
+        double radiansDelta = Math.toRadians(angleDelta);
+        double dataDelat = radiansDelta / calibration.getRotateRate();
+
+        float rotateRate = (float)dataDelat * 1000 / (System.currentTimeMillis() - cc.prvMsec); // 回转变化率
+
+        // TODO 根据 档位的 标定， 计算当前档位的安全距离 // TODO
 
         Alarm.craneToCraneAlarm(craneMap, no, alarmSet);
         Alarm.craneToAreaAlarm(elemList, cc, alarmSet);

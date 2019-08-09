@@ -158,6 +158,10 @@ public class CalibrationSetting extends AppCompatActivity {
                         new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(x2, y2)); // [0 - pi]
                     System.out.println(Math.toDegrees(rotate));
 
+                    double startRotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
+                        new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(centerX + 100, centerY)); // 计算起始角度
+                    System.out.println(Math.toDegrees(startRotate));
+
                     float rate = (float) rotate / (end - start);
 
                     TextView tvRate = (TextView) findViewById(rotateStartX1.rateShowId);
@@ -169,6 +173,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibration.setRotateEndY2(y2);
                     calibration.setRotateStartData(start);
                     calibration.setRotateEndData(end);
+                    calibration.setRotateStartAngle((float)startRotate);
                     calibration.setRotateRate(rate);
                     calibrationDao.update(calibration);
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
@@ -219,6 +224,10 @@ public class CalibrationSetting extends AppCompatActivity {
                     TextView tvRate = (TextView) findViewById(rotateStartX1.rateShowId);
                     tvRate.setText(String.valueOf(rate));
 
+                    double startRotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
+                        new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(centerX + 100, centerY)); // 计算起始角度
+                    System.out.println(Math.toDegrees(startRotate));
+
                     calibration.setRotateStartX1(x1);
                     calibration.setRotateStartY1(y1);
                     calibration.setRotateEndX2(x2);
@@ -226,6 +235,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibration.setRotateStartData(start);
                     calibration.setRotateEndData(end);
                     calibration.setRotateRate(rate);
+                    calibration.setRotateStartAngle((float)startRotate);
                     calibrationDao.update(calibration);
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
 

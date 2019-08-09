@@ -185,7 +185,9 @@ public class SuperCircleView extends View {
         ringColorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         textPaint = new Paint();
-        textPaint.setTextSize(14);
+        textPaint.setTextSize(16);
+        textPaint.setAntiAlias(true);
+        textPaint.setStrokeWidth(2);
         textPaint.setFakeBoldText(true);
 
     }
