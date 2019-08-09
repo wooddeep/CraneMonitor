@@ -262,7 +262,8 @@ public class UnLockColumnAdapter extends RecyclerView.Adapter<UnLockColumnAdapte
     private void createEditTextCell(LinearLayout linearLayout, List<DataCell> datas, boolean isFristRow, int mMaxHeight, int rowNum, int colNum) {
         //构造单元格
         EditText widget = new EditText(mContext); // 单元格是 编辑框
-        widget.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        widget.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_SIGNED|InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
         widget.setBackgroundColor(Color.TRANSPARENT);
         try {
             widget.setTag(new JSONObject().put("row", rowNum).put("col", colNum)); // 列编号

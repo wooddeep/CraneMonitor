@@ -504,6 +504,7 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void commEventBus(UartEvent uartEvent) {
         try {
+            if (calibration == null) return;
             Date date = new Date();
             String dateNowStr = sdf.format(date);
             String[] cells = dateNowStr.split(" ");
@@ -583,7 +584,7 @@ public class MainActivity extends AppCompatActivity {
         float startAngle = calibration.getRotateStartAngle();
         double currentAngle = startAngle + (rotateProto.getData() - calibration.getRotateStartData()) * calibration.getRotateRate();
 
-        centerCycle.setHAngle((float)Math.toDegrees(currentAngle)); // TODO 根据比例值计算角度
+        centerCycle.setHAngle((float) Math.toDegrees(currentAngle)); // TODO 根据比例值计算角度
 
     }
 
@@ -931,12 +932,16 @@ public class MainActivity extends AppCompatActivity {
 
             DatabaseHelper.getInstance(context).createTable(Load.class); // 负载
             loadDao.insert(Load.getInitData());
+        }
 
+        alarmSet = alarmSetDao.selectAll().get(0);
+
+        List<Calibration> calList = calibrationDao.selectAll();
+        if (calList == null || calList.size() == 0) {
             DatabaseHelper.getInstance(context).createTable(Calibration.class); // 标定
             calibrationDao.insert(Calibration.getInitData());
         }
 
-        alarmSet = alarmSetDao.selectAll().get(0);
         calibration = calibrationDao.selectAll().get(0);
 
     }
