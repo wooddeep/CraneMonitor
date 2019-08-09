@@ -22,6 +22,7 @@ public class CenterCycle extends CycleElem {
     public float vAngle;             // 垂直方向夹角
     public float prvCarRange = -1f;
     public float prvHangle = -1f;
+    public long  prvMsec = System.currentTimeMillis();
     public float carRange;
     public float deltaX;
     public float delatY;

@@ -242,26 +242,29 @@ public class Alarm {
                         }
                     }
                 }
-
             }
-
         }
     }
 
     public static void alarmDetect(List<BaseElem> elemList, HashMap<String, CycleElem>
         craneMap, String no, AlarmSet alarmSet, EventBus eventBus) throws Exception {
 
+        // 告警清零
         alarmEvent.backendAlarm = false;
         alarmEvent.forwardAlarm = false;
         alarmEvent.rightAlarm = false;
         alarmEvent.leftAlarm = false;
 
-        CenterCycle cc = Alarm.craneToCraneAlarm(craneMap, no, alarmSet);
+        CenterCycle cc = (CenterCycle) craneMap.get(no);
+        float rotateRage = (cc.hAngle - cc.prvHangle) * 1000/ (System.currentTimeMillis() - cc.prvMsec); // 回转变化率 TODO ~ 转化为角度
+
+        Alarm.craneToCraneAlarm(craneMap, no, alarmSet);
         Alarm.craneToAreaAlarm(elemList, cc, alarmSet);
 
         eventBus.post(alarmEvent);
 
         cc.prvCarRange = cc.carRange; // 记录上一次小车位置
         cc.prvHangle = cc.hAngle; // 记录上一次回转
+        cc.prvMsec = System.currentTimeMillis(); // 上次一计算时间
     }
 }

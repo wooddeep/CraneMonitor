@@ -14,28 +14,25 @@ import android.widget.TextView;
 
 import com.wooddeep.crane.comm.Protocol;
 import com.wooddeep.crane.comm.RotateProto;
-import com.wooddeep.crane.ebus.AlarmSetEvent;
 import com.wooddeep.crane.ebus.CalibrationEvent;
 import com.wooddeep.crane.ebus.MessageEvent;
 import com.wooddeep.crane.ebus.RotateEvent;
 import com.wooddeep.crane.ebus.SimulatorEvent;
 import com.wooddeep.crane.ebus.UartEvent;
-import com.wooddeep.crane.ebus.UserEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.dao.CalibrationDao;
 import com.wooddeep.crane.persist.entity.Calibration;
-import com.wooddeep.crane.tookit.CommTool;
-//import com.wooddeep.crane.tookit.Coordinate;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.locationtech.jts.algorithm.Angle;
-import org.locationtech.jts.geom.Coordinate;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
+//import com.wooddeep.crane.tookit.Coordinate;
 
 
 // https://locationtech.github.io/jts/javadoc/org/locationtech/jts/algorithm/Angle.html
@@ -161,7 +158,7 @@ public class CalibrationSetting extends AppCompatActivity {
                         new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(x2, y2)); // [0 - pi]
                     System.out.println(Math.toDegrees(rotate));
 
-                    float rate = (float)rotate / (end - start);
+                    float rate = (float) rotate / (end - start);
 
                     TextView tvRate = (TextView) findViewById(rotateStartX1.rateShowId);
                     tvRate.setText(String.valueOf(rate));
@@ -217,7 +214,7 @@ public class CalibrationSetting extends AppCompatActivity {
                         new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(x2, y2)); // [0 - pi]
                     System.out.println(Math.toDegrees(rotate));
 
-                    float rate = (float)rotate / (end - start);
+                    float rate = (float) rotate / (end - start);
 
                     TextView tvRate = (TextView) findViewById(rotateStartX1.rateShowId);
                     tvRate.setText(String.valueOf(rate));
@@ -253,27 +250,30 @@ public class CalibrationSetting extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     // 1. 读取初始值
-                    double start = 0;  // TODO 从串口读取值
+                    float start = (float) rotateProto.getData();
                     System.out.println("## start value = " + start);
                     System.out.println(System.currentTimeMillis());
+                    long startMsec = System.currentTimeMillis();
                     // 2. 延时 3 秒 再读值
                     Handler mHandler = new Handler();
                     Runnable readEnd = new Runnable() {
                         @Override
                         public void run() {
-                            System.out.println("## end value = " + "??");
+                            float end = (float) rotateProto.getData();
+                            System.out.println("## end value = " + end);
                             System.out.println(System.currentTimeMillis());
-                            if (gevent != null) {
-                                System.out.printf("### %s, %s \n", gevent.name, gevent.password);
-                                TextView tv = (TextView) findViewById(GearRate1.rateShowId);
-                                tv.setText("gear1");
-                            }
+                            long endMsec = System.currentTimeMillis();
+                            float rate = (end - start) * 1000 / (endMsec - startMsec);
+                            TextView tv = (TextView) findViewById(GearRate1.rateShowId);
+                            tv.setText(String.format("%.2f", rate));
+                            calibration.setGearRate1(rate);
+                            calibrationDao.update(calibration);
+                            EventBus.getDefault().post(new CalibrationEvent(calibration));
                         }
                     };
 
                     mHandler.postDelayed(readEnd, 3000);
                 }
-
             });
         }
     };
@@ -286,21 +286,25 @@ public class CalibrationSetting extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     // 1. 读取初始值
-                    double start = 0;  // TODO 从串口读取值
+                    float start = (float) rotateProto.getData();
                     System.out.println("## start value = " + start);
                     System.out.println(System.currentTimeMillis());
+                    long startMsec = System.currentTimeMillis();
                     // 2. 延时 3 秒 再读值
                     Handler mHandler = new Handler();
                     Runnable readEnd = new Runnable() {
                         @Override
                         public void run() {
-                            System.out.println("## end value = " + "??");
+                            float end = (float) rotateProto.getData();
+                            System.out.println("## end value = " + end);
                             System.out.println(System.currentTimeMillis());
-                            if (gevent != null) {
-                                System.out.printf("### %s, %s \n", gevent.name, gevent.password);
-                                TextView tv = (TextView) findViewById(GearRate2.rateShowId);
-                                tv.setText("gear2");
-                            }
+                            long endMsec = System.currentTimeMillis();
+                            float rate = (end - start) * 1000 / (endMsec - startMsec);
+                            TextView tv = (TextView) findViewById(GearRate1.rateShowId);
+                            tv.setText(String.format("%.2f", rate));
+                            calibration.setGearRate2(rate);
+                            calibrationDao.update(calibration);
+                            EventBus.getDefault().post(new CalibrationEvent(calibration));
                         }
                     };
 
@@ -319,21 +323,25 @@ public class CalibrationSetting extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     // 1. 读取初始值
-                    double start = 0;  // TODO 从串口读取值
+                    float start = (float)rotateProto.getData();
                     System.out.println("## start value = " + start);
                     System.out.println(System.currentTimeMillis());
+                    long startMsec = System.currentTimeMillis();
                     // 2. 延时 3 秒 再读值
                     Handler mHandler = new Handler();
                     Runnable readEnd = new Runnable() {
                         @Override
                         public void run() {
-                            System.out.println("## end value = " + "??");
+                            float end = (float)rotateProto.getData();
+                            System.out.println("## end value = " + end);
                             System.out.println(System.currentTimeMillis());
-                            if (gevent != null) {
-                                System.out.printf("### %s, %s \n", gevent.name, gevent.password);
-                                TextView tv = (TextView) findViewById(GearRate3.rateShowId);
-                                tv.setText("gear3");
-                            }
+                            long endMsec = System.currentTimeMillis();
+                            float rate = (end - start) * 1000 / (endMsec - startMsec);
+                            TextView tv = (TextView) findViewById(GearRate1.rateShowId);
+                            tv.setText(String.format("%.2f", rate));
+                            calibration.setGearRate3(rate);
+                            calibrationDao.update(calibration);
+                            EventBus.getDefault().post(new CalibrationEvent(calibration));
                         }
                     };
 
@@ -352,21 +360,25 @@ public class CalibrationSetting extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     // 1. 读取初始值
-                    double start = 0;  // TODO 从串口读取值
+                    float start = (float)rotateProto.getData();
                     System.out.println("## start value = " + start);
                     System.out.println(System.currentTimeMillis());
+                    long startMsec = System.currentTimeMillis();
                     // 2. 延时 3 秒 再读值
                     Handler mHandler = new Handler();
                     Runnable readEnd = new Runnable() {
                         @Override
                         public void run() {
-                            System.out.println("## end value = " + "??");
+                            float end = (float)rotateProto.getData();
+                            System.out.println("## end value = " + end);
                             System.out.println(System.currentTimeMillis());
-                            if (gevent != null) {
-                                System.out.printf("### %s, %s \n", gevent.name, gevent.password);
-                                TextView tv = (TextView) findViewById(GearRate4.rateShowId);
-                                tv.setText("gear4");
-                            }
+                            long endMsec = System.currentTimeMillis();
+                            float rate = (end - start) * 1000 / (endMsec - startMsec);
+                            TextView tv = (TextView) findViewById(GearRate1.rateShowId);
+                            tv.setText(String.format("%.2f", rate));
+                            calibration.setGearRate4(rate);
+                            calibrationDao.update(calibration);
+                            EventBus.getDefault().post(new CalibrationEvent(calibration));
                         }
                     };
 
@@ -385,21 +397,25 @@ public class CalibrationSetting extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     // 1. 读取初始值
-                    double start = 0;  // TODO 从串口读取值
+                    float start = (float)rotateProto.getData();
                     System.out.println("## start value = " + start);
                     System.out.println(System.currentTimeMillis());
+                    long startMsec = System.currentTimeMillis();
                     // 2. 延时 3 秒 再读值
                     Handler mHandler = new Handler();
                     Runnable readEnd = new Runnable() {
                         @Override
                         public void run() {
-                            System.out.println("## end value = " + "??");
+                            float end = (float)rotateProto.getData();
+                            System.out.println("## end value = " + end);
                             System.out.println(System.currentTimeMillis());
-                            if (gevent != null) {
-                                System.out.printf("### %s, %s \n", gevent.name, gevent.password);
-                                TextView tv = (TextView) findViewById(GearRate5.rateShowId);
-                                tv.setText("gear5");
-                            }
+                            long endMsec = System.currentTimeMillis();
+                            float rate = (end - start) * 1000 / (endMsec - startMsec);
+                            TextView tv = (TextView) findViewById(GearRate1.rateShowId);
+                            tv.setText(String.format("%.2f", rate));
+                            calibration.setGearRate5(rate);
+                            calibrationDao.update(calibration);
+                            EventBus.getDefault().post(new CalibrationEvent(calibration));
                         }
                     };
 
