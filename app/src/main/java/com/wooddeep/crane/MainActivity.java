@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.x6.serial.SerialPort;
 import com.wooddeep.crane.alarm.Alarm;
 import com.wooddeep.crane.comm.Protocol;
 import com.wooddeep.crane.comm.RadioProto;
@@ -30,6 +31,7 @@ import com.wooddeep.crane.ebus.MessageEvent;
 import com.wooddeep.crane.ebus.RadioEvent;
 import com.wooddeep.crane.ebus.RotateEvent;
 import com.wooddeep.crane.ebus.SimulatorEvent;
+import com.wooddeep.crane.ebus.TimerEvent;
 import com.wooddeep.crane.ebus.UartEvent;
 import com.wooddeep.crane.element.BaseElem;
 import com.wooddeep.crane.element.CenterCycle;
@@ -65,8 +67,12 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -186,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private Context context;
-    private android.app.Activity  activity = this;
+    private android.app.Activity activity = this;
     private List<BaseElem> elemList = new ArrayList<>();
     private ElemMap elemMap = new ElemMap();
     private static HashMap<String, Object> viewMapBak = new HashMap<>();
@@ -224,6 +230,20 @@ public class MainActivity extends AppCompatActivity {
     private RadioProto slaveRadioProto = new RadioProto();  // 本机作为从机时，需要radio通信的对象
     private RadioProto masterRadioProto = new RadioProto(); // 本机作为主机时，需要radio通信的对象
     private int currSlaveIndex = 0; // 当前和本主机通信的从机名称
+
+    private SerialPort serialttyS0;
+    private SerialPort serialttyS1;
+    private InputStream ttyS0InputStream;
+    private OutputStream ttyS0OutputStream;
+    private InputStream ttyS1InputStream;
+    private OutputStream ttyS1OutputStream;
+
+    byte[] in = new byte[1024]; // 输如缓冲
+    byte[] rotateIn = new byte[1024]; // 输如缓冲
+    byte[] radioIn = new byte[1024];
+    byte[] adBuff = new byte[20]; //
+    byte[] rotateBuff = new byte[10];
+    byte[] radioBuff = new byte[39];
 
     public float getOscale() {
         return oscale;
@@ -273,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(1);
                         if (alarmTimes % 5 == 0) {
                             eventBus.post(new AlarmShowEvent()); // 发送alarm展示消息
                         }
@@ -283,6 +303,88 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
+                }
+            }
+        }).start();
+    }
+
+    private void startUartThread() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        // AD 值
+                        if (ttyS0InputStream.available() > 0) {
+                            int len = ttyS0InputStream.read(in, 0, 1024);
+                            for (int i = len - 20, j = 0; i < len; j++, i++) {
+                                adBuff[j] = in[i];
+                            }
+                            eventBus.post(new UartEvent(adBuff)); // 发送
+                        }
+                        //CommTool.sleep(1);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void startRadioThread() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        // AD 值
+                        if (ttyS1InputStream.available() > 0) {
+                            int len = ttyS1InputStream.read(radioIn, 0, 1024);
+                            for (int i = 0; i < 39; i++) {
+                                radioBuff[i] = radioIn[i];
+                            }
+                            eventBus.post(new RadioEvent(radioBuff)); // 发送
+                        }
+
+                        CommTool.sleep(80);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void startRotateThread() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // 485 回转, 硬件有点问题, ttyS3 对应单板的串口2, 编号从0开始, 白色R2，黑色 T2
+                    SerialPort serialttyS2 = new SerialPort(new File("/dev/ttyS3"), 19200, 0);
+                    OutputStream ttyS2OutputStream = serialttyS2.getOutputStream();
+                    InputStream ttyS2InputStream = serialttyS2.getInputStream();
+
+                    byte[] rotateCmd = new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B};
+                    while (true) {
+                        //System.out.println("#################");
+                        ttyS2OutputStream.write(rotateCmd);
+                        if (ttyS2InputStream.available() > 0) {
+                            int len = ttyS2InputStream.read(rotateIn, 0, 1024);
+                            for (int i = 0; i < 9; i++) {
+                                rotateBuff[i] = rotateIn[i];
+                                //System.out.printf("%02x ", rotateIn[i] & 0xFF);
+                            }
+                            //System.out.println();
+                            if (rotateBuff[0] == 0x01 && rotateBuff[1] == 0x04) {
+                                eventBus.post(new RotateEvent(rotateBuff, mainCrane.getCoordX1(), mainCrane.getCoordY1())); // 发送
+                            }
+                        }
+                        CommTool.sleep(50);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }).start();
@@ -318,6 +420,7 @@ public class MainActivity extends AppCompatActivity {
                 slaveRadioProto.setTargetNo(radioProto.getSourceNo());
                 slaveRadioProto.setRange(1f); // TODO 根据本塔基的实际数据填充
                 slaveRadioProto.setRotate(2f); // TODO 根据本塔基的实际数据填充
+                slaveRadioProto.packReply();
                 // TODO 发送消息，通知串口通信 或者直接 串口通信
             }
 
@@ -346,93 +449,6 @@ public class MainActivity extends AppCompatActivity {
 
             return;
         }
-    }
-
-    private void startUartThread() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // 01 04 00 01 00 04 A0 09
-                    //SerialPort serialttyS0 = new SerialPort(new File("/dev/ttyS0"), 19200, 0); // 19200
-                    //SerialPort serialttyS1 = new SerialPort(new File("/dev/ttyS1"), 115200, 0);
-                    //OutputStream ttyS0OutputStream = serialttyS0.getOutputStream();
-                    //InputStream ttyS1InputStream = serialttyS1.getInputStream();
-                    //ttyS0OutputStream.write("hello world".getBytes());
-                    //ttyS0OutputStream.write(new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B});
-                    //if (ttyS1InputStream.available() > 0) {
-                    //    int len = ttyS1InputStream.read(in, 0, 1024);
-                    //    byte[] real = Arrays.copyOf(in, len);
-                    //    for (byte data : real) {
-                    //        System.out.printf("%02x ", data);
-                    //    }
-                    //} else {
-                    //    System.out.println("############# no data !############");
-                    //}
-                    // TODO
-                    // 1. 系统初始化时候，读取电台报文，如果一直没有报文，则自己做主节点， 分别轮训其他节点
-                    // 2. 如果读取到了主机请求报文，则知道主机的 编号，并判断主机是否发请求命令给自己，
-                    // 2.1 如果主机发送命令给 自己，则根据自己的数据，回应给主机， 且提出主机的数据， 刷新主节点显示；
-                    // 2.2 如果主机发送命令给 其他节点，则不管；
-                    // 3. 如果读取到了 从机 回应报文，则从报文中读取从节点的数据，且刷新从节点；
-
-                    /*
-                    // 485测试
-                    SerialPort serialttyS2 = new SerialPort(new File("/dev/ttyS2"), 115200, 0);
-
-                    System.out.println("### serialttyS2 = " + serialttyS2);
-
-                    SerialPort serialttyS3 = new SerialPort(new File("/dev/ttyS3"), 115200, 0);
-                    OutputStream ttyS2OutputStream = serialttyS2.getOutputStream();
-                    InputStream ttyS2InputStream = serialttyS2.getInputStream();
-                    OutputStream ttyS3OutputStream = serialttyS3.getOutputStream();
-                    InputStream ttyS3InputStream = serialttyS3.getInputStream();
-
-                    byte[] in = new byte[1024];
-
-                    while (true) {
-                        ttyS2OutputStream.write("hello world".getBytes());
-                        int len = ttyS3InputStream.read(in, 0, 1024);
-                        byte[] real = Arrays.copyOf(in, len);
-                        for (byte data : real) {
-                            System.out.printf("%02x ", data);
-                        }
-                        System.out.println(new String(real));
-                        try {
-                            Thread.sleep(1000);
-                        } catch (Exception e) {
-
-                        }
-                    }
-                    */
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        context = getApplicationContext();
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
-        EventBus.getDefault().register(this);
-
-        initTable(); // 初始化表
-        startDataSimThread();
-        startUartThread(); // 初始化串口线程
-
-        new Handler().postDelayed(new Runnable() {  // 触发判断本机是否为主机
-            @Override
-            public void run() {
-                eventBus.post(new RadioEvent(radioProto.startMaster()));
-            }
-        }, 3000);
-
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
@@ -519,20 +535,21 @@ public class MainActivity extends AppCompatActivity {
             // 重量
             TextView weight = (TextView) findViewById(R.id.weight);
             float weightValue = calibration.getWeightStart() + calibration.getWeightRate() * (parser.getWeight() - calibration.getWeightStartData());
-            weightValue = Math.round(weightValue * 10) / 10;
-            weight.setText(String.valueOf(weightValue) + "t");
+            String sWeightValue = String.format("%.1f", weightValue);
+            weight.setText(sWeightValue + "t");
 
             // 小车位置(length) or 动臂幅度(amplitude)
             TextView armLength = (TextView) findViewById(R.id.length);
-            float armLengthValue = calibration.getLengthStart() + calibration.getLengthRate() * (parser.getAmplitude() - calibration.getLengthStartData());
-            armLengthValue = Math.round(armLengthValue * 10) / 10;
-            armLength.setText(String.valueOf(armLengthValue) + "m");
+            float armLengthValue = calibration.getLengthStart() + calibration.getLengthRate() * ((float) parser.getAmplitude() - calibration.getLengthStartData());
+            //System.out.println(armLengthValue);
+            String sLen = String.format("%.1f", armLengthValue);
+            armLength.setText(sLen + "m");
 
             // 吊钩高度
             TextView height = (TextView) findViewById(R.id.height);
             float heightValue = calibration.getHeightStart() + calibration.getHeightRate() * (parser.getHeight() - calibration.getHeightStartData());
-            heightValue = Math.round(heightValue * 10) / 10;
-            height.setText(String.valueOf(heightValue) + "m");
+            String sHeightValue = String.format("%.1f", heightValue);
+            height.setText(sHeightValue + "m");
 
             // 风速 TODO
             TextView windSpeed = (TextView) findViewById(R.id.wind_speed);
@@ -580,10 +597,10 @@ public class MainActivity extends AppCompatActivity {
     public void RotateDateEventBus(RotateEvent event) {
         byte[] data = event.data;
         rotateProto.parse(data);
-
+        //System.out.println(rotateProto.getData());
         float startAngle = calibration.getRotateStartAngle();
         double currentAngle = startAngle + (rotateProto.getData() - calibration.getRotateStartData()) * calibration.getRotateRate();
-
+        angleView.setText(String.format("%.1f°", (float) Math.toDegrees(currentAngle)));
         centerCycle.setHAngle((float) Math.toDegrees(currentAngle)); // TODO 根据比例值计算角度
 
     }
@@ -946,5 +963,44 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    TextView angleView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        context = getApplicationContext();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
+        angleView = (TextView) findViewById(R.id.angle);
+
+        EventBus.getDefault().register(this);
+
+        try {
+            serialttyS0 = new SerialPort(new File("/dev/ttyS0"), 115200, 0); // 19200 // AD数据
+            serialttyS1 = new SerialPort(new File("/dev/ttyS1"), 19200, 0);
+            ttyS0InputStream = serialttyS0.getInputStream();
+            ttyS0OutputStream = serialttyS0.getOutputStream();
+            ttyS1InputStream = serialttyS1.getInputStream();
+            ttyS1OutputStream = serialttyS1.getOutputStream();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        initTable(); // 初始化表
+        startDataSimThread();
+        startUartThread(); // 初始化串口线程
+        startRadioThread();
+
+        new Handler().postDelayed(new Runnable() {  // 触发判断本机是否为主机
+            @Override
+            public void run() {
+                eventBus.post(new RadioEvent(radioProto.startMaster()));
+                startRotateThread();
+            }
+        }, 3000);
+    }
 
 }

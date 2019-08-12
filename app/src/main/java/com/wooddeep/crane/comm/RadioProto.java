@@ -8,6 +8,8 @@ public class RadioProto {
     // 请求
     // % 1N 2N  0.88N 51.51N  0.00N  0.00N 0N#
 
+    // % 1N 1N  3.75N 21.40N  0.00N  0.00N18N#
+
     //回应
     // % 2N 0N  0.88N 51.51N  0.00N  0.00N 0N#
 
@@ -26,22 +28,25 @@ public class RadioProto {
     }
 
     public int parse(byte[] data) {
-        if (data[0] != '%' || data[data.length - 1] != '#') return -1;
-        String cmd = new String(data);
+        //System.out.println(new String(data));
+        if (data[0] != '%' /*|| data[data.length - 1] != '#'*/) return -1;
+        String cmd = new String(data); // TODO 修改成其他方式
+
         if (cmd.equals("%master#")) {
             return CMD_START_MASTER;
         }
 
-        String [] cells = cmd.split("\\s+");
-        if (cells.length != 8) return -2;
-        this.sourceNo = cells[1];
-        this.targetNo = cells[2];
+        cmd = cmd.replace("%", "").replace("#", "");
+        String [] cells = cmd.split("N");
+        if (cells.length < 7) return -2;
+        this.sourceNo = cells[0];
+        this.targetNo = cells[1];
         this.craneNo = this.sourceNo;
 
-        this.rotate = Float.parseFloat(cells[3].replace("N", ""));
-        this.range  = Float.parseFloat(cells[4].replace("N", ""));
+        this.rotate = Float.parseFloat(cells[2]);
+        this.range  = Float.parseFloat(cells[3]);
 
-        if (targetNo.compareToIgnoreCase("0N") == 0) { // 其他其他的回应报文
+        if (targetNo.compareToIgnoreCase("0") == 0) { // 其他其他的回应报文
             //System.out.printf("# reply: %s -> %s ", sourceNo, targetNo);
             //System.out.printf("slave: %s - rotate: %f, range: %f\n", sourceNo, rotate, range);
             isQuery = false; // 从机的回文
@@ -57,8 +62,11 @@ public class RadioProto {
 
     // 打包报文 如果是主机 则 轮训 其他所有从机，如果是从机 则回应
     public byte [] packReply() {
-        String replay = String.format("%% %s %s %.2fN %.2fN 0.00N 0.00N 0N#", sourceNo,  targetNo, rotate, range);
+        // % 1N 1N  3.75N 21.39N  0.00N  0.00N 5N#
+        // % 2N 0N  0.88N 51.51N  0.00N  0.00N 0N#
+        //String replay = String.format("%%%02sN%02sN%.2fN%.2fN0.00N0.00N 0N#", sourceNo,  targetNo, rotate, range);
         //System.out.println(replay);
+        String replay = "% 2N 0N  0.88N 51.51N  0.00N  0.00N 0N#";
         return replay.getBytes();
     }
 

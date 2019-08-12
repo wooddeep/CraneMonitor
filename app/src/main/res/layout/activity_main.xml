@@ -87,6 +87,29 @@
             app:srcCompat="@mipmap/cn" />
         -->
         <ImageView
+            android:id="@+id/angle_logo"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_toLeftOf="@+id/angle"
+            android:gravity="center"
+            android:paddingBottom="2dp"
+            app:srcCompat="@mipmap/rotation" />
+
+        <TextView
+            android:id="@+id/angle"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toLeftOf="@+id/weight_logo"
+            android:gravity="center"
+            android:text="10°"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <ImageView
             android:id="@+id/weight_logo"
             android:layout_width="40dp"
             android:layout_height="40dp"

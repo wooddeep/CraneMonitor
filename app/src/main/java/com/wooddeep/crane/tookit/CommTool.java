@@ -42,4 +42,13 @@ public class CommTool {
         }
         return out;
     }
+
+    public static void sleep(long usec) {
+        // 休眠
+        try {
+            Thread.sleep(usec);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -53,7 +53,7 @@ public class Alarm {
     public static AlarmEvent alarmEvent = new AlarmEvent();
 
 
-    public static CenterCycle craneToCraneAlarm(HashMap<String, CycleElem> craneMap, String no, AlarmSet alarmSet) throws Exception {
+    public static CenterCycle craneToCraneAlarm(HashMap<String, CycleElem> craneMap, String no, float alarmDis) throws Exception {
         CenterCycle cc = (CenterCycle) craneMap.get(no);
         Geometry gcc = cc.getArmGeo(0f);
         float myHeight = cc.height; // 本塔高度
@@ -78,7 +78,7 @@ public class Alarm {
 
                 if (Math.abs(myHeight - sideHeight) <= 1) { // 高度差相差1m, 当成等高, 查看当前圆心和对端 大臂端点的距离, 无前后告警, 只有左右告警
                     float distance = (float) gcc.distance(gsc);
-                    if (distance < alarmSet.getT2tDistGear1()) { // TODO: 此处告警距离采取的是1挡告警距离，需要根据实际的档位来设定告警距离
+                    if (distance < alarmDis) {
                         if (cc.prvHangle < cc.hAngle) {
                             Geometry gPredect = cc.getArmGeo(0.1f); // 逆时针旋转
                             float distPred = (float) gPredect.distance(gsc);
@@ -101,7 +101,7 @@ public class Alarm {
                     Geometry carPos = cc.getCarGeo(0f, 0f);
                     float carToArmDis = (float) carPos.distance(gsc); // 本机小车 到 旁机 大臂的距离
                     //System.out.printf("### center car to side[%s] arm distance: %f \n", id, carToArmDis);
-                    if (carToArmDis < alarmSet.getT2tDistGear1()) { // TODO: 此处告警距离采取的是1挡告警距离，需要根据实际的档位来设定告警距离
+                    if (carToArmDis < alarmDis) {
                         if (cc.prvHangle < cc.hAngle) {
                             Geometry gPredect = cc.getCarGeo(0.1f, 0f); // 逆时针旋转
                             float distPred = (float) gPredect.distance(gsc);
@@ -141,7 +141,7 @@ public class Alarm {
                     Geometry carPos = sc.getCarGeo(0f, 0f);
                     float armToCarDis = (float) gcc.distance(carPos); // 本机大臂 到 旁机 小车的距离
                     //System.out.printf("### center car to side[%s] car distance: %f \n", id, armToCarDis);
-                    if (armToCarDis < alarmSet.getT2tDistGear1()) { // TODO: 此处告警距离采取的是1挡告警距离，需要根据实际的档位来设定告警距离
+                    if (armToCarDis < alarmDis) {
                         if (cc.prvHangle < cc.hAngle) {
                             Geometry gPredect = cc.getArmGeo(0.1f); // 逆时针旋转
                             float distPred = (float) gPredect.distance(carPos);
@@ -166,7 +166,7 @@ public class Alarm {
         return cc;
     }
 
-    public static void craneToAreaAlarm(List<BaseElem> elems, CenterCycle cc, AlarmSet alarmSet) throws Exception {
+    public static void craneToAreaAlarm(List<BaseElem> elems, CenterCycle cc, float alarmDis) throws Exception {
         Geometry gcc = cc.getArmGeo(0f);
 
         for (BaseElem elem : elems) {
@@ -177,13 +177,13 @@ public class Alarm {
                 Geometry carPos = cc.getCarGeo(0f, 0f);
                 float carToAreaDis = (float) carPos.distance(sideGeo); // 本机小车 到 旁机 大臂的距离
                 //System.out.printf("### center car to side[%s] arm distance: %f \n", "TODO", carToAreaDis);
-                if (carToAreaDis < alarmSet.getT2cDistGear1()) { // TODO: 此处告警距离采取的是1挡告警距离，需要根据实际的档位来设定告警距离
+                if (carToAreaDis < alarmDis) {
                     // 判断左告警 还是 右告警
                     if (cc.prvHangle < cc.hAngle) {
                         Geometry gPredect = cc.getCarGeo(0.1f, 0f); // 小车旋转后的位置
                         float distPred = (float) gPredect.distance(sideGeo);
                         if (distPred < carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
-                            System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
+                            //System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
                             alarmEvent.leftAlarm = true;
                         }
                     }
@@ -193,7 +193,7 @@ public class Alarm {
                         float distPred = (float) gPredect.distance(sideGeo);
                         if (distPred < carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
                             alarmEvent.rightAlarm = true;
-                            System.out.printf("### center turn right to [%s] alarm!!!\n", "TODO");
+                            //System.out.printf("### center turn right to [%s] alarm!!!\n", "TODO");
                         }
                     }
 
@@ -201,7 +201,7 @@ public class Alarm {
                         Geometry gPredect = cc.getCarGeo(0.0f, 0.1f); // 向外运行
                         float distPred = (float) gPredect.distance(sideGeo);
                         if (distPred < carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
-                            System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
+                            //System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
                             alarmEvent.forwardAlarm = true;
                         }
                     }
@@ -211,7 +211,7 @@ public class Alarm {
                         float distPred = (float) gPredect.distance(sideGeo);
                         if (distPred < carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
                             alarmEvent.backendAlarm = true;
-                            System.out.printf("### [1]center turn right to [%s] alarm!!!\n", "TODO");
+                            //System.out.printf("### [1]center turn right to [%s] alarm!!!\n", "TODO");
                         }
                     }
                 }
@@ -222,14 +222,14 @@ public class Alarm {
                 if (ctoaDis > cc.r) continue; // 永远不会撞上
 
                 float dis = (float) gcc.distance(sideGeo); // 本机大臂到区域的距离
-                if (dis <= alarmSet.getT2cDistGear1()) {  // TODO 此处告警距离采取的是1挡告警距离，需要根据实际的档位来设定告警距离
+                if (dis <= alarmDis) {
                     //System.out.println("##### distance alarm .....");
                     // 根据数据的变化方向判断
                     if (cc.prvHangle < cc.hAngle) {
                         Geometry gPredect = cc.getArmGeo(0.1f); // 逆时针旋转
                         float distPred = (float) gPredect.distance(sideGeo);
                         if (distPred < dis) {
-                            System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
+                            //System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
                             alarmEvent.leftAlarm = true;
                         }
                     }
@@ -239,7 +239,7 @@ public class Alarm {
                         float distPred = (float) gPredect.distance(sideGeo);
                         if (distPred < dis) {
                             alarmEvent.rightAlarm = true;
-                            System.out.printf("### [2]center turn right to [%s] alarm!!!\n", "TODO");
+                            //System.out.printf("### [2]center turn right to [%s] alarm!!!\n", "TODO");
                         }
                     }
                 }
@@ -262,14 +262,35 @@ public class Alarm {
         // 角度 -> 幅度 -> 采样值
         double angleDelta = cc.hAngle - cc.prvHangle;
         double radiansDelta = Math.toRadians(angleDelta);
-        double dataDelat = radiansDelta / calibration.getRotateRate();
+        double dataDelat = Math.abs(radiansDelta / calibration.getRotateRate());
+        //System.out.printf("%f  ---  %f\n", (float)dataDelat * 1000 , (float)(System.currentTimeMillis() - cc.prvMsec));
+        float rotateRate = (float) dataDelat * 1000 / (System.currentTimeMillis() - cc.prvMsec); // 回转幅度变化率
+        float tTotAlarmDis = 10f;
+        float tTocAlarmDis = 10f;
+        if (rotateRate <= calibration.getGearRate1()) {
+            tTotAlarmDis = alarmSet.getT2tDistGear1();
+            tTocAlarmDis = alarmSet.getT2cDistGear1();
+            //System.out.println("@@@@@@@@ gear1");
+        } else if (rotateRate <= calibration.getGearRate2()) {
+            tTotAlarmDis = alarmSet.getT2tDistGear2();
+            tTocAlarmDis = alarmSet.getT2cDistGear2();
+            //System.out.println("@@@@@@@@ gear2");
+        } else if (rotateRate <= calibration.getGearRate3()) {
+            tTotAlarmDis = alarmSet.getT2tDistGear3();
+            tTocAlarmDis = alarmSet.getT2cDistGear3();
+            //System.out.println("@@@@@@@@ gear3");
+        } else if (rotateRate <= calibration.getGearRate4()) {
+            tTotAlarmDis = alarmSet.getT2tDistGear4();
+            tTocAlarmDis = alarmSet.getT2cDistGear4();
+            //System.out.println("@@@@@@@@ gear4");
+        } else {
+            tTotAlarmDis = alarmSet.getT2tDistGear5();
+            tTocAlarmDis = alarmSet.getT2cDistGear5();
+            //System.out.println("@@@@@@@@ gear5");
+        }
 
-        float rotateRate = (float)dataDelat * 1000 / (System.currentTimeMillis() - cc.prvMsec); // 回转变化率
-
-        // TODO 根据 档位的 标定， 计算当前档位的安全距离 // TODO
-
-        Alarm.craneToCraneAlarm(craneMap, no, alarmSet);
-        Alarm.craneToAreaAlarm(elemList, cc, alarmSet);
+        Alarm.craneToCraneAlarm(craneMap, no, tTotAlarmDis);
+        Alarm.craneToAreaAlarm(elemList, cc, tTocAlarmDis);
 
         eventBus.post(alarmEvent);
 

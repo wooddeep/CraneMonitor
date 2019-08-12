@@ -74,8 +74,10 @@ public class Protocol {
         return 0;
     }
 
+    private byte[] out = new byte[20];
+
     public byte[] pack() {
-        byte[] out = new byte[20];
+
         out[0] = start;
 
         out[1] = (byte) (((this.amplitude & 0xFF00) >> 8) & 0xFF);
