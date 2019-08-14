@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.wooddeep.crane.comm.Protocol;
 import com.wooddeep.crane.comm.RotateProto;
+import com.wooddeep.crane.ebus.CalibrationCloseEvent;
 import com.wooddeep.crane.ebus.CalibrationEvent;
 import com.wooddeep.crane.ebus.MessageEvent;
 import com.wooddeep.crane.ebus.RotateEvent;
@@ -791,21 +792,22 @@ public class CalibrationSetting extends AppCompatActivity {
         ((Button) findViewById(R.id.start_value)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventBus.getDefault().post(new SimulatorEvent(true, false, false, 3));
+                System.out.println("###############");
+                EventBus.getDefault().post(new SimulatorEvent(true, false, false, 0));
             }
         });
         // stop
         ((Button) findViewById(R.id.stop_value)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventBus.getDefault().post(new SimulatorEvent(false, true, false, 100));
+                EventBus.getDefault().post(new SimulatorEvent(false, true, false, 1000));
             }
         });
         // running
         ((Button) findViewById(R.id.running)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventBus.getDefault().post(new SimulatorEvent(false, false, true, 3));
+                EventBus.getDefault().post(new SimulatorEvent(false, false, true, 0));
             }
         });
 
@@ -906,6 +908,7 @@ public class CalibrationSetting extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (view.getId() == R.id.close_logo) {
+                    EventBus.getDefault().post(new CalibrationCloseEvent());
                     finish();
                 }
 

@@ -6,24 +6,24 @@ package com.wooddeep.crane.simulator;
 
 public class UartEmitter {
 
-    private int sAmplitude = 3;
-    private int sHeight = 3;
-    private int sWeight = 3;
-    private int sWindSpeed = 3;
+    private int sAmplitude = 0;
+    private int sHeight = 0;
+    private int sWeight = 0;
+    private int sWindSpeed = 0;
 
-    private int eAmplitude = 100;
-    private int eHeight = 100;
-    private int eWeight = 100;
-    private int eWindSpeed = 100;
+    private int eAmplitude = 1000;
+    private int eHeight = 1000;
+    private int eWeight = 1000;
+    private int eWindSpeed = 1000;
     private int eCarRange = 35;
 
     private int carRange = 0;
 
     public UartEmitter() {
-        this.sAmplitude = 3;
-        this.sHeight = 3;
-        this.sWeight = 3;
-        this.sWindSpeed = 3;
+        this.sAmplitude = 0;
+        this.sHeight = 0;
+        this.sWeight = 0;
+        this.sWindSpeed = 0;
         this.carRange = 0;
     }
 
@@ -70,10 +70,10 @@ public class UartEmitter {
     }
 
     public void initData() {
-        this.sAmplitude = 3;
-        this.sHeight = 3;
-        this.sWeight = 3;
-        this.sWindSpeed = 3;
+        this.sAmplitude = 0;
+        this.sHeight = 0;
+        this.sWeight = 0;
+        this.sWindSpeed = 0;
         this.carRange = 0;
     }
 
@@ -94,7 +94,7 @@ public class UartEmitter {
             increase = false;
         }
 
-        if (this.sAmplitude <= 3) {
+        if (this.sAmplitude <= 0) {
             increase = true;
         }
 
@@ -115,7 +115,7 @@ public class UartEmitter {
     }
 
     public void adjust(int value) {
-        if (value < 3) value = 3;
+        if (value < 0) value = 0;
         this.sAmplitude = value;
         this.sHeight = value;
         this.sWeight = value;

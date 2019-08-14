@@ -1,5 +1,7 @@
 package com.wooddeep.crane.comm;
 
+import com.wooddeep.crane.persist.entity.Calibration;
+
 public class RotateProto {
 
     // 01 04 00 01 00 02 20 0B
@@ -8,6 +10,8 @@ public class RotateProto {
     private byte second = (byte) 0x04;
 
     private int data = 0x00010002 & 0xFFFFFFFF; // 数据
+
+    private float angle = 0;
 
     public RotateProto() {
 
@@ -62,4 +66,19 @@ public class RotateProto {
         this.data = data;
     }
 
+    public float calcAngle(Calibration calibration) {
+        float startAngle = calibration.getRotateStartAngle();
+        float currentAngle = startAngle + (getData() - calibration.getRotateStartData()) * calibration.getRotateRate();
+        float degree = Math.round(Math.toDegrees(currentAngle) * 10) / 10.0f;
+        setAngle(degree);
+        return degree;
+    }
+
+    public float getAngle() {
+        return angle;
+    }
+
+    public void setAngle(float angle) {
+        this.angle = angle;
+    }
 }

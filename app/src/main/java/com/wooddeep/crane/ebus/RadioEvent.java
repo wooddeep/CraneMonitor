@@ -12,8 +12,13 @@ public class RadioEvent {
 
     public byte [] data ;
 
+    public RadioEvent() {
+
+    }
+
     public RadioEvent(byte [] d) {
         this.data = d;
     }
+
 
 }

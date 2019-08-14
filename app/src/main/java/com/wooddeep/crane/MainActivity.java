@@ -23,9 +23,11 @@ import com.wooddeep.crane.alarm.Alarm;
 import com.wooddeep.crane.comm.Protocol;
 import com.wooddeep.crane.comm.RadioProto;
 import com.wooddeep.crane.comm.RotateProto;
+import com.wooddeep.crane.ebus.AlarmDetectEvent;
 import com.wooddeep.crane.ebus.AlarmEvent;
 import com.wooddeep.crane.ebus.AlarmSetEvent;
 import com.wooddeep.crane.ebus.AlarmShowEvent;
+import com.wooddeep.crane.ebus.CalibrationCloseEvent;
 import com.wooddeep.crane.ebus.CalibrationEvent;
 import com.wooddeep.crane.ebus.FanSpeedEvent;
 import com.wooddeep.crane.ebus.HeightEvent;
@@ -207,7 +209,8 @@ public class MainActivity extends AppCompatActivity {
     private Protocol prevProto = new Protocol(); // 记录前次ad数据解析结果
     private Protocol currProto = new Protocol(); // 记录当次ad数据解析结果
 
-    private RotateProto rotateProto = new RotateProto();
+    private RotateProto currRotateProto = new RotateProto();
+    private RotateProto prevRotateProto = new RotateProto();
     private RadioProto radioProto = new RadioProto();
 
     private int craneType = 0; // 塔基类型: 0 ~ 平臂式, 2动臂式
@@ -225,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
     private SimulatorFlags flags = new SimulatorFlags();
     private UartEmitter emitter = new UartEmitter();
 
+    private boolean calibrationFlag = false;
     private EventBus eventBus = EventBus.getDefault();
 
     private boolean iAmMaster = false; // 本机是否为通信主机
@@ -241,16 +245,19 @@ public class MainActivity extends AppCompatActivity {
     private InputStream ttyS1InputStream;
     private OutputStream ttyS1OutputStream;
 
-    byte[] in = new byte[1024]; // 输如缓冲
-    byte[] rotateIn = new byte[1024]; // 输如缓冲
-    byte[] radioIn = new byte[1024];
-    byte[] adBuff = new byte[20]; //
-    byte[] rotateBuff = new byte[10];
-    byte[] radioBuff = new byte[39];
+    private byte[] adXBuff = new byte[1024];
+    private byte[] rotateXBuff = new byte[1024];
+    private byte[] radioXBuff = new byte[1024];
+    private byte[] adRBuff = new byte[20];
+    private byte[] rotateRBuff = new byte[10];
+    private byte[] radioRBuff = new byte[39];
 
     private HeightEvent heightEvent = new HeightEvent();
     private WeightEvent weightEvent = new WeightEvent();
     private LengthEvent lengthEvent = new LengthEvent();
+    private RotateEvent rotateEvent = new RotateEvent();
+    private RadioEvent radioEvent = new RadioEvent();
+    private AlarmDetectEvent alarmDetectEvent = new AlarmDetectEvent();
 
     public float getOscale() {
         return oscale;
@@ -261,149 +268,152 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startDataSimThread() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int alarmTimes = 0;
-                while (true) {
+        new Thread(() -> {
+            int alarmTimes = 0;
+            while (true) {
 
-                    EventBus.getDefault().post(new MessageEvent(".", ".")); // 告警消息
-
-                    if (flags.isStart() || flags.isStop()) {
-                        currProto.setAmplitude(emitter.getsAmplitude());
-                        currProto.setHeight(emitter.getsHeight());
-                        currProto.setWeight(emitter.getsWeight());
-                        currProto.setWindSpeed(emitter.getsWindSpeed());
-
-                        rotateProto.setData(emitter.getsAmplitude()); // TODO 单独做回转数据的发射器, 现在借用幅度值的发射器
-                    }
-
-                    if (flags.isRuning()) {
-                        currProto.setAmplitude(emitter.getsAmplitude());
-                        currProto.setHeight(emitter.getsHeight());
-                        currProto.setWeight(emitter.getsWeight());
-                        currProto.setWindSpeed(emitter.getsWindSpeed());
-                        rotateProto.setData(emitter.getsAmplitude()); // TODO 单独做回转数据的发射器, 现在借用幅度值的发射器
-
-                        if (alarmTimes % 10 == 0) { // 100毫秒 累计一次
-                            emitter.emitter(); // 累计
-                            eventBus.post(new AlarmShowEvent()); // 发送alarm展示消息
-                        }
-
-                        alarmTimes++;
-                    }
-
-                    byte[] data = currProto.pack(); // TODO 判断值是否有变化, 无变化，则不发送消息
-                    currProto.parse(data);
-                    currProto.calcRealHeight(calibration);
-                    currProto.calcRealLength(calibration);
-                    currProto.calcRealWeigth(calibration);
-
-                    if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) > 0.1f) {
-                        lengthEvent.setLength(currProto.getRealLength());
-                        eventBus.post(lengthEvent);
-                        System.out.println(System.currentTimeMillis());
-                    }
-
-                    prevProto.setRealLength(currProto.getRealLength());
-
-                    if (mainCrane != null) {  // 次环
-                        // 模拟回转
-                        eventBus.post(new RotateEvent(rotateProto.pack(), mainCrane.getCoordX1(), mainCrane.getCoordY1()));
-                        radioProto.setSourceNo("2N"); // 从机的ID为2N
-                        radioProto.setTargetNo("0N"); // 从机回应
-                        radioProto.setRange(emitter.getCarRange());
-                        radioProto.setRotate(-emitter.getsAmplitude());
-
-                        // 模拟电台
-                        eventBus.post(new RadioEvent(radioProto.packReply()));
-                    }
-
-                    CommTool.sleep(1);
-
+                if (flags.isStart() || flags.isStop()) {
+                    currProto.setAmplitude(emitter.getsAmplitude());
+                    currProto.setHeight(emitter.getsHeight());
+                    currProto.setWeight(emitter.getsWeight());
+                    currProto.setWindSpeed(emitter.getsWindSpeed());
+                    currRotateProto.setData(emitter.getsAmplitude()); // TODO 单独做回转数据的发射器, 现在借用幅度值的发射器
                 }
+
+                if (flags.isRuning()) {
+                    currProto.setAmplitude(emitter.getsAmplitude());
+                    currProto.setHeight(emitter.getsHeight());
+                    currProto.setWeight(emitter.getsWeight());
+                    currProto.setWindSpeed(emitter.getsWindSpeed());
+                    currRotateProto.setData(emitter.getsAmplitude()); // TODO 单独做回转数据的发射器, 现在借用幅度值的发射器
+
+                    if (alarmTimes % 2 == 0) { // 100毫秒 累计一次
+                        emitter.emitter(); // 累计
+                    }
+                }
+
+                byte[] data = currProto.pack(); // TODO 判断值是否有变化, 无变化，则不发送消息
+                if (calibrationFlag) {
+                    eventBus.post(new UartEvent(data)); // 发送
+                }
+
+                currProto.parse(data);
+                currProto.calcRealHeight(calibration);
+                currProto.calcRealLength(calibration);
+                currProto.calcRealWeigth(calibration);
+                if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) > 0.05f) {
+                    lengthEvent.setLength(currProto.getRealLength());
+                    eventBus.post(lengthEvent);
+                    prevProto.setRealLength(currProto.getRealLength());
+                }
+
+                if (mainCrane != null) {  // 次环
+                    // 模拟回转
+                    data = currRotateProto.pack();
+                    rotateEvent.setData(data);
+                    currRotateProto.parse(data);
+                    currRotateProto.calcAngle(calibration);
+
+                    if (Math.abs(currRotateProto.getAngle() - prevRotateProto.getAngle()) > 0.05f) {
+                        rotateEvent.setCenterX(mainCrane.getCoordX1());
+                        rotateEvent.setCenterY(mainCrane.getCoordY1());
+                        rotateEvent.setAngle(currRotateProto.getAngle());
+                        eventBus.post(rotateEvent);
+                        prevRotateProto.setAngle(currRotateProto.getAngle());
+                    }
+
+                    // TODO
+                    radioProto.setSourceNo("2N"); // 从机的ID为2N
+                    radioProto.setTargetNo("0N"); // 从机回应
+                    radioProto.setRange(emitter.getCarRange());
+                    radioProto.setRotate(-emitter.getsAmplitude());
+
+                    // 模拟电台
+                    eventBus.post(new RadioEvent(radioProto.packReply()));
+                }
+
+                if (alarmTimes % 1000 == 0) {
+                    eventBus.post(alarmDetectEvent); // 发送alarm展示消息
+                }
+
+                alarmTimes++;
+                CommTool.sleep(10);
             }
         }).start();
     }
 
     private void startUartThread() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    while (true) {
-                        // AD 值
-                        if (ttyS0InputStream.available() > 0) {
-                            int len = ttyS0InputStream.read(in, 0, 1024);
-                            for (int i = len - 20, j = 0; i < len; j++, i++) {
-                                adBuff[j] = in[i];
-                            }
-                            eventBus.post(new UartEvent(adBuff)); // 发送
+        new Thread(() -> {
+            try {
+                while (true) {
+                    // AD 值
+                    if (ttyS0InputStream.available() > 0) {
+                        int len = ttyS0InputStream.read(adXBuff, 0, 1024);
+                        for (int i = len - 20, j = 0; i < len; j++, i++) {
+                            adRBuff[j] = adXBuff[i];
                         }
-                        //CommTool.sleep(1);
+                        eventBus.post(new UartEvent(adRBuff)); // 发送
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    CommTool.sleep(10);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }).start();
     }
 
     private void startRadioThread() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    while (true) {
-                        // AD 值
-                        if (ttyS1InputStream.available() > 0) {
-                            int len = ttyS1InputStream.read(radioIn, 0, 1024);
-                            for (int i = 0; i < 39; i++) {
-                                radioBuff[i] = radioIn[i];
-                            }
-                            eventBus.post(new RadioEvent(radioBuff)); // 发送
+        new Thread(() -> {
+            try {
+                while (true) {
+                    // AD 值
+                    if (ttyS1InputStream.available() > 0) {
+                        int len = ttyS1InputStream.read(radioXBuff, 0, 1024);
+                        for (int i = 0; i < 39; i++) {
+                            radioRBuff[i] = radioXBuff[i];
                         }
-
-                        CommTool.sleep(80);
+                        radioEvent.setData(radioRBuff);
+                        eventBus.post(radioEvent); // 发送
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+                    CommTool.sleep(80);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }).start();
     }
 
     private void startRotateThread() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // 485 回转, 硬件有点问题, ttyS3 对应单板的串口2, 编号从0开始, 白色R2，黑色 T2
-                    SerialPort serialttyS2 = new SerialPort(new File("/dev/ttyS3"), 19200, 0);
-                    OutputStream ttyS2OutputStream = serialttyS2.getOutputStream();
-                    InputStream ttyS2InputStream = serialttyS2.getInputStream();
+        new Thread(() -> {
+            try {
+                // 485 回转, 硬件有点问题, ttyS3 对应单板的串口2, 编号从0开始, 白色R2，黑色 T2
+                SerialPort serialttyS2 = new SerialPort(new File("/dev/ttyS3"), 19200, 0);
+                OutputStream ttyS2OutputStream = serialttyS2.getOutputStream();
+                InputStream ttyS2InputStream = serialttyS2.getInputStream();
 
-                    byte[] rotateCmd = new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B};
-                    while (true) {
-                        //System.out.println("#################");
-                        ttyS2OutputStream.write(rotateCmd);
-                        if (ttyS2InputStream.available() > 0) {
-                            int len = ttyS2InputStream.read(rotateIn, 0, 1024);
-                            for (int i = 0; i < 9; i++) {
-                                rotateBuff[i] = rotateIn[i];
-                                //System.out.printf("%02x ", rotateIn[i] & 0xFF);
-                            }
-                            //System.out.println();
-                            if (rotateBuff[0] == 0x01 && rotateBuff[1] == 0x04) {
-                                eventBus.post(new RotateEvent(rotateBuff, mainCrane.getCoordX1(), mainCrane.getCoordY1())); // 发送
-                            }
+                byte[] rotateCmd = new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B};
+                while (true) {
+
+                    ttyS2OutputStream.write(rotateCmd);
+                    if (ttyS2InputStream.available() > 0) {
+                        int len = ttyS2InputStream.read(rotateXBuff, 0, 1024);
+                        for (int i = 0; i < 9; i++) {
+                            rotateRBuff[i] = rotateXBuff[i];
                         }
-                        CommTool.sleep(50);
-                    }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                        if (rotateRBuff[0] == 0x01 && rotateRBuff[1] == 0x04) {
+                            rotateEvent.setData(rotateRBuff);
+                            rotateEvent.setCenterX(mainCrane.getCoordX1());
+                            rotateEvent.setCenterY(mainCrane.getCoordY1());
+                            eventBus.post(rotateEvent); // 发送
+                        }
+                    }
+                    CommTool.sleep(50);
                 }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }).start();
     }
@@ -425,7 +435,6 @@ public class MainActivity extends AppCompatActivity {
             masterRadioProto.setRange(centerCycle.carRange); // 实际的物理维度值，不是按比例值的值
 
             // TODO 发送消息，通知查询第一个从机
-
             return;
         }
 
@@ -451,7 +460,6 @@ public class MainActivity extends AppCompatActivity {
             // 更新从机
             CycleElem slave = craneMap.get(radioProto.getSourceNo());
             if (slave != null) {
-                //System.out.printf("slave: %s, rotate: %f, range: %f\n", radioProto.sourceNo, radioProto.rotate, radioProto.range);
                 slave.setCarRange(radioProto.getRange());
                 slave.setHAngle(radioProto.getRotate());
             }
@@ -474,7 +482,6 @@ public class MainActivity extends AppCompatActivity {
     public void AlarmSetEventBus(AlarmSetEvent event) {
         System.out.printf("######## userEvent = %f\n", event.alarmSet.t2cDistGear1);
         alarmSet = event.alarmSet; // 更新配置
-
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
@@ -485,17 +492,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void messageEventBus(MessageEvent userEvent) {
-        //fanRotate();
-        //elemMap.alramFlink();
+        fanRotate();
+        elemMap.alramFlink();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void alarmSetEventBus(AlarmEvent event) {
+    public void alarmShowEventBus(AlarmEvent event) {
         alarmEvent = event;
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void alarmShowEventBus(AlarmShowEvent event) {
         if (alarmEvent == null) return;
         if (alarmEvent.leftAlarm == true) {
             Alarm.startAlarm(activity, R.id.left_alarm, R.mipmap.left_rotation_alarm);
@@ -522,12 +525,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    // TODO 告警判断不通过UART数据的触发
-    // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
-    /*
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void AlarmJudgeEventBus(UartEvent uartEvent) {
+    public void AlarmJudgeEventBus(AlarmDetectEvent event) {
         try {
             if (elemList.size() == 0) return;
             Alarm.alarmDetect(calibration, elemList, craneMap, myCraneNo, alarmSet, eventBus);
@@ -535,7 +534,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    */
 
     private void setCurrTime() {
         Date date = new Date();
@@ -613,13 +611,8 @@ public class MainActivity extends AppCompatActivity {
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void RotateDateEventBus(RotateEvent event) {
-        byte[] data = event.data;
-        rotateProto.parse(data);
-        //System.out.println(rotateProto.getData());
-        float startAngle = calibration.getRotateStartAngle();
-        double currentAngle = startAngle + (rotateProto.getData() - calibration.getRotateStartData()) * calibration.getRotateRate();
-        angleView.setText(String.format("%.1f°", (float) Math.toDegrees(currentAngle)));
-        centerCycle.setHAngle((float) Math.toDegrees(currentAngle)); // TODO 根据比例值计算角度
+        angleView.setText(event.angle + "°");
+        centerCycle.setHAngle(event.angle);
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
@@ -636,6 +629,13 @@ public class MainActivity extends AppCompatActivity {
         if (flags.isStart()) {
             emitter.initData();
         }
+    }
+
+
+    // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void calibrationCloseEventBus(CalibrationCloseEvent simEvent) {
+        calibrationFlag = false;
     }
 
     public void setOnTouchListener(View view) {
@@ -800,6 +800,7 @@ public class MainActivity extends AppCompatActivity {
         calibrationSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                calibrationFlag = true; // 标定标识 TODO 放置到页面跳转处触发
                 Intent intent = new Intent(MainActivity.this, CalibrationSetting.class);
                 startActivity(intent);
             }

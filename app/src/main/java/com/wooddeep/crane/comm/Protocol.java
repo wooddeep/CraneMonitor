@@ -120,27 +120,27 @@ public class Protocol {
     public float calcRealWeigth(Calibration calibration) {
         float weightValue = calibration.getWeightStart() + calibration.getWeightRate() *
             (getWeight() - calibration.getWeightStartData());
-        setRealWeight(weightValue);
+        setRealWeight(Math.round(weightValue * 10) / 10.0f);
         return Math.round(weightValue * 10) / 10.0f;
     }
 
     public float calcRealHeight(Calibration calibration) {
         float heightValue = calibration.getHeightStart() + calibration.getHeightRate() *
             (getHeight() - calibration.getHeightStartData());
-        setRealHeight(heightValue);
+        setRealHeight(Math.round(heightValue * 10) / 10.0f);
         return Math.round(heightValue * 10) / 10.0f;
     }
 
     public float calcRealLength(Calibration calibration) {
         float armLengthValue = calibration.getLengthStart() + calibration.getLengthRate() *
             ((float) getAmplitude() - calibration.getLengthStartData());
-        setRealLength(armLengthValue);
+
+        setRealLength(Math.round(armLengthValue * 10) / 10.0f);
         return Math.round(armLengthValue * 10) / 10.0f;
     }
 
     public float calcRealSpeed(Calibration calibration) {
         //float windSpeedValue = calibration.get + calibration.getWeightRate() * (parser.getWeight() - calibration.getWeightStartData());
-
         //return Math.round(weightValue * 10) / 10.0f;
         return 0f;
     }
