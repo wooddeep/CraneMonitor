@@ -1,5 +1,10 @@
 package com.wooddeep.crane.comm;
 
+import android.widget.TextView;
+
+import com.wooddeep.crane.R;
+import com.wooddeep.crane.persist.entity.Calibration;
+
 public class Protocol {
     //    幅度   高度  重量   风速                          校验码？
     // AA 00 02 00 02 00 03 00 02 00 04 00 04 00 00 80 00 F8 57 55
@@ -16,6 +21,18 @@ public class Protocol {
     private byte[] reserved = new byte[10];
 
     private byte end = (byte) 0x55;
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    private float realWeight;
+
+    private float realHeight;
+
+    private float realLength;
+
+    private float realSpeed;
+
+    ///////////////////////////////////////////////////////////////////////////
 
     public int getAmplitude() {
         return amplitude;
@@ -94,5 +111,69 @@ public class Protocol {
 
         out[19] = end;
         return out;
+    }
+
+    ///////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+
+    // 根据AD值计算当前实际的重量
+    public float calcRealWeigth(Calibration calibration) {
+        float weightValue = calibration.getWeightStart() + calibration.getWeightRate() *
+            (getWeight() - calibration.getWeightStartData());
+        setRealWeight(weightValue);
+        return Math.round(weightValue * 10) / 10.0f;
+    }
+
+    public float calcRealHeight(Calibration calibration) {
+        float heightValue = calibration.getHeightStart() + calibration.getHeightRate() *
+            (getHeight() - calibration.getHeightStartData());
+        setRealHeight(heightValue);
+        return Math.round(heightValue * 10) / 10.0f;
+    }
+
+    public float calcRealLength(Calibration calibration) {
+        float armLengthValue = calibration.getLengthStart() + calibration.getLengthRate() *
+            ((float) getAmplitude() - calibration.getLengthStartData());
+        setRealLength(armLengthValue);
+        return Math.round(armLengthValue * 10) / 10.0f;
+    }
+
+    public float calcRealSpeed(Calibration calibration) {
+        //float windSpeedValue = calibration.get + calibration.getWeightRate() * (parser.getWeight() - calibration.getWeightStartData());
+
+        //return Math.round(weightValue * 10) / 10.0f;
+        return 0f;
+    }
+
+    public float getRealWeight() {
+        return realWeight;
+    }
+
+    public void setRealWeight(float realWeight) {
+        this.realWeight = realWeight;
+    }
+
+    public float getRealHeight() {
+        return realHeight;
+    }
+
+    public void setRealHeight(float realHeight) {
+        this.realHeight = realHeight;
+    }
+
+    public float getRealLength() {
+        return realLength;
+    }
+
+    public void setRealLength(float realLength) {
+        this.realLength = realLength;
+    }
+
+    public float getRealSpeed() {
+        return realSpeed;
+    }
+
+    public void setRealSpeed(float realSpeed) {
+        this.realSpeed = realSpeed;
     }
 }
