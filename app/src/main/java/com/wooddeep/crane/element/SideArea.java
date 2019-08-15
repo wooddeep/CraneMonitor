@@ -26,6 +26,9 @@ public class SideArea extends BaseElem{
     public float height; // 高度
     public String name;
     private GeometryFactory geometryFactory = new GeometryFactory();
+    private Coordinate[] coordPolygon ;//= new Coordinate[vertexs.size() + 1];
+    private Coordinate[] coordCurve ;//= new Coordinate[vertexs.size()];
+    private Geometry geometry = null;
 
     public SideArea(
         CenterCycle cc,
@@ -47,6 +50,8 @@ public class SideArea extends BaseElem{
             Vertex node = new Vertex(vertex.x, vertex.y);
             overtexs.add(node);
         }
+        coordPolygon = new Coordinate[vertexs.size() + 1];
+        coordCurve = new Coordinate[vertexs.size()];
     }
 
     public void drawSideArea(
@@ -56,6 +61,8 @@ public class SideArea extends BaseElem{
         Context context = activity.getApplicationContext();
         int width = parent.getMeasuredWidth(); // 获取组件宽度
         int height = parent.getMeasuredHeight(); // 获取组件高度
+
+        if (vertexs.size() == 0) return;
 
         for (Vertex vertex : vertexs) {
             //if ((int)(vertex.x) < 0 || (int)(vertex.y) < 0) break;
@@ -74,36 +81,22 @@ public class SideArea extends BaseElem{
         area.setType(type);
         area.setValue(vertexs);
         area.setName(name);
-    }
 
-    /*
-    public void drawSideArea(
-        Activity activity,
-        ViewGroup parent,
-        int type
-    ) {
-        Context context = activity.getApplicationContext();
-        int width = parent.getMeasuredWidth(); // 获取组件宽度
-        int height = parent.getMeasuredHeight(); // 获取组件高度
-
-        for (Vertex vertex : vertexs) {
-            //if (vertex.x < 0 || vertex.y < 0) continue;
-            vertex.x = vertex.x * centerCycle.scale + centerCycle.deltaX;
-            vertex.y = height - vertex.y * centerCycle.scale - centerCycle.delatY;  // y 轴转换
+        if (this.type == 0) {
+            List<Vertex> vertexs = this.overtexs;
+            for (int i = 0; i < vertexs.size(); i++) {
+                coordPolygon[i] = new Coordinate(vertexs.get(i).x, vertexs.get(i).y);
+            }
+            coordPolygon[vertexs.size()] = new Coordinate(vertexs.get(0).x, vertexs.get(0).y);
         }
 
-        Polygon area = new Polygon(context);
-        this.area = area;
-        FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(width, height);
-        area.setLayoutParams(paras);
-        parent.addView(area);
-
-        area.setBackgroundColor(0x00000000); // 透明色
-        area.setColor(color);
-        area.setType(type);
-        area.setValue(vertexs);
+        if (this.type == 1) {
+            List<Vertex> vertexs = this.overtexs;
+            for (int i = 0; i < vertexs.size(); i++) {
+                coordCurve[i] = new Coordinate(vertexs.get(i).x, vertexs.get(i).y);
+            }
+        }
     }
-    */
 
     public void setAlarm(boolean alarm) {
         this.area.setAlarm(alarm);
@@ -128,23 +121,14 @@ public class SideArea extends BaseElem{
     // TODO
     @Override
     public Geometry getGeometry() {
-        Geometry geometry = null;
+
+        if (vertexs.size() == 0) return null;
+
         if (this.type == 0) {
-            List<Vertex> vertexs = this.overtexs;
-            Coordinate[] coordPolygon = new Coordinate[vertexs.size() + 1];
-            for (int i = 0; i < vertexs.size(); i++) {
-                coordPolygon[i] = new Coordinate(vertexs.get(i).x, vertexs.get(i).y);
-            }
-            coordPolygon[vertexs.size()] = new Coordinate(vertexs.get(0).x, vertexs.get(0).y);
             geometry = geometryFactory.createPolygon(coordPolygon);
         }
 
         if (this.type == 1) {
-            List<Vertex> vertexs = this.overtexs;
-            Coordinate[] coordCurve = new Coordinate[vertexs.size()];
-            for (int i = 0; i < vertexs.size(); i++) {
-                coordCurve[i] = new Coordinate(vertexs.get(i).x, vertexs.get(i).y);
-            }
             geometry = geometryFactory.createLineString(coordCurve);
         }
 

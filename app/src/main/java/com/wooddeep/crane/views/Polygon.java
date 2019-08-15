@@ -40,7 +40,7 @@ public class Polygon extends View {
     private boolean flink = false;
     private int type = 0;
     private String name = "0A";
-
+    private BlurMaskFilter blurMaskFilter = new BlurMaskFilter(3f, BlurMaskFilter.Blur.SOLID);
 
     public void setName(String name) {
         this.name = name;
@@ -100,13 +100,13 @@ public class Polygon extends View {
         //Paint paint = new Paint();//创建画笔
         paint.setColor(this.color);//为画笔设置颜色
         if (flink) {
-            paint.setMaskFilter(new BlurMaskFilter(3f, BlurMaskFilter.Blur.SOLID));
+            paint.setMaskFilter(blurMaskFilter);
         }
 
         if (alarm) {
             paint.setColor(Color.rgb(225, 140, 0));
         } else {
-            paint.setMaskFilter(new BlurMaskFilter(3f, BlurMaskFilter.Blur.SOLID));
+            paint.setMaskFilter(blurMaskFilter);
             //paint.setColor(Color.rgb(		189,183,107));
             paint.setColor(this.color);
         }

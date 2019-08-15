@@ -27,6 +27,7 @@ public class SideCycle  extends CycleElem {
     public CenterCycle centerCycle;
     public SuperCircleView cycle;
     private WKTReader wKTReader = new WKTReader();
+    private String centerGeoStr = "";
 
     public SideCycle(
         CenterCycle cc,
@@ -83,6 +84,7 @@ public class SideCycle  extends CycleElem {
         cycle.setmViewCenterY(height - y * centerCycle.scale - centerCycle.delatY);
         this.cycle = cycle;
         cycle.show();
+        centerGeoStr = String.format("POINTSTRING (%f %f)", this.x, this.y);
     }
 
     public void hAngleAdd(float added) {
@@ -146,7 +148,7 @@ public class SideCycle  extends CycleElem {
 
     @Override
     public Geometry getCenterGeo() throws Exception {
-        Geometry geo = wKTReader.read(String.format("POINTSTRING (%f %f)", this.x, this.y));
+        Geometry geo = wKTReader.read(centerGeoStr);
         return geo;
     }
 
@@ -160,7 +162,9 @@ public class SideCycle  extends CycleElem {
         float isin = (float) Math.sin(Math.toRadians(this.hAngle + 180 + dAngle));
         float startpointX = this.x + (float) (this.ir * icos); // todo 添加垂直方向的斜率计算
         float startpointY = this.y + (float) (this.ir * isin);
-        Geometry gcc = wKTReader.read(String.format("LINESTRING (%f %f, %f %f)", startpointX, startpointY, endpointX, endpointY));
+        String armGeoStr = String.format("LINESTRING (%f %f, %f %f)", startpointX, startpointY, endpointX, endpointY);
+        Geometry gcc = wKTReader.read(armGeoStr);
+        armGeoStr = null;
         return gcc;
     }
 
@@ -168,8 +172,10 @@ public class SideCycle  extends CycleElem {
     public Geometry getCarGeo(float dAngle, float dDist) throws Exception {
         float cos = (float) Math.cos(Math.toRadians(this.hAngle + dAngle));
         float sin = (float) Math.sin(Math.toRadians(this.hAngle + dAngle));
-        Geometry carPos = wKTReader.read(String.format("POINTSTRING (%f %f)",
-            this.x + cos * (this.carRange + dDist), this.y + sin * (this.carRange + dDist)));
+        String carGeoStr = String.format("POINTSTRING (%f %f)",
+            this.x + cos * (this.carRange + dDist), this.y + sin * (this.carRange + dDist));
+        Geometry carPos = wKTReader.read(carGeoStr);
+        carGeoStr = null;
         return carPos;
     }
 }

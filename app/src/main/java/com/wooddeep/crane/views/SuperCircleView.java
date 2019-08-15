@@ -60,7 +60,8 @@ public class SuperCircleView extends View {
     private Paint ringColorPaint;
     private Paint textPaint;
     private String name = "0N";
-
+    private BlurMaskFilter blurMaskFilter = new BlurMaskFilter(3f, BlurMaskFilter.Blur.SOLID);
+    private DashPathEffect dashPathEffect = new DashPathEffect(new float[]{4, 4}, 0);
 
     public void setName(String name) {
         this.name = name;
@@ -209,7 +210,7 @@ public class SuperCircleView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        setLayerType(LAYER_TYPE_SOFTWARE, null);
+        //setLayerType(LAYER_TYPE_SOFTWARE, null);
         mPaint.setColor(mMinCircleColor);
         drawNormalRing(canvas);
 
@@ -229,13 +230,13 @@ public class SuperCircleView extends View {
         ringMaxPaint.setStyle(Paint.Style.STROKE);
         ringMaxPaint.setStrokeWidth(1);
         ringMaxPaint.setColor(Color.GRAY);//圆环默认颜色为灰色
-        ringMaxPaint.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
+        ringMaxPaint.setPathEffect(dashPathEffect);
 
         //Paint ringRealPaint = mPaint; //new Paint(mPaint);
         ringRealPaint.setStyle(Paint.Style.STROKE);
         ringRealPaint.setStrokeWidth(mRingWidth);
         ringRealPaint.setColor(mRingNormalColor);
-        ringRealPaint.setMaskFilter(new BlurMaskFilter(3f, BlurMaskFilter.Blur.SOLID));
+        ringRealPaint.setMaskFilter(blurMaskFilter);
 
         // 大臂环
         canvas.drawArc(mRectF, 360, 360, false, ringMaxPaint);
@@ -258,13 +259,13 @@ public class SuperCircleView extends View {
         radioPaint.setStyle(Paint.Style.STROKE);
         radioPaint.setStrokeWidth(2.0f);
         if (flink) {
-            radioPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
+            radioPaint.setMaskFilter(blurMaskFilter);
         }
 
         if (alarm) {
             radioPaint.setColor(Color.rgb(225, 140, 0));
         } else {
-            radioPaint.setMaskFilter(new BlurMaskFilter(5f, BlurMaskFilter.Blur.SOLID));
+            radioPaint.setMaskFilter(blurMaskFilter);
             radioPaint.setColor(mRingNormalColor);
         }
 

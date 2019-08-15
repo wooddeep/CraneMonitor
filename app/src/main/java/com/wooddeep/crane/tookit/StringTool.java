@@ -1,5 +1,14 @@
 package com.wooddeep.crane.tookit;
 
+import org.locationtech.jts.geom.Geometry;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+
 /**
  * Created by niuto on 2019/8/15.
  */
@@ -106,6 +115,14 @@ public class StringTool {
 
     }
 
+    public static BufferedReader stringReader(byte[] src) {
+        DataInputStream dis = new DataInputStream(new BufferedInputStream(new ByteArrayInputStream(src)));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(dis));
+        //dis.reset();
+        //Geometry gcc = wKTReader.read(new BufferedReader(new InputStreamReader(dis)));
+        return reader;
+    }
+
     public static void main(String[] args) {
 
         replace.setTemplate('X', 'X', 'X', 'X', 'X');
@@ -119,5 +136,4 @@ public class StringTool {
         replaceY.setReplacement('C', 'D', 'E');
         //stringModify(formatString, replace, replaceY);
     }
-
 }

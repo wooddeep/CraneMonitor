@@ -6,11 +6,19 @@ import android.graphics.Color;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.wooddeep.crane.tookit.StringTool;
 import com.wooddeep.crane.views.SuperCircleView;
 
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.WKTReader;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 public class CenterCycle extends CycleElem {
     public float scale;
@@ -31,6 +39,8 @@ public class CenterCycle extends CycleElem {
     public float height;
     public String name;
     public SuperCircleView cycle;
+
+    private String centerGeoStr = "";
 
     private WKTReader wKTReader = new WKTReader();
     private Geometry geometry; // 几何坐标
@@ -102,6 +112,8 @@ public class CenterCycle extends CycleElem {
         this.delatY = height - centerY - y * scale;
         this.cycle = cycle;
         this.scale = scale;
+
+        centerGeoStr = String.format("POINTSTRING (%f %f)", this.x, this.y);
     }
 
     public void hAngleAdd(float added) {
@@ -168,7 +180,7 @@ public class CenterCycle extends CycleElem {
 
     @Override
     public Geometry getCenterGeo() throws Exception {
-        Geometry geo = wKTReader.read(String.format("POINTSTRING (%f %f)", this.x, this.y));
+        Geometry geo = wKTReader.read(centerGeoStr);
         return geo;
     }
 
@@ -182,7 +194,12 @@ public class CenterCycle extends CycleElem {
         float isin = (float) Math.sin(Math.toRadians(this.hAngle + 180 + dAngle));
         float startpointX = this.x + (float) (this.ir * icos); // todo 添加垂直方向的斜率计算
         float startpointY = this.y + (float) (this.ir * isin);
-        Geometry gcc = wKTReader.read(String.format("LINESTRING (%f %f, %f %f)", startpointX, startpointY, endpointX, endpointY));
+        String armGeoStr = String.format("LINESTRING (%f %f, %f %f)", startpointX, startpointY, endpointX, endpointY);
+
+        //BufferedReader bufferedReader = StringTool.stringReader(armGeoStr.getBytes());
+
+        Geometry gcc = wKTReader.read(armGeoStr);
+        armGeoStr = null;
         return gcc;
     }
 
@@ -190,8 +207,10 @@ public class CenterCycle extends CycleElem {
     public Geometry getCarGeo(float dAngle, float dDist) throws Exception {
         float cos = (float) Math.cos(Math.toRadians(this.hAngle + dAngle));
         float sin = (float) Math.sin(Math.toRadians(this.hAngle + dAngle));
-        Geometry carPos = wKTReader.read(String.format("POINTSTRING (%f %f)",
-            this.x + cos * (this.carRange + dDist), this.y + sin * (this.carRange + dDist)));
+        String carGeoStr = String.format("POINTSTRING (%f %f)",
+            this.x + cos * (this.carRange + dDist), this.y + sin * (this.carRange + dDist));
+        Geometry carPos = wKTReader.read(carGeoStr);
+        carGeoStr = null;
         return carPos;
     }
 }

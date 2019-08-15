@@ -357,8 +357,8 @@ public class MainActivity extends AppCompatActivity {
                     // TODO
                     radioProto.setSourceNo(2); // 从机的ID为2N
                     radioProto.setTargetNo(0); // 从机回应
-                    radioProto.setRange(emitter.getCarRange());
-                    radioProto.setRotate(-emitter.getsAmplitude());
+                    //radioProto.setRange(emitter.getCarRange());
+                    //radioProto.setRotate(emitter.getsAmplitude());
 
                     // 模拟电台
                     //eventBus.post(new RadioEvent(radioProto.packReply()));
@@ -1218,7 +1218,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         initTable(); // 初始化表
-        startDataSimThread();
+        //startDataSimThread();
         startAdThread(); // 初始化串口线程
         startRadioThread();
 
