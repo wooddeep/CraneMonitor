@@ -280,7 +280,10 @@ public class MainActivity extends AppCompatActivity {
     private void startDataSimThread() {
         new Thread(() -> {
             int alarmTimes = 0;
+
             while (true) {
+
+                boolean alarmJdugeFlag = false;
 
                 if (flags.isStart() || flags.isStop()) {
                     currProto.setAmplitude(emitter.getsAmplitude());
@@ -297,14 +300,14 @@ public class MainActivity extends AppCompatActivity {
                     currProto.setWindSpeed(emitter.getsWindSpeed());
                     currRotateProto.setData(emitter.getsAmplitude()); // TODO 单独做回转数据的发射器, 现在借用幅度值的发射器
 
-                    if (alarmTimes % 10 == 0) { // 100毫秒 累计一次
+                    if (alarmTimes % 2 == 0) { // 100毫秒 累计一次
                         emitter.emitter(); // 累计
                     }
                 }
 
                 byte[] data = currProto.pack(); // TODO 判断值是否有变化, 无变化，则不发送消息
                 if (calibrationFlag) {
-                    eventBus.post(new UartEvent(data)); // 发送
+                    eventBus.post(new UartEvent(data)); // 发送通知标定模块数据
                 }
 
                 currProto.parse(data);
@@ -312,10 +315,27 @@ public class MainActivity extends AppCompatActivity {
                 currProto.calcRealLength(calibration);
                 currProto.calcRealWeigth(calibration);
                 if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) > 0.05f) {
-                    lengthEvent.setLength(currProto.getRealLength());
+                    //lengthEvent.setLength(currProto.getRealLength());
                     //eventBus.post(lengthEvent);
-                    //runOnUiThread(() -> centerCycle.setHAngle(currRotateProto.getAngle()));
                     prevProto.setRealLength(currProto.getRealLength());
+                    runOnUiThread(() -> lengthShow(currProto.getRealLength()));
+                    alarmJdugeFlag = true;
+                }
+
+                if (Math.abs(currProto.getRealWeight() - prevProto.getRealWeight()) > 0.05f) {
+                    //lengthEvent.setLength(currProto.getRealLength());
+                    //eventBus.post(lengthEvent);
+                    prevProto.setRealWeight(currProto.getRealWeight());
+                    runOnUiThread(() -> weightShow(currProto.getRealWeight()));
+                    alarmJdugeFlag = true;
+                }
+
+                if (Math.abs(currProto.getRealHeight() - prevProto.getRealHeight()) > 0.05f) {
+                    //lengthEvent.setLength(currProto.getRealLength());
+                    //eventBus.post(lengthEvent);
+                    prevProto.setRealHeight(currProto.getRealHeight());
+                    runOnUiThread(() -> heightShow(currProto.getRealHeight()));
+                    alarmJdugeFlag = true;
                 }
 
                 if (mainCrane != null) {  // 次环
@@ -329,8 +349,9 @@ public class MainActivity extends AppCompatActivity {
                         rotateEvent.setCenterY(mainCrane.getCoordY1());
                         rotateEvent.setAngle(currRotateProto.getAngle());
                         //eventBus.post(rotateEvent);
-                        runOnUiThread(() -> centerCycle.setHAngle(currRotateProto.getAngle()));
+                        runOnUiThread(() -> rotateShow(currRotateProto.getAngle()));
                         prevRotateProto.setAngle(currRotateProto.getAngle());
+                        alarmJdugeFlag = true;
                     }
 
                     // TODO
@@ -343,8 +364,9 @@ public class MainActivity extends AppCompatActivity {
                     //eventBus.post(new RadioEvent(radioProto.packReply()));
                 }
 
-                if (alarmTimes % 100 == 0) {
+                if (alarmJdugeFlag && alarmTimes % 9 == 0) { // TODO 数据有变化才触发告警判断
                     //eventBus.post(alarmDetectEvent); // 消息触发有延时
+                    System.out.println("#### I will do alarm judge!!!");
                     try {
                         Alarm.alarmDetect(calibration, elemList, craneMap, myCraneNo, alarmSet, eventBus);
                     } catch (Exception e) {
@@ -353,7 +375,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 alarmTimes++;
-                CommTool.sleep(1);
+                CommTool.sleep(10);
             }
         }).start();
     }
@@ -679,9 +701,15 @@ public class MainActivity extends AppCompatActivity {
         view.setText(event.getWeight() + "t");
     }
 
+    public void weightShow(float weight) {
+        if (calibration == null) return;
+        TextView view = (TextView) findViewById(R.id.weight);
+        view.setText(weight + "t");
+    }
+
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void heigthEventBus(HeightEvent event) {
+    public void heightEventBus(HeightEvent event) {
         if (calibration == null) return;
         TextView view = (TextView) findViewById(R.id.height);
         view.setText(event.getHeight() + "m");
@@ -701,12 +729,56 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void heightShow(float height) {
+        if (calibration == null) return;
+        TextView view = (TextView) findViewById(R.id.height);
+        view.setText(height + "m");
+
+        if (mainCrane == null) return;
+
+        if (mainCrane.getType() == 0) { // 平臂式
+            float craneHeight = mainCrane.getCraneHeight(); // 塔身高度
+            float craneHeight1 = CraneView.maxHookHeight - CraneView.minHookHeight;
+            float startHeight = calibration.getHeightStart(); // 吊钩起始位置
+            float endHeight = calibration.getHeightEnd(); // 吊钩终止位置
+            float heightDelat = endHeight - startHeight;
+            float hrate = heightDelat / craneHeight;
+            float hratePerData = hrate / (calibration.getHeightEndData() - calibration.getHeightStartData());
+            float hookHeight = (currProto.getHeight() - calibration.getHeightStartData()) * hratePerData * craneHeight1 + CraneView.minHookHeight;
+            craneView.setHookHeight((int) hookHeight);
+        }
+    }
+
+
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void lengthEventBus(LengthEvent event) {
         if (calibration == null) return;
         TextView view = (TextView) findViewById(R.id.length);
         view.setText(event.getLength() + "m");
+
+        if (mainCrane == null) return;
+
+        if (mainCrane.getType() == 0) { // 平臂式
+            float bigArmLength0 = mainCrane.getBigArmLength(); // 大臂总长度
+            float bigArmLength1 = CraneView.maxArmLength - CraneView.minArmLength;
+            float startCarRange = calibration.getLengthStart(); // 起始小车位置
+            float endCarRange = calibration.getLengthEnd(); // 终止小车位置
+            float valueDelat = endCarRange - startCarRange;
+            float rate = valueDelat / bigArmLength0; // 距离差 和 大臂的比例 (圆环)
+            float ratePerData0 = rate / (calibration.getLengthEndData() - calibration.getLengthStartData()); // 每一个Uart Data 和 大臂的比例
+            float ratePerData1 = rate / (calibration.getLengthEndData() - calibration.getLengthStartData());
+            float carRange0 = (currProto.getAmplitude() - calibration.getLengthStartData()) * ratePerData0 * bigArmLength0; // 圆环的小车当前坐标
+            float carRange1 = (currProto.getAmplitude() - calibration.getLengthStartData()) * ratePerData1 * bigArmLength1 + CraneView.minArmLength;
+            centerCycle.setCarRange(carRange0);
+            craneView.setArmLenth((int) (carRange1));
+        }
+    }
+
+    public void lengthShow(float length) {
+        if (calibration == null) return;
+        TextView view = (TextView) findViewById(R.id.length);
+        view.setText(length + "m");
 
         if (mainCrane == null) return;
 
@@ -734,11 +806,22 @@ public class MainActivity extends AppCompatActivity {
         view.setText(event.getSpeed() + "m/s");
     }
 
+    public void fanSpeedShow(float speed) {
+        if (calibration == null) return;
+        TextView view = (TextView) findViewById(R.id.wind_speed);
+        view.setText(speed + "m/s");
+    }
+
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void RotateDateEventBus(RotateEvent event) {
         angleView.setText(event.angle + "°");
         centerCycle.setHAngle(event.angle);
+    }
+
+    public void rotateShow(float angle) {
+        angleView.setText(angle + "°");
+        centerCycle.setHAngle(angle);
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
@@ -961,6 +1044,8 @@ public class MainActivity extends AppCompatActivity {
         if (paras.size() == 0) return;
 
         elemMap.delElems(mainFrame);
+        craneMap.clear();
+        elemList.clear();
 
         mainCrane = paras.get(0);
         for (Crane iterator : paras) {

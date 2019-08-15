@@ -222,7 +222,7 @@ public class Alarm {
                 if (ctoaDis > cc.r) continue; // 永远不会撞上
 
                 float dis = (float) gcc.distance(sideGeo); // 本机大臂到区域的距离
-                System.out.println("## big arm to area distance: " + dis);
+                //System.out.println("## big arm to area distance: " + dis);
                 if (dis <= alarmDis) {
                     //System.out.println("##### distance alarm .....");
                     // 根据数据的变化方向判断
@@ -230,7 +230,7 @@ public class Alarm {
                         Geometry gPredect = cc.getArmGeo(0.1f); // 逆时针旋转
                         float distPred = (float) gPredect.distance(sideGeo);
                         if (distPred < dis) {
-                            System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
+                            //System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
                             alarmEvent.leftAlarm = true;
                         }
                     }
@@ -240,7 +240,7 @@ public class Alarm {
                         float distPred = (float) gPredect.distance(sideGeo);
                         if (distPred < dis) {
                             alarmEvent.rightAlarm = true;
-                            System.out.printf("### [2]center turn right to [%s] alarm!!!\n", "TODO");
+                            //System.out.printf("### [2]center turn right to [%s] alarm!!!\n", "TODO");
                         }
                     }
                 }
@@ -266,29 +266,29 @@ public class Alarm {
         double radiansDelta = Math.toRadians(angleDelta);
         double dataDelat = Math.abs(radiansDelta / calibration.getRotateRate());
         float rotateRate = (float) dataDelat * 1000 / (System.currentTimeMillis() - cc.prevMsec); // 回转幅度变化率
-        System.out.printf("%f  ---  %f --- %f\n", (float)dataDelat * 1000 , (float)(System.currentTimeMillis() - cc.prevMsec), rotateRate);
+        //System.out.printf("%f  ---  %f --- %f\n", (float)dataDelat * 1000 , (float)(System.currentTimeMillis() - cc.prevMsec), rotateRate);
         float tTotAlarmDis = 10f;
         float tTocAlarmDis = 10f;
         if (rotateRate <= calibration.getGearRate1()) {
             tTotAlarmDis = alarmSet.getT2tDistGear1();
             tTocAlarmDis = alarmSet.getT2cDistGear1();
-            System.out.printf("@@@@@@@@ gear1: %f", calibration.getGearRate1());
+            //System.out.printf("@@@@@@@@ gear1: %f", calibration.getGearRate1());
         } else if (rotateRate <= calibration.getGearRate2()) {
             tTotAlarmDis = alarmSet.getT2tDistGear2();
             tTocAlarmDis = alarmSet.getT2cDistGear2();
-            System.out.printf("@@@@@@@@ gear2: %f", calibration.getGearRate2());
+            //System.out.printf("@@@@@@@@ gear2: %f", calibration.getGearRate2());
         } else if (rotateRate <= calibration.getGearRate3()) {
             tTotAlarmDis = alarmSet.getT2tDistGear3();
             tTocAlarmDis = alarmSet.getT2cDistGear3();
-            System.out.printf("@@@@@@@@ gear3: %f", calibration.getGearRate3());
+            //System.out.printf("@@@@@@@@ gear3: %f", calibration.getGearRate3());
         } else if (rotateRate <= calibration.getGearRate4()) {
             tTotAlarmDis = alarmSet.getT2tDistGear4();
             tTocAlarmDis = alarmSet.getT2cDistGear4();
-            System.out.printf("@@@@@@@@ gear4: %f", calibration.getGearRate4());
+            //System.out.printf("@@@@@@@@ gear4: %f", calibration.getGearRate4());
         } else {
             tTotAlarmDis = alarmSet.getT2tDistGear5();
             tTocAlarmDis = alarmSet.getT2cDistGear5();
-            System.out.printf("@@@@@@@@ gear5: %f", calibration.getGearRate5());
+            //System.out.printf("@@@@@@@@ gear5: %f", calibration.getGearRate5());
         }
 
         Alarm.craneToCraneAlarm(craneMap, no, tTotAlarmDis);
