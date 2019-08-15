@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private boolean isMasterCrane = false; // 是否主塔机
-    private String myCraneNo = "1N";
+    private String myCraneNo = "1";
     private List<String> craneNumbers = new ArrayList<>();
     private HashMap<String, CycleElem> craneMap = new HashMap<>();
     private SimulatorFlags flags = new SimulatorFlags();
@@ -355,8 +355,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     // TODO
-                    radioProto.setSourceNo("2N"); // 从机的ID为2N
-                    radioProto.setTargetNo("0N"); // 从机回应
+                    radioProto.setSourceNo(2); // 从机的ID为2N
+                    radioProto.setTargetNo(0); // 从机回应
                     radioProto.setRange(emitter.getCarRange());
                     radioProto.setRotate(-emitter.getsAmplitude());
 
@@ -474,8 +474,8 @@ public class MainActivity extends AppCompatActivity {
             currSlaveIndex = 0;
             String currSlaveNo = craneNumbers.get(currSlaveIndex);
             if (currSlaveNo.equals(myCraneNo)) return;
-            masterRadioProto.setSourceNo(myCraneNo);
-            masterRadioProto.setTargetNo(currSlaveNo);
+            masterRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
+            masterRadioProto.setTargetNo(Integer.parseInt(currSlaveNo));
             masterRadioProto.setRotate(centerCycle.hAngle);  // 实际的物理维度值，不是按比例值的值
             masterRadioProto.setRange(centerCycle.carRange); // 实际的物理维度值，不是按比例值的值
 
@@ -488,8 +488,8 @@ public class MainActivity extends AppCompatActivity {
             iAmMaster = false;
 
             if (radioProto.getTargetNo().equals(myCraneNo)) { // 回应
-                slaveRadioProto.setSourceNo(myCraneNo);
-                slaveRadioProto.setTargetNo(radioProto.getSourceNo());
+                slaveRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
+                slaveRadioProto.setTargetNo(Integer.parseInt(radioProto.getSourceNo()));
                 slaveRadioProto.setRange(1f); // TODO 根据本塔基的实际数据填充
                 slaveRadioProto.setRotate(2f); // TODO 根据本塔基的实际数据填充
                 slaveRadioProto.packReply();
@@ -529,9 +529,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (iAmMaster) {
-                masterRadioProto.setSourceNo(myCraneNo);
+                masterRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
                 currSlaveIndex = (currSlaveIndex + 1) % craneNumbers.size();
-                masterRadioProto.setTargetNo(craneNumbers.get(currSlaveIndex));
+                masterRadioProto.setTargetNo(Integer.parseInt(craneNumbers.get(currSlaveIndex)));
                 masterRadioProto.setRotate(centerCycle.hAngle);  // 实际的物理维度值，不是按比例值的值
                 masterRadioProto.setRange(centerCycle.carRange); // 实际的物理维度值，不是按比例值的值
                 // TODO 发消息 触发 轮训，携带 当前从机ID， 进行下一个从机的发送
@@ -577,8 +577,8 @@ public class MainActivity extends AppCompatActivity {
             currSlaveIndex = 0;
             String currSlaveNo = craneNumbers.get(currSlaveIndex);
             if (currSlaveNo.equals(myCraneNo)) return;
-            masterRadioProto.setSourceNo(myCraneNo);
-            masterRadioProto.setTargetNo(currSlaveNo);
+            masterRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
+            masterRadioProto.setTargetNo(Integer.parseInt(currSlaveNo));
             masterRadioProto.setRotate(centerCycle.hAngle);  // 实际的物理维度值，不是按比例值的值
             masterRadioProto.setRange(centerCycle.carRange); // 实际的物理维度值，不是按比例值的值
 
@@ -591,8 +591,8 @@ public class MainActivity extends AppCompatActivity {
             iAmMaster = false;
 
             if (radioProto.getTargetNo().equals(myCraneNo)) { // 回应
-                slaveRadioProto.setSourceNo(myCraneNo);
-                slaveRadioProto.setTargetNo(radioProto.getSourceNo());
+                slaveRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
+                slaveRadioProto.setTargetNo(Integer.parseInt(radioProto.getSourceNo()));
                 slaveRadioProto.setRange(1f); // TODO 根据本塔基的实际数据填充
                 slaveRadioProto.setRotate(2f); // TODO 根据本塔基的实际数据填充
                 slaveRadioProto.packReply();
@@ -613,9 +613,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (iAmMaster) {
-                masterRadioProto.setSourceNo(myCraneNo);
+                masterRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
                 currSlaveIndex = (currSlaveIndex + 1) % craneNumbers.size();
-                masterRadioProto.setTargetNo(craneNumbers.get(currSlaveIndex));
+                masterRadioProto.setTargetNo(Integer.parseInt(craneNumbers.get(currSlaveIndex)));
                 masterRadioProto.setRotate(centerCycle.hAngle);  // 实际的物理维度值，不是按比例值的值
                 masterRadioProto.setRange(centerCycle.carRange); // 实际的物理维度值，不是按比例值的值
                 // TODO 发消息 触发 轮训，携带 当前从机ID， 进行下一个从机的发送
@@ -1071,7 +1071,7 @@ public class MainActivity extends AppCompatActivity {
         for (Crane cp : paras) {
             if (cp == mainCrane) continue;
             float scale = centerCycle.scale;
-            number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "N";
+            number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "";
             SideCycle sideCycle = new SideCycle(centerCycle, cp.getCoordX1(), cp.getCoordY1(), cp.getBigArmLength(),
                 mainCrane.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight(), number);
 

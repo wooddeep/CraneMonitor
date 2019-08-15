@@ -1,5 +1,8 @@
 package com.wooddeep.crane.comm;
 
+import com.wooddeep.crane.tookit.Replace;
+import com.wooddeep.crane.tookit.StringTool;
+
 /**
  * Created by niuto on 2019/8/1.
  */
@@ -15,12 +18,29 @@ public class RadioProto {
 
     public final static int CMD_START_MASTER = 1;
 
-    public String craneNo;
-    public String masterNo;
-    public String sourceNo;
-    public String targetNo;
-    public float rotate;
-    public float range;
+    public String craneNo = "00";
+    public String masterNo = "00";
+    public String sourceNo = "00";
+    public String targetNo = "00";
+    public String sRotate = "100.01f";
+    public String sRange = "100.01f";
+
+    public float rotate = 100.01f;
+    public float range = 100.01f;
+
+    /*
+    private String modle = "% 1N 2N  0.00N  0.00N  0.00N  0.00N 0N#";
+    */
+    private String modle = "%AANBBNCCCCCCNDDDDDDN  0.00N  0.00N 0N#";
+    private char[] sourceTag = new char[]{'A', 'A'};
+    private char[] targetTag = new char[]{'b', 'b'};
+    private char[] rotateTag = new char[]{'C', 'C', 'C', 'C', 'C', 'C'};
+    private char[] rangeTag = new char[]{'D', 'D', 'D', 'D', 'D', 'D'};
+
+    private Replace sourceRepl = new Replace(sourceTag.length);
+    private Replace targetRepl = new Replace(targetTag.length);
+    private Replace rotateRepl = new Replace(rotateTag.length);
+    private Replace rangeRepl = new Replace(rangeTag.length);
 
     public boolean isQuery = true;
 
@@ -28,31 +48,33 @@ public class RadioProto {
     }
 
     public int parse(byte[] data) {
-        //System.out.println(new String(data));
-        if (data[0] != '%' /*|| data[data.length - 1] != '#'*/) return -1;
-        String cmd = new String(data); // TODO 修改成其他方式
+        if (data[0] != '%') return -1;
 
-        if (cmd.equals("%master#")) {
+        // "%master#"
+        if (data[1] == 'm') {
             return CMD_START_MASTER;
         }
 
-        cmd = cmd.replace("%", "").replace("#", "");
-        String [] cells = cmd.split("N");
-        if (cells.length < 7) return -2;
-        this.sourceNo = cells[0];
-        this.targetNo = cells[1];
+        StringTool.stringModify(this.sourceNo, (char) data[1], (char) data[2]);
+        StringTool.stringModify(this.targetNo, (char) data[4], (char) data[5]);
         this.craneNo = this.sourceNo;
 
-        this.rotate = Float.parseFloat(cells[2]);
-        this.range  = Float.parseFloat(cells[3]);
+        StringTool.stringModify(this.sRotate, (char) data[7], (char) data[8], (char) data[9],
+            (char) data[10], (char) data[11], (char) data[12]);
+
+        StringTool.stringModify(this.sRange, (char) data[14], (char) data[15], (char) data[16],
+            (char) data[17], (char) data[18], (char) data[19]);
+
+        this.rotate = Float.parseFloat(this.sRotate);
+        this.range = Float.parseFloat(this.sRange);
 
         if (targetNo.compareToIgnoreCase("0") == 0) { // 其他其他的回应报文
-            //System.out.printf("# reply: %s -> %s ", sourceNo, targetNo);
-            //System.out.printf("slave: %s - rotate: %f, range: %f\n", sourceNo, rotate, range);
+            System.out.printf("# reply: %s -> %s ", sourceNo, targetNo);
+            System.out.printf("slave: %s - rotate: %f, range: %f\n", sourceNo, rotate, range);
             isQuery = false; // 从机的回文
         } else {
-            //System.out.printf("# request: %s -> %s ", sourceNo, targetNo);
-            //System.out.printf("master: %s - rotate: %f, range: %f\n", sourceNo, rotate, range);
+            System.out.printf("# request: %s -> %s ", sourceNo, targetNo);
+            System.out.printf("master: %s - rotate: %f, range: %f\n", sourceNo, rotate, range);
             this.masterNo = sourceNo;
             isQuery = true;
         }
@@ -61,16 +83,18 @@ public class RadioProto {
     }
 
     // 打包报文 如果是主机 则 轮训 其他所有从机，如果是从机 则回应
-    public byte [] packReply() {
+    public byte[] packReply() {
         // % 1N 1N  3.75N 21.39N  0.00N  0.00N 5N#
         // % 2N 0N  0.88N 51.51N  0.00N  0.00N 0N#
         //String replay = String.format("%%%02sN%02sN%.2fN%.2fN0.00N0.00N 0N#", sourceNo,  targetNo, rotate, range);
         //System.out.println(replay);
+        //sourceRepl.setReplacement();
+
         String replay = "% 2N 0N  0.88N 51.51N  0.00N  0.00N 0N#";
         return replay.getBytes();
     }
 
-    public byte [] startMaster() {
+    public byte[] startMaster() {
         return "%master#".getBytes();
     }
 
@@ -80,11 +104,10 @@ public class RadioProto {
 
     public static void test() {
         String query = "% 1N 20N 0.88N 51.51N 0.00N 0.00N 0N#";
-        byte [] data = query.getBytes();
+        byte[] data = query.getBytes();
         RadioProto radioProto = new RadioProto();
 
         radioProto.parse(data);
-
 
         radioProto.sourceNo = "1N";
         radioProto.targetNo = "0N";
@@ -114,16 +137,19 @@ public class RadioProto {
         return sourceNo;
     }
 
-    public void setSourceNo(String sourceNo) {
-        this.sourceNo = sourceNo;
+    public void setSourceNo(int no) {
+        StringTool.stringModify(this.sourceNo, no);
+        this.sourceRepl.setReplacement(this.sourceNo);
+
     }
 
     public String getTargetNo() {
         return targetNo;
     }
 
-    public void setTargetNo(String targetNo) {
-        this.targetNo = targetNo;
+    public void setTargetNo(int no) {
+        StringTool.stringModify(this.targetNo, no);
+        this.targetRepl.setReplacement(this.targetNo);
     }
 
     public float getRotate() {
@@ -132,6 +158,7 @@ public class RadioProto {
 
     public void setRotate(float rotate) {
         this.rotate = rotate;
+        this.rotateRepl.setReplacement(rotate, 2); // 回转小数点2位
     }
 
     public float getRange() {
@@ -140,6 +167,7 @@ public class RadioProto {
 
     public void setRange(float range) {
         this.range = range;
+        this.rangeRepl.setReplacement(range, 2); // 幅度小数点两位
     }
 
     public boolean isQuery() {

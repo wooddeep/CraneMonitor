@@ -1,10 +1,12 @@
 package com.wooddeep.crane.tookit;
 
+import java.lang.reflect.Field;
+
 /**
  * Created by niuto on 2019/8/15.
  */
 
-class Replace {
+public class Replace {
 
     private int size;
     private int index = -1; // 该替换在 模板字符串中的其实位置
@@ -80,6 +82,26 @@ class Replace {
 
     }
 
+    public void setReplacement(String string) {
+        try {
+            if (string.length() > replacement.length) return;
+            Field valueField = String.class.getDeclaredField("value");
+            valueField.setAccessible(true);
+            char[] value = (char[]) valueField.get(string); // 得到字符串对应的byte数组
+
+            for (int i = 0; i < replacement.length; i++) {
+                replacement[i] = ' ';
+            }
+
+            for (int i = replacement.length - string.length(), j = 0; i < replacement.length; i++, j++) {
+                replacement[i] = value[j];
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public char[] getTemplate() {
         return template;
