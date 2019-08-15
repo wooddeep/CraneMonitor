@@ -19,11 +19,18 @@ public class RadioProto {
     public final static int CMD_START_MASTER = 1;
 
     public String craneNo = "00";
+    public char [] craneNoChars = new char[] {'0', '0'};
     public String masterNo = "00";
+    public char [] maseterNoChars = new char[] {'0', '0'};
     public String sourceNo = "00";
+    public char [] sourceNoChars = new char[] {'0', '0'};
     public String targetNo = "00";
-    public String sRotate = "100.01f";
-    public String sRange = "100.01f";
+    public char [] targetNoChars = new char[] {'0', '0'};
+
+    public String sRotate = "100.01";
+    public char [] rotateChars = new char[] {'1', '0', '0', '.', '1'};
+    public String sRange = "100.01";
+    public char [] rangeChars = new char[] {'1', '0', '0', '.', '1'};
 
     public float rotate = 100.01f;
     public float range = 100.01f;
@@ -32,6 +39,7 @@ public class RadioProto {
     private String modle = "% 1N 2N  0.00N  0.00N  0.00N  0.00N 0N#";
     */
     private String modle = "%AANBBNCCCCCCNDDDDDDN  0.00N  0.00N 0N#";
+    private char[] modleChars = new char[modle.length()];
     private char[] sourceTag = new char[]{'A', 'A'};
     private char[] targetTag = new char[]{'b', 'b'};
     private char[] rotateTag = new char[]{'C', 'C', 'C', 'C', 'C', 'C'};
@@ -45,6 +53,7 @@ public class RadioProto {
     public boolean isQuery = true;
 
     public RadioProto() {
+        modle.getChars(0, modle.length(), modleChars, 0);
     }
 
     public int parse(byte[] data) {
@@ -55,14 +64,14 @@ public class RadioProto {
             return CMD_START_MASTER;
         }
 
-        StringTool.stringModify(this.sourceNo, (char) data[1], (char) data[2]);
-        StringTool.stringModify(this.targetNo, (char) data[4], (char) data[5]);
+        StringTool.stringModify(this.sourceNo, craneNoChars, (char) data[1], (char) data[2]);
+        StringTool.stringModify(this.targetNo, targetNoChars, (char) data[4], (char) data[5]);
         this.craneNo = this.sourceNo;
 
-        StringTool.stringModify(this.sRotate, (char) data[7], (char) data[8], (char) data[9],
+        StringTool.stringModify(this.sRotate, rotateChars, (char) data[7], (char) data[8], (char) data[9],
             (char) data[10], (char) data[11], (char) data[12]);
 
-        StringTool.stringModify(this.sRange, (char) data[14], (char) data[15], (char) data[16],
+        StringTool.stringModify(this.sRange, rangeChars, (char) data[14], (char) data[15], (char) data[16],
             (char) data[17], (char) data[18], (char) data[19]);
 
         this.rotate = Float.parseFloat(this.sRotate);
@@ -138,8 +147,8 @@ public class RadioProto {
     }
 
     public void setSourceNo(int no) {
-        StringTool.stringModify(this.sourceNo, no);
-        this.sourceRepl.setReplacement(this.sourceNo);
+        StringTool.stringModify(this.sourceNo, sourceNoChars, no);
+        this.sourceRepl.setReplacement(this.sourceNo, sourceNoChars);
 
     }
 
@@ -148,8 +157,8 @@ public class RadioProto {
     }
 
     public void setTargetNo(int no) {
-        StringTool.stringModify(this.targetNo, no);
-        this.targetRepl.setReplacement(this.targetNo);
+        StringTool.stringModify(this.targetNo, targetNoChars, no);
+        this.targetRepl.setReplacement(this.targetNo, targetNoChars);
     }
 
     public float getRotate() {

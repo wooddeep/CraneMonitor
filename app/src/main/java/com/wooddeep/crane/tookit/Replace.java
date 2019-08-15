@@ -1,7 +1,5 @@
 package com.wooddeep.crane.tookit;
 
-import java.lang.reflect.Field;
-
 /**
  * Created by niuto on 2019/8/15.
  */
@@ -82,25 +80,18 @@ public class Replace {
 
     }
 
-    public void setReplacement(String string) {
-        try {
-            if (string.length() > replacement.length) return;
-            Field valueField = String.class.getDeclaredField("value");
-            valueField.setAccessible(true);
-            char[] value = (char[]) valueField.get(string); // 得到字符串对应的byte数组
+    public void setReplacement(String string, char[] value) {
+        if (string.length() != value.length) return;
 
-            for (int i = 0; i < replacement.length; i++) {
-                replacement[i] = ' ';
-            }
+        string.getChars(0, string.length(), value, 0);
 
-            for (int i = replacement.length - string.length(), j = 0; i < replacement.length; i++, j++) {
-                replacement[i] = value[j];
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (int i = 0; i < replacement.length; i++) {
+            replacement[i] = ' ';
         }
 
+        for (int i = replacement.length - string.length(), j = 0; i < replacement.length; i++, j++) {
+            replacement[i] = value[j];
+        }
     }
 
     public char[] getTemplate() {
