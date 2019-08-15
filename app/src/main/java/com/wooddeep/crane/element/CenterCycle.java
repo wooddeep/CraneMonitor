@@ -21,9 +21,10 @@ public class CenterCycle extends CycleElem {
     public float ir;                  // 原始小臂半径
     public float hAngle;            // 水平方向夹角
     public float vAngle;             // 垂直方向夹角
-    public float prvCarRange = -1f;
-    public float prvHangle = -1f;
-    public long  prvMsec = System.currentTimeMillis();
+    public float prevCarRange = -1f;
+    public float prevHangle = -1f;
+    //public long  currMsec = System.currentTimeMillis();
+    public long  prevMsec = System.currentTimeMillis();
     public float carRange;
     public float deltaX;
     public float delatY;

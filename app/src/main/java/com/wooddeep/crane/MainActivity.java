@@ -297,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
                     currProto.setWindSpeed(emitter.getsWindSpeed());
                     currRotateProto.setData(emitter.getsAmplitude()); // TODO 单独做回转数据的发射器, 现在借用幅度值的发射器
 
-                    if (alarmTimes % 2 == 0) { // 100毫秒 累计一次
+                    if (alarmTimes % 10 == 0) { // 100毫秒 累计一次
                         emitter.emitter(); // 累计
                     }
                 }
@@ -343,12 +343,17 @@ public class MainActivity extends AppCompatActivity {
                     //eventBus.post(new RadioEvent(radioProto.packReply()));
                 }
 
-                if (alarmTimes % 1000 == 0) {
-                    eventBus.post(alarmDetectEvent); // 发送alarm展示消息
+                if (alarmTimes % 100 == 0) {
+                    //eventBus.post(alarmDetectEvent); // 消息触发有延时
+                    try {
+                        Alarm.alarmDetect(calibration, elemList, craneMap, myCraneNo, alarmSet, eventBus);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 alarmTimes++;
-                CommTool.sleep(10);
+                CommTool.sleep(1);
             }
         }).start();
     }
@@ -513,7 +518,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
     }
-
 
     private void startRadioThread() {
         new Thread(() -> {
