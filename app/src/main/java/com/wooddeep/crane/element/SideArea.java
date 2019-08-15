@@ -25,6 +25,7 @@ public class SideArea extends BaseElem{
     public int type;
     public float height; // 高度
     public String name;
+    private GeometryFactory geometryFactory = new GeometryFactory();
 
     public SideArea(
         CenterCycle cc,
@@ -124,6 +125,7 @@ public class SideArea extends BaseElem{
         this.area.setBoderColer(boderColer);
     }
 
+    // TODO
     @Override
     public Geometry getGeometry() {
         Geometry geometry = null;
@@ -134,7 +136,7 @@ public class SideArea extends BaseElem{
                 coordPolygon[i] = new Coordinate(vertexs.get(i).x, vertexs.get(i).y);
             }
             coordPolygon[vertexs.size()] = new Coordinate(vertexs.get(0).x, vertexs.get(0).y);
-            geometry = new GeometryFactory().createPolygon(coordPolygon);
+            geometry = geometryFactory.createPolygon(coordPolygon);
         }
 
         if (this.type == 1) {
@@ -143,7 +145,7 @@ public class SideArea extends BaseElem{
             for (int i = 0; i < vertexs.size(); i++) {
                 coordCurve[i] = new Coordinate(vertexs.get(i).x, vertexs.get(i).y);
             }
-            geometry = new GeometryFactory().createLineString(coordCurve);
+            geometry = geometryFactory.createLineString(coordCurve);
         }
 
         return geometry;

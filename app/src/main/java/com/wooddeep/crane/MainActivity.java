@@ -313,7 +313,8 @@ public class MainActivity extends AppCompatActivity {
                 currProto.calcRealWeigth(calibration);
                 if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) > 0.05f) {
                     lengthEvent.setLength(currProto.getRealLength());
-                    eventBus.post(lengthEvent);
+                    //eventBus.post(lengthEvent);
+                    //runOnUiThread(() -> centerCycle.setHAngle(currRotateProto.getAngle()));
                     prevProto.setRealLength(currProto.getRealLength());
                 }
 
@@ -327,7 +328,8 @@ public class MainActivity extends AppCompatActivity {
                         rotateEvent.setCenterX(mainCrane.getCoordX1());
                         rotateEvent.setCenterY(mainCrane.getCoordY1());
                         rotateEvent.setAngle(currRotateProto.getAngle());
-                        eventBus.post(rotateEvent);
+                        //eventBus.post(rotateEvent);
+                        runOnUiThread(() -> centerCycle.setHAngle(currRotateProto.getAngle()));
                         prevRotateProto.setAngle(currRotateProto.getAngle());
                     }
 
@@ -338,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
                     radioProto.setRotate(-emitter.getsAmplitude());
 
                     // 模拟电台
-                    eventBus.post(new RadioEvent(radioProto.packReply()));
+                    //eventBus.post(new RadioEvent(radioProto.packReply()));
                 }
 
                 if (alarmTimes % 1000 == 0) {
@@ -436,7 +438,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void radioDateParse(byte []  data) {
+    public void radioDateParse(byte[] data) {
         int cmdRet = radioProto.parse(data);
         if (cmdRet == RadioProto.CMD_START_MASTER && waitFlag == true) { // 启动主机命令
             iAmMaster = true;
@@ -920,9 +922,9 @@ public class MainActivity extends AppCompatActivity {
         calibrationSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                calibrationFlag = true; // 标定标识 TODO 放置到页面跳转处触发
                 Intent intent = new Intent(MainActivity.this, CalibrationSetting.class);
                 startActivity(intent);
+                calibrationFlag = true; // 标定标识 TODO 放置到页面跳转处触发
             }
         });
 

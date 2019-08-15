@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import com.wooddeep.crane.views.SuperCircleView;
 
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.WKTReader;
 
 public class SideCycle  extends CycleElem {
@@ -25,6 +26,7 @@ public class SideCycle  extends CycleElem {
     public String name;
     public CenterCycle centerCycle;
     public SuperCircleView cycle;
+    private WKTReader wKTReader = new WKTReader();
 
     public SideCycle(
         CenterCycle cc,
@@ -144,7 +146,7 @@ public class SideCycle  extends CycleElem {
 
     @Override
     public Geometry getCenterGeo() throws Exception {
-        Geometry geo = new WKTReader().read(String.format("POINTSTRING (%f %f)", this.x, this.y));
+        Geometry geo = wKTReader.read(String.format("POINTSTRING (%f %f)", this.x, this.y));
         return geo;
     }
 
@@ -158,7 +160,7 @@ public class SideCycle  extends CycleElem {
         float isin = (float) Math.sin(Math.toRadians(this.hAngle + 180 + dAngle));
         float startpointX = this.x + (float) (this.ir * icos); // todo 添加垂直方向的斜率计算
         float startpointY = this.y + (float) (this.ir * isin);
-        Geometry gcc = new WKTReader().read(String.format("LINESTRING (%f %f, %f %f)", startpointX, startpointY, endpointX, endpointY));
+        Geometry gcc = wKTReader.read(String.format("LINESTRING (%f %f, %f %f)", startpointX, startpointY, endpointX, endpointY));
         return gcc;
     }
 
@@ -166,7 +168,7 @@ public class SideCycle  extends CycleElem {
     public Geometry getCarGeo(float dAngle, float dDist) throws Exception {
         float cos = (float) Math.cos(Math.toRadians(this.hAngle + dAngle));
         float sin = (float) Math.sin(Math.toRadians(this.hAngle + dAngle));
-        Geometry carPos = new WKTReader().read(String.format("POINTSTRING (%f %f)",
+        Geometry carPos = wKTReader.read(String.format("POINTSTRING (%f %f)",
             this.x + cos * (this.carRange + dDist), this.y + sin * (this.carRange + dDist)));
         return carPos;
     }

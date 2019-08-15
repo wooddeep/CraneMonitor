@@ -95,34 +95,34 @@ public class Polygon extends View {
     @Override
     protected synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-            if (vertexs.size() <= 0 ) return;
-            setLayerType(LAYER_TYPE_SOFTWARE, null);
-            //Paint paint = new Paint();//创建画笔
-            paint.setColor(this.color);//为画笔设置颜色
-            if (flink) {
-                paint.setMaskFilter(new BlurMaskFilter(3f, BlurMaskFilter.Blur.SOLID));
-            }
+        if (vertexs.size() <= 0) return;
+        setLayerType(LAYER_TYPE_SOFTWARE, null);
+        //Paint paint = new Paint();//创建画笔
+        paint.setColor(this.color);//为画笔设置颜色
+        if (flink) {
+            paint.setMaskFilter(new BlurMaskFilter(3f, BlurMaskFilter.Blur.SOLID));
+        }
 
-            if (alarm) {
-                paint.setColor(Color.rgb(225, 140, 0));
-            } else {
-                paint.setMaskFilter(new BlurMaskFilter(3f, BlurMaskFilter.Blur.SOLID));
-                //paint.setColor(Color.rgb(		189,183,107));
-                paint.setColor(this.color);
-            }
+        if (alarm) {
+            paint.setColor(Color.rgb(225, 140, 0));
+        } else {
+            paint.setMaskFilter(new BlurMaskFilter(3f, BlurMaskFilter.Blur.SOLID));
+            //paint.setColor(Color.rgb(		189,183,107));
+            paint.setColor(this.color);
+        }
 
-            //paint.setStyle(Paint.Style.FILL);
-            paint.setStrokeWidth(2);//为画笔设置粗细
-            paint.setStyle(Paint.Style.STROKE);//设置空心
-            //paint.setColor(Color.LTGRAY);
-            //canvas.drawColor(Color.GREEN);//为画布设置颜色
-            //设置等腰三角形的三点坐标
-            Path path = new Path();//绘制多边形的类
-            Vertex start = vertexs.get(0);
-            path.moveTo(start.x, start.y);//起始点
-            for (int i = 1; i < vertexs.size(); i++) {
-                Vertex pointer = vertexs.get(i);
-                path.lineTo(pointer.x, pointer.y);//右下角
+        //paint.setStyle(Paint.Style.FILL);
+        paint.setStrokeWidth(2);//为画笔设置粗细
+        paint.setStyle(Paint.Style.STROKE);//设置空心
+        //paint.setColor(Color.LTGRAY);
+        //canvas.drawColor(Color.GREEN);//为画布设置颜色
+        //设置等腰三角形的三点坐标
+        Path path = new Path();//绘制多边形的类
+        Vertex start = vertexs.get(0);
+        path.moveTo(start.x, start.y);//起始点
+        for (int i = 1; i < vertexs.size(); i++) {
+            Vertex pointer = vertexs.get(i);
+            path.lineTo(pointer.x, pointer.y);//右下角
         }
 
         if (this.type == 0) {
