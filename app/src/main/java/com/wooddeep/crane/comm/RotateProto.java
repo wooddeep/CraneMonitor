@@ -18,6 +18,7 @@ public class RotateProto {
     }
 
     public int parse(byte[] data) {
+        if (data == null) return -1;
         if (data.length < 9) {
             return -1;
         }

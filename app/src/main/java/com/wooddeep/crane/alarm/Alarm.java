@@ -100,13 +100,13 @@ public class Alarm {
                 } else if ((myHeight - sideHeight) > 1) { // 中心塔基比边缘塔基高, 计算中心塔基小车位置和 边缘塔基距离
                     Geometry carPos = cc.getCarGeo(0f, 0f);
                     float carToArmDis = (float) carPos.distance(gsc); // 本机小车 到 旁机 大臂的距离
-                    //System.out.printf("### center car to side[%s] arm distance: %f \n", id, carToArmDis);
+                    System.out.printf("### center car to side[%s] arm distance: %f \n", id, carToArmDis);
                     if (carToArmDis < alarmDis) {
                         if (cc.prevHangle < cc.hAngle) {
                             Geometry gPredect = cc.getCarGeo(0.1f, 0f); // 逆时针旋转
                             float distPred = (float) gPredect.distance(gsc);
                             if (distPred < carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
-                                //System.out.printf("### center turn left to [%s] alarm!!!\n", id);
+                                System.out.printf("### center turn left to [%s] alarm!!!\n", id);
                                 alarmEvent.leftAlarm = true;
                             }
                         }
@@ -115,7 +115,7 @@ public class Alarm {
                             float distPred = (float) gPredect.distance(gsc);
                             if (distPred < carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
                                 alarmEvent.rightAlarm = true;
-                                //System.out.printf("### center turn right to [%s] alarm!!!\n", id);
+                                System.out.printf("### center turn right to [%s] alarm!!!\n", id);
                             }
                         }
 
@@ -123,7 +123,7 @@ public class Alarm {
                             Geometry gPredect = cc.getCarGeo(0.0f, 0.1f); // 向外运行
                             float distPred = (float) gPredect.distance(gsc);
                             if (distPred < carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
-                                //System.out.printf("### center turn left to [%s] alarm!!!\n", id);
+                                System.out.printf("### center turn left to [%s] alarm!!!\n", id);
                                 alarmEvent.forwardAlarm = true;
                             }
                         }
@@ -132,7 +132,7 @@ public class Alarm {
                             float distPred = (float) gPredect.distance(gsc);
                             if (distPred < carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
                                 alarmEvent.backendAlarm = true;
-                                //System.out.printf("### center turn right to [%s] alarm!!!\n", id);
+                                System.out.printf("### center turn right to [%s] alarm!!!\n", id);
                             }
                         }
                     }

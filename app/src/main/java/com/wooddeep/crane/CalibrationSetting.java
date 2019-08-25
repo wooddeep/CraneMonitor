@@ -311,7 +311,7 @@ public class CalibrationSetting extends AppCompatActivity {
                             System.out.println(System.currentTimeMillis());
                             long endMsec = System.currentTimeMillis();
                             float rate = (end - start) * 1000 / (endMsec - startMsec);
-                            TextView tv = (TextView) findViewById(GearRate1.rateShowId);
+                            TextView tv = (TextView) findViewById(GearRate2.rateShowId);
                             tv.setText(String.format("%.2f", rate));
                             calibration.setGearRate2(rate);
                             calibrationDao.update(calibration);
@@ -348,7 +348,7 @@ public class CalibrationSetting extends AppCompatActivity {
                             System.out.println(System.currentTimeMillis());
                             long endMsec = System.currentTimeMillis();
                             float rate = (end - start) * 1000 / (endMsec - startMsec);
-                            TextView tv = (TextView) findViewById(GearRate1.rateShowId);
+                            TextView tv = (TextView) findViewById(GearRate3.rateShowId);
                             tv.setText(String.format("%.2f", rate));
                             calibration.setGearRate3(rate);
                             calibrationDao.update(calibration);
@@ -385,7 +385,7 @@ public class CalibrationSetting extends AppCompatActivity {
                             System.out.println(System.currentTimeMillis());
                             long endMsec = System.currentTimeMillis();
                             float rate = (end - start) * 1000 / (endMsec - startMsec);
-                            TextView tv = (TextView) findViewById(GearRate1.rateShowId);
+                            TextView tv = (TextView) findViewById(GearRate4.rateShowId);
                             tv.setText(String.format("%.2f", rate));
                             calibration.setGearRate4(rate);
                             calibrationDao.update(calibration);
@@ -422,7 +422,7 @@ public class CalibrationSetting extends AppCompatActivity {
                             System.out.println(System.currentTimeMillis());
                             long endMsec = System.currentTimeMillis();
                             float rate = (end - start) * 1000 / (endMsec - startMsec);
-                            TextView tv = (TextView) findViewById(GearRate1.rateShowId);
+                            TextView tv = (TextView) findViewById(GearRate5.rateShowId);
                             tv.setText(String.format("%.2f", rate));
                             calibration.setGearRate5(rate);
                             calibrationDao.update(calibration);

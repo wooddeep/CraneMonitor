@@ -65,6 +65,7 @@ import com.wooddeep.crane.simulator.UartEmitter;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DrawTool;
+import com.wooddeep.crane.tookit.StringTool;
 import com.wooddeep.crane.views.CraneView;
 import com.wooddeep.crane.views.Vertex;
 
@@ -80,6 +81,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 // 启动mumu之后, 输入：
@@ -197,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
     class SlaveData {
         float angle;
         float range;
+
         public SlaveData(float a, float r) {
             this.angle = a;
             this.range = r;
@@ -241,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean calibrationFlag = false;
     private EventBus eventBus = EventBus.getDefault();
 
-    private boolean iAmMaster = false; // 本机是否为通信主机
+    private AtomicBoolean iAmMaster = new AtomicBoolean(false); //false; // 本机是否为通信主机
     private boolean waitFlag = true; // 等待主机信号标识
 
     private RadioProto slaveRadioProto = new RadioProto();  // 本机作为从机时，需要radio通信的对象
@@ -254,20 +257,26 @@ public class MainActivity extends AppCompatActivity {
     private OutputStream ttyS0OutputStream;
     private InputStream ttyS1InputStream;
     private OutputStream ttyS1OutputStream;
+    private SerialPort serialttyS2;
+    private OutputStream ttyS2OutputStream;
+    private InputStream ttyS2InputStream;
 
-    private byte[] adXBuff = new byte[1024];
+    private byte[] adXBuff = new byte[2048];
     private byte[] rotateXBuff = new byte[1024];
     private byte[] radioXBuff = new byte[1024];
     private byte[] adRBuff = new byte[20];
     private byte[] rotateRBuff = new byte[10];
     private byte[] radioRBuff = new byte[39];
 
+    private UartEvent uartEvent = new UartEvent();
     private HeightEvent heightEvent = new HeightEvent();
     private WeightEvent weightEvent = new WeightEvent();
     private LengthEvent lengthEvent = new LengthEvent();
     private RotateEvent rotateEvent = new RotateEvent();
     private RadioEvent radioEvent = new RadioEvent();
     private AlarmDetectEvent alarmDetectEvent = new AlarmDetectEvent();
+
+    private boolean alarmJdugeFlag = false;
 
     public float getOscale() {
         return oscale;
@@ -282,8 +291,6 @@ public class MainActivity extends AppCompatActivity {
             int alarmTimes = 0;
 
             while (true) {
-
-                boolean alarmJdugeFlag = false;
 
                 if (flags.isStart() || flags.isStop()) {
                     currProto.setAmplitude(emitter.getsAmplitude());
@@ -300,10 +307,11 @@ public class MainActivity extends AppCompatActivity {
                     currProto.setWindSpeed(emitter.getsWindSpeed());
                     currRotateProto.setData(emitter.getsAmplitude()); // TODO 单独做回转数据的发射器, 现在借用幅度值的发射器
 
-                    if (alarmTimes % 2 == 0) { // 100毫秒 累计一次
+                    if (alarmTimes % 1 == 0) { // 100毫秒 累计一次
                         emitter.emitter(); // 累计
                     }
                 }
+
 
                 byte[] data = currProto.pack(); // TODO 判断值是否有变化, 无变化，则不发送消息
                 if (calibrationFlag) {
@@ -338,8 +346,10 @@ public class MainActivity extends AppCompatActivity {
                     alarmJdugeFlag = true;
                 }
 
+
                 if (mainCrane != null) {  // 次环
                     // 模拟回转
+
                     data = currRotateProto.pack();
                     rotateEvent.setData(data);
                     currRotateProto.parse(data);
@@ -357,11 +367,14 @@ public class MainActivity extends AppCompatActivity {
                     // TODO
                     radioProto.setSourceNo(2); // 从机的ID为2N
                     radioProto.setTargetNo(0); // 从机回应
-                    //radioProto.setRange(emitter.getCarRange());
-                    //radioProto.setRotate(emitter.getsAmplitude());
+                    radioProto.setRotate(0.02f);
+                    radioProto.setRange(0.17f);
+
+                    //System.out.println(Math.round(emitter.getsAmplitude() * 10) / 10.00f);
 
                     // 模拟电台
-                    //eventBus.post(new RadioEvent(radioProto.packReply()));
+                    radioEvent.setData(radioProto.packReply());
+                    eventBus.post(radioEvent);
                 }
 
                 if (alarmJdugeFlag && alarmTimes % 9 == 0) { // TODO 数据有变化才触发告警判断
@@ -375,170 +388,96 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 alarmTimes++;
-                CommTool.sleep(10);
+                CommTool.sleep(100);
             }
         }).start();
     }
 
-    private void startAdThread() {
+    private byte[] rotateCmd = new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B};
+
+    private void startSensorThread() {
         new Thread(() -> {
             try {
                 while (true) {
-                    // AD 值
-                    if (ttyS0InputStream.available() > 0) {
-                        int len = ttyS0InputStream.read(adXBuff, 0, 1024);
-                        for (int i = len - 20, j = 0; i < len; j++, i++) {
-                            adRBuff[j] = adXBuff[i];
-                        }
+                    alarmJdugeFlag = false;
+                    if (ttyS0InputStream.available() > 0) { // AD数据
+                        int len = ttyS0InputStream.read(adXBuff, 0, 2048);
 
+                        for (int i = 0; i < 20; i++) {
+                            adRBuff[i] = adXBuff[i];
+                        }
                         currProto.parse(adRBuff);
                         currProto.calcRealHeight(calibration);
                         currProto.calcRealLength(calibration);
                         currProto.calcRealWeigth(calibration);
 
-                        if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) > 0.05f) {
+                        if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) >= 0.2f) {
                             lengthEvent.setLength(currProto.getRealLength());
                             prevProto.setRealLength(currProto.getRealLength());
                             eventBus.post(lengthEvent);
+                            alarmJdugeFlag = true;
                         }
 
-                        if (Math.abs(currProto.getRealHeight() - prevProto.getRealHeight()) > 0.05f) {
+                        if (Math.abs(currProto.getRealHeight() - prevProto.getRealHeight()) >= 0.2f) {
                             heightEvent.setHeight(currProto.getRealHeight());
                             prevProto.setRealHeight(currProto.getRealHeight());
                             eventBus.post(heightEvent);
+                            alarmJdugeFlag = true;
                         }
 
-                        if (Math.abs(currProto.getRealWeight() - prevProto.getRealWeight()) > 0.05f) {
+                        if (Math.abs(currProto.getRealWeight() - prevProto.getRealWeight()) >= 0.2f) {
                             weightEvent.setWeight(currProto.getRealWeight());
                             prevProto.setRealWeight(currProto.getRealWeight());
                             eventBus.post(weightEvent);
+                            alarmJdugeFlag = true;
+                        }
+
+                        if (calibrationFlag) {
+                            uartEvent.setData(adRBuff);
+                            eventBus.post(uartEvent); // 发送通知标定模块数据
                         }
                     }
 
-                    CommTool.sleep(10);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
-    private void startRotateThread() {
-        new Thread(() -> {
-            try {
-                // 485 回转, 硬件有点问题, ttyS3 对应单板的串口2, 编号从0开始, 白色R2，黑色 T2
-                SerialPort serialttyS2 = new SerialPort(new File("/dev/ttyS3"), 19200, 0);
-                OutputStream ttyS2OutputStream = serialttyS2.getOutputStream();
-                InputStream ttyS2InputStream = serialttyS2.getInputStream();
-
-                byte[] rotateCmd = new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B};
-                while (true) {
-
                     ttyS2OutputStream.write(rotateCmd);
-                    if (ttyS2InputStream.available() > 0) {
+                    if (ttyS2InputStream.available() > 0) { // 回转数据
                         int len = ttyS2InputStream.read(rotateXBuff, 0, 1024);
-
                         for (int i = 0; i < 9; i++) {
                             rotateRBuff[i] = rotateXBuff[i];
                         }
-
                         if (rotateRBuff[0] == 0x01 && rotateRBuff[1] == 0x04) {
                             currRotateProto.parse(rotateRBuff);
                             currRotateProto.calcAngle(calibration);
-                            if (Math.abs(currRotateProto.getAngle() - prevRotateProto.getAngle()) >= 0.1f) {
+                            if (Math.abs(currRotateProto.getAngle() - prevRotateProto.getAngle()) >= 0.5f) {
                                 rotateEvent.setCenterX(mainCrane.getCoordX1());
                                 rotateEvent.setCenterY(mainCrane.getCoordY1());
                                 rotateEvent.setAngle(currRotateProto.getAngle());
-                                eventBus.post(rotateEvent);
+                                rotateEvent.setData(rotateRBuff);
                                 prevRotateProto.setAngle(currRotateProto.getAngle());
+                                runOnUiThread(() -> rotateShow(Math.round(currRotateProto.getAngle() % 360 * 10) / 10.0f));
+                                alarmJdugeFlag = true;
                             }
+                        }
 
+                        if (calibrationFlag) {
+                            eventBus.post(rotateEvent);
                         }
                     }
+
+                    if (alarmJdugeFlag) {
+                        //System.out.println("#### I will do alarm judge!!!");
+                        try {
+                            Alarm.alarmDetect(calibration, elemList, craneMap, myCraneNo, alarmSet, eventBus);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                     CommTool.sleep(50);
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }).start();
-    }
-
-
-    public void radioDateParse(byte[] data) {
-        int cmdRet = radioProto.parse(data);
-        if (cmdRet == RadioProto.CMD_START_MASTER && waitFlag == true) { // 启动主机命令
-            iAmMaster = true;
-            // 发消息, 启动轮训从机
-            if (craneNumbers.size() <= 0) return;
-            currSlaveIndex = 0;
-            String currSlaveNo = craneNumbers.get(currSlaveIndex);
-            if (currSlaveNo.equals(myCraneNo)) return;
-            masterRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
-            masterRadioProto.setTargetNo(Integer.parseInt(currSlaveNo));
-            masterRadioProto.setRotate(centerCycle.hAngle);  // 实际的物理维度值，不是按比例值的值
-            masterRadioProto.setRange(centerCycle.carRange); // 实际的物理维度值，不是按比例值的值
-
-            // TODO 发送消息，通知查询第一个从机
-            return;
-        }
-
-        if (radioProto.isQuery) { // 收到主机的查询命令，本机必然为从机
-            waitFlag = false;
-            iAmMaster = false;
-
-            if (radioProto.getTargetNo().equals(myCraneNo)) { // 回应
-                slaveRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
-                slaveRadioProto.setTargetNo(Integer.parseInt(radioProto.getSourceNo()));
-                slaveRadioProto.setRange(1f); // TODO 根据本塔基的实际数据填充
-                slaveRadioProto.setRotate(2f); // TODO 根据本塔基的实际数据填充
-                slaveRadioProto.packReply();
-                // TODO 发送消息，通知串口通信 或者直接 串口通信
-            }
-
-            return;
-        }
-
-        if (!radioProto.isQuery) { // 收到其他从机的回应命令 & 分自己的 主从 身份
-            waitFlag = false;
-
-            // 更新从机
-            CycleElem slave = craneMap.get(radioProto.getSourceNo());
-            if (slave != null) {
-                SlaveData prevData = slaveMap.get(radioProto.getSourceNo());
-                if (prevData == null) {
-                    prevData = new SlaveData(radioProto.getRotate(), radioProto.getRange());
-                    slaveMap.put(radioProto.getSourceNo(), prevData);
-                }
-
-                if (Math.abs(radioProto.getRotate() - prevData.angle) >= 0.1f) {
-                    slave.setHAngle(radioProto.getRotate());
-                    prevData.angle = radioProto.getRotate();
-
-                    //eventBus.post(radioEvent);
-                    //prevRotateProto.setAngle(currRotateProto.getAngle());
-                }
-
-                if (Math.abs(radioProto.getRange() - prevData.range) >= 0.1f) {
-                    slave.setCarRange(radioProto.getRange());
-                    prevData.range = radioProto.getRange();
-
-                    //eventBus.post(radioEvent);
-                    //prevRotateProto.setAngle(currRotateProto.getAngle());
-                }
-            }
-
-            if (iAmMaster) {
-                masterRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
-                currSlaveIndex = (currSlaveIndex + 1) % craneNumbers.size();
-                masterRadioProto.setTargetNo(Integer.parseInt(craneNumbers.get(currSlaveIndex)));
-                masterRadioProto.setRotate(centerCycle.hAngle);  // 实际的物理维度值，不是按比例值的值
-                masterRadioProto.setRange(centerCycle.carRange); // 实际的物理维度值，不是按比例值的值
-                // TODO 发消息 触发 轮训，携带 当前从机ID， 进行下一个从机的发送
-            }
-
-            return;
-        }
     }
 
     private void startRadioThread() {
@@ -551,11 +490,26 @@ public class MainActivity extends AppCompatActivity {
                         for (int i = 0; i < 39; i++) {
                             radioRBuff[i] = radioXBuff[i];
                         }
+                        //System.out.println(new String(radioRBuff));
+                        //radioDateParse(radioRBuff);
+                        radioEvent.setData(radioRBuff);
+                        eventBus.post(radioEvent); // 发送
+                    }
 
-                        radioDateParse(radioRBuff);
-
-                        // radioEvent.setData(radioRBuff);
-                        // eventBus.post(radioEvent); // 发送
+                    if (iAmMaster.get()) { // 主机
+                        if (craneNumbers.size() <= 0) return;
+                        masterRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
+                        currSlaveIndex = (currSlaveIndex + 1) % craneNumbers.size();
+                        masterRadioProto.setTargetNo(Integer.parseInt(craneNumbers.get(currSlaveIndex)));
+                        masterRadioProto.setRotate(centerCycle.hAngle);  // 实际的物理维度值，不是按比例值的值
+                        masterRadioProto.setRange(centerCycle.carRange); // 实际的物理维度值，不是按比例值的值
+                        masterRadioProto.packReply(); // 生成回应报文
+                        //StringTool.showCharArray(slaveRadioProto.modleChars);
+                        try {
+                            ttyS1OutputStream.write(slaveRadioProto.modleBytes); // 发送应答报文
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     CommTool.sleep(80);
@@ -571,56 +525,38 @@ public class MainActivity extends AppCompatActivity {
     public void RadioDateEventBus(RadioEvent event) {
         int cmdRet = radioProto.parse(event.getData());
         if (cmdRet == RadioProto.CMD_START_MASTER && waitFlag == true) { // 启动主机命令
-            iAmMaster = true;
-            // 发消息, 启动轮训从机
-            if (craneNumbers.size() <= 0) return;
-            currSlaveIndex = 0;
-            String currSlaveNo = craneNumbers.get(currSlaveIndex);
-            if (currSlaveNo.equals(myCraneNo)) return;
-            masterRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
-            masterRadioProto.setTargetNo(Integer.parseInt(currSlaveNo));
-            masterRadioProto.setRotate(centerCycle.hAngle);  // 实际的物理维度值，不是按比例值的值
-            masterRadioProto.setRange(centerCycle.carRange); // 实际的物理维度值，不是按比例值的值
-
-            // TODO 发送消息，通知查询第一个从机
+            iAmMaster.set(true);
             return;
         }
 
         if (radioProto.isQuery) { // 收到主机的查询命令，本机必然为从机
             waitFlag = false;
-            iAmMaster = false;
-
-            if (radioProto.getTargetNo().equals(myCraneNo)) { // 回应
+            iAmMaster.set(false);
+            if (radioProto.getSourceNo().equals(radioProto.getTargetNo()) // 源ID和目标ID相同
+                || radioProto.getTargetNo().equals(myCraneNo)) { // 目标ID相同是本机
                 slaveRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
-                slaveRadioProto.setTargetNo(Integer.parseInt(radioProto.getSourceNo()));
-                slaveRadioProto.setRange(1f); // TODO 根据本塔基的实际数据填充
-                slaveRadioProto.setRotate(2f); // TODO 根据本塔基的实际数据填充
-                slaveRadioProto.packReply();
-                // TODO 发送消息，通知串口通信 或者直接 串口通信
+                slaveRadioProto.setTargetNo(0); // 固定为0
+                slaveRadioProto.setRange(centerCycle.carRange); // TODO 根据本塔基的实际数据填充
+                slaveRadioProto.setRotate((centerCycle.hAngle % 360) * 2 * (float) Math.PI / 360); // TODO 根据本塔基的实际数据填充
+                slaveRadioProto.packReply(); // 生成回应报文
+                //StringTool.showCharArray(slaveRadioProto.modleChars);
+                try {
+                    ttyS1OutputStream.write(slaveRadioProto.modleBytes); // 发送应答报文
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-
             return;
         }
 
         if (!radioProto.isQuery) { // 收到其他从机的回应命令 & 分自己的 主从 身份
             waitFlag = false;
-
             // 更新从机
-            CycleElem slave = craneMap.get(radioProto.getSourceNo());
+            CycleElem slave = craneMap.get(radioProto.getSourceNoInt());
             if (slave != null) {
                 slave.setCarRange(radioProto.getRange());
                 slave.setHAngle(radioProto.getRotate());
             }
-
-            if (iAmMaster) {
-                masterRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
-                currSlaveIndex = (currSlaveIndex + 1) % craneNumbers.size();
-                masterRadioProto.setTargetNo(Integer.parseInt(craneNumbers.get(currSlaveIndex)));
-                masterRadioProto.setRotate(centerCycle.hAngle);  // 实际的物理维度值，不是按比例值的值
-                masterRadioProto.setRange(centerCycle.carRange); // 实际的物理维度值，不是按比例值的值
-                // TODO 发消息 触发 轮训，携带 当前从机ID， 进行下一个从机的发送
-            }
-
             return;
         }
     }
@@ -641,7 +577,7 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void messageEventBus(MessageEvent userEvent) {
         fanRotate();
-        elemMap.alramFlink();
+        //elemMap.alramFlink();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -749,7 +685,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void lengthEventBus(LengthEvent event) {
@@ -812,13 +747,6 @@ public class MainActivity extends AppCompatActivity {
         view.setText(speed + "m/s");
     }
 
-    // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void RotateDateEventBus(RotateEvent event) {
-        angleView.setText(event.angle + "°");
-        centerCycle.setHAngle(event.angle);
-    }
-
     public void rotateShow(float angle) {
         angleView.setText(angle + "°");
         centerCycle.setHAngle(angle);
@@ -839,7 +767,6 @@ public class MainActivity extends AppCompatActivity {
             emitter.initData();
         }
     }
-
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -1039,13 +966,11 @@ public class MainActivity extends AppCompatActivity {
     private void renderMain(float oscale) {
         FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
         CraneDao craneDao = new CraneDao(MainActivity.this);
-
         List<Crane> paras = craneDao.selectAll();
         if (paras.size() == 0) return;
 
-        elemMap.delElems(mainFrame);
-        craneMap.clear();
         elemList.clear();
+        craneNumbers.clear();
 
         mainCrane = paras.get(0);
         for (Crane iterator : paras) {
@@ -1054,77 +979,95 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
-        String number = Integer.parseInt(mainCrane.getName().replaceAll("[^0-9]+", "")) + "N";
+        String number = Integer.parseInt(mainCrane.getName().replaceAll("[^0-9]+", "")) + "";
         myCraneNo = number;
         craneNumbers.add(number); // 本机的编号
 
-        // 画中心圆环
-        centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(), mainCrane.getBigArmLength(),
-            mainCrane.getBalancArmLength(), 0, 0, 0, mainCrane.getCraneHeight(), number);
-
-        elemMap.addElem(centerCycle.getUuid(), centerCycle);
-        mainCycleId = centerCycle.getUuid();
-        centerCycle.drawCenterCycle(this, mainFrame);
-        craneMap.put(myCraneNo, centerCycle);
-
-        // 根据数据库的数据画图
-        for (Crane cp : paras) {
-            if (cp == mainCrane) continue;
-            float scale = centerCycle.scale;
-            number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "";
-            SideCycle sideCycle = new SideCycle(centerCycle, cp.getCoordX1(), cp.getCoordY1(), cp.getBigArmLength(),
-                mainCrane.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight(), number);
-
-            elemMap.addElem(sideCycle.getUuid(), sideCycle);
-            sideCycleId = sideCycle.getUuid();
-            sideCycle.drawSideCycle(this, mainFrame);
-            craneNumbers.add(number);
-            craneMap.put(number, sideCycle);
+        // 1. 画中心圆环
+        centerCycle = (CenterCycle) craneMap.get(myCraneNo);
+        if (centerCycle == null) {
+            centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(), mainCrane.getBigArmLength(),
+                mainCrane.getBalancArmLength(), 0, 0, 0, mainCrane.getCraneHeight(), number);
+            elemMap.addElem(centerCycle.getUuid(), centerCycle);
+            mainCycleId = centerCycle.getUuid();
+            centerCycle.drawCenterCycle(this, mainFrame);
+            craneMap.put(myCraneNo, centerCycle);
         }
 
-        // 区域
+        // 2. 根据数据库的数据画边缘圆环
+        for (Crane cp : paras) {
+            if (cp == mainCrane) continue;
+            if ((int) cp.getCraneHeight() <= 0) continue;
+            float scale = centerCycle.scale;
+            number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "";
+            SideCycle sideCycle = (SideCycle) craneMap.get(number);
+            if (sideCycle == null) {
+                sideCycle = new SideCycle(centerCycle, cp.getCoordX1(), cp.getCoordY1(), cp.getBigArmLength(),
+                    mainCrane.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight(), number);
+
+                elemMap.addElem(sideCycle.getUuid(), sideCycle);
+                sideCycleId = sideCycle.getUuid();
+                sideCycle.drawSideCycle(this, mainFrame);
+                craneNumbers.add(number);
+                craneMap.put(number, sideCycle);
+            }
+        }
+
+        // 3. 画区域
         int areaIndex = 1;
         AreaDao areaDao = new AreaDao(MainActivity.this);
         List<Area> areas = areaDao.selectAll();
         if (areas != null && areas.size() > 0) {
             for (Area area : areas) {
-                List<Vertex> vertex = new ArrayList<Vertex>();
-                vertex.add(new Vertex(area.getX1(), area.getY1()));
-                vertex.add(new Vertex(area.getX2(), area.getY2()));
-                vertex.add(new Vertex(area.getX3(), area.getY3()));
-                vertex.add(new Vertex(area.getX4(), area.getY4()));
-                vertex.add(new Vertex(area.getX5(), area.getY5()));
-                vertex.add(new Vertex(area.getX6(), area.getY6()));
-                vertex = CommTool.arrangeVertexList(vertex);
-                //number = Integer.parseInt(area..replaceAll("[^0-9]+", "")) + "N";
-                SideArea sideArea = new SideArea(centerCycle, Color.rgb(19, 34, 122),
-                    vertex, 0, area.getHeight(), String.format("%dA", areaIndex++));
-                elemMap.addElem(sideArea.getUuid(), sideArea);
-                elemList.add(sideArea);
-                sideArea.drawSideArea(this, mainFrame);
+                if ((int) area.getHeight() > 0) {
+                    String areaName = String.format("%dA", areaIndex);
+                    SideArea sideArea = (SideArea) elemMap.getElem(areaName);
+                    if (sideArea == null) {
+                        List<Vertex> vertex = new ArrayList<Vertex>();
+                        vertex.add(new Vertex(area.getX1(), area.getY1()));
+                        vertex.add(new Vertex(area.getX2(), area.getY2()));
+                        vertex.add(new Vertex(area.getX3(), area.getY3()));
+                        vertex.add(new Vertex(area.getX4(), area.getY4()));
+                        vertex.add(new Vertex(area.getX5(), area.getY5()));
+                        vertex.add(new Vertex(area.getX6(), area.getY6()));
+                        vertex = CommTool.arrangeVertexList(vertex);
+                        sideArea = new SideArea(centerCycle, Color.rgb(19, 34, 122),
+                            vertex, 0, area.getHeight(), areaName);
+                        elemMap.addElem(areaName, sideArea);
+                        sideArea.drawSideArea(this, mainFrame);
+                    }
+                    elemList.add(sideArea);
+                }
+                areaIndex++;
             }
-
         }
 
-        // 保护区
+        // 4. 保护区
         int protectIndex = 1;
         ProtectDao protectDao = new ProtectDao(MainActivity.this);
         List<Protect> protects = protectDao.selectAll();
         if (protects != null && protects.size() > 0) {
             for (Protect protect : protects) {
-                List<Vertex> vertex = new ArrayList<Vertex>();
-                vertex.add(new Vertex(protect.getX1(), protect.getY1()));
-                vertex.add(new Vertex(protect.getX2(), protect.getY2()));
-                vertex.add(new Vertex(protect.getX3(), protect.getY3()));
-                vertex.add(new Vertex(protect.getX4(), protect.getY4()));
-                vertex.add(new Vertex(protect.getX5(), protect.getY5()));
-                vertex.add(new Vertex(protect.getX6(), protect.getY6()));
-                vertex = CommTool.arrangeVertexList(vertex);
-                SideArea sideArea = new SideArea(centerCycle, Color.BLACK,
-                    vertex, 1, protect.getHeight(), String.format("%dP", protectIndex++));
-                elemMap.addElem(sideArea.getUuid(), sideArea);
-                elemList.add(sideArea);
-                sideArea.drawSideArea(this, mainFrame);
+                if ((int) protect.getHeight() > 0) {
+                    String areaName = String.format("%dP", protectIndex);
+                    SideArea sideArea = (SideArea) elemMap.getElem(areaName);
+                    if (sideArea == null) {
+                        List<Vertex> vertex = new ArrayList<Vertex>();
+                        vertex.add(new Vertex(protect.getX1(), protect.getY1()));
+                        vertex.add(new Vertex(protect.getX2(), protect.getY2()));
+                        vertex.add(new Vertex(protect.getX3(), protect.getY3()));
+                        vertex.add(new Vertex(protect.getX4(), protect.getY4()));
+                        vertex.add(new Vertex(protect.getX5(), protect.getY5()));
+                        vertex.add(new Vertex(protect.getX6(), protect.getY6()));
+                        vertex = CommTool.arrangeVertexList(vertex);
+                        sideArea = new SideArea(centerCycle, Color.BLACK,
+                            vertex, 1, protect.getHeight(), areaName);
+                        sideArea.drawSideArea(this, mainFrame);
+                        elemMap.addElem(areaName, sideArea);
+                    }
+                    elemList.add(sideArea);
+                }
+                protectIndex++;
             }
         }
     }
@@ -1213,19 +1156,23 @@ public class MainActivity extends AppCompatActivity {
             ttyS0OutputStream = serialttyS0.getOutputStream();
             ttyS1InputStream = serialttyS1.getInputStream();
             ttyS1OutputStream = serialttyS1.getOutputStream();
+
+            serialttyS2 = new SerialPort(new File("/dev/ttyS3"), 19200, 0);
+            ttyS2OutputStream = serialttyS2.getOutputStream();
+            ttyS2InputStream = serialttyS2.getInputStream();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         initTable(); // 初始化表
         //startDataSimThread();
-        startAdThread(); // 初始化串口线程
-        startRadioThread();
 
         // 触发判断本机是否为主机
         new Handler().postDelayed(() -> {
             eventBus.post(new RadioEvent(radioProto.startMaster()));
-            startRotateThread();
+            startSensorThread(); // 初始化串口线程
+            startRadioThread();
         }, 3000);
     }
 

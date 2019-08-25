@@ -1,11 +1,14 @@
 package com.wooddeep.crane.tookit;
 
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
@@ -72,7 +75,12 @@ public class StringTool {
         for (int i = 0; i < replaces.length; i++) {
             findAndReplace(value, replaces[i]);
         }
-        System.out.println(formatString);
+    }
+
+    public static void stringModify(char[] value, Replace... replaces) {
+        for (int i = 0; i < replaces.length; i++) {
+            findAndReplace(value, replaces[i]);
+        }
     }
 
     public static void stringModify(String string, char[] value, char... repl) {
@@ -123,17 +131,67 @@ public class StringTool {
         return reader;
     }
 
+    public static void showCharArray(char [] array) {
+        for (int i = 0; i < array.length; i++) {
+            System.out.printf("%c", array[i]);
+        }
+    }
+
+    public static Reader byteArrayReader(byte[] initialArray) {
+        Reader targetReader = new InputStreamReader(new ByteArrayInputStream(initialArray));
+        return targetReader;
+    }
+
     public static void main(String[] args) {
 
-        replace.setTemplate('X', 'X', 'X', 'X', 'X');
-        replace.setReplacement('A', 'B', 'C');
-        //stringModify(formatString, replace);
-        replace.setReplacement('C', 'D', 'E');
-        //stringModify(formatString, replace);
-        replace.setReplacement(1.15f, 2);
-        //stringModify(formatString, replace);
-        replaceY.setTemplate('Y', 'Y', 'Y', 'Y', 'Y');
-        replaceY.setReplacement('C', 'D', 'E');
-        //stringModify(formatString, replace, replaceY);
+        String mod = "LINESTRING (AAAAAA BBBBBB, CCCCCC DDDDDD)";
+        byte [] modBytes = new byte[mod.length()];
+        char [] modChars = new char[mod.length()];
+
+        Replace a = new Replace(6);
+        Replace b = new Replace(6);
+        Replace c = new Replace(6);
+        Replace d = new Replace(6);
+
+        a.setTemplate('A', 'A', 'A', 'A', 'A', 'A');
+        b.setTemplate('B', 'B', 'B', 'B', 'B', 'B');
+        c.setTemplate('C', 'C', 'C', 'C', 'C', 'C');
+        d.setTemplate('D', 'D', 'D', 'D', 'D', 'D');
+
+        try {
+            String line1 = String.format("LINESTRING (%f %f, %f %f)", 0f, 0f, 100f, 0f);
+            Geometry g1 = new WKTReader().read(line1);
+            //String line2 = String.format("LINESTRING (%f %f, %f %f)", 0f, 10f, 100f, 10f);
+
+            a.setReplacement(0, 1);
+            b.setReplacement(10, 1);
+            c.setReplacement(100, 1);
+            d.setReplacement(10, 1);
+            mod.getChars(0, mod.length(), modChars, 0);
+            stringModify(modChars, a, b, c, d);
+
+            for (int i = 0; i < mod.length(); i++) {
+                modBytes[i] = (byte)modChars[i];
+            }
+            Geometry g2 = new WKTReader().read(byteArrayReader(modBytes));
+            System.out.println(g1.distance(g2));
+
+            a.setReplacement(0, 1);
+            b.setReplacement(20, 1);
+            c.setReplacement(100, 1);
+            d.setReplacement(20, 1);
+            mod.getChars(0, mod.length(), modChars, 0);
+            stringModify(modChars, a, b, c, d);
+
+            for (int i = 0; i < mod.length(); i++) {
+                modBytes[i] = (byte)modChars[i];
+            }
+            g2 = new WKTReader().read(byteArrayReader(modBytes));
+            System.out.println(g1.distance(g2));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 }

@@ -39,7 +39,7 @@ public class ElemMap {
                 parent.removeView(sc.cycle);
             }
 
-            if (elem instanceof SideArea) { // cycle
+            if (elem instanceof SideArea) { // 区域 或者 保护区
                 SideArea sa = (SideArea) elemMap.get(id);
                 parent.removeView(sa.area);
             }
