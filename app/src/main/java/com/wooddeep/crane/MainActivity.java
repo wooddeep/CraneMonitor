@@ -484,7 +484,6 @@ public class MainActivity extends AppCompatActivity {
         new Thread(() -> {
             try {
                 while (true) {
-
                     if (ttyS1InputStream.available() > 0) {
                         int len = ttyS1InputStream.read(radioXBuff, 0, 1024);
                         for (int i = 0; i < 39; i++) {
@@ -504,9 +503,9 @@ public class MainActivity extends AppCompatActivity {
                         masterRadioProto.setRotate(centerCycle.hAngle);  // 实际的物理维度值，不是按比例值的值
                         masterRadioProto.setRange(centerCycle.carRange); // 实际的物理维度值，不是按比例值的值
                         masterRadioProto.packReply(); // 生成回应报文
-                        //StringTool.showCharArray(slaveRadioProto.modleChars);
+                        StringTool.showCharArray(masterRadioProto.modleChars);
                         try {
-                            ttyS1OutputStream.write(slaveRadioProto.modleBytes); // 发送应答报文
+                            ttyS1OutputStream.write(masterRadioProto.modleBytes); // 发送应答报文
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
