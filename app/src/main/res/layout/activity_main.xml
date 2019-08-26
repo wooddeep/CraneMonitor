@@ -162,8 +162,8 @@
             android:layout_height="35px"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginTop="5dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
             android:layout_toLeftOf="@+id/height"
             android:layout_weight="1"
             android:gravity="center"
@@ -262,7 +262,7 @@
                 android:id="@+id/grid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layerType="software"/>
+                android:layerType="software" />
 
             <!-- 菜单容器 -->
             <LinearLayout
@@ -396,12 +396,13 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginTop="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:background="@drawable/spliter_background">
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/spliter_background"
+                android:orientation="vertical">
+
                 <com.wooddeep.crane.views.CraneView
                     android:id="@+id/crane"
                     android:layout_width="match_parent"
@@ -430,33 +431,81 @@
                 android:layout_weight="1"
                 android:background="@drawable/spliter_background">
 
+
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1">
 
                     <ImageView
-                        android:id="@+id/rotation_logo"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:id="@+id/left_alarm"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_margin="5dp"
+                        android:layout_weight="3"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/weight1" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="5"
+                            android:gravity="center"
+                            android:text="〇" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0"
+                            android:gravity="center"
+                            android:text="告警级别"
+                            android:textSize="8dp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/right_alarm"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="3"
                         android:gravity="center"
                         app:srcCompat="@mipmap/rate" />
 
-                    <TextView
-                        android:id="@+id/clock_logo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="40%"
-                        android:textSize="20dp" />
-                </TableRow>
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:orientation="vertical">
 
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="5"
+                            android:gravity="center"
+                            android:text="〇" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0"
+                            android:gravity="center"
+                            android:text="告警级别"
+                            android:textSize="8dp" />
+                    </LinearLayout>
+
+                </TableRow>
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -464,25 +513,164 @@
 
                     <ImageView
                         android:id="@+id/forward_alarm"
-                        android:layout_width="50dp"
+                        android:layout_width="0dp"
                         android:layout_height="50dp"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_margin="5dp"
-                        android:layout_weight="1"
+                        android:layout_weight="3"
                         android:gravity="center"
                         app:srcCompat="@mipmap/forward" />
 
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="5"
+                            android:gravity="center"
+                            android:text="〇" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0"
+                            android:gravity="center"
+                            android:text="告警级别"
+                            android:textSize="8dp" />
+                    </LinearLayout>
+
                     <ImageView
                         android:id="@+id/back_alarm"
-                        android:layout_width="50dp"
+                        android:layout_width="0dp"
                         android:layout_height="50dp"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_margin="5dp"
-                        android:layout_weight="1"
+                        android:layout_weight="3"
                         android:gravity="center"
                         app:srcCompat="@mipmap/backoff" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="5"
+                            android:gravity="center"
+                            android:text="〇" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0"
+                            android:gravity="center"
+                            android:text="告警级别"
+                            android:textSize="8dp" />
+                    </LinearLayout>
+
+                </TableRow>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/left_alarm"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="3"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/left_rotation" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="5"
+                            android:gravity="center"
+                            android:text="①" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0"
+                            android:gravity="center"
+                            android:text="级别"
+                            android:textSize="10dp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/right_alarm"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="3"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/right_rotation" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="5"
+                            android:gravity="center"
+                            android:text="〇" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0"
+                            android:gravity="center"
+                            android:text="告警级别"
+                            android:textSize="8dp" />
+                    </LinearLayout>
+
+                </TableRow>
+
+
+                <!--
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/left_alarm"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_weight="3"
+                        android:text="1"
+                        android:gravity="center"/>
+
                 </TableRow>
 
                 <TableRow
@@ -492,27 +680,106 @@
 
                     <ImageView
                         android:id="@+id/left_alarm"
-                        android:layout_width="45dp"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="3"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/up2" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/left_alarm"
+                        android:layout_width="0dp"
                         android:layout_height="45dp"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
+                        android:text="1"
+                        android:gravity="center"/>
+
+                    <ImageView
+                        android:id="@+id/left_alarm"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="3"
                         android:gravity="center"
-                        app:srcCompat="@mipmap/left_rotation" />
+                        app:srcCompat="@mipmap/left1" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="3"/>
 
                     <ImageView
                         android:id="@+id/right_alarm"
-                        android:layout_width="45dp"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="3"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/right1" />
+
+                    <TextView
+                        android:id="@+id/left_alarm"
+                        android:layout_width="0dp"
                         android:layout_height="45dp"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:gravity="center"
-                        app:srcCompat="@mipmap/right_rotation" />
+                        android:text="1"
+                        android:gravity="center"/>
+
                 </TableRow>
 
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+                    <ImageView
+                        android:id="@+id/left_alarm"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="3"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/down1" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/left_alarm"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_weight="3"
+                        android:text="1"
+                        android:gravity="center"/>
+
+                </TableRow>
+                -->
             </TableLayout>
 
 
