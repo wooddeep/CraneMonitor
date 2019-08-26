@@ -177,7 +177,7 @@ public class RadioProto {
 
     public void setRotate(float rotate) {
         this.rotate = rotate;
-        this.rotateRepl.setReplacement(rotate, 2); // 回转小数点2位
+        this.rotateRepl.setReplacement(rotate, 3, 2); // 回转小数点2位
         StringTool.stringModify(modleChars, this.rotateRepl);
     }
 
@@ -187,7 +187,7 @@ public class RadioProto {
 
     public void setRange(float range) {
         this.range = range;
-        this.rangeRepl.setReplacement(range, 2); // 幅度小数点两位
+        this.rangeRepl.setReplacement(range, 3, 2); // 幅度小数点两位
         StringTool.stringModify(modleChars, this.rangeRepl);
     }
 

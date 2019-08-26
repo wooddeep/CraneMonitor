@@ -270,8 +270,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_gravity="bottom"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="5dp"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/frame_border"
                 android:elevation="10dp"
                 android:orientation="horizontal"
@@ -397,8 +397,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/spliter_background"
                 android:orientation="vertical">
@@ -430,7 +430,6 @@
                 android:layout_marginTop="0dp"
                 android:layout_weight="1"
                 android:background="@drawable/spliter_background">
-
 
                 <TableRow
                     android:layout_width="match_parent"
@@ -512,40 +511,6 @@
                     android:layout_weight="1">
 
                     <ImageView
-                        android:id="@+id/forward_alarm"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp"
-                        android:layout_weight="3"
-                        android:gravity="center"
-                        app:srcCompat="@mipmap/forward" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="5"
-                            android:gravity="center"
-                            android:text="〇" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="0"
-                            android:gravity="center"
-                            android:text="告警级别"
-                            android:textSize="8dp" />
-                    </LinearLayout>
-
-                    <ImageView
                         android:id="@+id/back_alarm"
                         android:layout_width="0dp"
                         android:layout_height="50dp"
@@ -579,22 +544,16 @@
                             android:textSize="8dp" />
                     </LinearLayout>
 
-                </TableRow>
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
                     <ImageView
-                        android:id="@+id/left_alarm"
+                        android:id="@+id/forward_alarm"
                         android:layout_width="0dp"
-                        android:layout_height="40dp"
+                        android:layout_height="50dp"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_margin="5dp"
                         android:layout_weight="3"
                         android:gravity="center"
-                        app:srcCompat="@mipmap/left_rotation" />
+                        app:srcCompat="@mipmap/forward" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -608,6 +567,48 @@
                             android:layout_height="0dp"
                             android:layout_weight="5"
                             android:gravity="center"
+                            android:text="〇" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0"
+                            android:gravity="center"
+                            android:text="告警级别"
+                            android:textSize="8dp" />
+                    </LinearLayout>
+
+                </TableRow>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/left_alarm"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="3"
+                        android:gravity="center"
+                        android:rotation="270"
+                        app:srcCompat="@mipmap/forward" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="5"
+                            android:gravity="center"
+                            android:textSize="20dp"
                             android:text="①" />
 
                         <TextView
@@ -622,13 +623,14 @@
                     <ImageView
                         android:id="@+id/right_alarm"
                         android:layout_width="0dp"
-                        android:layout_height="40dp"
+                        android:layout_height="50dp"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_margin="5dp"
                         android:layout_weight="3"
                         android:gravity="center"
-                        app:srcCompat="@mipmap/right_rotation" />
+                        android:rotation="90"
+                        app:srcCompat="@mipmap/forward" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -655,131 +657,6 @@
 
                 </TableRow>
 
-
-                <!--
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-                    <TextView
-                        android:id="@+id/left_alarm"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="3"
-                        android:text="1"
-                        android:gravity="center"/>
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
-                    <ImageView
-                        android:id="@+id/left_alarm"
-                        android:layout_width="0dp"
-                        android:layout_height="45dp"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp"
-                        android:layout_weight="3"
-                        android:gravity="center"
-                        app:srcCompat="@mipmap/up2" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:id="@+id/left_alarm"
-                        android:layout_width="0dp"
-                        android:layout_height="45dp"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:text="1"
-                        android:gravity="center"/>
-
-                    <ImageView
-                        android:id="@+id/left_alarm"
-                        android:layout_width="0dp"
-                        android:layout_height="45dp"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp"
-                        android:layout_weight="3"
-                        android:gravity="center"
-                        app:srcCompat="@mipmap/left1" />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="3"/>
-
-                    <ImageView
-                        android:id="@+id/right_alarm"
-                        android:layout_width="0dp"
-                        android:layout_height="45dp"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp"
-                        android:layout_weight="3"
-                        android:gravity="center"
-                        app:srcCompat="@mipmap/right1" />
-
-                    <TextView
-                        android:id="@+id/left_alarm"
-                        android:layout_width="0dp"
-                        android:layout_height="45dp"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:text="1"
-                        android:gravity="center"/>
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-                    <ImageView
-                        android:id="@+id/left_alarm"
-                        android:layout_width="0dp"
-                        android:layout_height="45dp"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp"
-                        android:layout_weight="3"
-                        android:gravity="center"
-                        app:srcCompat="@mipmap/down1" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-                    <TextView
-                        android:id="@+id/left_alarm"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="3"
-                        android:text="1"
-                        android:gravity="center"/>
-
-                </TableRow>
-                -->
             </TableLayout>
 
 

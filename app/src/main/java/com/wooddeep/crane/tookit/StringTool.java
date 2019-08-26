@@ -135,6 +135,7 @@ public class StringTool {
         for (int i = 0; i < array.length; i++) {
             System.out.printf("%c", array[i]);
         }
+        System.out.println("");
     }
 
     public static Reader byteArrayReader(byte[] initialArray) {
@@ -163,10 +164,10 @@ public class StringTool {
             Geometry g1 = new WKTReader().read(line1);
             //String line2 = String.format("LINESTRING (%f %f, %f %f)", 0f, 10f, 100f, 10f);
 
-            a.setReplacement(0, 1);
-            b.setReplacement(10, 1);
-            c.setReplacement(100, 1);
-            d.setReplacement(10, 1);
+            a.setReplacement(0, 3, 1);
+            b.setReplacement(10, 3, 1);
+            c.setReplacement(100, 3,  1);
+            d.setReplacement(10, 3,  1);
             mod.getChars(0, mod.length(), modChars, 0);
             stringModify(modChars, a, b, c, d);
 
@@ -176,10 +177,10 @@ public class StringTool {
             Geometry g2 = new WKTReader().read(byteArrayReader(modBytes));
             System.out.println(g1.distance(g2));
 
-            a.setReplacement(0, 1);
-            b.setReplacement(20, 1);
-            c.setReplacement(100, 1);
-            d.setReplacement(20, 1);
+            a.setReplacement(0, 3, 1);
+            b.setReplacement(20, 3,  1);
+            c.setReplacement(100, 3, 1);
+            d.setReplacement(20, 3, 1);
             mod.getChars(0, mod.length(), modChars, 0);
             stringModify(modChars, a, b, c, d);
 

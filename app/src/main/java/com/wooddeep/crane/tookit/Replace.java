@@ -49,8 +49,8 @@ public class Replace {
      * @param decsize: 浮点数小数的位数
      * @description 小数 123.45 -> ['5', '4', '3', '2', '1'], 0.10 -> [0, 1], 0.01 -> [1, 0]
      **/
-    public void setReplacement(float data, int decsize) {
-
+    public void setReplacement(float data, int intsize, int decsize) {
+        if ((int)data > Math.pow(10, intsize)) return;
         int idata = (int) (data * (int) Math.pow(10, decsize));
         for (int i = 0; i < 10; i++) {
             int remainder = (idata % 10);
