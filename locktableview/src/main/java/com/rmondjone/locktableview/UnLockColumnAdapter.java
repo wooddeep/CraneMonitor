@@ -262,8 +262,7 @@ public class UnLockColumnAdapter extends RecyclerView.Adapter<UnLockColumnAdapte
     private void createEditTextCell(LinearLayout linearLayout, List<DataCell> datas, boolean isFristRow, int mMaxHeight, int rowNum, int colNum) {
         //构造单元格
         EditText widget = new EditText(mContext); // 单元格是 编辑框
-        widget.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_SIGNED|InputType.TYPE_NUMBER_FLAG_DECIMAL);
-
+        widget.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         widget.setBackgroundColor(Color.TRANSPARENT);
         try {
             widget.setTag(new JSONObject().put("row", rowNum).put("col", colNum)); // 列编号
@@ -280,7 +279,7 @@ public class UnLockColumnAdapter extends RecyclerView.Adapter<UnLockColumnAdapte
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 //System.out.println(widget.getTag().toString());
-                System.out.println(widget.getText().toString());
+                //System.out.println(widget.getText().toString());
                 datas.get(colNum).setValue(widget.getText().toString());
             }
 
@@ -401,7 +400,7 @@ public class UnLockColumnAdapter extends RecyclerView.Adapter<UnLockColumnAdapte
      */
     private void createRowView(LinearLayout linearLayout, List<DataCell> datas, boolean isFristRow, int mMaxHeight, int rowNum) {
         //设置LinearLayout
-        System.out.println("##rowNum = " + rowNum );
+        //System.out.println("##rowNum = " + rowNum );
         linearLayout.removeAllViews();//首先清空LinearLayout,复用会造成重复绘制，使内容超出预期长度
         for (int i = 0; i < datas.size(); i++) {
             //构造单元格

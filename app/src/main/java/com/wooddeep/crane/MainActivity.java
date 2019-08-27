@@ -349,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (mainCrane != null) {  // 次环
                     // 模拟回转
-
+                    /*
                     data = currRotateProto.pack();
                     rotateEvent.setData(data);
                     currRotateProto.parse(data);
@@ -375,6 +375,7 @@ public class MainActivity extends AppCompatActivity {
                     // 模拟电台
                     radioEvent.setData(radioProto.packReply());
                     eventBus.post(radioEvent);
+                    */
                 }
 
                 if (alarmJdugeFlag && alarmTimes % 9 == 0) { // TODO 数据有变化才触发告警判断
@@ -581,7 +582,6 @@ public class MainActivity extends AppCompatActivity {
         //elemMap.alramFlink();
     }
 
-
     private HashMap<Integer, Integer> rotateAlarmMap = new HashMap() {{
         put(1, R.mipmap.forward4);
         put(2, R.mipmap.forward4);
@@ -589,6 +589,12 @@ public class MainActivity extends AppCompatActivity {
         put(4, R.mipmap.forward2);
         put(5, R.mipmap.forward1);
     }};
+
+    private HashMap<Integer, Integer> carRangeAlarmMap = new HashMap() {{
+        put(1, R.mipmap.forward4);
+        put(2, R.mipmap.forward2);
+    }};
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void alarmShowEventBus(AlarmEvent event) {
@@ -607,13 +613,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (alarmEvent.forwardAlarm == true) {
-            Alarm.startAlarm(activity, R.id.forward_alarm, R.mipmap.forward_alarm);
+            Alarm.startAlarm(activity, R.id.forward_alarm, carRangeAlarmMap.get(event.forwardAlarmLevel));
         } else {
             Alarm.stopAlarm(activity, R.id.forward_alarm, R.mipmap.forward);
         }
 
         if (alarmEvent.backendAlarm == true) {
-            Alarm.startAlarm(activity, R.id.back_alarm, R.mipmap.forward3);
+            Alarm.startAlarm(activity, R.id.back_alarm, carRangeAlarmMap.get(event.backendAlarmLevel));
         } else {
             Alarm.stopAlarm(activity, R.id.back_alarm, R.mipmap.forward);
         }

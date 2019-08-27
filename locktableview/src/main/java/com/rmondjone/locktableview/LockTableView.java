@@ -235,12 +235,12 @@ public class LockTableView {
      * 展现视图
      */
     public void show() {
-        System.out.println("####################");
+        //println("####################");
         initData();
         initView();
         mContentView.removeAllViews();//清空视图
         mContentView.addView(mTableView);
-        System.out.println("####################");
+        //System.out.println("####################");
     }
 
 
@@ -303,7 +303,7 @@ public class LockTableView {
                         buffer.append("[" + measureTextWidth(textView, rowDatas.get(j).getValue()) + "]");
                     }
                 }
-                Log.e("第"+i+"行列最大宽度",buffer.toString());
+                //Log.e("第"+i+"行列最大宽度",buffer.toString());
             }
             //如果用户指定某列宽度则按照用户指定宽度算
             if (mChangeColumns.size() > 0) {

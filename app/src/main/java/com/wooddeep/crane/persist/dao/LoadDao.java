@@ -78,7 +78,6 @@ public class LoadDao {
         List<Load> out = new ArrayList<>();
 
         try {
-            
             List<Load> loads = dao.queryBuilder().where().eq("craneType", craneType)
                 .and().eq("armLength", armLength).and().eq("power", power).query();
             out = loads;
@@ -87,6 +86,22 @@ public class LoadDao {
         }
         return out;
     }
+
+    public Load getSaveLoad() {
+        List<Load> out = new ArrayList<>();
+
+        try {
+            List<Load> loads = dao.queryBuilder().where().eq("craneType", "X").query();
+            out = loads;
+        } catch (Exception e) {
+            // NOTHING
+        }
+
+        if (out.size() <= 0) return null;
+
+        return out.get(0);
+    }
+
 
     // 向user表中添加一条数据
     public void insert(Load data) {
@@ -108,7 +123,7 @@ public class LoadDao {
 
     public void deleteAll() {
         try {
-            dao.executeRaw("delete from load;");
+            dao.executeRaw("delete from load where craneType != 'X';");
         } catch (SQLException e) {
             e.printStackTrace();
         }
