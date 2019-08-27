@@ -128,7 +128,7 @@ public class CraneSetting extends AppCompatActivity {
                         100,
                         1,
                         1,
-                        1,
+                        0,
                         40,
                         10,
                         1,

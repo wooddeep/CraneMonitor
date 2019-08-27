@@ -93,9 +93,9 @@ public class Load {
 
     public static Load getInitData() {
         return new Load(
-            "JL186/12",
-            "2",
+            "DEMO_CRANE",
             "50",
+            "2",
             "35",
             "5.6"
         );

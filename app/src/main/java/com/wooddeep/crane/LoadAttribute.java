@@ -1,10 +1,13 @@
 package com.wooddeep.crane;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -24,7 +27,9 @@ import com.rmondjone.locktableview.LockTableView;
 import com.rmondjone.xrecyclerview.XRecyclerView;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.dao.LoadDao;
+import com.wooddeep.crane.persist.dao.SysParaDao;
 import com.wooddeep.crane.persist.entity.Load;
+import com.wooddeep.crane.persist.entity.SysPara;
 
 import org.json.JSONObject;
 
@@ -74,8 +79,40 @@ public class LoadAttribute extends AppCompatActivity {
     private Activity activity = this;
 
     private List<String> craneTypes = new ArrayList<>();
-    private List<String> armLengths =  new ArrayList<>();
-    private List<String> cables =  new ArrayList<>();
+    private List<String> armLengths = new ArrayList<>();
+    private List<String> cables = new ArrayList<>();
+
+    /**
+     *  *
+     * 检查应用程序是否允许写入存储设备
+     * <p>
+     *  *
+     *  *
+     * 如果应用程序不允许那么会提示用户授予权限
+     * <p>
+     *  *
+     *  * @param activity
+     *  
+     */
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                activity,
+                PERMISSIONS_STORAGE,
+                REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
 
     private void loadDefautAttr(Context contex) {
         LoadDao dao = new LoadDao(contex);
@@ -107,16 +144,11 @@ public class LoadAttribute extends AppCompatActivity {
 
     private List<Load> confLoad(Context contex) {
         DatabaseHelper.getInstance(contex).createTable(Load.class);
+        DatabaseHelper.getInstance(contex).createTable(SysPara.class);
         LoadDao dao = new LoadDao(contex);
         List<Load> paras = dao.selectAll();
-        if (paras == null || paras.size() == 0) {
-            Load load = new Load();
-            load.setCraneType("X");
-            load.setPower("-1");
-            load.setArmLength("-1");
-            load.setCoordinate("-1");
-            load.setWeight("-1");
-            dao.insert(load);
+        if (paras == null || paras.size() <= 1) {
+            dao.deleteAll();
             loadDefautAttr(contex); // 加载配置文件中的配置
         }
         paras = dao.selectAll();
@@ -152,10 +184,22 @@ public class LoadAttribute extends AppCompatActivity {
         Log.d("LoadAttribute", "SD卡文件里面的内容:" + result);
     }
 
+    private int getIndex(List<String> list, String value) {
+        int index = 0;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equals(value)) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.load_attribute);
+        verifyStoragePermissions(this);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
@@ -167,35 +211,34 @@ public class LoadAttribute extends AppCompatActivity {
         }
 
         confLoad(getApplicationContext());
-        LoadDao dao = new LoadDao(getApplicationContext());
-        Load savedLoad = dao.getSaveLoad();
+        LoadDao loadDao = new LoadDao(getApplicationContext());
+        SysParaDao paraDao = new SysParaDao(getApplicationContext());
 
-        craneTypes = dao.getCraneTypes();
-        String craneType = craneTypes.get(0);
-        if (savedLoad != null) craneType = savedLoad.getCraneType();
-        armLengths = dao.getArmLengths(craneType);
-        String armLength = armLengths.get(0);
-        if (savedLoad != null) armLength = savedLoad.getArmLength();
-        cables = dao.getCables(craneTypes.get(0), armLength);
+        String savedCraneType = paraDao.queryValueByName("craneType");  // 塔基类型
+        String savedAramLength = paraDao.queryValueByName("armLength"); // 臂长
+        String savedPower = paraDao.queryValueByName("power"); // 倍率
 
+        craneTypes = loadDao.getCraneTypes();
+        String craneType = savedCraneType != null ? savedCraneType : craneTypes.get(0);
+        armLengths = loadDao.getArmLengths(craneType);
+        String armLength = savedAramLength != null ? savedAramLength : armLengths.get(0);
+        cables = loadDao.getCables(craneType, armLength);
+        String power = savedPower != null ? savedPower : cables.get(0);
         MaterialSpinner spinner = (MaterialSpinner) findViewById(R.id.crane_type_option); // 塔基类型
         MaterialSpinner armLenSpinner = (MaterialSpinner) findViewById(R.id.arm_length_option); // 臂长
         MaterialSpinner cableSpiner = (MaterialSpinner) findViewById(R.id.rope_num_option); // 吊绳倍率
 
-        spinner.setText(craneType);
-        armLenSpinner.setText(armLength);
-        if (savedLoad != null) cableSpiner.setText(savedLoad.getPower());
-
         spinner.setItems(craneTypes);
+        spinner.setSelectedIndex(getIndex(craneTypes, craneType));
         spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, String currCraneType) {
-                armLengths = dao.getArmLengths(currCraneType);
+                armLengths = loadDao.getArmLengths(currCraneType);
                 armLenSpinner.setItems(armLengths);
                 armLenSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
                     @Override
                     public void onItemSelected(MaterialSpinner view, int position, long id, String currArmLen) {
-                        cables = dao.getCables(currCraneType, currArmLen);
+                        cables = loadDao.getCables(currCraneType, currArmLen);
                         cableSpiner.setItems(cables);
                         cableSpiner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
                             @Override
@@ -212,11 +255,12 @@ public class LoadAttribute extends AppCompatActivity {
         });
 
         armLenSpinner.setItems(armLengths);
+        armLenSpinner.setSelectedIndex(getIndex(armLengths, armLength));
         armLenSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, String currArmLen) {
                 String currCraneType = spinner.getText().toString();//spinner
-                cables = dao.getCables(currCraneType, currArmLen);
+                cables = loadDao.getCables(currCraneType, currArmLen);
                 cableSpiner.setItems(cables);
                 cableSpiner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
                     @Override
@@ -230,6 +274,7 @@ public class LoadAttribute extends AppCompatActivity {
         });
 
         cableSpiner.setItems(cables);
+        cableSpiner.setSelectedIndex(getIndex(cables, power));
         cableSpiner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
@@ -320,8 +365,6 @@ public class LoadAttribute extends AppCompatActivity {
                                         dao.insert(load);
                                     }
 
-
-
                                     craneTypes = dao.getCraneTypes();
                                     armLengths = dao.getArmLengths(craneTypes.get(0));
                                     cables = dao.getCables(craneTypes.get(0), armLengths.get(0));
@@ -343,19 +386,37 @@ public class LoadAttribute extends AppCompatActivity {
                                 MaterialSpinner craneTypeSpinner = (MaterialSpinner) findViewById(R.id.crane_type_option);
                                 MaterialSpinner armLenSpinner = (MaterialSpinner) findViewById(R.id.arm_length_option);
                                 MaterialSpinner cableNumSpinner = (MaterialSpinner) findViewById(R.id.rope_num_option);
-
                                 String craneType = craneTypeSpinner.getText().toString();
                                 String armLength = armLenSpinner.getText().toString();
                                 String cableNum = cableNumSpinner.getText().toString();
+                                SysParaDao sysParadao = new SysParaDao(getApplicationContext());
 
-                                System.out.printf("%s-%s-%s\n", craneType, armLength, cableNum);
-                                LoadDao dao = new LoadDao(getApplicationContext());
-                                Load saveLoad = new Load();
-                                saveLoad.setCraneType(craneType);
-                                saveLoad.setArmLength(armLength);
-                                saveLoad.setPower(cableNum);
-                                saveLoad.setId(0);
-                                dao.update(saveLoad);
+                                SysPara para = sysParadao.queryParaByName("craneType");
+                                if (para == null) {
+                                    para = new SysPara("craneType", craneType);
+                                    sysParadao.insert(para);
+                                } else {
+                                    para.setParaValue(craneType);
+                                    sysParadao.update(para);
+                                }
+
+                                para = sysParadao.queryParaByName("armLength");
+                                if (para == null) {
+                                    para = new SysPara("armLength", armLength);
+                                    sysParadao.insert(para);
+                                } else {
+                                    para.setParaValue(armLength);
+                                    sysParadao.update(para);
+                                }
+
+                                para = sysParadao.queryParaByName("power");
+                                if (para == null) {
+                                    para = new SysPara("power", cableNum);
+                                    sysParadao.insert(para);
+                                } else {
+                                    para.setParaValue(cableNum);
+                                    sysParadao.update(para);
+                                }
                             }
                         }
                     });
@@ -400,9 +461,7 @@ public class LoadAttribute extends AppCompatActivity {
             ArrayList<DataCell> row = new ArrayList<DataCell>();
             row.add(new DataCell(0, load.getCoordinate()));
             row.add(new DataCell(0, load.getWeight()));
-            //System.out.printf("@@@@@@@@@@@@@@@@@@@@ : %s\n", load.getCoordinate());
             table.add(row);
-
         }
 
         return table;

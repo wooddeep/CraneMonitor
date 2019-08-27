@@ -209,8 +209,8 @@ public class Crane {
     }
 
     public Crane(boolean isMain, int id, String name, int type, float coordX1, float coordY1,
-                     float coordX2, float coordY2, float CraneHeight, float BigArmLength,
-                     float BalancArmLength, float CraneBodyRadius, float BigArmWidth, float BalancArmWidth) {
+                 float coordX2, float coordY2, float CraneHeight, float BigArmLength,
+                 float BalancArmLength, float CraneBodyRadius, float BigArmWidth, float BalancArmWidth) {
         super();
         this.id = id;
         this.isMain = isMain;
@@ -243,7 +243,7 @@ public class Crane {
             100,
             1,
             1,
-            1,
+            0,
             40,
             10,
             1,

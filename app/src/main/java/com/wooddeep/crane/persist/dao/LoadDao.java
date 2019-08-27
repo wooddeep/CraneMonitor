@@ -31,9 +31,9 @@ public class LoadDao {
 
     public List<String> getCraneTypes() {
         List<String> out = new ArrayList<>();
-
         try {
-            List<Load> loads = dao.queryBuilder().selectColumns("craneType").distinct().query();
+            List<Load> loads = dao.queryBuilder()
+                .selectColumns("craneType").distinct().query();
             for (Load load : loads) {
                 out.add(load.getCraneType());
             }
@@ -91,7 +91,7 @@ public class LoadDao {
         List<Load> out = new ArrayList<>();
 
         try {
-            List<Load> loads = dao.queryBuilder().where().eq("craneType", "X").query();
+            List<Load> loads = dao.queryBuilder().where().eq("coordinate", "-1").query();
             out = loads;
         } catch (Exception e) {
             // NOTHING
@@ -123,7 +123,7 @@ public class LoadDao {
 
     public void deleteAll() {
         try {
-            dao.executeRaw("delete from load where craneType != 'X';");
+            dao.executeRaw("delete from load;");
         } catch (SQLException e) {
             e.printStackTrace();
         }
