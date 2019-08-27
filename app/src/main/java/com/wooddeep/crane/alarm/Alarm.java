@@ -23,26 +23,27 @@ import java.util.Set;
 
 public class Alarm {
 
+
     public static void startAlarm(Activity activity, int weightId, int picId) {
         ImageView left = (ImageView) activity.findViewById(weightId);
 
-        ObjectAnimator oa = ObjectAnimator.ofFloat(left, "scaleX", 0.98f, 1.02f);
-        oa.setDuration(500);
-        ObjectAnimator oa2 = ObjectAnimator.ofFloat(left, "scaleY", 0.98f, 1.02f);
-        oa2.setDuration(500);
+        //ObjectAnimator oa = ObjectAnimator.ofFloat(left, "scaleX", 0.98f, 1.02f);
+        //oa.setDuration(500);
+        //ObjectAnimator oa2 = ObjectAnimator.ofFloat(left, "scaleY", 0.98f, 1.02f);
+        //oa2.setDuration(500);
 
         left.setImageDrawable(activity.getResources().getDrawable(picId));
 
-        oa.start();
-        oa2.start();
+        //oa.start();
+        //oa2.start();
 
-        oa = ObjectAnimator.ofFloat(left, "scaleX", 1.02f, 0.98f);
-        oa.setDuration(500);
-        oa2 = ObjectAnimator.ofFloat(left, "scaleY", 1.02f, 0.98f);
-        oa2.setDuration(500);
+        //oa = ObjectAnimator.ofFloat(left, "scaleX", 1.02f, 0.98f);
+        //oa.setDuration(500);
+        //oa2 = ObjectAnimator.ofFloat(left, "scaleY", 1.02f, 0.98f);
+        //oa2.setDuration(500);
 
-        oa.start();
-        oa2.start();
+        //oa.start();
+        //oa2.start();
     }
 
     public static void stopAlarm(Activity activity, int weightId, int picId) {
@@ -272,22 +273,32 @@ public class Alarm {
         if (rotateRate <= calibration.getGearRate1()) {
             tTotAlarmDis = alarmSet.getT2tDistGear1();
             tTocAlarmDis = alarmSet.getT2cDistGear1();
+            alarmEvent.leftAlarmLevel = 1;
+            alarmEvent.rightAlarmLevel = 1;
             //System.out.printf("@@@@@@@@ gear1: %f", calibration.getGearRate1());
         } else if (rotateRate <= calibration.getGearRate2()) {
             tTotAlarmDis = alarmSet.getT2tDistGear2();
             tTocAlarmDis = alarmSet.getT2cDistGear2();
+            alarmEvent.leftAlarmLevel = 2;
+            alarmEvent.rightAlarmLevel = 2;
             //System.out.printf("@@@@@@@@ gear2: %f", calibration.getGearRate2());
         } else if (rotateRate <= calibration.getGearRate3()) {
             tTotAlarmDis = alarmSet.getT2tDistGear3();
             tTocAlarmDis = alarmSet.getT2cDistGear3();
+            alarmEvent.leftAlarmLevel = 3;
+            alarmEvent.rightAlarmLevel = 3;
             //System.out.printf("@@@@@@@@ gear3: %f", calibration.getGearRate3());
         } else if (rotateRate <= calibration.getGearRate4()) {
             tTotAlarmDis = alarmSet.getT2tDistGear4();
             tTocAlarmDis = alarmSet.getT2cDistGear4();
+            alarmEvent.leftAlarmLevel = 4;
+            alarmEvent.rightAlarmLevel = 4;
             //System.out.printf("@@@@@@@@ gear4: %f", calibration.getGearRate4());
         } else {
             tTotAlarmDis = alarmSet.getT2tDistGear5();
             tTocAlarmDis = alarmSet.getT2cDistGear5();
+            alarmEvent.leftAlarmLevel = 5;
+            alarmEvent.rightAlarmLevel = 5;
             //System.out.printf("@@@@@@@@ gear5: %f", calibration.getGearRate5());
         }
 

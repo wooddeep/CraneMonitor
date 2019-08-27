@@ -388,7 +388,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 alarmTimes++;
-                CommTool.sleep(100);
+                CommTool.sleep(10);
             }
         }).start();
     }
@@ -540,7 +540,9 @@ public class MainActivity extends AppCompatActivity {
                 slaveRadioProto.packReply(); // 生成回应报文
                 //StringTool.showCharArray(slaveRadioProto.modleChars);
                 try {
-                    ttyS1OutputStream.write(slaveRadioProto.modleBytes); // 发送应答报文
+                    if (ttyS1OutputStream != null) {
+                        ttyS1OutputStream.write(slaveRadioProto.modleBytes); // 发送应答报文
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -579,20 +581,29 @@ public class MainActivity extends AppCompatActivity {
         //elemMap.alramFlink();
     }
 
+
+    private HashMap<Integer, Integer> rotateAlarmMap = new HashMap() {{
+        put(1, R.mipmap.forward4);
+        put(2, R.mipmap.forward4);
+        put(3, R.mipmap.forward3);
+        put(4, R.mipmap.forward2);
+        put(5, R.mipmap.forward1);
+    }};
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void alarmShowEventBus(AlarmEvent event) {
         alarmEvent = event;
         if (alarmEvent == null) return;
         if (alarmEvent.leftAlarm == true) {
-            Alarm.startAlarm(activity, R.id.left_alarm, R.mipmap.left_rotation_alarm);
+            Alarm.startAlarm(activity, R.id.left_alarm, rotateAlarmMap.get(event.leftAlarmLevel));
         } else {
-            Alarm.stopAlarm(activity, R.id.left_alarm, R.mipmap.left_rotation);
+            Alarm.stopAlarm(activity, R.id.left_alarm, R.mipmap.forward);
         }
 
         if (alarmEvent.rightAlarm == true) {
-            Alarm.startAlarm(activity, R.id.right_alarm, R.mipmap.right_rotation_alarm);
+            Alarm.startAlarm(activity, R.id.right_alarm, rotateAlarmMap.get(event.rightAlarmLevel));
         } else {
-            Alarm.stopAlarm(activity, R.id.right_alarm, R.mipmap.right_rotation);
+            Alarm.stopAlarm(activity, R.id.right_alarm, R.mipmap.forward);
         }
 
         if (alarmEvent.forwardAlarm == true) {
@@ -602,9 +613,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (alarmEvent.backendAlarm == true) {
-            Alarm.startAlarm(activity, R.id.back_alarm, R.mipmap.backoff_alarm);
+            Alarm.startAlarm(activity, R.id.back_alarm, R.mipmap.forward3);
         } else {
-            Alarm.stopAlarm(activity, R.id.back_alarm, R.mipmap.backoff);
+            Alarm.stopAlarm(activity, R.id.back_alarm, R.mipmap.forward);
         }
     }
 
@@ -1165,7 +1176,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         initTable(); // 初始化表
-        //startDataSimThread();
+        startDataSimThread();
 
         // 触发判断本机是否为主机
         new Handler().postDelayed(() -> {
