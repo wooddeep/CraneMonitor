@@ -36,6 +36,7 @@ import com.wooddeep.crane.ebus.MessageEvent;
 import com.wooddeep.crane.ebus.RadioEvent;
 import com.wooddeep.crane.ebus.RotateEvent;
 import com.wooddeep.crane.ebus.SimulatorEvent;
+import com.wooddeep.crane.ebus.SysParaEvent;
 import com.wooddeep.crane.ebus.UartEvent;
 import com.wooddeep.crane.ebus.WeightEvent;
 import com.wooddeep.crane.element.BaseElem;
@@ -53,6 +54,7 @@ import com.wooddeep.crane.persist.dao.CraneParaDao;
 import com.wooddeep.crane.persist.dao.LoadDao;
 import com.wooddeep.crane.persist.dao.ProtectAreaDao;
 import com.wooddeep.crane.persist.dao.ProtectDao;
+import com.wooddeep.crane.persist.dao.SysParaDao;
 import com.wooddeep.crane.persist.entity.AlarmSet;
 import com.wooddeep.crane.persist.entity.Area;
 import com.wooddeep.crane.persist.entity.Calibration;
@@ -60,6 +62,7 @@ import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.CranePara;
 import com.wooddeep.crane.persist.entity.Load;
 import com.wooddeep.crane.persist.entity.Protect;
+import com.wooddeep.crane.persist.entity.SysPara;
 import com.wooddeep.crane.simulator.SimulatorFlags;
 import com.wooddeep.crane.simulator.UartEmitter;
 import com.wooddeep.crane.tookit.AnimUtil;
@@ -80,7 +83,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -277,6 +282,12 @@ public class MainActivity extends AppCompatActivity {
     private AlarmDetectEvent alarmDetectEvent = new AlarmDetectEvent();
 
     private boolean alarmJdugeFlag = false;
+
+    private TextView angleView;
+    private SysParaDao paraDao; // 系统参数
+    private LoadDao loadDao; // 负荷特性
+    private List<Load> loadParas = null; // 负荷特性设置
+
 
     public float getOscale() {
         return oscale;
@@ -790,6 +801,36 @@ public class MainActivity extends AppCompatActivity {
         calibrationFlag = false;
     }
 
+    // 系统参数相关
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void sysParaEventBus(SysParaEvent event) {
+        String craneType = event.getCraneType(); // 塔基类型
+        if (craneType == null) {
+            craneType = paraDao.queryValueByName("craneType");
+            if (craneType == null) craneType = "UNSELECTED";
+            ((TextView) findViewById(R.id.craneType)).setText(craneType); // 显示塔基类型
+        }
+
+        String armLength = event.getArmLength(); // 臂长
+        if (armLength == null) {
+            armLength = paraDao.queryValueByName("armLength");
+            if (armLength == null) armLength = "-1";
+        }
+
+        String power = event.getPower(); // 倍率
+        if (power == null) {
+            power = paraDao.queryValueByName("power");
+            if (power == null) power = "-1";
+        }
+
+        loadParas = loadDao.getLoads(craneType, armLength, power); // 获取负荷特性
+        if (loadParas != null) {
+            for (Load load : loadParas) {
+                //System.out.printf("%s--%s\n", load.getCoordinate(), load.getWeight());
+            }
+        }
+    }
+
     public void setOnTouchListener(View view) {
         View.OnTouchListener onTouchListener = new View.OnTouchListener() {
             @Override
@@ -997,6 +1038,7 @@ public class MainActivity extends AppCompatActivity {
         }
         String number = Integer.parseInt(mainCrane.getName().replaceAll("[^0-9]+", "")) + "";
         myCraneNo = number;
+        ((TextView) findViewById(R.id.craneNo)).setText("No.:" + number); // 显示塔基类型
         craneNumbers.add(number); // 本机的编号
 
         // 1. 画中心圆环
@@ -1004,24 +1046,28 @@ public class MainActivity extends AppCompatActivity {
         if (centerCycle == null) {
             centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(), mainCrane.getBigArmLength(),
                 mainCrane.getBalancArmLength(), 0, 0, 0, mainCrane.getCraneHeight(), number);
-            elemMap.addElem(centerCycle.getUuid(), centerCycle);
+            elemMap.addElem(myCraneNo, centerCycle);
             mainCycleId = centerCycle.getUuid();
             centerCycle.drawCenterCycle(this, mainFrame);
             craneMap.put(myCraneNo, centerCycle);
         }
 
         // 2. 根据数据库的数据画边缘圆环
+        HashSet<String> confs = new HashSet<>();
         for (Crane cp : paras) {
+            number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "";
+            confs.add(number);
+
             if (cp == mainCrane) continue;
             if ((int) cp.getCraneHeight() <= 0) continue;
             float scale = centerCycle.scale;
-            number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "";
+
             SideCycle sideCycle = (SideCycle) craneMap.get(number);
             if (sideCycle == null) {
                 sideCycle = new SideCycle(centerCycle, cp.getCoordX1(), cp.getCoordY1(), cp.getBigArmLength(),
                     mainCrane.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight(), number);
 
-                elemMap.addElem(sideCycle.getUuid(), sideCycle);
+                elemMap.addElem(number, sideCycle);
                 sideCycleId = sideCycle.getUuid();
                 sideCycle.drawSideCycle(this, mainFrame);
                 craneNumbers.add(number);
@@ -1035,8 +1081,9 @@ public class MainActivity extends AppCompatActivity {
         List<Area> areas = areaDao.selectAll();
         if (areas != null && areas.size() > 0) {
             for (Area area : areas) {
+                String areaName = String.format("%dA", areaIndex);
+                confs.add(areaName);
                 if ((int) area.getHeight() > 0) {
-                    String areaName = String.format("%dA", areaIndex);
                     SideArea sideArea = (SideArea) elemMap.getElem(areaName);
                     if (sideArea == null) {
                         List<Vertex> vertex = new ArrayList<Vertex>();
@@ -1064,8 +1111,9 @@ public class MainActivity extends AppCompatActivity {
         List<Protect> protects = protectDao.selectAll();
         if (protects != null && protects.size() > 0) {
             for (Protect protect : protects) {
+                String areaName = String.format("%dP", protectIndex);
+                confs.add(areaName);
                 if ((int) protect.getHeight() > 0) {
-                    String areaName = String.format("%dP", protectIndex);
                     SideArea sideArea = (SideArea) elemMap.getElem(areaName);
                     if (sideArea == null) {
                         List<Vertex> vertex = new ArrayList<Vertex>();
@@ -1084,6 +1132,16 @@ public class MainActivity extends AppCompatActivity {
                     elemList.add(sideArea);
                 }
                 protectIndex++;
+            }
+        }
+
+        // 去掉当前页面有，但是在塔基配置页面，或者区域配置页面删除的元素
+        Set<String> elements = elemMap.elemMap.keySet();
+        for (String element : elements) {
+            if(!confs.contains(element)) {
+                ElemMap.delBaseElement(mainFrame, craneMap.get(element));
+                craneMap.remove(element);
+                elemMap.elemMap.remove(element);
             }
         }
     }
@@ -1121,7 +1179,7 @@ public class MainActivity extends AppCompatActivity {
         ProtectAreaDao protectAreaDao = new ProtectAreaDao(MainActivity.this);
         AlarmSetDao alarmSetDao = new AlarmSetDao(MainActivity.this);
         CalibrationDao calibrationDao = new CalibrationDao(MainActivity.this);
-        LoadDao loadDao = new LoadDao(MainActivity.this);
+        loadDao = new LoadDao(MainActivity.this);
 
         List<Crane> cranes = craneDao.selectAll();
         if (cranes == null || cranes.size() == 0) { // 初始状态, 创建表
@@ -1130,7 +1188,7 @@ public class MainActivity extends AppCompatActivity {
             DatabaseHelper.getInstance(context).createTable(Area.class); // 区域
 
             DatabaseHelper.getInstance(context).createTable(Protect.class); // 保护区
-
+            DatabaseHelper.getInstance(context).createTable(SysPara.class);
             DatabaseHelper.getInstance(context).createTable(AlarmSet.class); // 告警
             alarmSetDao.insert(AlarmSet.getInitData());
 
@@ -1147,10 +1205,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         calibration = calibrationDao.selectAll().get(0);
-
     }
-
-    TextView angleView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1164,6 +1219,9 @@ public class MainActivity extends AppCompatActivity {
         angleView = (TextView) findViewById(R.id.angle);
 
         EventBus.getDefault().register(this);
+        initTable(); // 初始化表
+        paraDao = new SysParaDao(getApplicationContext()); // 系统参数
+        eventBus.post(new SysParaEvent()); // 触发系统参数相关
 
         try {
             serialttyS0 = new SerialPort(new File("/dev/ttyS0"), 115200, 0); // 19200 // AD数据
@@ -1181,7 +1239,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        initTable(); // 初始化表
         startDataSimThread();
 
         // 触发判断本机是否为主机

@@ -25,12 +25,14 @@ import com.rmondjone.locktableview.DataCell;
 import com.rmondjone.locktableview.DisplayUtil;
 import com.rmondjone.locktableview.LockTableView;
 import com.rmondjone.xrecyclerview.XRecyclerView;
+import com.wooddeep.crane.ebus.SysParaEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.dao.LoadDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
 import com.wooddeep.crane.persist.entity.Load;
 import com.wooddeep.crane.persist.entity.SysPara;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -417,6 +419,8 @@ public class LoadAttribute extends AppCompatActivity {
                                     para.setParaValue(cableNum);
                                     sysParadao.update(para);
                                 }
+
+                                EventBus.getDefault().post(new SysParaEvent(craneType, armLength, cableNum)); // 触发系统参数相关
                             }
                         }
                     });

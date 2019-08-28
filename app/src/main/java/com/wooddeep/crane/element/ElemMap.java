@@ -1,28 +1,22 @@
 package com.wooddeep.crane.element;
 
-import android.view.View;
 import android.view.ViewGroup;
 
-import com.wooddeep.crane.views.Vertex;
-
-import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.WKTReader;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
 public class ElemMap {
-    private HashMap<String, BaseElem> elemMap;
+    public HashMap<String, BaseElem> elemMap;
 
-    public HashMap<String, Float> distanceMap;
+    //public HashMap<String, Float> distanceMap;
 
     public ElemMap() {
         elemMap = new HashMap<>();
-        distanceMap = new HashMap<>();
+        //distanceMap = new HashMap<>();
     }
 
     public void addElem(String id, BaseElem elem) {
@@ -49,6 +43,24 @@ public class ElemMap {
                 parent.removeView(cc.cycle);
             }
         }
+    }
+
+    public static void delBaseElement(ViewGroup parent, BaseElem elem) {
+        if (elem instanceof SideCycle) { // cycle
+            SideCycle sc = (SideCycle) elem;
+            parent.removeView(sc.cycle);
+        }
+
+        if (elem instanceof SideArea) { // 区域 或者 保护区
+            SideArea sa = (SideArea) elem;
+            parent.removeView(sa.area);
+        }
+
+        if (elem instanceof CenterCycle) {
+            CenterCycle cc = (CenterCycle) elem;
+            parent.removeView(cc.cycle);
+        }
+
     }
 
     public BaseElem getElem(String id) {
