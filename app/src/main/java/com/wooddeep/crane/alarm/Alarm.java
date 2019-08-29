@@ -12,6 +12,7 @@ import com.wooddeep.crane.element.SideArea;
 import com.wooddeep.crane.element.SideCycle;
 import com.wooddeep.crane.persist.entity.AlarmSet;
 import com.wooddeep.crane.persist.entity.Calibration;
+import com.wooddeep.crane.persist.entity.Load;
 
 import org.greenrobot.eventbus.EventBus;
 import org.locationtech.jts.geom.Coordinate;
@@ -52,7 +53,7 @@ public class Alarm {
     }
 
     public static AlarmEvent alarmEvent = new AlarmEvent();
-
+    public static AlarmEvent weightalarmEvent = new AlarmEvent();
 
     public static CenterCycle craneToCraneAlarm(HashMap<String, CycleElem> craneMap, String no, float alarmDis, AlarmSet alarmSet) throws Exception {
         CenterCycle cc = (CenterCycle) craneMap.get(no);
@@ -321,5 +322,68 @@ public class Alarm {
         cc.prevCarRange = cc.carRange; // 记录上一次小车位置
         cc.prevHangle = cc.hAngle; // 记录上一次告警回转
         cc.prevMsec = System.currentTimeMillis(); // 上次一计算时间
+    }
+
+    public static void weightAlarmDetect(Calibration calibration, List<Load> loads, AlarmSet alarmSet,
+                                         EventBus eventBus, float curWeight, float cc) {
+
+        float maxWeight = Float.parseFloat(loads.get(0).getWeight());
+
+        weightalarmEvent.weightAlarm = false;
+        weightalarmEvent.momentAlarm = false;
+
+        if (curWeight >= maxWeight * alarmSet.getWeight3() / 100) {
+            //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight1() / 100);
+            //System.out.println("@@@ weight overload 3");
+            weightalarmEvent.weightAlarm = true;
+            weightalarmEvent.weightAlarmLevel = 3;
+        } else if (curWeight >= maxWeight * alarmSet.getWeight2() / 100) {
+            //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight2() / 100);
+            //System.out.println("@@@ weight overload 2");
+            weightalarmEvent.weightAlarm = true;
+            weightalarmEvent.weightAlarmLevel = 2;
+        } else if (curWeight >= maxWeight * alarmSet.getWeight1() / 100) {
+            //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight3() / 100);
+            //System.out.println("@@@ weight overload 1");
+            weightalarmEvent.weightAlarm = true;
+            weightalarmEvent.weightAlarmLevel = 1;
+        }
+
+        for (int i = 0; i < loads.size() - 1; i++) {
+            float sc = Float.parseFloat(loads.get(i).getCoordinate());
+            float ec = Float.parseFloat(loads.get(i + 1).getCoordinate());
+            if (sc <= cc && ec >= cc) { // 处于告警判断位置
+                float sw = Float.parseFloat(loads.get(i).getWeight());
+                float ew = Float.parseFloat(loads.get(i + 1).getWeight());
+                float ww = 1; // 标准重量
+                if (ec - cc == 0) {
+                    ww = ew;
+                } else {
+                    float rate = (cc - sc) / (ec - cc);
+                    ww = (rate * ew + sw) / (1 + rate);
+                }
+
+                System.out.printf("## %f -- %f : ", curWeight, ww);
+
+                if (curWeight >= ww * alarmSet.getMoment3() / 100) {
+                    //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight1() / 100);
+                    System.out.println("@@@ moment overload 3");
+                    weightalarmEvent.momentAlarm = true;
+                    weightalarmEvent.momentAlarmLevel = 3;
+                } else if (curWeight >= ww * alarmSet.getMoment2() / 100) {
+                    //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight2() / 100);
+                    System.out.println("@@@ moment overload 2");
+                    weightalarmEvent.momentAlarm = true;
+                    weightalarmEvent.momentAlarmLevel = 2;
+                } else if (curWeight >= ww * alarmSet.getMoment1() / 100) {
+                    //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight3() / 100);
+                    System.out.println("@@@ moment overload 1");
+                    weightalarmEvent.momentAlarm = true;
+                    weightalarmEvent.momentAlarmLevel = 1;
+                }
+            }
+        }
+
+        eventBus.post(weightalarmEvent);
     }
 }

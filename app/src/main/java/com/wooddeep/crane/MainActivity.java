@@ -346,6 +346,9 @@ public class MainActivity extends AppCompatActivity {
                     //eventBus.post(lengthEvent);
                     prevProto.setRealWeight(currProto.getRealWeight());
                     runOnUiThread(() -> weightShow(currProto.getRealWeight()));
+                    Alarm.weightAlarmDetect(calibration, loadParas, alarmSet, eventBus,
+                        currProto.getRealWeight(), currProto.getRealLength()); // 吊重告警判断
+
                     alarmJdugeFlag = true;
                 }
 
@@ -606,6 +609,17 @@ public class MainActivity extends AppCompatActivity {
         put(2, R.mipmap.forward2);
     }};
 
+    private HashMap<Integer, Integer> weightAlarmMap = new HashMap() {{
+        put(3, R.mipmap.weight3);
+        put(2, R.mipmap.weight2);
+        put(1, R.mipmap.weight1);
+    }};
+
+    private HashMap<Integer, Integer> momentAlarmMap = new HashMap() {{
+        put(3, R.mipmap.moment3);
+        put(2, R.mipmap.moment2);
+        put(1, R.mipmap.moment1);
+    }};
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void alarmShowEventBus(AlarmEvent event) {
@@ -633,6 +647,18 @@ public class MainActivity extends AppCompatActivity {
             Alarm.startAlarm(activity, R.id.back_alarm, carRangeAlarmMap.get(event.backendAlarmLevel));
         } else {
             Alarm.stopAlarm(activity, R.id.back_alarm, R.mipmap.forward);
+        }
+
+        if (alarmEvent.weightAlarm == true) {
+            Alarm.startAlarm(activity, R.id.weight_alarm, weightAlarmMap.get(event.weightAlarmLevel));
+        } else {
+            Alarm.stopAlarm(activity, R.id.weight_alarm, R.mipmap.weight0);
+        }
+
+        if (alarmEvent.momentAlarm == true) {
+            Alarm.startAlarm(activity, R.id.moment_alarm, momentAlarmMap.get(event.momentAlarmLevel));
+        } else {
+            Alarm.stopAlarm(activity, R.id.moment_alarm, R.mipmap.moment0);
         }
     }
 

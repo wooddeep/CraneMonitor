@@ -481,7 +481,7 @@
                         android:layout_margin="5dp"
                         android:layout_weight="3"
                         android:gravity="center"
-                        app:srcCompat="@mipmap/weight1" />
+                        app:srcCompat="@mipmap/weight0" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -635,7 +635,7 @@
                         android:layout_margin="5dp"
                         android:layout_weight="3"
                         android:gravity="center"
-                        app:srcCompat="@mipmap/rate" />
+                        app:srcCompat="@mipmap/moment0" />
 
                     <LinearLayout
                         android:layout_width="0dp"
