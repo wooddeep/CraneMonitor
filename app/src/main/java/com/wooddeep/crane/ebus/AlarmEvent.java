@@ -19,4 +19,6 @@ public class AlarmEvent {
     public int forwardAlarmLevel = 0;
     public int backendAlarmLevel = 0;
 
+    public int weightAlarmDispearLevel = 3; // 吊重告警消失等级
+    public int momentAlarmDispearLevel = 3; // 力矩告警消失等级
 }

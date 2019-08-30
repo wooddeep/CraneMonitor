@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.widget.ImageView;
 
+import com.wooddeep.crane.comm.ControlProto;
 import com.wooddeep.crane.ebus.AlarmEvent;
 import com.wooddeep.crane.element.BaseElem;
 import com.wooddeep.crane.element.CenterCycle;
@@ -124,7 +125,7 @@ public class Alarm {
 
                     float carSpeedDownDist = alarmSet.getCarSpeedDownDist(); // 小车减速距离
                     if (carToArmDis < carSpeedDownDist) {
-                        int level = carToArmDis < alarmSet.getCarStopDist() ? 1 : 2;
+                        int level = carToArmDis < alarmSet.getCarStopDist() ? 1 : 2; // 1挡停车距离，2挡减速距离
                         if (cc.prevCarRange < cc.carRange) {
                             Geometry gPredect = cc.getCarGeo(0.0f, 0.1f); // 向外运行
                             float distPred = (float) gPredect.distance(gsc);
@@ -331,22 +332,35 @@ public class Alarm {
 
         weightalarmEvent.weightAlarm = false;
         weightalarmEvent.momentAlarm = false;
+        weightalarmEvent.weightAlarmDispearLevel = 100;
+        weightalarmEvent.momentAlarmDispearLevel = 100;
+        float weight3 = maxWeight * alarmSet.getWeight3() / 100;
+        float weight2 = maxWeight * alarmSet.getWeight2() / 100;
+        float weight1 = maxWeight * alarmSet.getWeight1() / 100;
 
-        if (curWeight >= maxWeight * alarmSet.getWeight3() / 100) {
+        if (curWeight >= weight3) {
             //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight1() / 100);
-            //System.out.println("@@@ weight overload 3");
+            System.out.println("@@@ weight overload 3");
             weightalarmEvent.weightAlarm = true;
             weightalarmEvent.weightAlarmLevel = 3;
-        } else if (curWeight >= maxWeight * alarmSet.getWeight2() / 100) {
+        } else if (curWeight >= weight2) {
             //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight2() / 100);
-            //System.out.println("@@@ weight overload 2");
+            System.out.println("@@@ weight overload 2");
             weightalarmEvent.weightAlarm = true;
             weightalarmEvent.weightAlarmLevel = 2;
-        } else if (curWeight >= maxWeight * alarmSet.getWeight1() / 100) {
+        } else if (curWeight >= weight1) {
             //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight3() / 100);
-            //System.out.println("@@@ weight overload 1");
+            System.out.println("@@@ weight overload 1");
             weightalarmEvent.weightAlarm = true;
             weightalarmEvent.weightAlarmLevel = 1;
+        }
+
+        if (curWeight <= (weight2 + weight3) / 2) {
+            weightalarmEvent.weightAlarmDispearLevel = 3; // 3挡吊重告警消失
+        } else if (curWeight <= (weight2 + weight1) / 2) {
+            weightalarmEvent.weightAlarmDispearLevel = 2; // 2挡吊重告警消失
+        } else if (curWeight < 0.9 * weight1) {
+            weightalarmEvent.weightAlarmDispearLevel = 1; // 1挡吊重告警消失
         }
 
         for (int i = 0; i < loads.size() - 1; i++) {
@@ -363,27 +377,171 @@ public class Alarm {
                     ww = (rate * ew + sw) / (1 + rate);
                 }
 
-                System.out.printf("## %f -- %f : ", curWeight, ww);
-
-                if (curWeight >= ww * alarmSet.getMoment3() / 100) {
+                //System.out.printf("## %f -- %f : ", curWeight, ww);
+                float moment3 = ww * alarmSet.getMoment3() / 100;
+                float moment2 = ww * alarmSet.getMoment2() / 100;
+                float moment1 = ww * alarmSet.getMoment1() / 100;
+                if (curWeight >= moment3) {
                     //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight1() / 100);
                     System.out.println("@@@ moment overload 3");
                     weightalarmEvent.momentAlarm = true;
                     weightalarmEvent.momentAlarmLevel = 3;
-                } else if (curWeight >= ww * alarmSet.getMoment2() / 100) {
+                } else if (curWeight >= moment2) {
                     //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight2() / 100);
                     System.out.println("@@@ moment overload 2");
                     weightalarmEvent.momentAlarm = true;
                     weightalarmEvent.momentAlarmLevel = 2;
-                } else if (curWeight >= ww * alarmSet.getMoment1() / 100) {
+                } else if (curWeight >= moment1) {
                     //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight3() / 100);
                     System.out.println("@@@ moment overload 1");
                     weightalarmEvent.momentAlarm = true;
                     weightalarmEvent.momentAlarmLevel = 1;
                 }
+
+                if (curWeight <= (moment2 + moment3) / 2) {
+                    weightalarmEvent.momentAlarmDispearLevel = 3; // 3挡吊重告警消失
+                    //System.out.println("momentAlarmDispearLevel3");
+                } else if (curWeight <= (moment2 + moment1) / 2) {
+                    weightalarmEvent.momentAlarmDispearLevel = 2; // 3挡吊重告警消失
+                    //System.out.println("momentAlarmDispearLevel2");
+                } else if (curWeight < 0.9 * moment1) {
+                    weightalarmEvent.momentAlarmDispearLevel = 1; // 1挡吊重告警消失
+                    //System.out.println("momentAlarmDispearLevel1");
+                }
             }
         }
 
         eventBus.post(weightalarmEvent);
+    }
+
+    public static void rotateControl(AlarmEvent alarmEvent, ControlProto controlProto) {
+        if (alarmEvent.leftAlarm || alarmEvent.rightAlarm) {
+
+            if (alarmEvent.leftAlarm && alarmEvent.leftAlarmLevel == 1) {
+                controlProto.setLeftRote(true);
+            } else {
+                controlProto.setLeftRote(false);
+            }
+
+            if (alarmEvent.leftAlarm && alarmEvent.rightAlarmLevel == 1) {
+                controlProto.setRightRote(true);
+            } else {
+                controlProto.setRightRote(false);
+            }
+
+            switch (alarmEvent.leftAlarmLevel) {
+                case 2:
+                    controlProto.setLeftRote(false);  // 清除一档左告警
+                    controlProto.setRightRote(false); // 清除一档右告警
+                    controlProto.setRotate2(true);
+                    controlProto.setRotate3(true);
+                    controlProto.setRotate4(true);
+                    controlProto.setRotate5(true);
+                    break;
+                case 3:
+                    controlProto.setLeftRote(false);  // 清除一档左告警
+                    controlProto.setRightRote(false); // 清除一档右告警
+                    controlProto.setRotate2(false); // 清除2挡告警
+                    controlProto.setRotate3(true);
+                    controlProto.setRotate4(true);
+                    controlProto.setRotate5(true);
+                    break;
+                case 4:
+                    controlProto.setLeftRote(false);  // 清除一档左告警
+                    controlProto.setRightRote(false); // 清除一档右告警
+                    controlProto.setRotate2(false); // 清除2挡告警
+                    controlProto.setRotate3(false); // 清除2挡告警
+                    controlProto.setRotate4(true);
+                    controlProto.setRotate5(true);
+                    break;
+                case 5:
+                    controlProto.setLeftRote(false);  // 清除一档左告警
+                    controlProto.setRightRote(false); // 清除一档右告警
+                    controlProto.setRotate2(false); // 清除2挡告警
+                    controlProto.setRotate3(false); // 清除2挡告警
+                    controlProto.setRotate4(false);
+                    controlProto.setRotate5(true);
+                    break;
+            }
+        }
+
+        if (!alarmEvent.leftAlarm && !alarmEvent.rightAlarm) {
+            controlProto.setLeftRote(false);  // 清除一档左告警
+            controlProto.setRightRote(false); // 清除一档右告警
+            controlProto.setRotate2(false); // 清除2挡告警
+            controlProto.setRotate3(false); // 清除2挡告警
+            controlProto.setRotate4(false);
+            controlProto.setRotate5(false);
+        }
+
+    }
+
+    public static void weightControl(AlarmEvent alarmEvent, ControlProto controlProto) {
+        if (alarmEvent.weightAlarm) {
+            if (alarmEvent.weightAlarmLevel == 3) {
+                controlProto.setWeight1(true);
+            }
+        }
+
+        if (alarmEvent.weightAlarmDispearLevel <= 3) {
+            controlProto.setWeight1(false);
+        }
+    }
+
+    public static void momentControl(AlarmEvent alarmEvent, ControlProto controlProto) {
+        if (alarmEvent.momentAlarm) {
+            switch (alarmEvent.momentAlarmLevel) {
+                case 3:
+                    controlProto.setCarOut1(true);
+                    controlProto.setCarOut2(true);
+                    controlProto.setMoment3(true);
+                case 2:
+                    controlProto.setMoment2(true);
+                case 1:
+                    controlProto.setMoment1(true);
+                    break;
+            }
+        }
+
+        switch (alarmEvent.momentAlarmDispearLevel) {
+            case 1:
+                controlProto.setMoment1(false);
+            case 2:
+                controlProto.setMoment2(false);
+            case 3:
+                controlProto.setCarOut1(false);
+                controlProto.setCarOut2(false);
+                controlProto.setMoment3(false);
+                break;
+        }
+    }
+
+    public static void carBackControl(AlarmEvent event, ControlProto controlProto) {
+        if (event.forwardAlarm) {
+            switch (event.forwardAlarmLevel) {
+                case 1:
+                    controlProto.setCarBack1(true); // 停车距离
+                    controlProto.setCarBack2(true); // 减速距离
+                    break;
+                case 2:
+                    controlProto.setCarBack1(false); // 停车距离
+                    controlProto.setCarBack2(true); // 减速距离
+                    break;
+            }
+        } else {
+            controlProto.setCarBack1(false);
+            controlProto.setCarBack2(false);
+        }
+    }
+
+    public static void controlSet(AlarmEvent event, ControlProto controlProto) {
+        rotateControl(event, controlProto);
+        weightControl(event, controlProto);
+        momentControl(event, controlProto);
+        carBackControl(event, controlProto);
+        for (int i = 0; i < controlProto.control.length; i++) {
+            System.out.printf("%02x ", controlProto.control[i]);
+        }
+        System.out.println("");
     }
 }

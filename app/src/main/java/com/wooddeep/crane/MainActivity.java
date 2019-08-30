@@ -20,13 +20,13 @@ import android.widget.TextView;
 
 import com.example.x6.serial.SerialPort;
 import com.wooddeep.crane.alarm.Alarm;
+import com.wooddeep.crane.comm.ControlProto;
 import com.wooddeep.crane.comm.Protocol;
 import com.wooddeep.crane.comm.RadioProto;
 import com.wooddeep.crane.comm.RotateProto;
 import com.wooddeep.crane.ebus.AlarmDetectEvent;
 import com.wooddeep.crane.ebus.AlarmEvent;
 import com.wooddeep.crane.ebus.AlarmSetEvent;
-import com.wooddeep.crane.ebus.AlarmShowEvent;
 import com.wooddeep.crane.ebus.CalibrationCloseEvent;
 import com.wooddeep.crane.ebus.CalibrationEvent;
 import com.wooddeep.crane.ebus.FanSpeedEvent;
@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
     private SysParaDao paraDao; // 系统参数
     private LoadDao loadDao; // 负荷特性
     private List<Load> loadParas = null; // 负荷特性设置
-
+    private ControlProto controlProto = new ControlProto();
 
     public float getOscale() {
         return oscale;
@@ -660,6 +660,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Alarm.stopAlarm(activity, R.id.moment_alarm, R.mipmap.moment0);
         }
+
+        Alarm.controlSet(event, controlProto);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -1164,7 +1167,7 @@ public class MainActivity extends AppCompatActivity {
         // 去掉当前页面有，但是在塔基配置页面，或者区域配置页面删除的元素
         Set<String> elements = elemMap.elemMap.keySet();
         for (String element : elements) {
-            if(!confs.contains(element)) {
+            if (!confs.contains(element)) {
                 ElemMap.delBaseElement(mainFrame, craneMap.get(element));
                 craneMap.remove(element);
                 elemMap.elemMap.remove(element);
@@ -1243,7 +1246,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         angleView = (TextView) findViewById(R.id.angle);
-
+        controlProto.clear();
         EventBus.getDefault().register(this);
         initTable(); // 初始化表
         paraDao = new SysParaDao(getApplicationContext()); // 系统参数
