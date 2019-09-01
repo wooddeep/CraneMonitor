@@ -135,6 +135,12 @@ public class StringTool {
         for (int i = 0; i < array.length; i++) {
             System.out.printf("%c", array[i]);
         }
+    }
+
+    public static void showCharArray1(char [] array) {
+        for (int i = 0; i < array.length; i++) {
+            System.out.printf("%c", array[i]);
+        }
         System.out.println("");
     }
 

@@ -156,7 +156,10 @@ public class CalibrationSetting extends AppCompatActivity {
                     float y2 = Float.parseFloat(etEndY.getText().toString());
 
                     double rotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
-                        new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(x2, y2)); // [0 - pi]
+                        new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(x2, y2)); // [0 - 2pi]
+
+                    if (rotate <= 0.0001f) rotate = 2 * Math.PI;
+
                     System.out.println(Math.toDegrees(rotate));
 
                     double startRotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
@@ -174,7 +177,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibration.setRotateEndY2(y2);
                     calibration.setRotateStartData(start);
                     calibration.setRotateEndData(end);
-                    calibration.setRotateStartAngle((float)startRotate);
+                    calibration.setRotateStartAngle((float) startRotate);
                     calibration.setRotateRate(rate);
                     calibrationDao.update(calibration);
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
@@ -220,6 +223,8 @@ public class CalibrationSetting extends AppCompatActivity {
                         new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(x2, y2)); // [0 - pi]
                     System.out.println(Math.toDegrees(rotate));
 
+                    if (rotate <= 0.0001f) rotate = 2 * Math.PI;
+
                     float rate = (float) rotate / (end - start);
 
                     TextView tvRate = (TextView) findViewById(rotateStartX1.rateShowId);
@@ -236,7 +241,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibration.setRotateStartData(start);
                     calibration.setRotateEndData(end);
                     calibration.setRotateRate(rate);
-                    calibration.setRotateStartAngle((float)startRotate);
+                    calibration.setRotateStartAngle((float) startRotate);
                     calibrationDao.update(calibration);
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
 
@@ -334,7 +339,7 @@ public class CalibrationSetting extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     // 1. 读取初始值
-                    float start = (float)rotateProto.getData();
+                    float start = (float) rotateProto.getData();
                     System.out.println("## start value = " + start);
                     System.out.println(System.currentTimeMillis());
                     long startMsec = System.currentTimeMillis();
@@ -343,7 +348,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     Runnable readEnd = new Runnable() {
                         @Override
                         public void run() {
-                            float end = (float)rotateProto.getData();
+                            float end = (float) rotateProto.getData();
                             System.out.println("## end value = " + end);
                             System.out.println(System.currentTimeMillis());
                             long endMsec = System.currentTimeMillis();
@@ -371,7 +376,7 @@ public class CalibrationSetting extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     // 1. 读取初始值
-                    float start = (float)rotateProto.getData();
+                    float start = (float) rotateProto.getData();
                     System.out.println("## start value = " + start);
                     System.out.println(System.currentTimeMillis());
                     long startMsec = System.currentTimeMillis();
@@ -380,7 +385,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     Runnable readEnd = new Runnable() {
                         @Override
                         public void run() {
-                            float end = (float)rotateProto.getData();
+                            float end = (float) rotateProto.getData();
                             System.out.println("## end value = " + end);
                             System.out.println(System.currentTimeMillis());
                             long endMsec = System.currentTimeMillis();
@@ -408,7 +413,7 @@ public class CalibrationSetting extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     // 1. 读取初始值
-                    float start = (float)rotateProto.getData();
+                    float start = (float) rotateProto.getData();
                     System.out.println("## start value = " + start);
                     System.out.println(System.currentTimeMillis());
                     long startMsec = System.currentTimeMillis();
@@ -417,7 +422,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     Runnable readEnd = new Runnable() {
                         @Override
                         public void run() {
-                            float end = (float)rotateProto.getData();
+                            float end = (float) rotateProto.getData();
                             System.out.println("## end value = " + end);
                             System.out.println(System.currentTimeMillis());
                             long endMsec = System.currentTimeMillis();

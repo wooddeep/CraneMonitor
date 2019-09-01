@@ -27,6 +27,9 @@ public class RadioProto {
     public String targetNo = "00";
     public char [] targetNoChars = new char[] {'0', '0'};
 
+    public String permitNo = "00";
+    public char [] permitNoChars = new char[] {'0', '0'};
+
     public String sRotate = "100.01";
     public char [] rotateChars = new char[] {'1', '0', '0', '.', '1', '0'};
     public String sRange = "100.01";
@@ -38,11 +41,12 @@ public class RadioProto {
     /*
     private String modle = "% 1N 2N  0.00N  0.00N  0.00N  0.00N 0N#";
     */
-    private String modle = "%AANBBNCCCCCCNDDDDDDN  0.00N  0.00N 0N#";
+    private String modle = "%AANBBNCCCCCCNDDDDDDN  0.00N  0.00NEEN#";
     public char[] modleChars = new char[modle.length()];
     public byte[] modleBytes = new byte[modle.length()];
     private char[] sourceTag = new char[]{'A', 'A'};
     private char[] targetTag = new char[]{'B', 'B'};
+    private char[] permitTag = new char[]{'E', 'E'};
     private char[] rotateTag = new char[]{'C', 'C', 'C', 'C', 'C', 'C'};
     private char[] rangeTag = new char[]{'D', 'D', 'D', 'D', 'D', 'D'};
 
@@ -50,6 +54,7 @@ public class RadioProto {
     private Replace targetRepl = new Replace(targetTag.length);
     private Replace rotateRepl = new Replace(rotateTag.length);
     private Replace rangeRepl = new Replace(rangeTag.length);
+    private Replace permitRepl = new Replace(permitTag.length);
 
     public boolean isQuery = true;
 
@@ -57,11 +62,14 @@ public class RadioProto {
         sourceRepl.setTemplate(sourceTag);
         targetRepl.setTemplate(targetTag);
         rotateRepl.setTemplate(rotateTag);
+        permitRepl.setTemplate(permitTag);
         rangeRepl.setTemplate(rangeTag);
         modle.getChars(0, modle.length(), modleChars, 0);
     }
 
     public int parse(byte[] data) {
+
+        //System.out.println(new String(data));
         if (data[0] != '%') return -1;
 
         // "%master#"
@@ -71,12 +79,13 @@ public class RadioProto {
 
         StringTool.stringModify(this.sourceNo, sourceNoChars, (char) data[1], (char) data[2]);
         StringTool.stringModify(this.targetNo, targetNoChars, (char) data[4], (char) data[5]);
+        StringTool.stringModify(this.permitNo, permitNoChars, (char) data[36], (char) data[37]);
         StringTool.stringModify(this.sRotate, rotateChars, (char) data[7], (char) data[8], (char) data[9],
             (char) data[10], (char) data[11], (char) data[12]);
         StringTool.stringModify(this.sRange, rangeChars, (char) data[14], (char) data[15], (char) data[16],
             (char) data[17], (char) data[18], (char) data[19]);
 
-        if (targetNo.compareToIgnoreCase("0") == 0) { // 其他其他的回应报文
+        if (targetNoChars[0] == ' ' &&  targetNoChars[1] == '0') { // 其他其他的回应报文
             System.out.printf("# reply: "); // + "->" +" %s ", sourceNo, targetNo);
             StringTool.showCharArray(sourceNoChars);
             System.out.printf(" -> ");
@@ -85,8 +94,10 @@ public class RadioProto {
             StringTool.showCharArray(sourceNoChars);
             System.out.printf(" - rotate: ");
             StringTool.showCharArray(rotateChars);
+            rotate = Float.parseFloat(new String(rotateChars)); // TODO 替换成自己计算值
             System.out.printf(" , range: ");
             StringTool.showCharArray(rangeChars);
+            range = Float.parseFloat(new String(rangeChars)); // TODO 替换成自己计算值
             System.out.println("");
             isQuery = false; // 从机的回文
         } else {
@@ -169,6 +180,12 @@ public class RadioProto {
         //StringTool.stringModify(this.targetNo, targetNoChars, no);
         this.targetRepl.setReplacement(no);
         StringTool.stringModify(modleChars, this.targetRepl);
+    }
+
+    public void setPermitNo(int no) {
+        //StringTool.stringModify(this.targetNo, targetNoChars, no);
+        this.permitRepl.setReplacement(no);
+        StringTool.stringModify(modleChars, this.permitRepl);
     }
 
     public float getRotate() {

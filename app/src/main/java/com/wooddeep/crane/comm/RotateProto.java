@@ -25,6 +25,14 @@ public class RotateProto {
 
         this.data = (data[3] & 0xFF) << 24 | (data[4] & 0xFF) << 16 | (data[5] & 0xFF) << 8 | (data[6] & 0xFF);
 
+
+        for (int i = 0; i < 9 ; i ++) {
+            System.out.printf("%02x ", data[i] & 0xFF); // 01 04 00 01 00 02 20 0b 1d  = 16777760
+        }
+
+        System.out.printf(" = %d\n", this.data);
+
+
         return 0;
     }
 

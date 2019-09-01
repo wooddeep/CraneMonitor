@@ -68,6 +68,7 @@ import com.wooddeep.crane.simulator.UartEmitter;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DrawTool;
+import com.wooddeep.crane.tookit.MathTool;
 import com.wooddeep.crane.tookit.StringTool;
 import com.wooddeep.crane.views.CraneView;
 import com.wooddeep.crane.views.Vertex;
@@ -198,6 +199,15 @@ try {
 
 */
 
+//  TODO list
+//  1. 无信号是，环变成灰色
+//  2. 主从切换时，逻辑问题 (ok)
+//  3. 电台100ms延时
+//  4. 喇叭
+//  5. 360标定
+//  6. 大臂长度告警设置
+//  7. 按距离告警
+
 @SuppressWarnings("unused")
 public class MainActivity extends AppCompatActivity {
 
@@ -214,8 +224,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private Context context;
     private android.app.Activity activity = this;
+
     private List<BaseElem> elemList = new ArrayList<>();
+    private HashMap<String, CycleElem> craneMap = new HashMap<>();
     private ElemMap elemMap = new ElemMap();
+
     private static HashMap<String, Object> viewMapBak = new HashMap<>();
     private static HashMap<String, Object> zoomMapBak = new HashMap<>();
 
@@ -240,9 +253,9 @@ public class MainActivity extends AppCompatActivity {
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private boolean isMasterCrane = false; // 是否主塔机
-    private String myCraneNo = "1";
+    private String myCraneNo = "x";
     private List<String> craneNumbers = new ArrayList<>();
-    private HashMap<String, CycleElem> craneMap = new HashMap<>();
+
     private SimulatorFlags flags = new SimulatorFlags();
     private UartEmitter emitter = new UartEmitter();
 
@@ -281,13 +294,17 @@ public class MainActivity extends AppCompatActivity {
     private RadioEvent radioEvent = new RadioEvent();
     private AlarmDetectEvent alarmDetectEvent = new AlarmDetectEvent();
 
-    private boolean alarmJdugeFlag = false;
+    //private boolean alarmJdugeFlag = false;
+
+    private CraneView craneView;
 
     private TextView angleView;
     private SysParaDao paraDao; // 系统参数
     private LoadDao loadDao; // 负荷特性
     private List<Load> loadParas = null; // 负荷特性设置
     private ControlProto controlProto = new ControlProto();
+
+    private byte[] rotateCmd = new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B};
 
     public float getOscale() {
         return oscale;
@@ -338,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
                     //eventBus.post(lengthEvent);
                     prevProto.setRealLength(currProto.getRealLength());
                     runOnUiThread(() -> lengthShow(currProto.getRealLength()));
-                    alarmJdugeFlag = true;
+                    //alarmJdugeFlag = true;
                 }
 
                 if (Math.abs(currProto.getRealWeight() - prevProto.getRealWeight()) > 0.05f) {
@@ -349,7 +366,7 @@ public class MainActivity extends AppCompatActivity {
                     Alarm.weightAlarmDetect(calibration, loadParas, alarmSet, eventBus,
                         currProto.getRealWeight(), currProto.getRealLength()); // 吊重告警判断
 
-                    alarmJdugeFlag = true;
+                    //alarmJdugeFlag = true;
                 }
 
                 if (Math.abs(currProto.getRealHeight() - prevProto.getRealHeight()) > 0.05f) {
@@ -357,13 +374,13 @@ public class MainActivity extends AppCompatActivity {
                     //eventBus.post(lengthEvent);
                     prevProto.setRealHeight(currProto.getRealHeight());
                     runOnUiThread(() -> heightShow(currProto.getRealHeight()));
-                    alarmJdugeFlag = true;
+                    //alarmJdugeFlag = true;
                 }
 
 
                 if (mainCrane != null) {  // 次环
                     // 模拟回转
-                    /*
+
                     data = currRotateProto.pack();
                     rotateEvent.setData(data);
                     currRotateProto.parse(data);
@@ -375,7 +392,7 @@ public class MainActivity extends AppCompatActivity {
                         //eventBus.post(rotateEvent);
                         runOnUiThread(() -> rotateShow(currRotateProto.getAngle()));
                         prevRotateProto.setAngle(currRotateProto.getAngle());
-                        alarmJdugeFlag = true;
+                        //alarmJdugeFlag = true;
                     }
 
                     // TODO
@@ -389,10 +406,10 @@ public class MainActivity extends AppCompatActivity {
                     // 模拟电台
                     radioEvent.setData(radioProto.packReply());
                     eventBus.post(radioEvent);
-                    */
+
                 }
 
-                if (alarmJdugeFlag && alarmTimes % 9 == 0) { // TODO 数据有变化才触发告警判断
+                if (alarmTimes % 9 == 0) { // TODO 数据有变化才触发告警判断
                     //eventBus.post(alarmDetectEvent); // 消息触发有延时
                     System.out.println("#### I will do alarm judge!!!");
                     try {
@@ -408,19 +425,19 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    private byte[] rotateCmd = new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B};
 
     private void startSensorThread() {
         new Thread(() -> {
             try {
                 while (true) {
-                    alarmJdugeFlag = false;
+                    //alarmJdugeFlag = false;
                     if (ttyS0InputStream.available() > 0) { // AD数据
                         int len = ttyS0InputStream.read(adXBuff, 0, 2048);
 
                         for (int i = 0; i < 20; i++) {
                             adRBuff[i] = adXBuff[i];
                         }
+
                         currProto.parse(adRBuff);
                         currProto.calcRealHeight(calibration);
                         currProto.calcRealLength(calibration);
@@ -430,21 +447,21 @@ public class MainActivity extends AppCompatActivity {
                             lengthEvent.setLength(currProto.getRealLength());
                             prevProto.setRealLength(currProto.getRealLength());
                             eventBus.post(lengthEvent);
-                            alarmJdugeFlag = true;
+                            //alarmJdugeFlag = true;
                         }
 
                         if (Math.abs(currProto.getRealHeight() - prevProto.getRealHeight()) >= 0.2f) {
                             heightEvent.setHeight(currProto.getRealHeight());
                             prevProto.setRealHeight(currProto.getRealHeight());
                             eventBus.post(heightEvent);
-                            alarmJdugeFlag = true;
+                            //alarmJdugeFlag = true;
                         }
 
                         if (Math.abs(currProto.getRealWeight() - prevProto.getRealWeight()) >= 0.2f) {
                             weightEvent.setWeight(currProto.getRealWeight());
                             prevProto.setRealWeight(currProto.getRealWeight());
                             eventBus.post(weightEvent);
-                            alarmJdugeFlag = true;
+                            //alarmJdugeFlag = true;
                         }
 
                         if (calibrationFlag) {
@@ -459,7 +476,7 @@ public class MainActivity extends AppCompatActivity {
                         for (int i = 0; i < 9; i++) {
                             rotateRBuff[i] = rotateXBuff[i];
                         }
-                        if (rotateRBuff[0] == 0x01 && rotateRBuff[1] == 0x04) {
+                        if (rotateRBuff[0] == 0x01 && rotateRBuff[1] == 0x04 && rotateRBuff[2] == 0x04) {
                             currRotateProto.parse(rotateRBuff);
                             currRotateProto.calcAngle(calibration);
                             if (Math.abs(currRotateProto.getAngle() - prevRotateProto.getAngle()) >= 0.5f) {
@@ -468,8 +485,12 @@ public class MainActivity extends AppCompatActivity {
                                 rotateEvent.setAngle(currRotateProto.getAngle());
                                 rotateEvent.setData(rotateRBuff);
                                 prevRotateProto.setAngle(currRotateProto.getAngle());
-                                runOnUiThread(() -> rotateShow(Math.round(currRotateProto.getAngle() % 360 * 10) / 10.0f));
-                                alarmJdugeFlag = true;
+
+                                float angle = currRotateProto.getAngle();
+                                //if (angle < 0) angle = 360 - (Math.abs(angle) % 360); // TODO 角度负值转正值
+                                //final float pangle = Math.round(angle * 10) / 10.0f;
+                                runOnUiThread(() -> rotateShow(angle));
+                                //alarmJdugeFlag = true;
                             }
                         }
 
@@ -478,16 +499,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    if (alarmJdugeFlag) {
-                        //System.out.println("#### I will do alarm judge!!!");
-                        try {
-                            Alarm.alarmDetect(calibration, elemList, craneMap, myCraneNo, alarmSet, eventBus);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    CommTool.sleep(50);
+                    CommTool.sleep(100);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -504,21 +516,24 @@ public class MainActivity extends AppCompatActivity {
                         for (int i = 0; i < 39; i++) {
                             radioRBuff[i] = radioXBuff[i];
                         }
-                        //System.out.println(new String(radioRBuff));
-                        //radioDateParse(radioRBuff);
+
                         radioEvent.setData(radioRBuff);
                         eventBus.post(radioEvent); // 发送
                     }
 
-                    if (iAmMaster.get()) { // 主机
-                        if (craneNumbers.size() <= 0) return;
-                        masterRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
+                    if (iAmMaster.get() && craneNumbers.size() > 1) { // 主机
+                        int iMyCraneNo = Integer.parseInt(myCraneNo);
+                        // Integer.parseInt(craneNumbers.get(currSlaveIndex)
                         currSlaveIndex = (currSlaveIndex + 1) % craneNumbers.size();
-                        masterRadioProto.setTargetNo(Integer.parseInt(craneNumbers.get(currSlaveIndex)));
+                        int targetNo = Integer.parseInt(craneNumbers.get(currSlaveIndex));
+                        if (iMyCraneNo == targetNo) continue;
+                        masterRadioProto.setSourceNo(iMyCraneNo);
+                        masterRadioProto.setTargetNo(targetNo);
+                        masterRadioProto.setPermitNo(targetNo);
                         masterRadioProto.setRotate(centerCycle.hAngle);  // 实际的物理维度值，不是按比例值的值
                         masterRadioProto.setRange(centerCycle.carRange); // 实际的物理维度值，不是按比例值的值
                         masterRadioProto.packReply(); // 生成回应报文
-                        StringTool.showCharArray(masterRadioProto.modleChars);
+                        //StringTool.showCharArray1(masterRadioProto.modleChars);
                         try {
                             ttyS1OutputStream.write(masterRadioProto.modleBytes); // 发送应答报文
                         } catch (Exception e) {
@@ -527,6 +542,23 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     CommTool.sleep(80);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void startTimerThread() {
+        new Thread(() -> {
+            try {
+                while (true) {
+                    try {
+                        Alarm.alarmDetect(calibration, elemList, craneMap, myCraneNo, alarmSet, eventBus);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    CommTool.sleep(1000);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -550,10 +582,11 @@ public class MainActivity extends AppCompatActivity {
                 || radioProto.getTargetNo().equals(myCraneNo)) { // 目标ID相同是本机
                 slaveRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
                 slaveRadioProto.setTargetNo(0); // 固定为0
+                slaveRadioProto.setPermitNo(0);
                 slaveRadioProto.setRange(centerCycle.carRange); // TODO 根据本塔基的实际数据填充
                 slaveRadioProto.setRotate((centerCycle.hAngle % 360) * 2 * (float) Math.PI / 360); // TODO 根据本塔基的实际数据填充
                 slaveRadioProto.packReply(); // 生成回应报文
-                //StringTool.showCharArray(slaveRadioProto.modleChars);
+                //StringTool.showCharArray1(slaveRadioProto.modleChars);
                 try {
                     if (ttyS1OutputStream != null) {
                         ttyS1OutputStream.write(slaveRadioProto.modleBytes); // 发送应答报文
@@ -567,12 +600,14 @@ public class MainActivity extends AppCompatActivity {
 
         if (!radioProto.isQuery) { // 收到其他从机的回应命令 & 分自己的 主从 身份
             waitFlag = false;
+            //System.out.printf("### %f- %f \n", radioProto.getRange(), radioProto.getRotate());
             // 更新从机
-            CycleElem slave = craneMap.get(radioProto.getSourceNoInt());
+            CycleElem slave = craneMap.get("" + radioProto.getSourceNoInt()); // TODO 把数字转成字符串
             if (slave != null) {
                 slave.setCarRange(radioProto.getRange());
-                slave.setHAngle(radioProto.getRotate());
+                slave.setHAngle(MathTool.radiansToAngle(radioProto.getRotate()));
             }
+
             return;
         }
     }
@@ -661,7 +696,19 @@ public class MainActivity extends AppCompatActivity {
             Alarm.stopAlarm(activity, R.id.moment_alarm, R.mipmap.moment0);
         }
 
-        Alarm.controlSet(event, controlProto);
+        if (Alarm.controlSet(event, controlProto)) {
+            try {
+                /*
+                for (int i = 0; i < controlProto.control.length; i++) {
+                    System.out.printf("%02x ", controlProto.control[i]);
+                }
+                System.out.println("");
+                */
+                ttyS0OutputStream.write(controlProto.control);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -804,8 +851,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void rotateShow(float angle) {
-        angleView.setText(angle + "°");
         centerCycle.setHAngle(angle);
+        float showAngle = angle;
+        angleView.setText(showAngle + "°");
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
@@ -1055,53 +1103,54 @@ public class MainActivity extends AppCompatActivity {
         List<Crane> paras = craneDao.selectAll();
         if (paras.size() == 0) return;
 
+        Set<String> elements = elemMap.elemMap.keySet();
+        for (String element : elements) {
+            ElemMap.delBaseElement(mainFrame, elemMap.elemMap.get(element)); // 情况页面控件
+        }
+
+        // 清除容器变量
         elemList.clear();
         craneNumbers.clear();
+        craneMap.clear();
+        elemMap.elemMap.clear();
 
-        mainCrane = paras.get(0);
+        // 获取主环信息
+        mainCrane = paras.get(0); // 默认第一个环为主环
         for (Crane iterator : paras) {
             if (iterator.getIsMain() == true) {
                 mainCrane = iterator;
                 break;
             }
         }
-        String number = Integer.parseInt(mainCrane.getName().replaceAll("[^0-9]+", "")) + "";
+
+        // 设置主界面显示
+        String number = Integer.parseInt(mainCrane.getName().replaceAll("[^0-9]+", "")) + ""; // 当前主环的编号
         myCraneNo = number;
         ((TextView) findViewById(R.id.craneNo)).setText("No.:" + number); // 显示塔基类型
         craneNumbers.add(number); // 本机的编号
 
         // 1. 画中心圆环
-        centerCycle = (CenterCycle) craneMap.get(myCraneNo);
-        if (centerCycle == null) {
-            centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(), mainCrane.getBigArmLength(),
-                mainCrane.getBalancArmLength(), 0, 0, 0, mainCrane.getCraneHeight(), number);
-            elemMap.addElem(myCraneNo, centerCycle);
-            mainCycleId = centerCycle.getUuid();
-            centerCycle.drawCenterCycle(this, mainFrame);
-            craneMap.put(myCraneNo, centerCycle);
-        }
+        centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(), mainCrane.getBigArmLength(),
+            mainCrane.getBalancArmLength(), 0, 0, 0, mainCrane.getCraneHeight(), number);
+        elemMap.addElem(myCraneNo, centerCycle);
+        mainCycleId = centerCycle.getUuid();
+        centerCycle.drawCenterCycle(this, mainFrame);
+        craneMap.put(myCraneNo, centerCycle);
 
         // 2. 根据数据库的数据画边缘圆环
-        HashSet<String> confs = new HashSet<>();
         for (Crane cp : paras) {
-            number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "";
-            confs.add(number);
-
             if (cp == mainCrane) continue;
             if ((int) cp.getCraneHeight() <= 0) continue;
             float scale = centerCycle.scale;
+            number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "";
+            SideCycle sideCycle = new SideCycle(centerCycle, cp.getCoordX1(), cp.getCoordY1(), cp.getBigArmLength(),
+                mainCrane.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight(), number);
 
-            SideCycle sideCycle = (SideCycle) craneMap.get(number);
-            if (sideCycle == null) {
-                sideCycle = new SideCycle(centerCycle, cp.getCoordX1(), cp.getCoordY1(), cp.getBigArmLength(),
-                    mainCrane.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight(), number);
-
-                elemMap.addElem(number, sideCycle);
-                sideCycleId = sideCycle.getUuid();
-                sideCycle.drawSideCycle(this, mainFrame);
-                craneNumbers.add(number);
-                craneMap.put(number, sideCycle);
-            }
+            elemMap.addElem(number, sideCycle);
+            sideCycleId = sideCycle.getUuid();
+            sideCycle.drawSideCycle(this, mainFrame);
+            craneNumbers.add(number);
+            craneMap.put(number, sideCycle);
         }
 
         // 3. 画区域
@@ -1111,23 +1160,19 @@ public class MainActivity extends AppCompatActivity {
         if (areas != null && areas.size() > 0) {
             for (Area area : areas) {
                 String areaName = String.format("%dA", areaIndex);
-                confs.add(areaName);
                 if ((int) area.getHeight() > 0) {
-                    SideArea sideArea = (SideArea) elemMap.getElem(areaName);
-                    if (sideArea == null) {
-                        List<Vertex> vertex = new ArrayList<Vertex>();
-                        vertex.add(new Vertex(area.getX1(), area.getY1()));
-                        vertex.add(new Vertex(area.getX2(), area.getY2()));
-                        vertex.add(new Vertex(area.getX3(), area.getY3()));
-                        vertex.add(new Vertex(area.getX4(), area.getY4()));
-                        vertex.add(new Vertex(area.getX5(), area.getY5()));
-                        vertex.add(new Vertex(area.getX6(), area.getY6()));
-                        vertex = CommTool.arrangeVertexList(vertex);
-                        sideArea = new SideArea(centerCycle, Color.rgb(19, 34, 122),
-                            vertex, 0, area.getHeight(), areaName);
-                        elemMap.addElem(areaName, sideArea);
-                        sideArea.drawSideArea(this, mainFrame);
-                    }
+                    List<Vertex> vertex = new ArrayList<Vertex>();
+                    vertex.add(new Vertex(area.getX1(), area.getY1()));
+                    vertex.add(new Vertex(area.getX2(), area.getY2()));
+                    vertex.add(new Vertex(area.getX3(), area.getY3()));
+                    vertex.add(new Vertex(area.getX4(), area.getY4()));
+                    vertex.add(new Vertex(area.getX5(), area.getY5()));
+                    vertex.add(new Vertex(area.getX6(), area.getY6()));
+                    vertex = CommTool.arrangeVertexList(vertex);
+                    SideArea sideArea = new SideArea(centerCycle, Color.rgb(19, 34, 122),
+                        vertex, 0, area.getHeight(), areaName);
+                    elemMap.addElem(areaName, sideArea);
+                    sideArea.drawSideArea(this, mainFrame);
                     elemList.add(sideArea);
                 }
                 areaIndex++;
@@ -1141,41 +1186,25 @@ public class MainActivity extends AppCompatActivity {
         if (protects != null && protects.size() > 0) {
             for (Protect protect : protects) {
                 String areaName = String.format("%dP", protectIndex);
-                confs.add(areaName);
                 if ((int) protect.getHeight() > 0) {
-                    SideArea sideArea = (SideArea) elemMap.getElem(areaName);
-                    if (sideArea == null) {
-                        List<Vertex> vertex = new ArrayList<Vertex>();
-                        vertex.add(new Vertex(protect.getX1(), protect.getY1()));
-                        vertex.add(new Vertex(protect.getX2(), protect.getY2()));
-                        vertex.add(new Vertex(protect.getX3(), protect.getY3()));
-                        vertex.add(new Vertex(protect.getX4(), protect.getY4()));
-                        vertex.add(new Vertex(protect.getX5(), protect.getY5()));
-                        vertex.add(new Vertex(protect.getX6(), protect.getY6()));
-                        vertex = CommTool.arrangeVertexList(vertex);
-                        sideArea = new SideArea(centerCycle, Color.BLACK,
-                            vertex, 1, protect.getHeight(), areaName);
-                        sideArea.drawSideArea(this, mainFrame);
-                        elemMap.addElem(areaName, sideArea);
-                    }
+                    List<Vertex> vertex = new ArrayList<Vertex>();
+                    vertex.add(new Vertex(protect.getX1(), protect.getY1()));
+                    vertex.add(new Vertex(protect.getX2(), protect.getY2()));
+                    vertex.add(new Vertex(protect.getX3(), protect.getY3()));
+                    vertex.add(new Vertex(protect.getX4(), protect.getY4()));
+                    vertex.add(new Vertex(protect.getX5(), protect.getY5()));
+                    vertex.add(new Vertex(protect.getX6(), protect.getY6()));
+                    vertex = CommTool.arrangeVertexList(vertex);
+                    SideArea sideArea = new SideArea(centerCycle, Color.BLACK,
+                        vertex, 1, protect.getHeight(), areaName);
+                    sideArea.drawSideArea(this, mainFrame);
+                    elemMap.addElem(areaName, sideArea);
                     elemList.add(sideArea);
                 }
                 protectIndex++;
             }
         }
-
-        // 去掉当前页面有，但是在塔基配置页面，或者区域配置页面删除的元素
-        Set<String> elements = elemMap.elemMap.keySet();
-        for (String element : elements) {
-            if (!confs.contains(element)) {
-                ElemMap.delBaseElement(mainFrame, craneMap.get(element));
-                craneMap.remove(element);
-                elemMap.elemMap.remove(element);
-            }
-        }
     }
-
-    private CraneView craneView;
 
     /**
      * 获取主界面FrameLayout的坐标及长宽
@@ -1268,14 +1297,15 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        startDataSimThread();
+        //startDataSimThread();
 
         // 触发判断本机是否为主机
         new Handler().postDelayed(() -> {
             eventBus.post(new RadioEvent(radioProto.startMaster()));
             startSensorThread(); // 初始化串口线程
             startRadioThread();
-        }, 3000);
+            startTimerThread();
+        }, 2000);
     }
 
 }

@@ -514,7 +514,7 @@
                         android:layout_gravity="left"
                         android:layout_marginLeft="10dp"
                         android:gravity="center"
-                        android:text="吊钩控制参数"
+                        android:text="幅度控制参数"
                         android:textSize="20dp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -760,7 +760,7 @@
                         android:layout_gravity="left"
                         android:layout_marginLeft="10dp"
                         android:gravity="center"
-                        android:text="最大吊重告警设置"
+                        android:text="吊重告警设置"
                         android:textSize="20dp"
                         android:textStyle="bold" />
                 </LinearLayout>
