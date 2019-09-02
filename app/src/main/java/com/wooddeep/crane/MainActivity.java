@@ -200,13 +200,14 @@ try {
 */
 
 //  TODO list
-//  1. 无信号是，环变成灰色
+//  1. 无信号是，环变成灰色 (ok)
 //  2. 主从切换时，逻辑问题 (ok)
-//  3. 电台100ms延时
+//  3. 电台100ms延时 （ok）
 //  4. 喇叭
-//  5. 360标定
+//  5. 360度标定
 //  6. 大臂长度告警设置
-//  7. 按距离告警
+//  7. 按距离告警 (ok)
+//  8. 控制优化
 
 @SuppressWarnings("unused")
 public class MainActivity extends AppCompatActivity {
@@ -229,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, CycleElem> craneMap = new HashMap<>();
     private ElemMap elemMap = new ElemMap();
 
-    private HashMap<String, String> statusMap = new HashMap();
+    private HashMap<String, Long> radioStatusMap = new HashMap(); // 收到从机的通信数据状态
 
     private static HashMap<String, Object> viewMapBak = new HashMap<>();
     private static HashMap<String, Object> zoomMapBak = new HashMap<>();
@@ -430,16 +431,18 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     // TODO
-                    radioProto.setSourceNo(2); // 从机的ID为2N
-                    radioProto.setTargetNo(0); // 从机回应
-                    radioProto.setRotate(0.02f);
-                    radioProto.setRange(0.17f);
+                    if (alarmTimes < 10) { // 模拟电台数据下线
+                        radioProto.setSourceNo(2); // 从机的ID为2N
+                        radioProto.setTargetNo(0); // 从机回应
+                        radioProto.setRotate(0.02f);
+                        radioProto.setRange(0.17f);
 
-                    //System.out.println(Math.round(emitter.getsAmplitude() * 10) / 10.00f);
+                        //System.out.println(Math.round(emitter.getsAmplitude() * 10) / 10.00f);
 
-                    // 模拟电台
-                    radioEvent.setData(radioProto.packReply());
-                    eventBus.post(radioEvent);
+                        // 模拟电台
+                        radioEvent.setData(radioProto.packReply());
+                        eventBus.post(radioEvent);
+                    }
 
                 }
 
@@ -463,6 +466,7 @@ public class MainActivity extends AppCompatActivity {
     private void startSensorThread() {
         new Thread(() -> {
             try {
+                int counter = 0;
                 while (true) {
                     //alarmJdugeFlag = false;
                     if (ttyS0InputStream.available() > 0) { // AD数据
@@ -504,6 +508,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
+                    if (counter % 2 == 0) continue;
+
+                    // 编码器100毫秒一次读一次
                     ttyS2OutputStream.write(rotateCmd);
                     if (ttyS2InputStream.available() > 0) { // 回转数据
                         int len = ttyS2InputStream.read(rotateXBuff, 0, 1024);
@@ -533,7 +540,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    CommTool.sleep(100);
+                    CommTool.sleep(50);
+                    counter++;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -575,7 +583,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    CommTool.sleep(80);
+                    CommTool.sleep(100);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -637,12 +645,24 @@ public class MainActivity extends AppCompatActivity {
         if (!radioProto.isQuery) { // 收到其他从机的回应命令 & 分自己的 主从 身份
             waitFlag = false;
             //System.out.printf("### %f- %f \n", radioProto.getRange(), radioProto.getRotate());
+            long currTime = System.currentTimeMillis(); // 当前时间
+            String sourceNo = "" + radioProto.getSourceNoInt();
+
             // 更新从机
-            CycleElem slave = craneMap.get("" + radioProto.getSourceNoInt()); // TODO 把数字转成字符串
+            CycleElem slave = craneMap.get(sourceNo); // TODO 把数字转成字符串
             if (slave != null) {
                 slave.setCarRange(radioProto.getRange());
                 slave.setHAngle(MathTool.radiansToAngle(radioProto.getRotate()));
                 slave.setColor(Color.rgb(46, 139, 87));
+                radioStatusMap.put(sourceNo, currTime);
+            }
+
+            Set<String> radioRecSet = radioStatusMap.keySet();
+            for (String no : radioRecSet) {
+                long prevRecTimer = radioStatusMap.get(no); // 上次记录时间
+                if (currTime - prevRecTimer > 10000) { // 通信10失联，判断超时
+                    craneMap.get(no).setColor(Color.GRAY);
+                }
             }
 
             return;
@@ -687,6 +707,9 @@ public class MainActivity extends AppCompatActivity {
             Alarm.stopAlarm(activity, R.id.right_alarm, R.mipmap.forward);
             rightAlarmView.setText(levelMap.get(0));
         }
+
+        // TODO判断小车出，小车回
+        //if (mainCra)
 
         if (alarmEvent.forwardAlarm == true) {
             Alarm.startAlarm(activity, R.id.forward_alarm, carRangeAlarmMap.get(event.forwardAlarmLevel));

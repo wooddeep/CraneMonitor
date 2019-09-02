@@ -122,24 +122,13 @@
             android:focusable="true"
             android:focusableInTouchMode="true">
 
-
             <!-- 回转档位标定  -->
+
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="85dp"
+                android:layout_height="0dp"
+                android:visibility="gone"
                 android:background="@drawable/split_boder">
-
-                <!--
-                <ImageView
-                    android:id="@+id/gear_shift_logo"
-                    android:layout_width="0dp"
-                    android:layout_height="55dp"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/gear_shift" />
-                -->
 
                 <LinearLayout
                     android:layout_width="0dp"

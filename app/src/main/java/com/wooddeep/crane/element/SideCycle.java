@@ -28,6 +28,7 @@ public class SideCycle  extends CycleElem {
     public SuperCircleView cycle;
     private WKTReader wKTReader = new WKTReader();
     private String centerGeoStr = "";
+    public int currColor;
 
     public SideCycle(
         CenterCycle cc,
@@ -111,7 +112,10 @@ public class SideCycle  extends CycleElem {
     @Override
     public void setColor(int color) {
         //Color.rgb(46, 139, 87)
-        this.cycle.setmRingNormalColor(color);
+        if (this.currColor != color) {
+            this.cycle.setmRingNormalColor(color);
+            this.currColor = color;
+        }
     }
 
     public void setAlarm(boolean alarm) {
