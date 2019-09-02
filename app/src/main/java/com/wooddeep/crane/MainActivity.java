@@ -229,6 +229,8 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, CycleElem> craneMap = new HashMap<>();
     private ElemMap elemMap = new ElemMap();
 
+    private HashMap<String, String> statusMap = new HashMap();
+
     private static HashMap<String, Object> viewMapBak = new HashMap<>();
     private static HashMap<String, Object> zoomMapBak = new HashMap<>();
 
@@ -305,6 +307,40 @@ public class MainActivity extends AppCompatActivity {
     private ControlProto controlProto = new ControlProto();
 
     private byte[] rotateCmd = new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B};
+
+    private HashMap<Integer, Integer> rotateAlarmMap = new HashMap() {{
+        put(1, R.mipmap.forward5);
+        put(2, R.mipmap.forward4);
+        put(3, R.mipmap.forward3);
+        put(4, R.mipmap.forward2);
+        put(5, R.mipmap.forward1);
+    }};
+
+    private HashMap<Integer, Integer> carRangeAlarmMap = new HashMap() {{
+        put(1, R.mipmap.forward5);
+        put(2, R.mipmap.forward2);
+    }};
+
+    private HashMap<Integer, Integer> weightAlarmMap = new HashMap() {{
+        put(3, R.mipmap.weight3);
+        put(2, R.mipmap.weight2);
+        put(1, R.mipmap.weight1);
+    }};
+
+    private HashMap<Integer, Integer> momentAlarmMap = new HashMap() {{
+        put(3, R.mipmap.moment3);
+        put(2, R.mipmap.moment2);
+        put(1, R.mipmap.moment1);
+    }};
+
+    private HashMap<Integer, String> levelMap = new HashMap() {{
+        put(0, "〇");
+        put(1, "①");
+        put(2, "②");
+        put(3, "③");
+        put(4, "④");
+        put(5, "⑤");
+    }};
 
     public float getOscale() {
         return oscale;
@@ -606,6 +642,7 @@ public class MainActivity extends AppCompatActivity {
             if (slave != null) {
                 slave.setCarRange(radioProto.getRange());
                 slave.setHAngle(MathTool.radiansToAngle(radioProto.getRotate()));
+                slave.setColor(Color.rgb(46, 139, 87));
             }
 
             return;
@@ -630,31 +667,6 @@ public class MainActivity extends AppCompatActivity {
         fanRotate();
         //elemMap.alramFlink();
     }
-
-    private HashMap<Integer, Integer> rotateAlarmMap = new HashMap() {{
-        put(1, R.mipmap.forward4);
-        put(2, R.mipmap.forward4);
-        put(3, R.mipmap.forward3);
-        put(4, R.mipmap.forward2);
-        put(5, R.mipmap.forward1);
-    }};
-
-    private HashMap<Integer, Integer> carRangeAlarmMap = new HashMap() {{
-        put(1, R.mipmap.forward4);
-        put(2, R.mipmap.forward2);
-    }};
-
-    private HashMap<Integer, Integer> weightAlarmMap = new HashMap() {{
-        put(3, R.mipmap.weight3);
-        put(2, R.mipmap.weight2);
-        put(1, R.mipmap.weight1);
-    }};
-
-    private HashMap<Integer, Integer> momentAlarmMap = new HashMap() {{
-        put(3, R.mipmap.moment3);
-        put(2, R.mipmap.moment2);
-        put(1, R.mipmap.moment1);
-    }};
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void alarmShowEventBus(AlarmEvent event) {

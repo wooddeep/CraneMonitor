@@ -74,7 +74,8 @@ public class SideCycle  extends CycleElem {
         cycle.setmInnerRadio(orgInnerRadius);
         cycle.setBackgroundColor(0x00000000); // 透明色
         cycle.setDefRingWidth(ringWidth);
-        cycle.setmRingNormalColor(Color.rgb(46, 139, 87));
+        //cycle.setmRingNormalColor(Color.rgb(46, 139, 87));
+        cycle.setmRingNormalColor(Color.LTGRAY);
         cycle.sethAngle(hAngle);
         cycle.setvAngle(vAngle);
         cycle.setName(name);
@@ -105,6 +106,12 @@ public class SideCycle  extends CycleElem {
     public void vAngleSub(float subed) {
         this.vAngle = this.vAngle - subed;
         this.cycle.setvAngle(this.vAngle);
+    }
+
+    @Override
+    public void setColor(int color) {
+        //Color.rgb(46, 139, 87)
+        this.cycle.setmRingNormalColor(color);
     }
 
     public void setAlarm(boolean alarm) {

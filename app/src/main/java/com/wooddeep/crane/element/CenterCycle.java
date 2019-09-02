@@ -137,6 +137,12 @@ public class CenterCycle extends CycleElem {
     }
 
     @Override
+    public void setColor(int color) {
+        //Color.rgb(46, 139, 87)
+        this.cycle.setmRingNormalColor(color);
+    }
+
+    @Override
     public void setHAngle(float angle) {
         if (this.hAngle == angle) return;
         this.hAngle = angle;

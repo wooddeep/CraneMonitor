@@ -9,4 +9,5 @@ abstract public class CycleElem extends BaseElem {
     abstract public Geometry getCenterGeo() throws Exception;
     abstract public Geometry getArmGeo(float dAngle) throws Exception;
     abstract public Geometry getCarGeo(float dAngle, float dDist) throws Exception;
+    abstract public void setColor(int color) ;
 }

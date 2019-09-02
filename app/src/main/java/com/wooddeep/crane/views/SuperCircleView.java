@@ -34,7 +34,6 @@ public class SuperCircleView extends View {
     private int mMinCircleColor;    //最里面圆的颜色
     private int mRingNormalColor;    //默认圆环的颜色
 
-    private int color[] = new int[3];   //渐变颜色
     private RectF mRectF; //圆环的矩形区域
     private float mSelectRing = 0;        //要显示几段彩色
     private int mMaxValue;
