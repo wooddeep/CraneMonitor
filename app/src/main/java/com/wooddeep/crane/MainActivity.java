@@ -296,11 +296,6 @@ public class MainActivity extends AppCompatActivity {
     private RadioEvent radioEvent = new RadioEvent();
     private AlarmDetectEvent alarmDetectEvent = new AlarmDetectEvent();
 
-    //private boolean alarmJdugeFlag = false;
-
-    private CraneView craneView;
-
-    private TextView angleView;
     private SysParaDao paraDao; // 系统参数
     private LoadDao loadDao; // 负荷特性
     private List<Load> loadParas = null; // 负荷特性设置
@@ -342,6 +337,15 @@ public class MainActivity extends AppCompatActivity {
         put(5, "⑤");
     }};
 
+    private CraneView craneView;
+    private TextView angleView;
+    private TextView leftAlarmView;
+    private TextView rightAlarmView;
+    private TextView forwardAlarmView;
+    private TextView backwardAlarmView;
+    private TextView weightAlarmView;
+    private TextView momentAlarmView;
+
     public float getOscale() {
         return oscale;
     }
@@ -376,7 +380,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-
                 byte[] data = currProto.pack(); // TODO 判断值是否有变化, 无变化，则不发送消息
                 if (calibrationFlag) {
                     eventBus.post(new UartEvent(data)); // 发送通知标定模块数据
@@ -399,9 +402,6 @@ public class MainActivity extends AppCompatActivity {
                     //eventBus.post(lengthEvent);
                     prevProto.setRealWeight(currProto.getRealWeight());
                     runOnUiThread(() -> weightShow(currProto.getRealWeight()));
-                    Alarm.weightAlarmDetect(calibration, loadParas, alarmSet, eventBus,
-                        currProto.getRealWeight(), currProto.getRealLength()); // 吊重告警判断
-
                     //alarmJdugeFlag = true;
                 }
 
@@ -413,10 +413,8 @@ public class MainActivity extends AppCompatActivity {
                     //alarmJdugeFlag = true;
                 }
 
-
                 if (mainCrane != null) {  // 次环
                     // 模拟回转
-
                     data = currRotateProto.pack();
                     rotateEvent.setData(data);
                     currRotateProto.parse(data);
@@ -591,6 +589,8 @@ public class MainActivity extends AppCompatActivity {
                 while (true) {
                     try {
                         Alarm.alarmDetect(calibration, elemList, craneMap, myCraneNo, alarmSet, eventBus);
+                        Alarm.weightAlarmDetect(calibration, loadParas, alarmSet, eventBus,
+                            currProto.getRealWeight(), currProto.getRealLength()); // 吊重告警判断
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -674,54 +674,64 @@ public class MainActivity extends AppCompatActivity {
         if (alarmEvent == null) return;
         if (alarmEvent.leftAlarm == true) {
             Alarm.startAlarm(activity, R.id.left_alarm, rotateAlarmMap.get(event.leftAlarmLevel));
+            leftAlarmView.setText(levelMap.get(event.leftAlarmLevel));
         } else {
             Alarm.stopAlarm(activity, R.id.left_alarm, R.mipmap.forward);
+            leftAlarmView.setText(levelMap.get(0));
         }
 
         if (alarmEvent.rightAlarm == true) {
             Alarm.startAlarm(activity, R.id.right_alarm, rotateAlarmMap.get(event.rightAlarmLevel));
+            rightAlarmView.setText(levelMap.get(event.rightAlarmLevel));
         } else {
             Alarm.stopAlarm(activity, R.id.right_alarm, R.mipmap.forward);
+            rightAlarmView.setText(levelMap.get(0));
         }
 
         if (alarmEvent.forwardAlarm == true) {
             Alarm.startAlarm(activity, R.id.forward_alarm, carRangeAlarmMap.get(event.forwardAlarmLevel));
+            forwardAlarmView.setText(levelMap.get(event.forwardAlarmLevel));
         } else {
             Alarm.stopAlarm(activity, R.id.forward_alarm, R.mipmap.forward);
+            forwardAlarmView.setText(levelMap.get(0));
         }
 
         if (alarmEvent.backendAlarm == true) {
             Alarm.startAlarm(activity, R.id.back_alarm, carRangeAlarmMap.get(event.backendAlarmLevel));
+            backwardAlarmView.setText(levelMap.get(event.backendAlarmLevel));
         } else {
             Alarm.stopAlarm(activity, R.id.back_alarm, R.mipmap.forward);
+            backwardAlarmView.setText(levelMap.get(0));
         }
 
         if (alarmEvent.weightAlarm == true) {
             Alarm.startAlarm(activity, R.id.weight_alarm, weightAlarmMap.get(event.weightAlarmLevel));
+            weightAlarmView.setText(levelMap.get(event.weightAlarmLevel));
         } else {
             Alarm.stopAlarm(activity, R.id.weight_alarm, R.mipmap.weight0);
+            weightAlarmView.setText(levelMap.get(0));
         }
 
         if (alarmEvent.momentAlarm == true) {
             Alarm.startAlarm(activity, R.id.moment_alarm, momentAlarmMap.get(event.momentAlarmLevel));
+            momentAlarmView.setText(levelMap.get(event.momentAlarmLevel));
         } else {
             Alarm.stopAlarm(activity, R.id.moment_alarm, R.mipmap.moment0);
+            momentAlarmView.setText(levelMap.get(0));
         }
 
         if (Alarm.controlSet(event, controlProto)) {
             try {
-                /*
                 for (int i = 0; i < controlProto.control.length; i++) {
                     System.out.printf("%02x ", controlProto.control[i]);
                 }
                 System.out.println("");
-                */
+
                 ttyS0OutputStream.write(controlProto.control);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -1293,6 +1303,13 @@ public class MainActivity extends AppCompatActivity {
         paraDao = new SysParaDao(getApplicationContext()); // 系统参数
         eventBus.post(new SysParaEvent()); // 触发系统参数相关
 
+        leftAlarmView = (TextView)findViewById(R.id.left_alarm_level);
+        rightAlarmView = (TextView)findViewById(R.id.right_alarm_level);
+        weightAlarmView = (TextView)findViewById(R.id.weight_alarm_level);
+        momentAlarmView = (TextView)findViewById(R.id.moment_alarm_level);
+        forwardAlarmView = (TextView)findViewById(R.id.forward_alarm_level);
+        backwardAlarmView = (TextView)findViewById(R.id.back_alarm_level);
+
         try {
             serialttyS0 = new SerialPort(new File("/dev/ttyS0"), 115200, 0); // 19200 // AD数据
             serialttyS1 = new SerialPort(new File("/dev/ttyS1"), 19200, 0);
@@ -1309,7 +1326,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //startDataSimThread();
+        startDataSimThread();
 
         // 触发判断本机是否为主机
         new Handler().postDelayed(() -> {

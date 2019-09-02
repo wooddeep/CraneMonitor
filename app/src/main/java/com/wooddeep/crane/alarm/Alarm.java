@@ -26,7 +26,7 @@ import java.util.Set;
 public class Alarm {
 
     public static AlarmEvent alarmEvent = new AlarmEvent();
-    public static AlarmEvent weightalarmEvent = new AlarmEvent();
+    //public static AlarmEvent weightalarmEvent = new AlarmEvent();
 
     public static void startAlarm(Activity activity, int weightId, int picId) {
         ImageView left = (ImageView) activity.findViewById(weightId);
@@ -316,7 +316,7 @@ public class Alarm {
         Alarm.craneToCraneAlarm(craneMap, no, alarmSet); // 塔基到塔基的距离
         Alarm.craneToAreaAlarm(elemList, cc, alarmSet);  // 塔基到区域的距离
 
-        eventBus.post(alarmEvent);
+        //eventBus.post(alarmEvent);
 
         cc.prevCarRange = cc.carRange; // 记录上一次小车位置
         cc.prevHangle = cc.hAngle; // 记录上一次告警回转
@@ -328,10 +328,10 @@ public class Alarm {
 
         float maxWeight = Float.parseFloat(loads.get(0).getWeight());
 
-        weightalarmEvent.weightAlarm = false;
-        weightalarmEvent.momentAlarm = false;
-        weightalarmEvent.weightAlarmDispearLevel = 100;
-        weightalarmEvent.momentAlarmDispearLevel = 100;
+        alarmEvent.weightAlarm = false;
+        alarmEvent.momentAlarm = false;
+        alarmEvent.weightAlarmDispearLevel = 100;
+        alarmEvent.momentAlarmDispearLevel = 100;
         float weight3 = maxWeight * alarmSet.getWeight3() / 100;
         float weight2 = maxWeight * alarmSet.getWeight2() / 100;
         float weight1 = maxWeight * alarmSet.getWeight1() / 100;
@@ -339,26 +339,26 @@ public class Alarm {
         if (curWeight >= weight3) {
             //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight1() / 100);
             System.out.println("@@@ weight overload 3");
-            weightalarmEvent.weightAlarm = true;
-            weightalarmEvent.weightAlarmLevel = 3;
+            alarmEvent.weightAlarm = true;
+            alarmEvent.weightAlarmLevel = 3;
         } else if (curWeight >= weight2) {
             //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight2() / 100);
             System.out.println("@@@ weight overload 2");
-            weightalarmEvent.weightAlarm = true;
-            weightalarmEvent.weightAlarmLevel = 2;
+            alarmEvent.weightAlarm = true;
+            alarmEvent.weightAlarmLevel = 2;
         } else if (curWeight >= weight1) {
             //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight3() / 100);
             System.out.println("@@@ weight overload 1");
-            weightalarmEvent.weightAlarm = true;
-            weightalarmEvent.weightAlarmLevel = 1;
+            alarmEvent.weightAlarm = true;
+            alarmEvent.weightAlarmLevel = 1;
         }
 
         if (curWeight <= (weight2 + weight3) / 2) {
-            weightalarmEvent.weightAlarmDispearLevel = 3; // 3挡吊重告警消失
+            alarmEvent.weightAlarmDispearLevel = 3; // 3挡吊重告警消失
         } else if (curWeight <= (weight2 + weight1) / 2) {
-            weightalarmEvent.weightAlarmDispearLevel = 2; // 2挡吊重告警消失
+            alarmEvent.weightAlarmDispearLevel = 2; // 2挡吊重告警消失
         } else if (curWeight < 0.9 * weight1) {
-            weightalarmEvent.weightAlarmDispearLevel = 1; // 1挡吊重告警消失
+            alarmEvent.weightAlarmDispearLevel = 1; // 1挡吊重告警消失
         }
 
         for (int i = 0; i < loads.size() - 1; i++) {
@@ -382,34 +382,34 @@ public class Alarm {
                 if (curWeight >= moment3) {
                     //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight1() / 100);
                     System.out.println("@@@ moment overload 3");
-                    weightalarmEvent.momentAlarm = true;
-                    weightalarmEvent.momentAlarmLevel = 3;
+                    alarmEvent.momentAlarm = true;
+                    alarmEvent.momentAlarmLevel = 3;
                 } else if (curWeight >= moment2) {
                     //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight2() / 100);
                     System.out.println("@@@ moment overload 2");
-                    weightalarmEvent.momentAlarm = true;
-                    weightalarmEvent.momentAlarmLevel = 2;
+                    alarmEvent.momentAlarm = true;
+                    alarmEvent.momentAlarmLevel = 2;
                 } else if (curWeight >= moment1) {
                     //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight3() / 100);
                     System.out.println("@@@ moment overload 1");
-                    weightalarmEvent.momentAlarm = true;
-                    weightalarmEvent.momentAlarmLevel = 1;
+                    alarmEvent.momentAlarm = true;
+                    alarmEvent.momentAlarmLevel = 1;
                 }
 
                 if (curWeight <= (moment2 + moment3) / 2) {
-                    weightalarmEvent.momentAlarmDispearLevel = 3; // 3挡吊重告警消失
+                    alarmEvent.momentAlarmDispearLevel = 3; // 3挡吊重告警消失
                     //System.out.println("momentAlarmDispearLevel3");
                 } else if (curWeight <= (moment2 + moment1) / 2) {
-                    weightalarmEvent.momentAlarmDispearLevel = 2; // 3挡吊重告警消失
+                    alarmEvent.momentAlarmDispearLevel = 2; // 3挡吊重告警消失
                     //System.out.println("momentAlarmDispearLevel2");
                 } else if (curWeight < 0.9 * moment1) {
-                    weightalarmEvent.momentAlarmDispearLevel = 1; // 1挡吊重告警消失
+                    alarmEvent.momentAlarmDispearLevel = 1; // 1挡吊重告警消失
                     //System.out.println("momentAlarmDispearLevel1");
                 }
             }
         }
 
-        eventBus.post(weightalarmEvent);
+        eventBus.post(alarmEvent);
     }
 
     public static void rotateControl(AlarmEvent alarmEvent, ControlProto controlProto) {
