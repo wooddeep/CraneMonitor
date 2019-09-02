@@ -1318,7 +1318,7 @@ public class MainActivity extends AppCompatActivity {
             ttyS1InputStream = serialttyS1.getInputStream();
             ttyS1OutputStream = serialttyS1.getOutputStream();
 
-            serialttyS2 = new SerialPort(new File("/dev/ttyS3"), 19200, 0);
+            serialttyS2 = new SerialPort(new File("/dev/ttyS3"), 19200, 1);
             ttyS2OutputStream = serialttyS2.getOutputStream();
             ttyS2InputStream = serialttyS2.getInputStream();
 
