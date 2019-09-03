@@ -274,11 +274,11 @@ public class MainActivity extends AppCompatActivity {
 
     private SerialPort serialttyS0;
     private SerialPort serialttyS1;
+    private com.example.x6.serialportlib.SerialPort serialttyS2; // 设置奇偶校验
     private InputStream ttyS0InputStream;
     private OutputStream ttyS0OutputStream;
     private InputStream ttyS1InputStream;
     private OutputStream ttyS1OutputStream;
-    private SerialPort serialttyS2;
     private OutputStream ttyS2OutputStream;
     private InputStream ttyS2InputStream;
 
@@ -1326,12 +1326,12 @@ public class MainActivity extends AppCompatActivity {
         paraDao = new SysParaDao(getApplicationContext()); // 系统参数
         eventBus.post(new SysParaEvent()); // 触发系统参数相关
 
-        leftAlarmView = (TextView)findViewById(R.id.left_alarm_level);
-        rightAlarmView = (TextView)findViewById(R.id.right_alarm_level);
-        weightAlarmView = (TextView)findViewById(R.id.weight_alarm_level);
-        momentAlarmView = (TextView)findViewById(R.id.moment_alarm_level);
-        forwardAlarmView = (TextView)findViewById(R.id.forward_alarm_level);
-        backwardAlarmView = (TextView)findViewById(R.id.back_alarm_level);
+        leftAlarmView = (TextView) findViewById(R.id.left_alarm_level);
+        rightAlarmView = (TextView) findViewById(R.id.right_alarm_level);
+        weightAlarmView = (TextView) findViewById(R.id.weight_alarm_level);
+        momentAlarmView = (TextView) findViewById(R.id.moment_alarm_level);
+        forwardAlarmView = (TextView) findViewById(R.id.forward_alarm_level);
+        backwardAlarmView = (TextView) findViewById(R.id.back_alarm_level);
 
         try {
             serialttyS0 = new SerialPort(new File("/dev/ttyS0"), 115200, 0); // 19200 // AD数据
@@ -1341,7 +1341,8 @@ public class MainActivity extends AppCompatActivity {
             ttyS1InputStream = serialttyS1.getInputStream();
             ttyS1OutputStream = serialttyS1.getOutputStream();
 
-            serialttyS2 = new SerialPort(new File("/dev/ttyS3"), 19200, 1);
+            serialttyS2 = new com.example.x6.serialportlib.SerialPort(
+                "S3", 19200, 8, 1, 'e', true);
             ttyS2OutputStream = serialttyS2.getOutputStream();
             ttyS2InputStream = serialttyS2.getInputStream();
 
