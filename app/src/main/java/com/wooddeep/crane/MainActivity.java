@@ -944,6 +944,7 @@ public class MainActivity extends AppCompatActivity {
             power = paraDao.queryValueByName("power");
             if (power == null) power = "-1";
         }
+        ((TextView) findViewById(R.id.cable)).setText(power); // 显示塔基类型
 
         loadParas = loadDao.getLoads(craneType, armLength, power); // 获取负荷特性
         if (loadParas != null) {

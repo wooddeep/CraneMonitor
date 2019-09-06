@@ -41,7 +41,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="2dp"
             android:gravity="center"
             app:srcCompat="@mipmap/home" />
 
@@ -52,7 +52,7 @@
             android:layout_height="40dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="2dp"
             android:layout_toRightOf="@+id/home_logo"
             android:gravity="center"
             android:orientation="vertical">
@@ -61,7 +61,7 @@
                 android:id="@+id/craneNo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No.:19026"
+                android:text="No.:19"
                 android:textSize="14dp"
                 android:textStyle="bold" />
 
@@ -73,62 +73,76 @@
                 android:textSize="14dp"
                 android:textStyle="bold" />
         </LinearLayout>
-        <!--
-        <ImageView
-            android:id="@+id/lang_logo"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/text_container"
-            android:gravity="center"
-            android:paddingBottom="2dp"
-            app:srcCompat="@mipmap/cn" />
-        -->
+
         <ImageView
             android:id="@+id/angle_logo"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:layout_toLeftOf="@+id/angle"
             android:gravity="center"
+            android:layout_marginLeft="2dp"
             android:paddingBottom="2dp"
             app:srcCompat="@mipmap/rotation" />
 
         <TextView
             android:id="@+id/angle"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="40dp"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="2dp"
             android:layout_toLeftOf="@+id/weight_logo"
             android:gravity="center"
-            android:text="10°"
+            android:text="359.9°"
             android:textSize="16dp"
             android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/weight_logo"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:layout_toLeftOf="@+id/weight"
+            android:layout_marginLeft="2dp"
             android:gravity="center"
             android:paddingBottom="2dp"
             app:srcCompat="@mipmap/weight" />
 
         <TextView
             android:id="@+id/weight"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="40dp"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="2dp"
+            android:layout_toLeftOf="@+id/moment_logo"
+            android:gravity="center"
+            android:text="10.1t"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/moment_logo"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_marginLeft="2dp"
+            android:layout_toLeftOf="@+id/moment"
+            android:gravity="center"
+            android:paddingBottom="2dp"
+            app:srcCompat="@mipmap/moment_logo" />
+
+        <TextView
+            android:id="@+id/moment"
+            android:layout_width="55dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="2dp"
             android:layout_toLeftOf="@+id/length_logo"
             android:gravity="center"
-            android:text="10t"
+            android:text="110.1%"
             android:textSize="16dp"
             android:textStyle="bold" />
 
@@ -146,13 +160,13 @@
 
         <TextView
             android:id="@+id/length"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="40dp"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="2dp"
             android:layout_toLeftOf="@+id/height_logo"
             android:gravity="center"
-            android:text="10m"
+            android:text="10.1m"
             android:textSize="16dp"
             android:textStyle="bold" />
 
@@ -162,7 +176,7 @@
             android:layout_height="35px"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="2dp"
             android:layout_marginTop="5dp"
             android:layout_toLeftOf="@+id/height"
             android:layout_weight="1"
@@ -171,13 +185,38 @@
 
         <TextView
             android:id="@+id/height"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="40dp"
             android:layout_centerInParent="true"
+            android:layout_marginLeft="2dp"
+            android:layout_toLeftOf="@+id/cable_logo"
+            android:gravity="center"
+            android:text="10.1m"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/cable_logo"
+            android:layout_width="35px"
+            android:layout_height="35px"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
             android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@+id/cable"
+            android:layout_weight="1"
+            android:gravity="center"
+            app:srcCompat="@mipmap/cable" />
+
+        <TextView
+            android:id="@+id/cable"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="2dp"
             android:layout_toLeftOf="@+id/wind_speed_log"
             android:gravity="center"
-            android:text="10m"
+            android:text="10"
             android:textSize="16dp"
             android:textStyle="bold" />
 
@@ -187,7 +226,7 @@
             android:layout_height="40px"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="2dp"
             android:layout_toLeftOf="@+id/wind_speed"
             android:gravity="center"
             app:srcCompat="@mipmap/wind_speed" />
@@ -197,10 +236,10 @@
             android:layout_width="60dp"
             android:layout_height="40dp"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="2dp"
             android:layout_toLeftOf="@+id/clock_logo"
             android:gravity="center"
-            android:text="5.0m/s"
+            android:text="35.0m/s"
             android:textSize="16dp"
             android:textStyle="bold" />
 
@@ -210,7 +249,7 @@
             android:layout_height="40px"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="40dp"
+            android:layout_marginLeft="20dp"
             android:layout_toLeftOf="@+id/time_container"
             android:gravity="center"
             app:srcCompat="@mipmap/clock_png" />
