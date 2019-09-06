@@ -85,7 +85,7 @@ public class RadioProto {
         StringTool.stringModify(this.sRange, rangeChars, (char) data[14], (char) data[15], (char) data[16],
             (char) data[17], (char) data[18], (char) data[19]);
 
-        if (targetNoChars[0] == ' ' &&  targetNoChars[1] == '0') { // 其他其他的回应报文
+        if (targetNoChars[0] == ' ' &&  targetNoChars[1] == '0') { // 回应报文
             System.out.printf("# reply: "); // + "->" +" %s ", sourceNo, targetNo);
             StringTool.showCharArray(sourceNoChars);
             System.out.printf(" -> ");
@@ -158,11 +158,11 @@ public class RadioProto {
 
     public int getSourceNoInt() {
         int no = 0;
+
         for (int i = 0; i < this.sourceNoChars.length; i++) {
             if (this.sourceNoChars[i] == ' ') continue;
             no = no * 10 + (int) (this.sourceNoChars[i] - '0');
         }
-        //return sourceNo;
         return no;
     }
 
