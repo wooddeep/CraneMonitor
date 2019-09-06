@@ -135,7 +135,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            app:srcCompat="@mipmap/first" />
+                            app:srcCompat="@mipmap/cc_coll_dist1" />
 
                         <TextView
                             android:id="@+id/clock_logo"
@@ -169,7 +169,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            app:srcCompat="@mipmap/second" />
+                            app:srcCompat="@mipmap/cc_coll_dist2" />
 
                         <TextView
                             android:id="@+id/clock_logo"
@@ -203,7 +203,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            app:srcCompat="@mipmap/third" />
+                            app:srcCompat="@mipmap/cc_coll_dist3" />
 
                         <TextView
                             android:id="@+id/clock_logo"
@@ -237,7 +237,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            app:srcCompat="@mipmap/fourth" />
+                            app:srcCompat="@mipmap/cc_coll_dist4" />
 
                         <TextView
                             android:id="@+id/clock_logo"
@@ -271,7 +271,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            app:srcCompat="@mipmap/five" />
+                            app:srcCompat="@mipmap/cc_coll_dist5" />
 
                         <TextView
                             android:id="@+id/clock_logo"
@@ -339,7 +339,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            app:srcCompat="@mipmap/first" />
+                            app:srcCompat="@mipmap/ca_coll_dist1" />
 
                         <TextView
                             android:id="@+id/clock_logo"
@@ -373,7 +373,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            app:srcCompat="@mipmap/second" />
+                            app:srcCompat="@mipmap/ca_coll_dist2" />
 
                         <TextView
                             android:id="@+id/clock_logo"
@@ -407,7 +407,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            app:srcCompat="@mipmap/third" />
+                            app:srcCompat="@mipmap/ca_coll_dist3" />
 
                         <TextView
                             android:id="@+id/clock_logo"
@@ -441,7 +441,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            app:srcCompat="@mipmap/fourth" />
+                            app:srcCompat="@mipmap/ca_coll_dist4" />
 
                         <TextView
                             android:id="@+id/clock_logo"
@@ -475,7 +475,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            app:srcCompat="@mipmap/five" />
+                            app:srcCompat="@mipmap/ca_coll_dist5" />
 
                         <TextView
                             android:id="@+id/clock_logo"
@@ -633,7 +633,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            app:srcCompat="@mipmap/first" />
+                            app:srcCompat="@mipmap/moment1" />
 
                         <TextView
                             android:id="@+id/clock_logo"
@@ -652,7 +652,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="10%"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -669,7 +669,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            app:srcCompat="@mipmap/second" />
+                            app:srcCompat="@mipmap/moment2" />
 
                         <TextView
                             android:id="@+id/clock_logo"
@@ -688,7 +688,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="50%"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -705,7 +705,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            app:srcCompat="@mipmap/third" />
+                            app:srcCompat="@mipmap/moment3" />
 
                         <TextView
                             android:id="@+id/clock_logo"
@@ -724,7 +724,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="120%"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
                 </LinearLayout>
             </TableRow>
 
@@ -864,7 +864,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            app:srcCompat="@mipmap/first" />
+                            app:srcCompat="@mipmap/weight1" />
 
                         <TextView
                             android:id="@+id/clock_logo"
@@ -883,7 +883,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="20%"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -900,7 +900,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            app:srcCompat="@mipmap/second" />
+                            app:srcCompat="@mipmap/weight2" />
 
                         <TextView
                             android:id="@+id/clock_logo"
@@ -919,7 +919,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="50%"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -936,7 +936,7 @@
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            app:srcCompat="@mipmap/third" />
+                            app:srcCompat="@mipmap/weight3" />
 
                         <TextView
                             android:id="@+id/clock_logo"
@@ -955,7 +955,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="120%"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
                 </LinearLayout>
             </TableRow>
 
@@ -1114,7 +1114,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="0.1m"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -1150,7 +1150,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="100m"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -1185,7 +1185,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="120%"
-                        android:visibility="invisible"/>
+                        android:visibility="invisible" />
                 </LinearLayout>
             </TableRow>
 

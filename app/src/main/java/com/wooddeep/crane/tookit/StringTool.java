@@ -201,4 +201,26 @@ public class StringTool {
         }
 
     }
+
+    public static float arrayToFloat(char [] array) {
+        int data = 0;
+
+        float dotIndex = array.length - 1;
+
+        for (int i = 0; i < array.length; i++) {
+
+            if (array[i] == ' ') {
+                continue;
+            }
+
+            if (array[i] == '.') {
+                dotIndex = i;
+                continue;
+            }
+
+            data = data * 10 + (array[i] - '0');
+        }
+
+        return data / (float)Math.pow(10, array.length - 1 - dotIndex);
+    }
 }

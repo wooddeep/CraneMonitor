@@ -89,7 +89,7 @@ public class CenterCycle extends CycleElem {
         float centerY = height / 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
 
         SuperCircleView cycle = new SuperCircleView(context);
-
+        //cycle.setElevation(10);
         FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(width, height);
 
         cycle.setLayoutParams(paras);

@@ -84,12 +84,14 @@ public class Polygon extends View {
     public Polygon(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         paint = new Paint();
+        paint.setAlpha(0x4c000000);
         unreachedColor = DEFAULT_UNREACHED_COLOR;
         reachedColor = DEFAULT_REACHED_COLOR;
         textPaint = new Paint();
         textPaint.setTextSize(16);
         textPaint.setAntiAlias(true);
         textPaint.setFakeBoldText(true);
+        textPaint.setColor(Color.WHITE);
     }
 
     @Override
@@ -113,7 +115,11 @@ public class Polygon extends View {
 
         //paint.setStyle(Paint.Style.FILL);
         paint.setStrokeWidth(2);//为画笔设置粗细
-        paint.setStyle(Paint.Style.STROKE);//设置空心
+        if (this.type == 0) {
+            paint.setStyle(Paint.Style.FILL);
+        } else {
+            paint.setStyle(Paint.Style.STROKE);//设置空心
+        }
         //paint.setColor(Color.LTGRAY);
         //canvas.drawColor(Color.GREEN);//为画布设置颜色
         //设置等腰三角形的三点坐标
@@ -129,12 +135,12 @@ public class Polygon extends View {
             path.close(); //闭合图形
         }
 
+        //绘制多边形
+        canvas.drawPath(path, paint);
+
         if (vertexs.size() >= 2) {
             canvas.drawText(name, (vertexs.get(0).x + vertexs.get(1).x) / 2 - 8, vertexs.get(0).y - 5, textPaint);
         }
-
-        //绘制三角形
-        canvas.drawPath(path, paint);
     }
 
     /**

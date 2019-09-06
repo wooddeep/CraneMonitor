@@ -69,7 +69,6 @@ import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.tookit.MathTool;
-import com.wooddeep.crane.tookit.StringTool;
 import com.wooddeep.crane.views.CraneView;
 import com.wooddeep.crane.views.Vertex;
 
@@ -84,7 +83,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -1193,22 +1191,6 @@ public class MainActivity extends AppCompatActivity {
         centerCycle.drawCenterCycle(this, mainFrame);
         craneMap.put(myCraneNo, centerCycle);
 
-        // 2. 根据数据库的数据画边缘圆环
-        for (Crane cp : paras) {
-            if (cp == mainCrane) continue;
-            if ((int) cp.getCraneHeight() <= 0) continue;
-            float scale = centerCycle.scale;
-            number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "";
-            SideCycle sideCycle = new SideCycle(centerCycle, cp.getCoordX1(), cp.getCoordY1(), cp.getBigArmLength(),
-                mainCrane.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight(), number);
-
-            elemMap.addElem(number, sideCycle);
-            sideCycleId = sideCycle.getUuid();
-            sideCycle.drawSideCycle(this, mainFrame);
-            craneNumbers.add(number);
-            craneMap.put(number, sideCycle);
-        }
-
         // 3. 画区域
         int areaIndex = 1;
         AreaDao areaDao = new AreaDao(MainActivity.this);
@@ -1259,6 +1241,22 @@ public class MainActivity extends AppCompatActivity {
                 }
                 protectIndex++;
             }
+        }
+
+        // 2. 根据数据库的数据画边缘圆环
+        for (Crane cp : paras) {
+            if (cp == mainCrane) continue;
+            if ((int) cp.getCraneHeight() <= 0) continue;
+            float scale = centerCycle.scale;
+            number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "";
+            SideCycle sideCycle = new SideCycle(centerCycle, cp.getCoordX1(), cp.getCoordY1(), cp.getBigArmLength(),
+                mainCrane.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight(), number);
+
+            elemMap.addElem(number, sideCycle);
+            sideCycleId = sideCycle.getUuid();
+            sideCycle.drawSideCycle(this, mainFrame);
+            craneNumbers.add(number);
+            craneMap.put(number, sideCycle);
         }
     }
 

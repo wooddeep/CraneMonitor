@@ -3,6 +3,8 @@ package com.wooddeep.crane.comm;
 import com.wooddeep.crane.tookit.Replace;
 import com.wooddeep.crane.tookit.StringTool;
 
+import java.util.HashMap;
+
 /**
  * Created by niuto on 2019/8/1.
  */
@@ -58,6 +60,8 @@ public class RadioProto {
 
     public boolean isQuery = true;
 
+    private HashMap<Integer, String> craneIdMap = new HashMap();
+
     public RadioProto() {
         sourceRepl.setTemplate(sourceTag);
         targetRepl.setTemplate(targetTag);
@@ -65,21 +69,24 @@ public class RadioProto {
         permitRepl.setTemplate(permitTag);
         rangeRepl.setTemplate(rangeTag);
         modle.getChars(0, modle.length(), modleChars, 0);
+        for (int i = 0; i < 50; i++) craneIdMap.put(i, String.valueOf(i));
     }
 
     public int parse(byte[] data) {
-
-        //System.out.println(new String(data));
         if (data[0] != '%') return -1;
 
-        // "%master#"
         if (data[1] == 'm') {
             return CMD_START_MASTER;
         }
 
         StringTool.stringModify(this.sourceNo, sourceNoChars, (char) data[1], (char) data[2]);
+        this.sourceNo = craneIdMap.get(getSourceNoInt()); // 通过数字计算得到字符串
         StringTool.stringModify(this.targetNo, targetNoChars, (char) data[4], (char) data[5]);
+        this.targetNo = craneIdMap.get(getTargetNoInt()); // 通过数字计算得到字符串
         StringTool.stringModify(this.permitNo, permitNoChars, (char) data[36], (char) data[37]);
+        this.permitNo = craneIdMap.get(getPermitNoInt()); // 通过数字计算得到字符串
+
+        // TODO rangeChars， rotateChars -> 转浮点数
         StringTool.stringModify(this.sRotate, rotateChars, (char) data[7], (char) data[8], (char) data[9],
             (char) data[10], (char) data[11], (char) data[12]);
         StringTool.stringModify(this.sRange, rangeChars, (char) data[14], (char) data[15], (char) data[16],
@@ -94,10 +101,12 @@ public class RadioProto {
             StringTool.showCharArray(sourceNoChars);
             System.out.printf(" - rotate: ");
             StringTool.showCharArray(rotateChars);
-            rotate = Float.parseFloat(new String(rotateChars)); // TODO 替换成自己计算值
+            //rotate = Float.parseFloat(new String(rotateChars)); // TODO 替换成自己计算值
+            rotate = StringTool.arrayToFloat(rotateChars);
             System.out.printf(" , range: ");
             StringTool.showCharArray(rangeChars);
-            range = Float.parseFloat(new String(rangeChars)); // TODO 替换成自己计算值
+            //range = Float.parseFloat(new String(rangeChars)); // TODO 替换成自己计算值
+            range = StringTool.arrayToFloat(rangeChars);
             System.out.println("");
             isQuery = false; // 从机的回文
         } else {
@@ -162,6 +171,26 @@ public class RadioProto {
         for (int i = 0; i < this.sourceNoChars.length; i++) {
             if (this.sourceNoChars[i] == ' ') continue;
             no = no * 10 + (int) (this.sourceNoChars[i] - '0');
+        }
+        return no;
+    }
+
+    public int getTargetNoInt() {
+        int no = 0;
+
+        for (int i = 0; i < this.targetNoChars.length; i++) {
+            if (this.targetNoChars[i] == ' ') continue;
+            no = no * 10 + (int) (this.targetNoChars[i] - '0');
+        }
+        return no;
+    }
+
+    public int getPermitNoInt() {
+        int no = 0;
+
+        for (int i = 0; i < this.permitNoChars.length; i++) {
+            if (this.permitNoChars[i] == ' ') continue;
+            no = no * 10 + (int) (this.permitNoChars[i] - '0');
         }
         return no;
     }
