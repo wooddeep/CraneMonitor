@@ -31,7 +31,7 @@ public class Calibration {
     public float rotateEndData;
 
     @DatabaseField(columnName = "rotateRate", useGetSet = true, defaultValue = "-1.0f")
-    public float rotateRate;
+    public double rotateRate;
 
     @DatabaseField(columnName = "GearRate1", useGetSet = true, defaultValue = "-1.0f")
     public float GearRate1;
@@ -182,11 +182,11 @@ public class Calibration {
         this.rotateEndData = rotateEndData;
     }
 
-    public float getRotateRate() {
+    public double getRotateRate() {
         return rotateRate;
     }
 
-    public void setRotateRate(float rotateRate) {
+    public void setRotateRate(double rotateRate) {
         this.rotateRate = rotateRate;
     }
 

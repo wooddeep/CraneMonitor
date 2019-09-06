@@ -3,7 +3,13 @@ package com.wooddeep.crane;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.graphics.Color;
+import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -69,6 +75,7 @@ import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.tookit.MathTool;
+import com.wooddeep.crane.tookit.StringTool;
 import com.wooddeep.crane.views.CraneView;
 import com.wooddeep.crane.views.Vertex;
 
@@ -83,6 +90,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -272,11 +280,11 @@ public class MainActivity extends AppCompatActivity {
 
     private SerialPort serialttyS0;
     private SerialPort serialttyS1;
-    private com.example.x6.serialportlib.SerialPort serialttyS2; // 设置奇偶校验
     private InputStream ttyS0InputStream;
     private OutputStream ttyS0OutputStream;
     private InputStream ttyS1InputStream;
     private OutputStream ttyS1OutputStream;
+    private com.example.x6.serialportlib.SerialPort serialttyS2;
     private OutputStream ttyS2OutputStream;
     private InputStream ttyS2InputStream;
 
@@ -345,6 +353,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView weightAlarmView;
     private TextView momentAlarmView;
 
+    private MediaPlayer player;
+
     public float getOscale() {
         return oscale;
     }
@@ -388,7 +398,7 @@ public class MainActivity extends AppCompatActivity {
                 currProto.calcRealHeight(calibration);
                 currProto.calcRealLength(calibration);
                 currProto.calcRealWeigth(calibration);
-                if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) > 0.05f) {
+                if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) >= 0.1f) {
                     //lengthEvent.setLength(currProto.getRealLength());
                     //eventBus.post(lengthEvent);
                     prevProto.setRealLength(currProto.getRealLength());
@@ -396,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
                     //alarmJdugeFlag = true;
                 }
 
-                if (Math.abs(currProto.getRealWeight() - prevProto.getRealWeight()) > 0.05f) {
+                if (Math.abs(currProto.getRealWeight() - prevProto.getRealWeight()) >= 0.1f) {
                     //lengthEvent.setLength(currProto.getRealLength());
                     //eventBus.post(lengthEvent);
                     prevProto.setRealWeight(currProto.getRealWeight());
@@ -404,7 +414,7 @@ public class MainActivity extends AppCompatActivity {
                     //alarmJdugeFlag = true;
                 }
 
-                if (Math.abs(currProto.getRealHeight() - prevProto.getRealHeight()) > 0.05f) {
+                if (Math.abs(currProto.getRealHeight() - prevProto.getRealHeight()) >= 0.1f) {
                     //lengthEvent.setLength(currProto.getRealLength());
                     //eventBus.post(lengthEvent);
                     prevProto.setRealHeight(currProto.getRealHeight());
@@ -418,12 +428,12 @@ public class MainActivity extends AppCompatActivity {
                     rotateEvent.setData(data);
                     currRotateProto.parse(data);
                     currRotateProto.calcAngle(calibration);
-                    if (Math.abs(currRotateProto.getAngle() - prevRotateProto.getAngle()) > 0.05f) {
+                    if (Math.abs(currRotateProto.getAngle() - prevRotateProto.getAngle()) >= 0.2f) {
                         rotateEvent.setCenterX(mainCrane.getCoordX1());
                         rotateEvent.setCenterY(mainCrane.getCoordY1());
-                        rotateEvent.setAngle(currRotateProto.getAngle());
+                        rotateEvent.setAngle((float) currRotateProto.getAngle());
                         //eventBus.post(rotateEvent);
-                        runOnUiThread(() -> rotateShow(currRotateProto.getAngle()));
+                        runOnUiThread(() -> rotateShow((float) currRotateProto.getAngle()));
                         prevRotateProto.setAngle(currRotateProto.getAngle());
                         //alarmJdugeFlag = true;
                     }
@@ -506,30 +516,33 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    if (counter % 2 == 0) continue;
-
                     // 编码器100毫秒一次读一次
                     ttyS2OutputStream.write(rotateCmd);
                     if (ttyS2InputStream.available() > 0) { // 回转数据
                         int len = ttyS2InputStream.read(rotateXBuff, 0, 1024);
+                        //System.out.println("###### length =" + len);
                         for (int i = 0; i < 9; i++) {
                             rotateRBuff[i] = rotateXBuff[i];
                         }
                         if (rotateRBuff[0] == 0x01 && rotateRBuff[1] == 0x04 && rotateRBuff[2] == 0x04) {
                             currRotateProto.parse(rotateRBuff);
                             currRotateProto.calcAngle(calibration);
-                            if (Math.abs(currRotateProto.getAngle() - prevRotateProto.getAngle()) >= 0.5f) {
+                            if (Math.abs(currRotateProto.getAngle() - prevRotateProto.getAngle()) >= 0.1f) {
                                 rotateEvent.setCenterX(mainCrane.getCoordX1());
                                 rotateEvent.setCenterY(mainCrane.getCoordY1());
-                                rotateEvent.setAngle(currRotateProto.getAngle());
+                                rotateEvent.setAngle((float) currRotateProto.getAngle());
                                 rotateEvent.setData(rotateRBuff);
                                 prevRotateProto.setAngle(currRotateProto.getAngle());
 
-                                float angle = currRotateProto.getAngle();
-                                //if (angle < 0) angle = 360 - (Math.abs(angle) % 360); // TODO 角度负值转正值
-                                //final float pangle = Math.round(angle * 10) / 10.0f;
-                                runOnUiThread(() -> rotateShow(angle));
-                                //alarmJdugeFlag = true;
+                                double angle = currRotateProto.getAngle();
+                                if (angle < 0) {
+                                    angle = 360 - (Math.abs(angle) % 360);
+                                } else {
+                                    angle = angle % 360;
+                                }
+                                angle = Math.round(angle * 10) / 10.0f;
+                                final float minAngle = (float) angle;
+                                runOnUiThread(() -> rotateShow(minAngle));
                             }
                         }
 
@@ -538,7 +551,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    CommTool.sleep(50);
+                    CommTool.sleep(100);
                     counter++;
                 }
             } catch (Exception e) {
@@ -600,7 +613,7 @@ public class MainActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    CommTool.sleep(1000);
+                    CommTool.sleep(600);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -696,6 +709,11 @@ public class MainActivity extends AppCompatActivity {
         //elemMap.alramFlink();
     }
 
+    // https://blog.csdn.net/robertcpp/article/details/51532161
+    public void playAlarmBuz() {
+        MediaPlayer player = new MediaPlayer().create(this, R.raw.alarm);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void alarmShowEventBus(AlarmEvent event) {
         alarmEvent = event;
@@ -703,17 +721,21 @@ public class MainActivity extends AppCompatActivity {
         if (alarmEvent.leftAlarm == true) {
             Alarm.startAlarm(activity, R.id.left_alarm, rotateAlarmMap.get(event.leftAlarmLevel));
             leftAlarmView.setText(levelMap.get(event.leftAlarmLevel));
+            //player.start();
         } else {
             Alarm.stopAlarm(activity, R.id.left_alarm, R.mipmap.forward);
             leftAlarmView.setText(levelMap.get(0));
+            //player.stop();
         }
 
         if (alarmEvent.rightAlarm == true) {
             Alarm.startAlarm(activity, R.id.right_alarm, rotateAlarmMap.get(event.rightAlarmLevel));
             rightAlarmView.setText(levelMap.get(event.rightAlarmLevel));
+            //player.start();
         } else {
             Alarm.stopAlarm(activity, R.id.right_alarm, R.mipmap.forward);
             rightAlarmView.setText(levelMap.get(0));
+            //player.stop();
         }
 
         // TODO判断小车出，小车回
@@ -1343,6 +1365,11 @@ public class MainActivity extends AppCompatActivity {
         backwardAlarmView = (TextView) findViewById(R.id.back_alarm_level);
 
         try {
+
+            //Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            //Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            //r.play();
+
             serialttyS0 = new SerialPort(new File("/dev/ttyS0"), 115200, 0); // 19200 // AD数据
             serialttyS1 = new SerialPort(new File("/dev/ttyS1"), 19200, 0);
             ttyS0InputStream = serialttyS0.getInputStream();
@@ -1359,7 +1386,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        startDataSimThread();
+        //startDataSimThread();
 
         // 触发判断本机是否为主机
         new Handler().postDelayed(() -> {

@@ -1,6 +1,5 @@
 package com.wooddeep.crane.alarm;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.widget.ImageView;
 
@@ -102,102 +101,97 @@ public class Alarm {
 
                 Geometry gsc = sc.getArmGeo(0f);
                 float sideHeight = sc.height;
-
                 if (Math.abs(myHeight - sideHeight) <= 1) { // 高度差相差1m, 当成等高, 查看当前圆心和对端 大臂端点的距离, 无前后告警, 只有左右告警
                     float distance = (float) gcc.distance(gsc);
                     int alarmLevel = getAlarmLevel(distance, alarmSet, 0);
-                    if (alarmLevel != -1) {
-                        if (cc.prevHangle <= cc.hAngle) {
-                            Geometry gPredect = cc.getArmGeo(0.1f); // 逆时针旋转
-                            float distPred = (float) gPredect.distance(gsc);
-                            if (distPred < distance) { // 逆时针旋转 距离告警，则是 左转告警
-                                //System.out.printf("### center turn left to [%s] alarm!!!\n", id);
-                                alarmEvent.leftAlarm = true;
+                    if (alarmLevel != -1) { // 有距离告警
+                        Geometry leftPredect = cc.getArmGeo(0.1f); // 逆时针旋转
+                        float leftDistPred = (float) leftPredect.distance(gsc);
+                        Geometry rightPredect = cc.getArmGeo(-0.1f); // 逆时针旋转
+                        float rightDistPred = (float) rightPredect.distance(gsc);
+
+                        if (leftDistPred <= distance) {
+                            //System.out.printf("### center turn left to [%s] alarm!!!\n", id);
+                            alarmEvent.leftAlarm = true;
+                            if (alarmLevel < alarmEvent.leftAlarmLevel)
                                 alarmEvent.leftAlarmLevel = alarmLevel;
-                            }
                         }
-                        if (cc.prevHangle >= cc.hAngle) {
-                            Geometry gPredect = cc.getArmGeo(-0.1f); // 逆时针旋转
-                            float distPred = (float) gPredect.distance(gsc);
-                            if (distPred < distance) { // 逆时针旋转 距离告警，则是 左转告警
-                                alarmEvent.rightAlarm = true;
+
+                        if (rightDistPred <= distance) {
+                            alarmEvent.rightAlarm = true;
+                            if (alarmLevel < alarmEvent.rightAlarmLevel)
                                 alarmEvent.rightAlarmLevel = alarmLevel;
-                                //System.out.printf("### center turn right to [%s] alarm!!!\n", id);
-                            }
                         }
                     }
-
                 } else if ((myHeight - sideHeight) > 1) { // 中心塔基比边缘塔基高, 计算中心塔基小车位置和 边缘塔基距离
                     Geometry carPos = cc.getCarGeo(0f, 0f);
                     float carToArmDis = (float) carPos.distance(gsc); // 本机小车 到 旁机 大臂的距离
                     System.out.printf("### center car to side[%s] arm distance: %f \n", id, carToArmDis);
                     int alarmLevel = getAlarmLevel(carToArmDis, alarmSet, 0);
                     if (alarmLevel != -1) { // 小车到塔基的距离小于安全距离
-                        if (cc.prevHangle <= cc.hAngle) {
-                            Geometry gPredect = cc.getCarGeo(0.1f, 0f); // 逆时针旋转
-                            float distPred = (float) gPredect.distance(gsc);
-                            if (distPred < carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
-                                System.out.printf("### center turn left to [%s] alarm!!!\n", id);
-                                alarmEvent.leftAlarm = true;
+                        Geometry gPredect1 = cc.getCarGeo(0.1f, 0f); // 逆时针旋转
+                        float distPred1 = (float) gPredect1.distance(gsc);
+                        Geometry gPredect2 = cc.getCarGeo(-0.1f, 0f); // 逆时针旋转
+                        float distPred2 = (float) gPredect2.distance(gsc);
+                        if (distPred1 <= carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
+                            System.out.printf("### center turn left to [%s] alarm!!!\n", id);
+                            alarmEvent.leftAlarm = true;
+                            if (alarmLevel < alarmEvent.leftAlarmLevel)
                                 alarmEvent.leftAlarmLevel = alarmLevel;
-                            }
                         }
-                        if (cc.prevHangle >= cc.hAngle) {
-                            Geometry gPredect = cc.getCarGeo(-0.1f, 0f); // 逆时针旋转
-                            float distPred = (float) gPredect.distance(gsc);
-                            if (distPred < carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
-                                alarmEvent.rightAlarm = true;
+
+                        if (distPred2 <= carToArmDis) {
+                            alarmEvent.rightAlarm = true;
+                            if (alarmLevel < alarmEvent.rightAlarmLevel)
                                 alarmEvent.rightAlarmLevel = alarmLevel;
-                                System.out.printf("### center turn right to [%s] alarm!!!\n", id);
-                            }
                         }
                     }
 
                     float carSpeedDownDist = alarmSet.getCarSpeedDownDist(); // 小车减速距离
                     if (carToArmDis < carSpeedDownDist) {
                         int level = carToArmDis < alarmSet.getCarStopDist() ? 1 : 2; // 1挡停车距离，2挡减速距离
-                        if (cc.prevCarRange <= cc.carRange) {
-                            Geometry gPredect = cc.getCarGeo(0.0f, 0.1f); // 向外运行
-                            float distPred = (float) gPredect.distance(gsc);
-                            if (distPred < carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
-                                System.out.printf("### center turn left to [%s] alarm!!!\n", id);
-                                alarmEvent.forwardAlarm = true;
+                        Geometry gPredect1 = cc.getCarGeo(0.0f, 0.1f); // 向外运行
+                        float distPred1 = (float) gPredect1.distance(gsc);
+                        Geometry gPredect2 = cc.getCarGeo(0.0f, -0.1f); // 向内运行
+                        float distPred2 = (float) gPredect2.distance(gsc);
+
+                        if (distPred1 <= carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
+                            System.out.printf("### center turn left to [%s] alarm!!!\n", id);
+                            alarmEvent.forwardAlarm = true;
+                            if (alarmLevel < alarmEvent.forwardAlarmLevel)
                                 alarmEvent.forwardAlarmLevel = level;
-                            }
                         }
-                        if (cc.prevCarRange >= cc.carRange) {
-                            Geometry gPredect = cc.getCarGeo(0.0f, -0.1f); // 向外运行
-                            float distPred = (float) gPredect.distance(gsc);
-                            if (distPred < carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
-                                alarmEvent.backendAlarm = true;
+
+                        if (distPred2 <= carToArmDis) {
+                            alarmEvent.backendAlarm = true;
+                            if (alarmLevel < alarmEvent.backendAlarmLevel)
                                 alarmEvent.backendAlarmLevel = level;
-                                System.out.printf("### center turn right to [%s] alarm!!!\n", id);
-                            }
                         }
                     }
+
                 } else { // 中心塔基低于旁边塔基, 以中心塔基的臂和 旁机的小车 计算距离
                     Geometry carPos = sc.getCarGeo(0f, 0f);
                     float armToCarDis = (float) gcc.distance(carPos); // 本机大臂 到 旁机 小车的距离
                     //System.out.printf("### center car to side[%s] car distance: %f \n", id, armToCarDis);
                     int alarmLevel = getAlarmLevel(armToCarDis, alarmSet, 0);
                     if (alarmLevel != -1) {
-                        if (cc.prevHangle <= cc.hAngle) {
-                            Geometry gPredect = cc.getArmGeo(0.1f); // 逆时针旋转
-                            float distPred = (float) gPredect.distance(carPos);
-                            if (distPred < armToCarDis) { // 逆时针旋转 距离告警，则是 左转告警
-                                //System.out.printf("### center turn left to [%s] alarm!!!\n", id);
-                                alarmEvent.leftAlarm = true;
+                        Geometry gPredect1 = cc.getArmGeo(0.1f); // 逆时针旋转
+                        float distPred1 = (float) gPredect1.distance(carPos);
+
+                        Geometry gPredect2 = cc.getArmGeo(-0.1f); // 逆时针旋转
+                        float distPred2 = (float) gPredect2.distance(carPos);
+
+                        if (distPred1 <= armToCarDis) { // 逆时针旋转 距离告警，则是 左转告警
+                            //System.out.printf("### center turn left to [%s] alarm!!!\n", id);
+                            alarmEvent.leftAlarm = true;
+                            if (alarmLevel < alarmEvent.leftAlarmLevel)
                                 alarmEvent.leftAlarmLevel = alarmLevel;
-                            }
                         }
-                        if (cc.prevHangle >= cc.hAngle) {
-                            Geometry gPredect = cc.getArmGeo(-0.1f); // 逆时针旋转
-                            float distPred = (float) gPredect.distance(carPos);
-                            if (distPred < armToCarDis) { // 逆时针旋转 距离告警，则是 左转告警
-                                alarmEvent.rightAlarm = true;
+
+                        if (distPred2 <= armToCarDis) {
+                            alarmEvent.rightAlarm = true;
+                            if (alarmLevel < alarmEvent.rightAlarmLevel)
                                 alarmEvent.rightAlarmLevel = alarmLevel;
-                                //System.out.printf("### center turn right to [%s] alarm!!!\n", id);
-                            }
                         }
                     }
                 }
@@ -221,51 +215,53 @@ public class Alarm {
                 int alarmLevel = getAlarmLevel(carToAreaDis, alarmSet, 1);
                 if (alarmLevel != -1) {
                     // 判断左告警 还是 右告警
-                    if (cc.prevHangle <= cc.hAngle) {
-                        Geometry gPredect = cc.getCarGeo(0.1f, 0f); // 小车旋转后的位置
-                        float distPred = (float) gPredect.distance(sideGeo);
-                        if (distPred < carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
-                            System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
-                            alarmEvent.leftAlarm = true;
+                    Geometry gPredect1 = cc.getCarGeo(0.1f, 0f); // 小车旋转后的位置
+                    float distPred1 = (float) gPredect1.distance(sideGeo);
+
+                    Geometry gPredect2 = cc.getCarGeo(-0.1f, 0f); // 小车旋转后的位置
+                    float distPred2 = (float) gPredect2.distance(sideGeo);
+
+                    if (distPred1 <= carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
+                        System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
+                        alarmEvent.leftAlarm = true;
+                        if (alarmLevel < alarmEvent.leftAlarmLevel)
                             alarmEvent.leftAlarmLevel = alarmLevel;
-                        }
                     }
 
-                    if (cc.prevHangle >= cc.hAngle) {
-                        Geometry gPredect = cc.getCarGeo(-0.1f, 0f); // 小车旋转后的位置
-                        float distPred = (float) gPredect.distance(sideGeo);
-                        if (distPred < carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
-                            alarmEvent.rightAlarm = true;
+                    if (distPred2 <= carToAreaDis) {
+                        alarmEvent.rightAlarm = true;
+                        if (alarmLevel < alarmEvent.rightAlarmLevel)
                             alarmEvent.rightAlarmLevel = alarmLevel;
-                            System.out.printf("### center turn right to [%s] alarm!!!\n", "TODO");
-                        }
+                        System.out.printf("### center turn right to [%s] alarm!!!\n", "TODO");
                     }
                 }
 
                 float carSpeedDownDist = alarmSet.getCarSpeedDownDist(); // 小车减速距离
                 if (carToAreaDis < carSpeedDownDist) {
                     int level = carToAreaDis < alarmSet.getCarStopDist() ? 1 : 2;
-                    if (cc.prevCarRange <= cc.carRange) {
-                        Geometry gPredect = cc.getCarGeo(0.0f, 0.1f); // 向外运行
-                        float distPred = (float) gPredect.distance(sideGeo);
-                        if (distPred < carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
-                            System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
-                            alarmEvent.forwardAlarm = true;
+                    Geometry gPredect1 = cc.getCarGeo(0.0f, 0.1f); // 向外运行
+                    float distPred1 = (float) gPredect1.distance(sideGeo);
+
+                    Geometry gPredect2 = cc.getCarGeo(0.0f, -0.1f); // 向外运行
+                    float distPred2 = (float) gPredect2.distance(sideGeo);
+
+                    if (distPred1 <= carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
+                        System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
+                        alarmEvent.forwardAlarm = true;
+                        if (alarmLevel < alarmEvent.forwardAlarmLevel)
                             alarmEvent.forwardAlarmLevel = level;
-                        }
                     }
 
-                    if (cc.prevCarRange >= cc.carRange) {
-                        Geometry gPredect = cc.getCarGeo(0.0f, -0.1f); // 向外运行
-                        float distPred = (float) gPredect.distance(sideGeo);
-                        if (distPred < carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
-                            alarmEvent.backendAlarm = true;
+                    if (distPred2 <= carToAreaDis) {
+                        alarmEvent.backendAlarm = true;
+                        if (alarmLevel < alarmEvent.backendAlarmLevel)
                             alarmEvent.backendAlarmLevel = level;
-                            System.out.printf("### [1]center turn right to [%s] alarm!!!\n", "TODO");
-                        }
+                        System.out.printf("### [1]center turn right to [%s] alarm!!!\n", "TODO");
                     }
                 }
+
             } else {
+
                 Geometry core = cc.getCenterGeo(); // 本塔圆心
                 float ctoaDis = (float) core.distance(sideGeo); // 圆心到区域的距离
                 if (ctoaDis > cc.r) continue; // 永远不会撞上
@@ -274,26 +270,23 @@ public class Alarm {
                 //System.out.println("## big arm to area distance: " + dis);
                 int alarmLevel = getAlarmLevel(dis, alarmSet, 1);
                 if (alarmLevel != -1) {
-                    //System.out.println("##### distance alarm .....");
-                    // 根据数据的变化方向判断
-                    if (cc.prevHangle <= cc.hAngle) {
-                        Geometry gPredect = cc.getArmGeo(0.1f); // 逆时针旋转
-                        float distPred = (float) gPredect.distance(sideGeo);
-                        if (distPred < dis) {
-                            //System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
-                            alarmEvent.leftAlarm = true;
+                    Geometry gPredect1 = cc.getArmGeo(0.1f); // 逆时针旋转
+                    float distPred1 = (float) gPredect1.distance(sideGeo);
+                    Geometry gPredect2 = cc.getArmGeo(-0.1f);
+                    float distPred2 = (float) gPredect2.distance(sideGeo);
+
+                    if (distPred1 <= dis) {
+                        //System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
+                        alarmEvent.leftAlarm = true;
+                        if (alarmLevel < alarmEvent.leftAlarmLevel)
                             alarmEvent.leftAlarmLevel = alarmLevel;
-                        }
                     }
 
-                    if (cc.prevHangle >= cc.hAngle) {
-                        Geometry gPredect = cc.getArmGeo(-0.1f); // 顺时针旋转
-                        float distPred = (float) gPredect.distance(sideGeo);
-                        if (distPred < dis) {
-                            alarmEvent.rightAlarm = true;
+                    if (distPred2 <= dis) {
+                        alarmEvent.rightAlarm = true;
+                        if (alarmLevel < alarmEvent.rightAlarmLevel)
                             alarmEvent.rightAlarmLevel = alarmLevel;
-                            //System.out.printf("### [2]center turn right to [%s] alarm!!!\n", "TODO");
-                        }
+                        //System.out.printf("### [2]center turn right to [%s] alarm!!!\n", "TODO");
                     }
                 }
             }
@@ -305,22 +298,19 @@ public class Alarm {
 
         CenterCycle cc = (CenterCycle) craneMap.get(no);
         if (cc == null) return;
-        if (System.currentTimeMillis() - cc.prevMsec == 0) return;
 
         // 告警清零
         alarmEvent.backendAlarm = false;
         alarmEvent.forwardAlarm = false;
         alarmEvent.rightAlarm = false;
         alarmEvent.leftAlarm = false;
+        alarmEvent.rightAlarmLevel = 100;
+        alarmEvent.leftAlarmLevel = 100;
+        alarmEvent.forwardAlarmLevel = 100;
+        alarmEvent.backendAlarmLevel = 100;
 
         Alarm.craneToCraneAlarm(craneMap, no, alarmSet); // 塔基到塔基的距离
         Alarm.craneToAreaAlarm(elemList, cc, alarmSet);  // 塔基到区域的距离
-
-        //eventBus.post(alarmEvent);
-
-        cc.prevCarRange = cc.carRange; // 记录上一次小车位置
-        cc.prevHangle = cc.hAngle; // 记录上一次告警回转
-        cc.prevMsec = System.currentTimeMillis(); // 上次一计算时间
     }
 
     public static void weightAlarmDetect(Calibration calibration, List<Load> loads, AlarmSet alarmSet,
@@ -330,6 +320,8 @@ public class Alarm {
 
         alarmEvent.weightAlarm = false;
         alarmEvent.momentAlarm = false;
+        alarmEvent.weightAlarmLevel = 100;
+        alarmEvent.momentAlarmLevel = 100;
         alarmEvent.weightAlarmDispearLevel = 100;
         alarmEvent.momentAlarmDispearLevel = 100;
         float weight3 = maxWeight * alarmSet.getWeight3() / 100;
@@ -338,17 +330,17 @@ public class Alarm {
 
         if (curWeight >= weight3) {
             //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight1() / 100);
-            System.out.println("@@@ weight overload 3");
+            //System.out.println("@@@ weight overload 3");
             alarmEvent.weightAlarm = true;
             alarmEvent.weightAlarmLevel = 3;
         } else if (curWeight >= weight2) {
             //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight2() / 100);
-            System.out.println("@@@ weight overload 2");
+            //System.out.println("@@@ weight overload 2");
             alarmEvent.weightAlarm = true;
             alarmEvent.weightAlarmLevel = 2;
         } else if (curWeight >= weight1) {
             //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight3() / 100);
-            System.out.println("@@@ weight overload 1");
+            //System.out.println("@@@ weight overload 1");
             alarmEvent.weightAlarm = true;
             alarmEvent.weightAlarmLevel = 1;
         }
@@ -367,6 +359,7 @@ public class Alarm {
             if (sc <= cc && ec >= cc) { // 处于告警判断位置
                 float sw = Float.parseFloat(loads.get(i).getWeight());
                 float ew = Float.parseFloat(loads.get(i + 1).getWeight());
+
                 float ww = 1; // 标准重量
                 if (ec - cc == 0) {
                     ww = ew;
@@ -374,24 +367,24 @@ public class Alarm {
                     float rate = (cc - sc) / (ec - cc);
                     ww = (rate * ew + sw) / (1 + rate);
                 }
-
+                //System.out.printf("## %f - %f - %f : %f - %f - %f\n", sc, cc, ec, sw, ww, ew);
                 //System.out.printf("## %f -- %f : ", curWeight, ww);
                 float moment3 = ww * alarmSet.getMoment3() / 100;
                 float moment2 = ww * alarmSet.getMoment2() / 100;
                 float moment1 = ww * alarmSet.getMoment1() / 100;
                 if (curWeight >= moment3) {
                     //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight1() / 100);
-                    System.out.println("@@@ moment overload 3");
+                    //System.out.println("@@@ moment overload 3");
                     alarmEvent.momentAlarm = true;
                     alarmEvent.momentAlarmLevel = 3;
                 } else if (curWeight >= moment2) {
                     //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight2() / 100);
-                    System.out.println("@@@ moment overload 2");
+                    //System.out.println("@@@ moment overload 2");
                     alarmEvent.momentAlarm = true;
                     alarmEvent.momentAlarmLevel = 2;
                 } else if (curWeight >= moment1) {
                     //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight3() / 100);
-                    System.out.println("@@@ moment overload 1");
+                    //System.out.println("@@@ moment overload 1");
                     alarmEvent.momentAlarm = true;
                     alarmEvent.momentAlarmLevel = 1;
                 }
@@ -417,17 +410,28 @@ public class Alarm {
 
             if (alarmEvent.leftAlarm && alarmEvent.leftAlarmLevel == 1) {
                 controlProto.setLeftRote(true);
+                controlProto.setRotate2(true);
+                controlProto.setRotate3(true);
+                controlProto.setRotate4(true);
+                controlProto.setRotate5(true);
             } else {
                 controlProto.setLeftRote(false);
             }
 
-            if (alarmEvent.leftAlarm && alarmEvent.rightAlarmLevel == 1) {
+            if (alarmEvent.rightAlarm && alarmEvent.rightAlarmLevel == 1) {
                 controlProto.setRightRote(true);
+                controlProto.setRotate2(true);
+                controlProto.setRotate3(true);
+                controlProto.setRotate4(true);
+                controlProto.setRotate5(true);
             } else {
                 controlProto.setRightRote(false);
             }
 
-            switch (alarmEvent.leftAlarmLevel) {
+            int alarmLevel = alarmEvent.leftAlarmLevel;
+            if (alarmLevel == 0) alarmLevel = alarmEvent.rightAlarmLevel;
+
+            switch (alarmLevel) {
                 case 2:
                     controlProto.setLeftRote(false);  // 清除一档左告警
                     controlProto.setRightRote(false); // 清除一档右告警
@@ -459,6 +463,8 @@ public class Alarm {
                     controlProto.setRotate3(false); // 清除2挡告警
                     controlProto.setRotate4(false);
                     controlProto.setRotate5(true);
+                    break;
+                default:
                     break;
             }
         }
@@ -493,8 +499,13 @@ public class Alarm {
                     controlProto.setCarOut1(true);
                     controlProto.setCarOut2(true);
                     controlProto.setMoment3(true);
+                    controlProto.setMoment2(true);
+                    controlProto.setMoment1(true);
+                    break;
                 case 2:
                     controlProto.setMoment2(true);
+                    controlProto.setMoment1(true);
+                    break;
                 case 1:
                     controlProto.setMoment1(true);
                     break;
@@ -504,11 +515,16 @@ public class Alarm {
         switch (alarmEvent.momentAlarmDispearLevel) {
             case 1:
                 controlProto.setMoment1(false);
+                break;
             case 2:
+                controlProto.setMoment1(false);
                 controlProto.setMoment2(false);
+                break;
             case 3:
                 controlProto.setCarOut1(false);
                 controlProto.setCarOut2(false);
+                controlProto.setMoment1(false);
+                controlProto.setMoment2(false);
                 controlProto.setMoment3(false);
                 break;
         }
@@ -538,10 +554,10 @@ public class Alarm {
         rotateControl(event, controlProto);
         weightControl(event, controlProto);
         momentControl(event, controlProto);
-        carBackControl(event, controlProto);
+        //carBackControl(event, controlProto);
 
         if (controlProto.control[4] != prevControl[0] || controlProto.control[5] != prevControl[1]) {
-            prevControl[1] = controlProto.control[4];
+            prevControl[0] = controlProto.control[4];
             prevControl[1] = controlProto.control[5];
 
             // TODO 通过AD口发送数据

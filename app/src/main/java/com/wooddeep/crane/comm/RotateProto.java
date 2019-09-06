@@ -11,7 +11,7 @@ public class RotateProto {
 
     private int data = 0x00010002 & 0xFFFFFFFF; // 数据
 
-    private float angle = 0;
+    private double angle = 0;
 
     public RotateProto() {
 
@@ -25,18 +25,22 @@ public class RotateProto {
 
         this.data = (data[3] & 0xFF) << 24 | (data[4] & 0xFF) << 16 | (data[5] & 0xFF) << 8 | (data[6] & 0xFF);
 
+        for (int i = 0; i < out.length; i++) {
+            out[i] = data[i];
+        }
 
+        /*
         for (int i = 0; i < 9 ; i ++) {
             System.out.printf("%02x ", data[i] & 0xFF); // 01 04 00 01 00 02 20 0b 1d  = 16777760
         }
 
         System.out.printf(" = %d\n", this.data);
-
+        */
 
         return 0;
     }
 
-    private byte[] out = new byte[10];
+    public byte[] out = new byte[10];
 
     public byte[] pack() {
 
@@ -75,19 +79,19 @@ public class RotateProto {
         this.data = data;
     }
 
-    public float calcAngle(Calibration calibration) {
+    public double calcAngle(Calibration calibration) {
         float startAngle = calibration.getRotateStartAngle();
-        float currentAngle = startAngle + (getData() - calibration.getRotateStartData()) * calibration.getRotateRate();
-        float degree = Math.round(Math.toDegrees(currentAngle) * 10) / 10.0f;
-        setAngle(degree);
-        return degree;
+        double currentAngle = startAngle + (getData() - calibration.getRotateStartData()) * calibration.getRotateRate();
+        //double degree = Math.toDegrees(currentAngle); //Math.round(Math.toDegrees(currentAngle) * 10) / 10.0f;
+        setAngle(currentAngle);
+        return currentAngle;
     }
 
-    public float getAngle() {
+    public double getAngle() {
         return angle;
     }
 
-    public void setAngle(float angle) {
+    public void setAngle(double angle) {
         this.angle = angle;
     }
 }

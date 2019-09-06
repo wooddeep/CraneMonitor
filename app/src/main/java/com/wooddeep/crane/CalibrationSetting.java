@@ -157,16 +157,14 @@ public class CalibrationSetting extends AppCompatActivity {
 
                     double rotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
                         new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(x2, y2)); // [0 - 2pi]
-
-                    if (rotate <= 0.0001f) rotate = 2 * Math.PI;
-
-                    System.out.println(Math.toDegrees(rotate));
+                    rotate = Math.toDegrees(rotate);
+                    if (rotate <= 0.0001f) rotate = 360.0;
 
                     double startRotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
                         new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(centerX + 100, centerY)); // 计算起始角度
-                    System.out.println(Math.toDegrees(startRotate));
+                    startRotate = Math.toDegrees(startRotate);
 
-                    float rate = (float) rotate / (end - start);
+                    double rate = rotate / (end - start);
 
                     TextView tvRate = (TextView) findViewById(rotateStartX1.rateShowId);
                     tvRate.setText(String.valueOf(rate));
@@ -205,7 +203,11 @@ public class CalibrationSetting extends AppCompatActivity {
                     float end = rotateProto.getData();
                     TextView tvStart = (TextView) findViewById(rotateStartX1.uartDataTextViewId);
                     float start = Float.parseFloat(tvStart.getText().toString());
-                    System.out.printf("## %f- %f\n", start, end);
+                    for (int i = 0; i < rotateProto.out.length; i++) {
+                        System.out.printf("%02x ", rotateProto.out[i] & 0x000000FF);
+                    }
+
+                    System.out.printf("## \n%f - %f =  %f\n", start, end, start - end);
                     TextView tvEnd = (TextView) findViewById(rotateEndX2.uartDataTextViewId);
                     tvEnd.setText(String.valueOf(end));
 
@@ -221,18 +223,16 @@ public class CalibrationSetting extends AppCompatActivity {
 
                     double rotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
                         new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(x2, y2)); // [0 - pi]
-                    System.out.println(Math.toDegrees(rotate));
-
-                    if (rotate <= 0.0001f) rotate = 2 * Math.PI;
-
-                    float rate = (float) rotate / (end - start);
+                    rotate = Math.toDegrees(rotate);
+                    if (rotate <= 0.0001f) rotate = 360;
+                    double rate = rotate / (end - start);
 
                     TextView tvRate = (TextView) findViewById(rotateStartX1.rateShowId);
                     tvRate.setText(String.valueOf(rate));
 
                     double startRotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
                         new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(centerX + 100, centerY)); // 计算起始角度
-                    System.out.println(Math.toDegrees(startRotate));
+                    startRotate = Math.toDegrees(startRotate);
 
                     calibration.setRotateStartX1(x1);
                     calibration.setRotateStartY1(y1);

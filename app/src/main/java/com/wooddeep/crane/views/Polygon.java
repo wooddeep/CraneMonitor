@@ -84,7 +84,6 @@ public class Polygon extends View {
     public Polygon(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         paint = new Paint();
-        paint.setAlpha(0x4c000000);
         unreachedColor = DEFAULT_UNREACHED_COLOR;
         reachedColor = DEFAULT_REACHED_COLOR;
         textPaint = new Paint();

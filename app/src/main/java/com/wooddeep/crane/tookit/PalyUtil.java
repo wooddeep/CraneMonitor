@@ -1,0 +1,6 @@
+package com.wooddeep.crane.tookit;
+
+public class PalyUtil {
+}
+
+// class BtnClickListener implements OnClickListener{ @Override public void onClick(View arg0) { switch (arg0.getId()) { case R.id.button1: if (flag) { // 方法一 在res/raw下 // player=MediaPlayer.create(MainActivity.this, R.raw.music); // 方法二 在assess文件夹下 // try { // AssetManager asm=getAssets(); // AssetFileDescriptor afd=asm.openFd("music.mp3"); // player=new MediaPlayer(); // FileDescriptor fd=afd.getFileDescriptor(); // player.setDataSource(fd,afd.getStartOffset(), // afd.getLength()); // player.prepare(); // } catch (IOException e) { // // TODO Auto-generated catch block // e.printStackTrace(); // } // 方法三 在外部存储中 player=new MediaPlayer(); try { player.setDataSource("/storage/sdcard/Music/music.mp3"); player.prepare(); } catch (IllegalArgumentException e) { // TODO Auto-generated catch block e.printStackTrace(); } catch (SecurityException e) { // TODO Auto-generated catch block e.printStackTrace(); } catch (IllegalStateException e) { // TODO Auto-generated catch block e.printStackTrace(); } catch (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); } } player.start(); break; case R.id.button2: if (player!=null) { player.pause(); flag=false; } break; case R.id.button3: if (player!=null) { player.stop(); player.release(); flag=true; } break; } } } }

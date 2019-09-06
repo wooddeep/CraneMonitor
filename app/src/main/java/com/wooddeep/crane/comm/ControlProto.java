@@ -9,10 +9,11 @@ public class ControlProto {
 
     public boolean carOut2 = false; // 小车出2
     public boolean carOut1 = false; // 小车出1
-    public boolean rotate5 = false;
-    public boolean rotate4 = false;
-    public boolean rotate3 = false;
-    public boolean rotate2 = false;
+    public boolean rotate5 = false; //
+    public boolean rotate4 = false; //
+
+    public boolean rotate3 = false;  //
+    public boolean rotate2 = false;  //
     public boolean leftRote = false;
     public boolean rightRote = false;
 
@@ -23,7 +24,7 @@ public class ControlProto {
     public boolean moment2 = false;
     public boolean moment1 = false;
 
-    public boolean weight1 = false;
+    public boolean weight1 = false;   // 4
 
     public boolean carBack2 = false;  // 小车回2
     public boolean carBack1 = false;  // 小车回1
@@ -39,9 +40,9 @@ public class ControlProto {
 
         byte data = control[4];
         if (carOut2 == false) {
-            data = (byte) (data & 0x7F);
+            data = (byte) (data & 0x7F); // 0111 1111
         } else {
-            data = (byte) (data | 0x80);
+            data = (byte) (data | 0x80); // 1000 1111
         }
         control[4] = data;
     }
@@ -55,9 +56,9 @@ public class ControlProto {
 
         byte data = control[4];
         if (carOut1 == false) {
-            data = (byte) (data & 0xBF);
+            data = (byte) (data & 0xBF); // 1011 1111
         } else {
-            data = (byte) (data | 0x40);
+            data = (byte) (data | 0x40); // 0100 0000
         }
         control[4] = data;
 
@@ -72,7 +73,7 @@ public class ControlProto {
 
         byte data = control[4];
         if (rotate5 == false) {
-            data = (byte) (data & 0xDF);
+            data = (byte) (data & 0xDF); // 1101 1111
         } else {
             data = (byte) (data | 0x20);
         }
@@ -91,7 +92,7 @@ public class ControlProto {
         if (rotate4 == false) {
             data = (byte) (data & 0xEF);
         } else {
-            data = (byte) (data & 0x10);
+            data = (byte) (data | 0x10);
         }
         control[4] = data;
     }
@@ -105,7 +106,7 @@ public class ControlProto {
 
         byte data = control[4];
         if (rotate3 == false) {
-            data = (byte) (data & 0xF7);
+            data = (byte) (data & 0xF7); // 1111 0111
         } else {
             data = (byte) (data | 0x08);
         }
@@ -121,7 +122,7 @@ public class ControlProto {
 
         byte data = control[4];
         if (rotate2 == false) {
-            data = (byte) (data & 0xFB);
+            data = (byte) (data & 0xFB); // 1111 1011
         } else {
             data = (byte) (data | 0x04);
         }
@@ -137,7 +138,7 @@ public class ControlProto {
 
         byte data = control[4];
         if (leftRote == false) {
-            data = (byte) (data & 0xFD);
+            data = (byte) (data & 0xFD); // 1111 1101
         } else {
             data = (byte) (data | 0x02);
         }
@@ -153,7 +154,7 @@ public class ControlProto {
 
         byte data = control[4];
         if (rightRote == false) {
-            data = (byte) (data & 0xFE);
+            data = (byte) (data & 0xFE); // 1111 1110
         } else {
             data = (byte) (data | 0x01);
         }
@@ -201,9 +202,9 @@ public class ControlProto {
 
         byte data = control[5];
         if (moment2 == false) {
-            data = (byte) (data & 0xEF);
+            data = (byte) (data & 0xEF); // 1110 1111
         } else {
-            data = (byte) (data | 0x10);
+            data = (byte) (data | 0x10); // 0001 0000
         }
         control[5] = data;
     }

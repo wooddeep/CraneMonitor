@@ -29,10 +29,6 @@ public class CenterCycle extends CycleElem {
     public float ir;                  // 原始小臂半径
     public float hAngle;            // 水平方向夹角
     public float vAngle;             // 垂直方向夹角
-    public float prevCarRange = -1f;
-    public float prevHangle = -1f;
-    //public long  currMsec = System.currentTimeMillis();
-    public long  prevMsec = System.currentTimeMillis();
     public float carRange;
     public float deltaX;
     public float delatY;
@@ -89,7 +85,7 @@ public class CenterCycle extends CycleElem {
         float centerY = height / 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
 
         SuperCircleView cycle = new SuperCircleView(context);
-        //cycle.setElevation(10);
+        cycle.setElevation(10);
         FrameLayout.LayoutParams paras = new FrameLayout.LayoutParams(width, height);
 
         cycle.setLayoutParams(paras);
