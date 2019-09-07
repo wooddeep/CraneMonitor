@@ -90,7 +90,7 @@ public class Polygon extends View {
         textPaint.setTextSize(16);
         textPaint.setAntiAlias(true);
         textPaint.setFakeBoldText(true);
-        textPaint.setColor(Color.WHITE);
+        textPaint.setColor(Color.BLACK);
     }
 
     @Override

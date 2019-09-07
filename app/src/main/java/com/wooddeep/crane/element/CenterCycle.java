@@ -3,8 +3,11 @@ package com.wooddeep.crane.element;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
+import androidx.annotation.RequiresApi;
 
 import com.wooddeep.crane.tookit.StringTool;
 import com.wooddeep.crane.views.SuperCircleView;
@@ -65,6 +68,7 @@ public class CenterCycle extends CycleElem {
         this.name = name;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void drawCenterCycle(
         Activity activity,
         ViewGroup parent
@@ -81,7 +85,7 @@ public class CenterCycle extends CycleElem {
         float originBackWidth = originRadius * 2 + ringWidth * 2 + 10; // 默认圆环正方形背景高度
         float originBackHeight = originBackWidth; // 默认圆环正方形背景宽度
         float scale = originRadius / r;
-        float centerX = width / 2;   // 中心点x坐标(到左边距的长度)，相对于FrameLayout的左下角
+        float centerX = width / 2 + 100;   // 中心点x坐标(到左边距的长度)，相对于FrameLayout的左下角
         float centerY = height / 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
 
         SuperCircleView cycle = new SuperCircleView(context);

@@ -1,6 +1,7 @@
 package com.wooddeep.crane;
 
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
@@ -10,6 +11,7 @@ import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -354,6 +356,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView momentAlarmView;
 
     private MediaPlayer player;
+
+    private Uri notification;
+    private Ringtone ringtone;
 
     public float getOscale() {
         return oscale;
@@ -801,10 +806,10 @@ public class MainActivity extends AppCompatActivity {
         Date date = new Date();
         String dateNowStr = sdf.format(date);
         String[] cells = dateNowStr.split(" ");
-        TextView currTime = (TextView) findViewById(R.id.currTime);
+        //TextView currTime = (TextView) findViewById(R.id.currTime);
         TextView currDate = (TextView) findViewById(R.id.currDate);
         currDate.setText(cells[0]);
-        currTime.setText(cells[1]);
+        //currTime.setText(cells[1]);
     }
 
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
@@ -1173,6 +1178,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void renderMain(float oscale) {
         FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
         CraneDao craneDao = new CraneDao(MainActivity.this);
@@ -1365,11 +1371,6 @@ public class MainActivity extends AppCompatActivity {
         backwardAlarmView = (TextView) findViewById(R.id.back_alarm_level);
 
         try {
-
-            //Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            //Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-            //r.play();
-
             serialttyS0 = new SerialPort(new File("/dev/ttyS0"), 115200, 0); // 19200 // AD数据
             serialttyS1 = new SerialPort(new File("/dev/ttyS1"), 19200, 0);
             ttyS0InputStream = serialttyS0.getInputStream();
@@ -1386,7 +1387,10 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //startDataSimThread();
+        notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        ringtone = RingtoneManager.getRingtone(getApplicationContext(), notification);
+
+        setCurrTime();
 
         // 触发判断本机是否为主机
         new Handler().postDelayed(() -> {
