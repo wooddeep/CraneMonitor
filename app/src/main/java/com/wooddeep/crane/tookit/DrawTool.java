@@ -108,7 +108,7 @@ public class DrawTool {
 
         // 告警设置
         ImageView alarmSetting = new ImageView(activity);
-        params = new LinearLayout.LayoutParams(50, 45);
+        params = new LinearLayout.LayoutParams(45, 40);
         params.setMargins(15, 0, 0, 0);
         params.gravity = Gravity.CENTER;
         alarmSetting.setLayoutParams(params);

@@ -26,6 +26,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
+
 import com.example.x6.serial.SerialPort;
 import com.wooddeep.crane.alarm.Alarm;
 import com.wooddeep.crane.comm.ControlProto;
@@ -77,6 +79,7 @@ import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.tookit.MathTool;
+import com.wooddeep.crane.tookit.MomentOut;
 import com.wooddeep.crane.tookit.StringTool;
 import com.wooddeep.crane.views.CraneView;
 import com.wooddeep.crane.views.Vertex;
@@ -354,11 +357,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView backwardAlarmView;
     private TextView weightAlarmView;
     private TextView momentAlarmView;
-
+    private TextView momentView;
+    private TextView ratedWeightView;
+    private int craneArmType = 0; // 平臂式 / 动臂式
     private MediaPlayer player;
-
-    private Uri notification;
-    private Ringtone ringtone;
 
     public float getOscale() {
         return oscale;
@@ -475,13 +477,12 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-
     private void startSensorThread() {
         new Thread(() -> {
             try {
                 int counter = 0;
                 while (true) {
-                    //alarmJdugeFlag = false;
+
                     if (ttyS0InputStream.available() > 0) { // AD数据
                         int len = ttyS0InputStream.read(adXBuff, 0, 2048);
 
@@ -493,26 +494,47 @@ public class MainActivity extends AppCompatActivity {
                         currProto.calcRealHeight(calibration);
                         currProto.calcRealLength(calibration);
                         currProto.calcRealWeigth(calibration);
+                        currProto.calcRealVAngle(calibration);
 
-                        if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) >= 0.2f) {
-                            lengthEvent.setLength(currProto.getRealLength());
-                            prevProto.setRealLength(currProto.getRealLength());
-                            eventBus.post(lengthEvent);
-                            //alarmJdugeFlag = true;
+                        if (craneArmType == 1) { // 动臂式
+                            if (Math.abs(currProto.getRealVAngle() - prevProto.getRealVAngle()) >= 0.2f) { // TODO 调试
+                                prevProto.setRealVAngle(currProto.getRealVAngle());
+                                runOnUiThread(() -> {
+                                    craneView.setArmAngle(currProto.getRealVAngle());
+                                    centerCycle.setVAngle(currProto.getRealVAngle());
+                                });
+                            }
+                        } else { // 平臂式
+                            if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) >= 0.2f) {
+                                lengthEvent.setLength(currProto.getRealLength());
+                                prevProto.setRealLength(currProto.getRealLength());
+                                eventBus.post(lengthEvent);
+                                MomentOut moment = MathTool.momentCalc(loadParas, currProto.getRealWeight(), currProto.getRealLength());
+                                runOnUiThread(() -> weigthChangeShow(moment.moment, moment.ratedWeight));
+                            }
                         }
 
-                        if (Math.abs(currProto.getRealHeight() - prevProto.getRealHeight()) >= 0.2f) {
+                        if (Math.abs(currProto.getRealHeight() - prevProto.getRealHeight()) >= 0.2f) { // TODO 调试高度
                             heightEvent.setHeight(currProto.getRealHeight());
                             prevProto.setRealHeight(currProto.getRealHeight());
                             eventBus.post(heightEvent);
-                            //alarmJdugeFlag = true;
                         }
 
                         if (Math.abs(currProto.getRealWeight() - prevProto.getRealWeight()) >= 0.2f) {
                             weightEvent.setWeight(currProto.getRealWeight());
                             prevProto.setRealWeight(currProto.getRealWeight());
                             eventBus.post(weightEvent);
-                            //alarmJdugeFlag = true;
+                            MomentOut moment = MathTool.momentCalc(loadParas, currProto.getRealWeight(), currProto.getRealLength());
+                            runOnUiThread(() -> momentShow(moment.moment));
+                        }
+
+                        if (Math.abs(currProto.getWindSpeed() - prevProto.getWindSpeed()) >= 218) {
+                            prevProto.setWindSpeed(currProto.getWindSpeed());
+                            runOnUiThread(() -> {
+                                float windSpeed = currProto.getWindSpeed() * 30 / 65536;
+                                windSpeed = Math.round(windSpeed * 10) / 10.0f;
+                                ((TextView) findViewById(R.id.wind_speed)).setText(windSpeed + "m/s");
+                            });
                         }
 
                         if (calibrationFlag) {
@@ -608,6 +630,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startTimerThread() {
+        player = MediaPlayer.create(this, R.raw.alarm);
+        player.setLooping(true);
+        player.start();
+        player.pause();
+
         new Thread(() -> {
             try {
                 while (true) {
@@ -615,6 +642,7 @@ public class MainActivity extends AppCompatActivity {
                         Alarm.alarmDetect(calibration, elemList, craneMap, myCraneNo, alarmSet, eventBus);
                         Alarm.weightAlarmDetect(calibration, loadParas, alarmSet, eventBus,
                             currProto.getRealWeight(), currProto.getRealLength()); // 吊重告警判断
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -726,21 +754,17 @@ public class MainActivity extends AppCompatActivity {
         if (alarmEvent.leftAlarm == true) {
             Alarm.startAlarm(activity, R.id.left_alarm, rotateAlarmMap.get(event.leftAlarmLevel));
             leftAlarmView.setText(levelMap.get(event.leftAlarmLevel));
-            //player.start();
         } else {
             Alarm.stopAlarm(activity, R.id.left_alarm, R.mipmap.forward);
             leftAlarmView.setText(levelMap.get(0));
-            //player.stop();
         }
 
         if (alarmEvent.rightAlarm == true) {
             Alarm.startAlarm(activity, R.id.right_alarm, rotateAlarmMap.get(event.rightAlarmLevel));
             rightAlarmView.setText(levelMap.get(event.rightAlarmLevel));
-            //player.start();
         } else {
             Alarm.stopAlarm(activity, R.id.right_alarm, R.mipmap.forward);
             rightAlarmView.setText(levelMap.get(0));
-            //player.stop();
         }
 
         // TODO判断小车出，小车回
@@ -778,6 +802,7 @@ public class MainActivity extends AppCompatActivity {
             momentAlarmView.setText(levelMap.get(0));
         }
 
+        // 控制
         if (Alarm.controlSet(event, controlProto)) {
             try {
                 for (int i = 0; i < controlProto.control.length; i++) {
@@ -789,6 +814,15 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+        // 告警铃声
+        if (event.hasAlarm && !player.isPlaying()) {
+            player.start();
+        }
+        // 告警铃声清除
+        if (!event.hasAlarm) {
+            player.pause();
         }
     }
 
@@ -936,6 +970,15 @@ public class MainActivity extends AppCompatActivity {
         angleView.setText(showAngle + "°");
     }
 
+    public void momentShow(float moment) {
+        momentView.setText(moment + "%");
+    }
+
+    public void weigthChangeShow(float moment, float ratedWeight) {
+        momentView.setText(moment + "%");
+        ratedWeightView.setText(ratedWeight + "t");
+    }
+
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void simulatorEventBus(SimulatorEvent simEvent) {
@@ -983,6 +1026,7 @@ public class MainActivity extends AppCompatActivity {
 
         loadParas = loadDao.getLoads(craneType, armLength, power); // 获取负荷特性
         if (loadParas != null) {
+            ((TextView) findViewById(R.id.rated_weight)).setText(loadParas.get(0).getWeight() + "t"); // 显示塔基类型
             for (Load load : loadParas) {
                 //System.out.printf("%s--%s\n", load.getCoordinate(), load.getWeight());
             }
@@ -1153,7 +1197,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, CalibrationSetting.class);
                 startActivity(intent);
-                calibrationFlag = true; // 标定标识 TODO 放置到页面跳转处触发
+
+                new Handler().postDelayed(() -> {
+                    calibrationFlag = true; // 延时开关
+                }, 1000);
             }
         });
 
@@ -1206,6 +1253,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 设置主界面显示
+        craneArmType = mainCrane.getType(); // 塔基类型
+        float vAngle = 0.0f; // 垂直方向夹角
+        if (craneArmType == 1) {
+            //vAngle =
+            // TODO
+        }
+
         String number = Integer.parseInt(mainCrane.getName().replaceAll("[^0-9]+", "")) + ""; // 当前主环的编号
         myCraneNo = number;
         ((TextView) findViewById(R.id.craneNo)).setText("No.:" + number); // 显示塔基类型
@@ -1347,6 +1401,7 @@ public class MainActivity extends AppCompatActivity {
         calibration = calibrationDao.selectAll().get(0);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1369,6 +1424,8 @@ public class MainActivity extends AppCompatActivity {
         momentAlarmView = (TextView) findViewById(R.id.moment_alarm_level);
         forwardAlarmView = (TextView) findViewById(R.id.forward_alarm_level);
         backwardAlarmView = (TextView) findViewById(R.id.back_alarm_level);
+        momentView = (TextView) findViewById(R.id.moment);
+        ratedWeightView = (TextView) findViewById(R.id.rated_weight);
 
         try {
             serialttyS0 = new SerialPort(new File("/dev/ttyS0"), 115200, 0); // 19200 // AD数据
@@ -1386,9 +1443,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        ringtone = RingtoneManager.getRingtone(getApplicationContext(), notification);
 
         setCurrTime();
 

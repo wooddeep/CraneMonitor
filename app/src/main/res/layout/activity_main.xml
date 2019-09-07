@@ -104,12 +104,13 @@
                         android:textStyle="bold" />
 
                     <View
+                        android:padding="2dp"
                         android:layout_width="60dp"
                         android:layout_height="1dp"
                         android:background="@color/black"/>
 
                     <TextView
-                        android:id="@+id/weight"
+                        android:id="@+id/rated_weight"
                         android:layout_width="80dp"
                         android:layout_height="25dp"
                         android:layout_centerInParent="true"
@@ -158,8 +159,8 @@
 
                 <ImageView
                     android:id="@+id/cable_logo"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:layout_marginLeft="5dp"
@@ -178,6 +179,35 @@
                     android:textSize="22dp"
                     android:textStyle="bold" />
             </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/hook_alarm_logo"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center"
+                    app:srcCompat="@mipmap/hook" />
+
+                <TextView
+                    android:id="@+id/hook_alam"
+                    android:layout_width="80dp"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="5dp"
+                    android:gravity="center"
+                    android:text="ok"
+                    android:textSize="22dp"
+                    android:textStyle="bold" />
+            </TableRow>
+
         </TableLayout>
     </LinearLayout>
 
@@ -513,8 +543,8 @@
 
                         <ImageView
                             android:id="@+id/alarm_setting"
-                            android:layout_width="50dp"
-                            android:layout_height="45dp"
+                            android:layout_width="40dp"
+                            android:layout_height="35dp"
                             android:layout_gravity="center"
                             android:layout_marginLeft="15dp"
                             android:gravity="center"
@@ -739,7 +769,7 @@
                         <ImageView
                             android:id="@+id/weight_alarm"
                             android:layout_width="0dp"
-                            android:layout_height="43dp"
+                            android:layout_height="45dp"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:layout_weight="3"

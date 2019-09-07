@@ -147,8 +147,18 @@ public class SideCycle  extends CycleElem {
     }
 
     @Override
+    public void setVAngle(float angle) {
+
+    }
+
+    @Override
     public float getHAngle() {
         return this.hAngle;
+    }
+
+    @Override
+    public float getVAngle() {
+        return 0;
     }
 
     @Override

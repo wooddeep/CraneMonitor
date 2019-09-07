@@ -16,7 +16,7 @@ public class Protocol {
 
     private int weight = 0x0003 & 0xFFFF; // 幅度
 
-    private int windSpeed = 0x0002 & 0xFFFF; // 幅度
+    private int windSpeed = 0x0002 & 0xFFFF; // 风速  FFFF 为 30m/s
 
     private byte[] reserved = new byte[10];
 
@@ -32,6 +32,7 @@ public class Protocol {
 
     private float realSpeed;
 
+    private float realVAngle; // 垂直方向夹角
     ///////////////////////////////////////////////////////////////////////////
 
     public int getAmplitude() {
@@ -139,10 +140,12 @@ public class Protocol {
         return Math.round(armLengthValue * 10) / 10.0f;
     }
 
-    public float calcRealSpeed(Calibration calibration) {
-        //float windSpeedValue = calibration.get + calibration.getWeightRate() * (parser.getWeight() - calibration.getWeightStartData());
-        //return Math.round(weightValue * 10) / 10.0f;
-        return 0f;
+    public float calcRealVAngle(Calibration calibration) {
+        float vAngleValue = calibration.getDipAngleStart() + calibration.getDipAngleRate() *
+            ((float) getAmplitude() - calibration.getDipAngleStartData());
+
+        setRealVAngle(Math.round(vAngleValue * 10) / 10.0f);
+        return Math.round(vAngleValue * 10) / 10.0f;
     }
 
     public float getRealWeight() {
@@ -175,5 +178,13 @@ public class Protocol {
 
     public void setRealSpeed(float realSpeed) {
         this.realSpeed = realSpeed;
+    }
+
+    public void setRealVAngle(float angle) {
+        this.realVAngle = angle;
+    }
+
+    public float getRealVAngle() {
+        return realVAngle;
     }
 }

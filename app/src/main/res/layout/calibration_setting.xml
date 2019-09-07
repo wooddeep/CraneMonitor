@@ -69,6 +69,7 @@
             android:layout_marginLeft="10dp"
             android:gravity="center"
             android:padding="3dp"
+            android:visibility="invisible"
             android:orientation="horizontal">
             <Button
                 android:id="@+id/start_value"
@@ -88,6 +89,71 @@
                 android:layout_height="wrap_content"
                 android:text="运行中"
                 />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="3dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_marginLeft="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:text="幅度:" />
+            <TextView
+                android:id="@+id/amp_value"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:text="12345" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:text="高度:" />
+            <TextView
+                android:id="@+id/height_value"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:text="12345" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:text="重量:" />
+
+            <TextView
+                android:id="@+id/weight_value"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:text="12345" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:text="编码值:" />
+            <TextView
+                android:id="@+id/encoder_value"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:text="12345" />
+
         </LinearLayout>
 
         <ImageView

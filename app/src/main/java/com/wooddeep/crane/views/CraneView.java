@@ -253,8 +253,8 @@ public class CraneView extends View {
         int picHeight = bitmap.getHeight();
 
         Paint paint = new Paint();//创建画笔
-        paint.setStrokeWidth(4);
-        paint.setColor(Color.BLACK);//为画笔设置颜色
+        paint.setStrokeWidth(2);
+        paint.setColor(Color.DKGRAY);//为画笔设置颜色
 
         float armShowX = picWidth * (float) Math.cos(Math.toRadians(angle));
         float anchorOffsetX = armShowX * 1.0f;

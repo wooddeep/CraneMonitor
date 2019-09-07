@@ -113,14 +113,20 @@ public class Alarm {
                         if (leftDistPred <= distance) {
                             //System.out.printf("### center turn left to [%s] alarm!!!\n", id);
                             alarmEvent.leftAlarm = true;
+                            alarmEvent.hasAlarm = true;
                             if (alarmLevel < alarmEvent.leftAlarmLevel)
                                 alarmEvent.leftAlarmLevel = alarmLevel;
+                            if (alarmLevel < alarmEvent.hiPropAlmLevel)
+                                alarmEvent.hiPropAlmLevel = alarmLevel;
                         }
 
                         if (rightDistPred <= distance) {
                             alarmEvent.rightAlarm = true;
+                            alarmEvent.hasAlarm = true;
                             if (alarmLevel < alarmEvent.rightAlarmLevel)
                                 alarmEvent.rightAlarmLevel = alarmLevel;
+                            if (alarmLevel < alarmEvent.hiPropAlmLevel)
+                                alarmEvent.hiPropAlmLevel = alarmLevel;
                         }
                     }
                 } else if ((myHeight - sideHeight) > 1) { // 中心塔基比边缘塔基高, 计算中心塔基小车位置和 边缘塔基距离
@@ -136,14 +142,20 @@ public class Alarm {
                         if (distPred1 <= carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
                             System.out.printf("### center turn left to [%s] alarm!!!\n", id);
                             alarmEvent.leftAlarm = true;
+                            alarmEvent.hasAlarm = true;
                             if (alarmLevel < alarmEvent.leftAlarmLevel)
                                 alarmEvent.leftAlarmLevel = alarmLevel;
+                            if (alarmLevel < alarmEvent.hiPropAlmLevel)
+                                alarmEvent.hiPropAlmLevel = alarmLevel;
                         }
 
                         if (distPred2 <= carToArmDis) {
                             alarmEvent.rightAlarm = true;
+                            alarmEvent.hasAlarm = true;
                             if (alarmLevel < alarmEvent.rightAlarmLevel)
                                 alarmEvent.rightAlarmLevel = alarmLevel;
+                            if (alarmLevel < alarmEvent.hiPropAlmLevel)
+                                alarmEvent.hiPropAlmLevel = alarmLevel;
                         }
                     }
 
@@ -158,14 +170,20 @@ public class Alarm {
                         if (distPred1 <= carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
                             System.out.printf("### center turn left to [%s] alarm!!!\n", id);
                             alarmEvent.forwardAlarm = true;
+                            alarmEvent.hasAlarm = true;
                             if (alarmLevel < alarmEvent.forwardAlarmLevel)
                                 alarmEvent.forwardAlarmLevel = level;
+                            if (alarmLevel < alarmEvent.hiPropAlmLevel)
+                                alarmEvent.hiPropAlmLevel = alarmLevel;
                         }
 
                         if (distPred2 <= carToArmDis) {
                             alarmEvent.backendAlarm = true;
+                            alarmEvent.hasAlarm = true;
                             if (alarmLevel < alarmEvent.backendAlarmLevel)
                                 alarmEvent.backendAlarmLevel = level;
+                            if (alarmLevel < alarmEvent.hiPropAlmLevel)
+                                alarmEvent.hiPropAlmLevel = alarmLevel;
                         }
                     }
 
@@ -184,14 +202,20 @@ public class Alarm {
                         if (distPred1 <= armToCarDis) { // 逆时针旋转 距离告警，则是 左转告警
                             //System.out.printf("### center turn left to [%s] alarm!!!\n", id);
                             alarmEvent.leftAlarm = true;
+                            alarmEvent.hasAlarm = true;
                             if (alarmLevel < alarmEvent.leftAlarmLevel)
                                 alarmEvent.leftAlarmLevel = alarmLevel;
+                            if (alarmLevel < alarmEvent.hiPropAlmLevel)
+                                alarmEvent.hiPropAlmLevel = alarmLevel;
                         }
 
                         if (distPred2 <= armToCarDis) {
                             alarmEvent.rightAlarm = true;
+                            alarmEvent.hasAlarm = true;
                             if (alarmLevel < alarmEvent.rightAlarmLevel)
                                 alarmEvent.rightAlarmLevel = alarmLevel;
+                            if (alarmLevel < alarmEvent.hiPropAlmLevel)
+                                alarmEvent.hiPropAlmLevel = alarmLevel;
                         }
                     }
                 }
@@ -224,14 +248,20 @@ public class Alarm {
                     if (distPred1 <= carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
                         System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
                         alarmEvent.leftAlarm = true;
+                        alarmEvent.hasAlarm = true;
                         if (alarmLevel < alarmEvent.leftAlarmLevel)
                             alarmEvent.leftAlarmLevel = alarmLevel;
+                        if (alarmLevel < alarmEvent.hiPropAlmLevel)
+                            alarmEvent.hiPropAlmLevel = alarmLevel;
                     }
 
                     if (distPred2 <= carToAreaDis) {
                         alarmEvent.rightAlarm = true;
+                        alarmEvent.hasAlarm = true;
                         if (alarmLevel < alarmEvent.rightAlarmLevel)
                             alarmEvent.rightAlarmLevel = alarmLevel;
+                        if (alarmLevel < alarmEvent.hiPropAlmLevel)
+                            alarmEvent.hiPropAlmLevel = alarmLevel;
                         System.out.printf("### center turn right to [%s] alarm!!!\n", "TODO");
                     }
                 }
@@ -248,14 +278,20 @@ public class Alarm {
                     if (distPred1 <= carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
                         System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
                         alarmEvent.forwardAlarm = true;
+                        alarmEvent.hasAlarm = true;
                         if (alarmLevel < alarmEvent.forwardAlarmLevel)
                             alarmEvent.forwardAlarmLevel = level;
+                        if (alarmLevel < alarmEvent.hiPropAlmLevel)
+                            alarmEvent.hiPropAlmLevel = alarmLevel;
                     }
 
                     if (distPred2 <= carToAreaDis) {
                         alarmEvent.backendAlarm = true;
+                        alarmEvent.hasAlarm = true;
                         if (alarmLevel < alarmEvent.backendAlarmLevel)
                             alarmEvent.backendAlarmLevel = level;
+                        if (alarmLevel < alarmEvent.hiPropAlmLevel)
+                            alarmEvent.hiPropAlmLevel = alarmLevel;
                         System.out.printf("### [1]center turn right to [%s] alarm!!!\n", "TODO");
                     }
                 }
@@ -278,14 +314,20 @@ public class Alarm {
                     if (distPred1 <= dis) {
                         //System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
                         alarmEvent.leftAlarm = true;
+                        alarmEvent.hasAlarm = true;
                         if (alarmLevel < alarmEvent.leftAlarmLevel)
                             alarmEvent.leftAlarmLevel = alarmLevel;
+                        if (alarmLevel < alarmEvent.hiPropAlmLevel)
+                            alarmEvent.hiPropAlmLevel = alarmLevel;
                     }
 
                     if (distPred2 <= dis) {
                         alarmEvent.rightAlarm = true;
+                        alarmEvent.hasAlarm = true;
                         if (alarmLevel < alarmEvent.rightAlarmLevel)
                             alarmEvent.rightAlarmLevel = alarmLevel;
+                        if (alarmLevel < alarmEvent.hiPropAlmLevel)
+                            alarmEvent.hiPropAlmLevel = alarmLevel;
                         //System.out.printf("### [2]center turn right to [%s] alarm!!!\n", "TODO");
                     }
                 }
@@ -300,6 +342,7 @@ public class Alarm {
         if (cc == null) return;
 
         // 告警清零
+        alarmEvent.hasAlarm = false;
         alarmEvent.backendAlarm = false;
         alarmEvent.forwardAlarm = false;
         alarmEvent.rightAlarm = false;

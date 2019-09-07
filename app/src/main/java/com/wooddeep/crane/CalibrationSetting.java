@@ -110,6 +110,9 @@ public class CalibrationSetting extends AppCompatActivity {
             byte[] data = event.data;
             parser.parse(data);
             //System.out.printf("## %d - %d - %d - %d\n", parser.getAmplitude(), parser.getHeight(), parser.getWeight(), parser.getWindSpeed());
+            ((TextView) findViewById(R.id.amp_value)).setText(parser.getAmplitude() + "");
+            ((TextView) findViewById(R.id.height_value)).setText(parser.getHeight() + "");
+            ((TextView) findViewById(R.id.weight_value)).setText(parser.getWeight() + "");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -125,6 +128,7 @@ public class CalibrationSetting extends AppCompatActivity {
         rotateProto.parse(data);
         centerX = event.centerX;
         centerY = event.centerY;
+        ((TextView) findViewById(R.id.encoder_value)).setText(rotateProto.getData() + "");
         //System.out.printf("## %d, x = %f, y = %f \n", rotateProto.getData(), event.centerX, event.centerY);
 
     }
