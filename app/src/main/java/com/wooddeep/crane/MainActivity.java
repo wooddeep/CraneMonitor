@@ -220,6 +220,17 @@ try {
 //  7. 按距离告警 (ok)
 //  8. 控制优化
 
+// TODO list 20190908
+// 1. 不在线，幅度为0，角度为0, 不参与碰撞检测
+// 2. 告警铃声 更新
+// 3. 动臂式, 修改 塔基的 高度 和 大臂长度。
+
+// 4. 右回转，灯没有亮 ~ 控制问题 ！！！ （2，3，4，5）
+// 5. 小车出入的 告警控制
+// 6. 绘主界面时，特别是主环的 幅度 和 回转，要用当前的实际值
+// 7. 力矩没有变化? 幅度为0，也需要计算力矩
+// 8. 数字更新
+
 @SuppressWarnings("unused")
 public class MainActivity extends AppCompatActivity {
 
@@ -405,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
                 currProto.calcRealHeight(calibration);
                 currProto.calcRealLength(calibration);
                 currProto.calcRealWeigth(calibration);
-                if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) >= 0.1f) {
+                if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) >= 0.05f) {
                     //lengthEvent.setLength(currProto.getRealLength());
                     //eventBus.post(lengthEvent);
                     prevProto.setRealLength(currProto.getRealLength());
@@ -413,7 +424,7 @@ public class MainActivity extends AppCompatActivity {
                     //alarmJdugeFlag = true;
                 }
 
-                if (Math.abs(currProto.getRealWeight() - prevProto.getRealWeight()) >= 0.1f) {
+                if (Math.abs(currProto.getRealWeight() - prevProto.getRealWeight()) >= 0.05f) {
                     //lengthEvent.setLength(currProto.getRealLength());
                     //eventBus.post(lengthEvent);
                     prevProto.setRealWeight(currProto.getRealWeight());
@@ -421,7 +432,7 @@ public class MainActivity extends AppCompatActivity {
                     //alarmJdugeFlag = true;
                 }
 
-                if (Math.abs(currProto.getRealHeight() - prevProto.getRealHeight()) >= 0.1f) {
+                if (Math.abs(currProto.getRealHeight() - prevProto.getRealHeight()) >= 0.05f) {
                     //lengthEvent.setLength(currProto.getRealLength());
                     //eventBus.post(lengthEvent);
                     prevProto.setRealHeight(currProto.getRealHeight());
@@ -497,7 +508,7 @@ public class MainActivity extends AppCompatActivity {
                         currProto.calcRealVAngle(calibration);
 
                         if (craneArmType == 1) { // 动臂式
-                            if (Math.abs(currProto.getRealVAngle() - prevProto.getRealVAngle()) >= 0.2f) { // TODO 调试
+                            if (Math.abs(currProto.getRealVAngle() - prevProto.getRealVAngle()) >= 0.05f) { // TODO 调试
                                 prevProto.setRealVAngle(currProto.getRealVAngle());
                                 runOnUiThread(() -> {
                                     craneView.setArmAngle(currProto.getRealVAngle());
@@ -505,7 +516,7 @@ public class MainActivity extends AppCompatActivity {
                                 });
                             }
                         } else { // 平臂式
-                            if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) >= 0.2f) {
+                            if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) >= 0.05f) {
                                 lengthEvent.setLength(currProto.getRealLength());
                                 prevProto.setRealLength(currProto.getRealLength());
                                 eventBus.post(lengthEvent);
@@ -514,13 +525,13 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
-                        if (Math.abs(currProto.getRealHeight() - prevProto.getRealHeight()) >= 0.2f) { // TODO 调试高度
+                        if (Math.abs(currProto.getRealHeight() - prevProto.getRealHeight()) >= 0.05f) { // TODO 调试高度
                             heightEvent.setHeight(currProto.getRealHeight());
                             prevProto.setRealHeight(currProto.getRealHeight());
                             eventBus.post(heightEvent);
                         }
 
-                        if (Math.abs(currProto.getRealWeight() - prevProto.getRealWeight()) >= 0.2f) {
+                        if (Math.abs(currProto.getRealWeight() - prevProto.getRealWeight()) >= 0.05f) {
                             weightEvent.setWeight(currProto.getRealWeight());
                             prevProto.setRealWeight(currProto.getRealWeight());
                             eventBus.post(weightEvent);
@@ -639,7 +650,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 while (true) {
                     try {
-                        Alarm.alarmDetect(calibration, elemList, craneMap, myCraneNo, alarmSet, eventBus);
+                        Alarm.alarmDetect(calibration, elemList, craneMap, myCraneNo, alarmSet, eventBus); // TODO 动臂式 高度变化
                         Alarm.weightAlarmDetect(calibration, loadParas, alarmSet, eventBus,
                             currProto.getRealWeight(), currProto.getRealLength()); // 吊重告警判断
 
@@ -1432,6 +1443,7 @@ public class MainActivity extends AppCompatActivity {
             serialttyS1 = new SerialPort(new File("/dev/ttyS1"), 19200, 0);
             ttyS0InputStream = serialttyS0.getInputStream();
             ttyS0OutputStream = serialttyS0.getOutputStream();
+            ttyS0OutputStream.write(ControlProto.control);
             ttyS1InputStream = serialttyS1.getInputStream();
             ttyS1OutputStream = serialttyS1.getOutputStream();
 

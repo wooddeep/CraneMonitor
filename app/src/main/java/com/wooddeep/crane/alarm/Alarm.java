@@ -132,7 +132,7 @@ public class Alarm {
                 } else if ((myHeight - sideHeight) > 1) { // 中心塔基比边缘塔基高, 计算中心塔基小车位置和 边缘塔基距离
                     Geometry carPos = cc.getCarGeo(0f, 0f);
                     float carToArmDis = (float) carPos.distance(gsc); // 本机小车 到 旁机 大臂的距离
-                    System.out.printf("### center car to side[%s] arm distance: %f \n", id, carToArmDis);
+                    //System.out.printf("### center car to side[%s] arm distance: %f \n", id, carToArmDis);
                     int alarmLevel = getAlarmLevel(carToArmDis, alarmSet, 0);
                     if (alarmLevel != -1) { // 小车到塔基的距离小于安全距离
                         Geometry gPredect1 = cc.getCarGeo(0.1f, 0f); // 逆时针旋转
@@ -235,7 +235,7 @@ public class Alarm {
             if ((cc.height - sa.height) > 1) { // 本机高于区域， 判断小车和区域的距离
                 Geometry carPos = cc.getCarGeo(0f, 0f);
                 float carToAreaDis = (float) carPos.distance(sideGeo); // 本机小车 到 旁机 大臂的距离
-                System.out.printf("### center car to side[%s] arm distance: %f \n", "TODO", carToAreaDis);
+                //System.out.printf("### center car to side[%s] arm distance: %f \n", "TODO", carToAreaDis);
                 int alarmLevel = getAlarmLevel(carToAreaDis, alarmSet, 1);
                 if (alarmLevel != -1) {
                     // 判断左告警 还是 右告警
@@ -415,6 +415,8 @@ public class Alarm {
                 float moment3 = ww * alarmSet.getMoment3() / 100;
                 float moment2 = ww * alarmSet.getMoment2() / 100;
                 float moment1 = ww * alarmSet.getMoment1() / 100;
+
+                /*
                 if (curWeight >= moment3) {
                     //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight1() / 100);
                     //System.out.println("@@@ moment overload 3");
@@ -431,17 +433,51 @@ public class Alarm {
                     alarmEvent.momentAlarm = true;
                     alarmEvent.momentAlarmLevel = 1;
                 }
+                */
 
-                if (curWeight <= (moment2 + moment3) / 2) {
-                    alarmEvent.momentAlarmDispearLevel = 3; // 3挡吊重告警消失
-                    //System.out.println("momentAlarmDispearLevel3");
-                } else if (curWeight <= (moment2 + moment1) / 2) {
-                    alarmEvent.momentAlarmDispearLevel = 2; // 3挡吊重告警消失
-                    //System.out.println("momentAlarmDispearLevel2");
-                } else if (curWeight < 0.9 * moment1) {
-                    alarmEvent.momentAlarmDispearLevel = 1; // 1挡吊重告警消失
-                    //System.out.println("momentAlarmDispearLevel1");
+                if (curWeight >= moment1) {
+                    alarmEvent.momentAlarm = true;
+                    alarmEvent.momentAlarmLevel = 1;
                 }
+
+                if (curWeight >= moment2) {
+                    alarmEvent.momentAlarm = true;
+                    alarmEvent.momentAlarmLevel = 2;
+                }
+
+                if (curWeight >= moment3) {
+                    alarmEvent.momentAlarm = true;
+                    alarmEvent.momentAlarmLevel = 3;
+                }
+
+                /*
+                if (curWeight <= 0.85 * moment1) {
+                    alarmEvent.momentAlarmDispearLevel = 1; // 3挡吊重告警消失
+                    System.out.println("momentAlarmDispearLevel1");
+                } else if (curWeight <= 0.85 * moment2) {
+                    alarmEvent.momentAlarmDispearLevel = 2; // 3挡吊重告警消失
+                    System.out.println("momentAlarmDispearLevel2");
+                } else if (curWeight < 0.85 * moment3) {
+                    alarmEvent.momentAlarmDispearLevel = 3; // 1挡吊重告警消失
+                    System.out.println("momentAlarmDispearLevel3");
+                }
+                */
+
+                if (curWeight < 0.85 * moment3) {
+                    alarmEvent.momentAlarmDispearLevel = 3; // 1挡吊重告警消失
+                    System.out.println("momentAlarmDispearLevel3");
+                }
+
+                if (curWeight <= 0.85 * moment2) {
+                    alarmEvent.momentAlarmDispearLevel = 2; // 3挡吊重告警消失
+                    System.out.println("momentAlarmDispearLevel2");
+                }
+
+                if (curWeight <= 0.85 * moment1) {
+                    alarmEvent.momentAlarmDispearLevel = 1; // 3挡吊重告警消失
+                    System.out.println("momentAlarmDispearLevel1");
+                }
+
             }
         }
 
@@ -555,22 +591,28 @@ public class Alarm {
             }
         }
 
+
         switch (alarmEvent.momentAlarmDispearLevel) {
             case 1:
                 controlProto.setMoment1(false);
+                controlProto.setMoment2(false);
+                controlProto.setMoment3(false);
+                controlProto.setCarOut1(false);
+                controlProto.setCarOut2(false);
                 break;
             case 2:
-                controlProto.setMoment1(false);
                 controlProto.setMoment2(false);
+                controlProto.setMoment3(false);
+                controlProto.setCarOut1(false);
+                controlProto.setCarOut2(false);
                 break;
             case 3:
                 controlProto.setCarOut1(false);
                 controlProto.setCarOut2(false);
-                controlProto.setMoment1(false);
-                controlProto.setMoment2(false);
                 controlProto.setMoment3(false);
                 break;
         }
+
     }
 
     public static void carBackControl(AlarmEvent event, ControlProto controlProto) {
@@ -599,11 +641,12 @@ public class Alarm {
         momentControl(event, controlProto);
         //carBackControl(event, controlProto);
 
+        System.out.printf("## control[4] = %02x, pcontrol[0] = %02x, control[5] = %02x, pcontrol[1] = %02x\n",
+            controlProto.control[4], prevControl[0], controlProto.control[5], prevControl[1]);
+
         if (controlProto.control[4] != prevControl[0] || controlProto.control[5] != prevControl[1]) {
             prevControl[0] = controlProto.control[4];
             prevControl[1] = controlProto.control[5];
-
-            // TODO 通过AD口发送数据
             return true;
         }
 

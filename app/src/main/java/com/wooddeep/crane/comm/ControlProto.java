@@ -29,7 +29,7 @@ public class ControlProto {
     public boolean carBack2 = false;  // 小车回2
     public boolean carBack1 = false;  // 小车回1
 
-    public byte[] control = new byte[]{0x03, 0x07, 0x01, 0x01, (byte) 0xFF, (byte) 0xFF, 0x00};
+    public static byte[] control = new byte[]{(byte)0xA3, 0x07, 0x01, 0x01, (byte) 0x00, (byte) 0x00, 0x00};
 
     public boolean isCarOut2() {
         return carOut2;
@@ -220,7 +220,7 @@ public class ControlProto {
         if (moment1 == false) {
             data = (byte) (data & 0xF7);
         } else {
-            data = (byte) (data | 0x08);
+            data = (byte) (data | 0x08); // 0000 1000
         }
         control[5] = data;
     }
