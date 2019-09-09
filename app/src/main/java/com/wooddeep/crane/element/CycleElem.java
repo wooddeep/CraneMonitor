@@ -4,8 +4,9 @@ import org.locationtech.jts.geom.Geometry;
 
 abstract public class CycleElem extends BaseElem {
     public boolean online = false;
-    public int type = 0; // ∆Ω±€ Ω
+    public int type = 0;
     public float archPara = 0.0f;
+    public float minVAngle = 0.0f;
     private float bigArmLen = 0.0f;
     public float orgHeight = 0.0f;
 
@@ -56,5 +57,13 @@ abstract public class CycleElem extends BaseElem {
 
     public void setOrgHeight(float orgHeight) {
         this.orgHeight = orgHeight;
+    }
+
+    public float getMinVAngle() {
+        return minVAngle;
+    }
+
+    public void setMinVAngle(float minVAngle) {
+        this.minVAngle = minVAngle;
     }
 }

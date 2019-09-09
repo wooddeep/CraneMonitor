@@ -196,7 +196,7 @@
                     app:srcCompat="@mipmap/hook" />
 
                 <TextView
-                    android:id="@+id/hook_alam"
+                    android:id="@+id/hook_alarm"
                     android:layout_width="80dp"
                     android:layout_height="50dp"
                     android:layout_centerInParent="true"
@@ -204,7 +204,7 @@
                     android:layout_marginRight="5dp"
                     android:gravity="center"
                     android:text="ok"
-                    android:textSize="22dp"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
             </TableRow>
 

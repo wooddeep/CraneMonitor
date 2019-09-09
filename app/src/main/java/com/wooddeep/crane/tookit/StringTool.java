@@ -84,7 +84,7 @@ public class StringTool {
     }
 
     public static void stringModify(String string, char[] value, char... repl) {
-        if (string.length() != value.length) return;
+        if (string == null || string.length() != value.length) return;
 
         string.getChars(0, string.length(), value, 0);
 
@@ -131,13 +131,13 @@ public class StringTool {
         return reader;
     }
 
-    public static void showCharArray(char [] array) {
+    public static void showCharArray(char[] array) {
         for (int i = 0; i < array.length; i++) {
             System.out.printf("%c", array[i]);
         }
     }
 
-    public static void showCharArray1(char [] array) {
+    public static void showCharArray1(char[] array) {
         for (int i = 0; i < array.length; i++) {
             System.out.printf("%c", array[i]);
         }
@@ -152,8 +152,8 @@ public class StringTool {
     public static void main(String[] args) {
 
         String mod = "LINESTRING (AAAAAA BBBBBB, CCCCCC DDDDDD)";
-        byte [] modBytes = new byte[mod.length()];
-        char [] modChars = new char[mod.length()];
+        byte[] modBytes = new byte[mod.length()];
+        char[] modChars = new char[mod.length()];
 
         Replace a = new Replace(6);
         Replace b = new Replace(6);
@@ -172,26 +172,26 @@ public class StringTool {
 
             a.setReplacement(0, 3, 1);
             b.setReplacement(10, 3, 1);
-            c.setReplacement(100, 3,  1);
-            d.setReplacement(10, 3,  1);
+            c.setReplacement(100, 3, 1);
+            d.setReplacement(10, 3, 1);
             mod.getChars(0, mod.length(), modChars, 0);
             stringModify(modChars, a, b, c, d);
 
             for (int i = 0; i < mod.length(); i++) {
-                modBytes[i] = (byte)modChars[i];
+                modBytes[i] = (byte) modChars[i];
             }
             Geometry g2 = new WKTReader().read(byteArrayReader(modBytes));
             System.out.println(g1.distance(g2));
 
             a.setReplacement(0, 3, 1);
-            b.setReplacement(20, 3,  1);
+            b.setReplacement(20, 3, 1);
             c.setReplacement(100, 3, 1);
             d.setReplacement(20, 3, 1);
             mod.getChars(0, mod.length(), modChars, 0);
             stringModify(modChars, a, b, c, d);
 
             for (int i = 0; i < mod.length(); i++) {
-                modBytes[i] = (byte)modChars[i];
+                modBytes[i] = (byte) modChars[i];
             }
             g2 = new WKTReader().read(byteArrayReader(modBytes));
             System.out.println(g1.distance(g2));
@@ -202,7 +202,7 @@ public class StringTool {
 
     }
 
-    public static float arrayToFloat(char [] array) {
+    public static float arrayToFloat(char[] array) {
         int data = 0;
 
         float dotIndex = array.length - 1;
@@ -221,6 +221,6 @@ public class StringTool {
             data = data * 10 + (array[i] - '0');
         }
 
-        return data / (float)Math.pow(10, array.length - 1 - dotIndex);
+        return data / (float) Math.pow(10, array.length - 1 - dotIndex);
     }
 }

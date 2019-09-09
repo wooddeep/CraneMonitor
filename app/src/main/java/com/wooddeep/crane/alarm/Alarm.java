@@ -94,8 +94,8 @@ public class Alarm {
 
                 Coordinate sideCenter = new Coordinate(sc.x, sc.y);
                 double cTocDist = myCenter.distance(sideCenter);
-                if (cTocDist > (cc.r * Math.cos(Math.toRadians(cc.vAngle))
-                    + sc.r * Math.cos(Math.toRadians(sc.vAngle)))) { // 两塔基距离大于两塔基大臂之和, 则不进行判断
+                if (cTocDist > (cc.r * Math.cos(Math.toRadians(cc.getMinVAngle()) - cc.getArchPara())
+                    + sc.r * Math.cos(Math.toRadians(sc.getMinVAngle())) - sc.getArchPara())) { // 两塔基距离大于两塔基大臂之和, 则不进行判断
                     //System.out.println("## center to center distance big than arms sum!");
                     continue;
                 }
@@ -462,17 +462,17 @@ public class Alarm {
 
                 if (curWeight < 0.85 * moment3) {
                     alarmEvent.momentAlarmDispearLevel = 3; // 1挡吊重告警消失
-                    System.out.println("momentAlarmDispearLevel3");
+                    //System.out.println("momentAlarmDispearLevel3");
                 }
 
                 if (curWeight <= 0.85 * moment2) {
                     alarmEvent.momentAlarmDispearLevel = 2; // 3挡吊重告警消失
-                    System.out.println("momentAlarmDispearLevel2");
+                    //System.out.println("momentAlarmDispearLevel2");
                 }
 
                 if (curWeight <= 0.85 * moment1) {
                     alarmEvent.momentAlarmDispearLevel = 1; // 3挡吊重告警消失
-                    System.out.println("momentAlarmDispearLevel1");
+                    //System.out.println("momentAlarmDispearLevel1");
                 }
             }
         }
@@ -653,8 +653,10 @@ public class Alarm {
         momentControl(event, controlProto);
         carBackControl(event, controlProto);
 
+        /*
         System.out.printf("## control[4] = %02x, pcontrol[0] = %02x, control[5] = %02x, pcontrol[1] = %02x\n",
             controlProto.control[4], prevControl[0], controlProto.control[5], prevControl[1]);
+        */
 
         if (controlProto.control[4] != prevControl[0] || controlProto.control[5] != prevControl[1]) {
             prevControl[0] = controlProto.control[4];

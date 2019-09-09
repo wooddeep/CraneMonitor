@@ -1,5 +1,6 @@
 package com.wooddeep.crane.tookit;
 
+import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.Load;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public class MathTool {
     public static float radiansToAngle(float radians) {
         double angle = Math.toDegrees(radians);
         if (angle < 0) angle = 360 - (Math.abs(angle) % 360);
-        return (float)angle;
+        return (float) angle;
     }
 
     public static MomentOut momentCalc(List<Load> loads, float curWeight, float cc) {
@@ -28,8 +29,8 @@ public class MathTool {
                     float rate = (cc - sc) / (ec - cc);
                     ww = (rate * ew + sw) / (1 + rate);
                 }
-                momentOut.moment = Math.round(100 * curWeight / ww) / 1.0f;
-                momentOut.ratedWeight =Math.round(ww) / 1.0f;
+                momentOut.moment = Math.round(1000 * curWeight / ww) / 10.0f;
+                momentOut.ratedWeight = Math.round(ww * 10) / 10.0f;
                 return momentOut;
             }
         }
@@ -41,12 +42,20 @@ public class MathTool {
 
 
     public static double calcVAngle(float armLen, float armShadowLen, float archPara) {
-        double cos = armLen / (armShadowLen + archPara);
+        double cos =  (armShadowLen + archPara) / armLen;
         double rands = Math.acos(cos);
         return Math.toDegrees(rands);
     }
 
     public static double calcShadow(float armLen, float vangle, float archPara) {
         return Math.cos(Math.toRadians(vangle)) * (armLen + archPara);
+    }
+
+    public static float shadowToArm(Crane crane) {
+        float bigArmLength = crane.getBigArmLength();
+        if (crane.getType() == 1) { // 动臂式模式下，需要转换得到 半径长度
+            bigArmLength = (bigArmLength + crane.getArchPara()) / (float) Math.cos(Math.toRadians(crane.getMinAngle()));
+        }
+        return bigArmLength;
     }
 }

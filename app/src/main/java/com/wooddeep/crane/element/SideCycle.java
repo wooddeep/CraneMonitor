@@ -157,7 +157,9 @@ public class SideCycle  extends CycleElem {
 
     @Override
     public void setVAngle(float angle) {
-
+        if (this.vAngle == angle) return;
+        this.vAngle = angle;
+        this.cycle.setvAngle(angle);
     }
 
     @Override

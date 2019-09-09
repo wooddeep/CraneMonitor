@@ -554,6 +554,7 @@ public class LockTableView {
      * @param x
      * @param y
      */
+    public int scrollX = 50;
     private void changeAllScrollView(int x, int y) {
         if (mScrollViews.size() > 0) {
             if (mTableViewListener != null) {
@@ -561,7 +562,8 @@ public class LockTableView {
             }
             for (int i = 0; i < mScrollViews.size(); i++) {
                 HorizontalScrollView scrollView = mScrollViews.get(i);
-                scrollView.scrollTo(x, y);
+                //scrollView.scrollTo(x, y);
+                scrollView.scrollTo(scrollX, y);
             }
         }
     }
