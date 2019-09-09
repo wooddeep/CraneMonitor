@@ -26,7 +26,7 @@ public class Protocol {
 
     private float realWeight = 0;
 
-    private float realHeight = 0;
+    private float realHeight = 0; // 吊钩高度
 
     private float realLength = 0;
 

@@ -12,6 +12,12 @@ public class AlarmEvent {
     public boolean forwardAlarm = false;
     public boolean backendAlarm = false;
 
+    public boolean hookMaxHightAlarm = false;
+    public boolean hookMinHightAlarm = false;
+//    public boolean carMaxRangeAlarm = false;
+//    public boolean carMinRangeAlarm = false;
+
+
     public int weightAlarmLevel = 0;
     public int momentAlarmLevel = 0;
     public int leftAlarmLevel = 0;

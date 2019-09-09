@@ -6,7 +6,7 @@ abstract public class CycleElem extends BaseElem {
     public boolean online = false;
     public int type = 0; // ∆Ω±€ Ω
     public float archPara = 0.0f;
-    public float bigArmLen = 0.0f;
+    private float bigArmLen = 0.0f;
     public float orgHeight = 0.0f;
 
     abstract public void setCarRange(float range);

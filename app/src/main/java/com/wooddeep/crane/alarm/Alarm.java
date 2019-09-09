@@ -94,7 +94,8 @@ public class Alarm {
 
                 Coordinate sideCenter = new Coordinate(sc.x, sc.y);
                 double cTocDist = myCenter.distance(sideCenter);
-                if (cTocDist > (cc.r + sc.r)) { // 两塔基距离大于两塔基大臂之和, 则不进行判断
+                if (cTocDist > (cc.r * Math.cos(Math.toRadians(cc.vAngle))
+                    + sc.r * Math.cos(Math.toRadians(sc.vAngle)))) { // 两塔基距离大于两塔基大臂之和, 则不进行判断
                     //System.out.println("## center to center distance big than arms sum!");
                     continue;
                 }
@@ -334,7 +335,8 @@ public class Alarm {
         }
     }
 
-    public static void alarmDetect(Calibration calibration, List<BaseElem> elemList, HashMap<String, CycleElem>
+    public static void alarmDetect(Calibration calibration, float height, float length,
+                                   List<BaseElem> elemList, HashMap<String, CycleElem>
         craneMap, String no, AlarmSet alarmSet, EventBus eventBus) throws Exception {
 
         CenterCycle cc = (CenterCycle) craneMap.get(no);
@@ -351,8 +353,34 @@ public class Alarm {
         alarmEvent.forwardAlarmLevel = 100;
         alarmEvent.backendAlarmLevel = 100;
 
+        Alarm.extremumDetect(height, length, alarmSet, eventBus); // 最大最小
         Alarm.craneToCraneAlarm(craneMap, no, alarmSet); // 塔基到塔基的距离
         Alarm.craneToAreaAlarm(elemList, cc, alarmSet);  // 塔基到区域的距离
+    }
+
+    private static void extremumDetect(float hookHigth, float carRange, AlarmSet alarmSet, EventBus eventBus) throws Exception {
+
+        if (hookHigth >= alarmSet.getHookHeightMax()) { // 最大吊钩告警
+            alarmEvent.hasAlarm = true;
+            alarmEvent.hookMaxHightAlarm = true;
+        }
+
+        if (hookHigth <= alarmSet.getHookHeightMin()) { // 最小吊钩告警
+            alarmEvent.hasAlarm = true;
+            alarmEvent.hookMinHightAlarm = true;
+        }
+
+        if (carRange >= alarmSet.getArmLengthMax()) {  // 小车最大幅度告警
+            alarmEvent.hasAlarm = true;
+            alarmEvent.forwardAlarm = true;
+            alarmEvent.forwardAlarmLevel = 1;
+        }
+
+        if (carRange <= alarmSet.getArmLengthMin()) { // 小车最小幅度告警
+            alarmEvent.hasAlarm = true;
+            alarmEvent.backendAlarm = true;
+            alarmEvent.backendAlarmLevel = 1;
+        }
     }
 
     public static void weightAlarmDetect(Calibration calibration, List<Load> loads, AlarmSet alarmSet,
@@ -418,6 +446,8 @@ public class Alarm {
                 if (curWeight >= moment1) {
                     alarmEvent.momentAlarm = true;
                     alarmEvent.momentAlarmLevel = 1;
+                    //alarmEvent.forwardAlarm = true;
+                    //alarmEvent.forwardAlarmLevel = 1; // 小车出告警
                 }
 
                 if (curWeight >= moment2) {
@@ -596,7 +626,24 @@ public class Alarm {
             controlProto.setCarBack1(false);
             controlProto.setCarBack2(false);
         }
+
+        if (event.backendAlarm) {
+            switch (event.backendAlarmLevel) {
+                case 1:
+                    controlProto.setCarOut1(true);
+                    controlProto.setCarOut2(true);
+                    break;
+                case 2:
+                    controlProto.setCarOut1(false);
+                    controlProto.setCarOut2(true);
+                    break;
+            }
+        } else {
+            controlProto.setCarOut1(false);
+            controlProto.setCarOut2(false);
+        }
     }
+
 
     private static byte[] prevControl = new byte[]{0, 0};
 
@@ -604,7 +651,7 @@ public class Alarm {
         rotateControl(event, controlProto);
         weightControl(event, controlProto);
         momentControl(event, controlProto);
-        //carBackControl(event, controlProto);
+        carBackControl(event, controlProto);
 
         System.out.printf("## control[4] = %02x, pcontrol[0] = %02x, control[5] = %02x, pcontrol[1] = %02x\n",
             controlProto.control[4], prevControl[0], controlProto.control[5], prevControl[1]);

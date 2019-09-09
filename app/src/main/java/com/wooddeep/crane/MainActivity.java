@@ -203,7 +203,6 @@ try {
 
 */
 
-
 // TODO list 20190908
 // 1. 不在线，幅度为0，角度为0, 不参与碰撞检测 （ok）
 // 2. 告警铃声 更新
@@ -212,11 +211,15 @@ try {
 // 4. 右回转，灯没有亮 ~ 控制问题 ！！！ (ok)
 
 // 6. 绘主界面时，特别是主环的 幅度 和 回转，要用当前的实际值 (ok)
-    
-// 5. 小车出入的 告警控制
+
+// 5. 小车出入的 告警控制 (a. 小车出入达到最大/最小值(ok), b. 力矩达到最大值(ok), c. 回转小车出入到警戒值(ok))
+
+// 9. 吊钩高度告警(ok)
 
 // 7. 力矩没有变化? 幅度为0，也需要计算力矩
 // 8. 数字更新
+
+// 10. 坐标标定
 
 @SuppressWarnings("unused")
 public class MainActivity extends AppCompatActivity {
@@ -365,6 +368,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView forwardAlarmView;
     private TextView backwardAlarmView;
     private TextView weightAlarmView;
+    private TextView hookAlarmVeiw;
     private TextView momentAlarmView;
     private TextView momentView;
     private TextView ratedWeightView;
@@ -473,7 +477,8 @@ public class MainActivity extends AppCompatActivity {
                     //eventBus.post(alarmDetectEvent); // 消息触发有延时
                     System.out.println("#### I will do alarm judge!!!");
                     try {
-                        Alarm.alarmDetect(calibration, elemList, craneMap, myCraneNo, alarmSet, eventBus);
+                        Alarm.alarmDetect(calibration, currProto.getRealHeight(), currProto.getRealLength(),
+                            elemList, craneMap, myCraneNo, alarmSet, eventBus);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -509,10 +514,10 @@ public class MainActivity extends AppCompatActivity {
                                 prevProto.setRealVAngle(currProto.getRealVAngle());
                                 runOnUiThread(() -> {
                                     craneView.setArmAngle(currProto.getRealVAngle());
-                                    centerCycle.setCarRange(centerCycle.bigArmLen);
+                                    centerCycle.setCarRange(centerCycle.getBigArmLen());
                                     centerCycle.setVAngle(currProto.getRealVAngle());
                                     double deltaHeight = centerCycle.getBigArmLen() * Math.sin(Math.toRadians(currProto.getRealVAngle()));
-                                    centerCycle.setHeight(centerCycle.getOrgHeight() + (float)deltaHeight); // 修改高度
+                                    centerCycle.setHeight(centerCycle.getOrgHeight() + (float) deltaHeight); // 修改高度
                                 });
                             }
                         } else { // 平臂式
@@ -648,7 +653,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 while (true) {
                     try {
-                        Alarm.alarmDetect(calibration, elemList, craneMap, myCraneNo, alarmSet, eventBus); // TODO 动臂式 高度变化
+                        Alarm.alarmDetect(calibration, currProto.getRealHeight(), currProto.getRealLength(),
+                            elemList, craneMap, myCraneNo, alarmSet, eventBus); // 回转告警判断
                         Alarm.weightAlarmDetect(calibration, loadParas, alarmSet, eventBus,
                             currProto.getRealWeight(), currProto.getRealLength()); // 吊重告警判断
 
@@ -691,10 +697,10 @@ public class MainActivity extends AppCompatActivity {
 
                 if (Math.abs(radioProto.getRange() - savedData.range) >= 0.1f) {
                     if (master.type == 1) { // 动臂式
-                        double vangle = MathTool.calcVAngle(master.bigArmLen, radioProto.getRange(), master.archPara);
-                        master.setVAngle((float)Math.toDegrees(vangle)); // 设置动臂式的仰角
-                        master.setHeight(master.getOrgHeight() + master.bigArmLen * (float)Math.sin(Math.toRadians(vangle)));
-                        master.setCarRange(master.bigArmLen); // 动臂式 幅度最大
+                        double vangle = MathTool.calcVAngle(master.getBigArmLen(), radioProto.getRange(), master.archPara);
+                        master.setVAngle((float) Math.toDegrees(vangle)); // 设置动臂式的仰角
+                        master.setHeight(master.getOrgHeight() + master.getBigArmLen() * (float) Math.sin(Math.toRadians(vangle)));
+                        master.setCarRange(master.getBigArmLen()); // 动臂式 幅度最大
                     } else {
                         master.setCarRange(radioProto.getRange()); // 平臂式实际幅度
                     }
@@ -720,7 +726,7 @@ public class MainActivity extends AppCompatActivity {
                 slaveRadioProto.setPermitNo(0);
 
                 if (centerCycle.type == 1) { // 动臂式, 计算投影值
-                    float shadow = (float)MathTool.calcShadow(master.bigArmLen, currProto.getRealVAngle(), master.archPara);
+                    float shadow = (float) MathTool.calcShadow(master.getBigArmLen(), currProto.getRealVAngle(), master.archPara);
                     shadow = Math.round(shadow) / 1.0f;
                     slaveRadioProto.setRange(shadow);
                 } else {
@@ -755,10 +761,10 @@ public class MainActivity extends AppCompatActivity {
 
                 if (Math.abs(radioProto.getRange() - savedData.range) >= 0.1f) {
                     if (slave.type == 1) { // 动臂式
-                        double vangle = MathTool.calcVAngle(slave.bigArmLen, radioProto.getRange(), slave.archPara);
-                        slave.setVAngle((float)Math.toDegrees(vangle)); // 设置动臂式的仰角
-                        slave.setHeight(slave.getOrgHeight() + slave.bigArmLen * (float)Math.sin(Math.toRadians(vangle)));
-                        slave.setCarRange(slave.bigArmLen); // 动臂式 幅度最大
+                        double vangle = MathTool.calcVAngle(slave.getBigArmLen(), radioProto.getRange(), slave.archPara);
+                        slave.setVAngle((float) Math.toDegrees(vangle)); // 设置动臂式的仰角
+                        slave.setHeight(slave.getOrgHeight() + slave.getBigArmLen() * (float) Math.sin(Math.toRadians(vangle)));
+                        slave.setCarRange(slave.getBigArmLen()); // 动臂式 幅度最大
                     } else {
                         slave.setCarRange(radioProto.getRange()); // 平臂式实际幅度
                     }
@@ -833,9 +839,6 @@ public class MainActivity extends AppCompatActivity {
             rightAlarmView.setText(levelMap.get(0));
         }
 
-        // TODO判断小车出，小车回
-        //if (mainCra)
-
         if (alarmEvent.forwardAlarm == true) {
             Alarm.startAlarm(activity, R.id.forward_alarm, carRangeAlarmMap.get(event.forwardAlarmLevel));
             forwardAlarmView.setText(levelMap.get(event.forwardAlarmLevel));
@@ -868,6 +871,21 @@ public class MainActivity extends AppCompatActivity {
             momentAlarmView.setText(levelMap.get(0));
         }
 
+        if (alarmEvent.hookMinHightAlarm == true) {
+            Alarm.startAlarm(activity, R.id.hook_alarm_logo, R.mipmap.hook_mix);
+            hookAlarmVeiw.setText("min");
+        }
+
+        if (alarmEvent.hookMaxHightAlarm == true) {
+            Alarm.startAlarm(activity, R.id.hook_alarm_logo, R.mipmap.hook_max);
+            hookAlarmVeiw.setText("max");
+        }
+
+        if (alarmEvent.hookMinHightAlarm == false && alarmEvent.hookMaxHightAlarm == false) {
+            Alarm.startAlarm(activity, R.id.hook_alarm_logo, R.mipmap.hook);
+            hookAlarmVeiw.setText("ok");
+        }
+
         // 控制
         if (Alarm.controlSet(event, controlProto)) {
             try {
@@ -896,7 +914,8 @@ public class MainActivity extends AppCompatActivity {
     public void AlarmJudgeEventBus(AlarmDetectEvent event) {
         try {
             if (elemList.size() == 0) return;
-            Alarm.alarmDetect(calibration, elemList, craneMap, myCraneNo, alarmSet, eventBus);
+            Alarm.alarmDetect(calibration, currProto.getRealHeight(), currProto.getRealLength(),
+                elemList, craneMap, myCraneNo, alarmSet, eventBus);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1493,6 +1512,7 @@ public class MainActivity extends AppCompatActivity {
         leftAlarmView = (TextView) findViewById(R.id.left_alarm_level);
         rightAlarmView = (TextView) findViewById(R.id.right_alarm_level);
         weightAlarmView = (TextView) findViewById(R.id.weight_alarm_level);
+        hookAlarmVeiw = (TextView) findViewById(R.id.hook_alarm);
         momentAlarmView = (TextView) findViewById(R.id.moment_alarm_level);
         forwardAlarmView = (TextView) findViewById(R.id.forward_alarm_level);
         backwardAlarmView = (TextView) findViewById(R.id.back_alarm_level);
@@ -1525,6 +1545,7 @@ public class MainActivity extends AppCompatActivity {
             startSensorThread(); // 初始化串口线程
             startRadioThread();
             startTimerThread();
+            startDataSimThread();
         }, 2000);
     }
 
