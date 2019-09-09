@@ -78,7 +78,11 @@ public class SideCycle  extends CycleElem {
         //cycle.setmRingNormalColor(Color.rgb(46, 139, 87));
         cycle.setmRingNormalColor(Color.LTGRAY);
         cycle.sethAngle(hAngle);
-        cycle.setvAngle(vAngle);
+        if (this.type == 1) {
+            cycle.setvAngle(vAngle);
+        } else {
+            cycle.setvAngle(0);
+        }
         cycle.setName(name);
         cycle.setCarRange(carRange);
         cycle.setScale(centerCycle.scale);
@@ -118,6 +122,11 @@ public class SideCycle  extends CycleElem {
         }
     }
 
+    @Override
+    public int getColor() {
+        return this.currColor;
+    }
+
     public void setAlarm(boolean alarm) {
         this.cycle.setAlarm(alarm);
     }
@@ -149,6 +158,11 @@ public class SideCycle  extends CycleElem {
     @Override
     public void setVAngle(float angle) {
 
+    }
+
+    @Override
+    public void setHeight(float height) {
+        this.height = height;
     }
 
     @Override

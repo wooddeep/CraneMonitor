@@ -24,15 +24,15 @@ public class Protocol {
 
     ///////////////////////////////////////////////////////////////////////////
 
-    private float realWeight;
+    private float realWeight = 0;
 
-    private float realHeight;
+    private float realHeight = 0;
 
-    private float realLength;
+    private float realLength = 0;
 
-    private float realSpeed;
+    private float realSpeed = 0;
 
-    private float realVAngle; // 垂直方向夹角
+    private float realVAngle = 0; // 垂直方向夹角
     ///////////////////////////////////////////////////////////////////////////
 
     public int getAmplitude() {

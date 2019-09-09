@@ -4,13 +4,8 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,8 +20,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import androidx.annotation.RequiresApi;
 
 import com.example.x6.serial.SerialPort;
 import com.wooddeep.crane.alarm.Alarm;
@@ -80,7 +73,6 @@ import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.tookit.MathTool;
 import com.wooddeep.crane.tookit.MomentOut;
-import com.wooddeep.crane.tookit.StringTool;
 import com.wooddeep.crane.views.CraneView;
 import com.wooddeep.crane.views.Vertex;
 
@@ -95,10 +87,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+//import androidx.annotation.RequiresApi;
 
 
 // 启动mumu之后, 输入：
@@ -210,37 +203,41 @@ try {
 
 */
 
-//  TODO list
-//  1. 无信号是，环变成灰色 (ok)
-//  2. 主从切换时，逻辑问题 (ok)
-//  3. 电台100ms延时 （ok）
-//  4. 喇叭
-//  5. 360度标定
-//  6. 大臂长度告警设置
-//  7. 按距离告警 (ok)
-//  8. 控制优化
 
 // TODO list 20190908
-// 1. 不在线，幅度为0，角度为0, 不参与碰撞检测
+// 1. 不在线，幅度为0，角度为0, 不参与碰撞检测 （ok）
 // 2. 告警铃声 更新
-// 3. 动臂式, 修改 塔基的 高度 和 大臂长度。
+// 3. 动臂式, 修改 塔基的 高度 和 大臂长度。（ok）
 
-// 4. 右回转，灯没有亮 ~ 控制问题 ！！！ （2，3，4，5）
+// 4. 右回转，灯没有亮 ~ 控制问题 ！！！ (ok)
+
+// 6. 绘主界面时，特别是主环的 幅度 和 回转，要用当前的实际值 (ok)
+    
 // 5. 小车出入的 告警控制
-// 6. 绘主界面时，特别是主环的 幅度 和 回转，要用当前的实际值
+
 // 7. 力矩没有变化? 幅度为0，也需要计算力矩
 // 8. 数字更新
 
 @SuppressWarnings("unused")
 public class MainActivity extends AppCompatActivity {
 
-    class SlaveData {
-        float angle;
-        float range;
+    class SavedData {
+        public float angle;
+        public float range;
+        public float vangle;
 
-        public SlaveData(float a, float r) {
+        public SavedData() {
+        }
+
+        public SavedData(float a, float r) {
             this.angle = a;
             this.range = r;
+        }
+
+        public SavedData(float a, float va, float r) {
+            this.angle = a;
+            this.range = r;
+            this.vangle = va;
         }
     }
 
@@ -250,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
 
     private List<BaseElem> elemList = new ArrayList<>();
     private HashMap<String, CycleElem> craneMap = new HashMap<>();
+    private HashMap<String, SavedData> savedDataMap = new HashMap<>();
     private ElemMap elemMap = new ElemMap();
 
     private HashMap<String, Long> radioStatusMap = new HashMap(); // 收到从机的通信数据状态
@@ -267,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
     private RotateProto currRotateProto = new RotateProto();
     private RotateProto prevRotateProto = new RotateProto();
     private RadioProto radioProto = new RadioProto();
-    private HashMap<String, SlaveData> slaveMap = new HashMap<>();
+    private HashMap<String, SavedData> slaveMap = new HashMap<>();
 
     private int craneType = 0; // 塔基类型: 0 ~ 平臂式, 2动臂式
     private Crane mainCrane;   // 本塔基参数
@@ -370,7 +368,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView momentAlarmView;
     private TextView momentView;
     private TextView ratedWeightView;
-    private int craneArmType = 0; // 平臂式 / 动臂式
     private MediaPlayer player;
 
     public float getOscale() {
@@ -507,16 +504,19 @@ public class MainActivity extends AppCompatActivity {
                         currProto.calcRealWeigth(calibration);
                         currProto.calcRealVAngle(calibration);
 
-                        if (craneArmType == 1) { // 动臂式
-                            if (Math.abs(currProto.getRealVAngle() - prevProto.getRealVAngle()) >= 0.05f) { // TODO 调试
+                        if (centerCycle.getType() == 1) { // 动臂式
+                            if (Math.abs(currProto.getRealVAngle() - prevProto.getRealVAngle()) > 0.05f) { // TODO 调试
                                 prevProto.setRealVAngle(currProto.getRealVAngle());
                                 runOnUiThread(() -> {
                                     craneView.setArmAngle(currProto.getRealVAngle());
+                                    centerCycle.setCarRange(centerCycle.bigArmLen);
                                     centerCycle.setVAngle(currProto.getRealVAngle());
+                                    double deltaHeight = centerCycle.getBigArmLen() * Math.sin(Math.toRadians(currProto.getRealVAngle()));
+                                    centerCycle.setHeight(centerCycle.getOrgHeight() + (float)deltaHeight); // 修改高度
                                 });
                             }
                         } else { // 平臂式
-                            if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) >= 0.05f) {
+                            if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) > 0.05f) {
                                 lengthEvent.setLength(currProto.getRealLength());
                                 prevProto.setRealLength(currProto.getRealLength());
                                 eventBus.post(lengthEvent);
@@ -525,13 +525,13 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
-                        if (Math.abs(currProto.getRealHeight() - prevProto.getRealHeight()) >= 0.05f) { // TODO 调试高度
+                        if (Math.abs(currProto.getRealHeight() - prevProto.getRealHeight()) > 0.05f) {
                             heightEvent.setHeight(currProto.getRealHeight());
                             prevProto.setRealHeight(currProto.getRealHeight());
                             eventBus.post(heightEvent);
                         }
 
-                        if (Math.abs(currProto.getRealWeight() - prevProto.getRealWeight()) >= 0.05f) {
+                        if (Math.abs(currProto.getRealWeight() - prevProto.getRealWeight()) > 0.05f) {
                             weightEvent.setWeight(currProto.getRealWeight());
                             prevProto.setRealWeight(currProto.getRealWeight());
                             eventBus.post(weightEvent);
@@ -558,7 +558,6 @@ public class MainActivity extends AppCompatActivity {
                     ttyS2OutputStream.write(rotateCmd);
                     if (ttyS2InputStream.available() > 0) { // 回转数据
                         int len = ttyS2InputStream.read(rotateXBuff, 0, 1024);
-                        //System.out.println("###### length =" + len);
                         for (int i = 0; i < 9; i++) {
                             rotateRBuff[i] = rotateXBuff[i];
                         }
@@ -614,7 +613,6 @@ public class MainActivity extends AppCompatActivity {
 
                     if (iAmMaster.get() && craneNumbers.size() > 1) { // 主机
                         int iMyCraneNo = Integer.parseInt(myCraneNo);
-                        // Integer.parseInt(craneNumbers.get(currSlaveIndex)
                         currSlaveIndex = (currSlaveIndex + 1) % craneNumbers.size();
                         int targetNo = Integer.parseInt(craneNumbers.get(currSlaveIndex));
                         if (iMyCraneNo == targetNo) continue;
@@ -682,11 +680,36 @@ public class MainActivity extends AppCompatActivity {
             waitFlag = false;
             iAmMaster.set(false);
 
-            CycleElem master = craneMap.get(radioProto.getSourceNo()); // 作为从机, 更新主机的信息
+            CycleElem master = craneMap.get(radioProto.getSourceNo()); // 作为从机, 更新主机的信息 // TODO 根据塔基类型，计算仰角
             if (master != null) {
-                master.setCarRange(radioProto.getRange());
-                master.setHAngle(MathTool.radiansToAngle(radioProto.getRotate()));
+
+                SavedData savedData = savedDataMap.get(radioProto.getSourceNo());
+                if (savedData == null) {
+                    savedData = new SavedData(0, 0);
+                    savedDataMap.put(radioProto.getSourceNo(), savedData);
+                }
+
+                if (Math.abs(radioProto.getRange() - savedData.range) >= 0.1f) {
+                    if (master.type == 1) { // 动臂式
+                        double vangle = MathTool.calcVAngle(master.bigArmLen, radioProto.getRange(), master.archPara);
+                        master.setVAngle((float)Math.toDegrees(vangle)); // 设置动臂式的仰角
+                        master.setHeight(master.getOrgHeight() + master.bigArmLen * (float)Math.sin(Math.toRadians(vangle)));
+                        master.setCarRange(master.bigArmLen); // 动臂式 幅度最大
+                    } else {
+                        master.setCarRange(radioProto.getRange()); // 平臂式实际幅度
+                    }
+
+                    savedData.range = radioProto.getRange();
+                }
+
+                float hangle = MathTool.radiansToAngle(radioProto.getRotate());
+                if (Math.abs(hangle - savedData.angle) >= 0.1) {
+                    master.setHAngle(hangle);
+                    savedData.angle = hangle;
+                }
+
                 master.setColor(Color.rgb(46, 139, 87));
+                master.setOnline(true);
                 radioStatusMap.put(radioProto.getSourceNo(), currTime);
             }
 
@@ -695,7 +718,15 @@ public class MainActivity extends AppCompatActivity {
                 slaveRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
                 slaveRadioProto.setTargetNo(0); // 固定为0
                 slaveRadioProto.setPermitNo(0);
-                slaveRadioProto.setRange(centerCycle.carRange);
+
+                if (centerCycle.type == 1) { // 动臂式, 计算投影值
+                    float shadow = (float)MathTool.calcShadow(master.bigArmLen, currProto.getRealVAngle(), master.archPara);
+                    shadow = Math.round(shadow) / 1.0f;
+                    slaveRadioProto.setRange(shadow);
+                } else {
+                    slaveRadioProto.setRange(centerCycle.carRange);
+                }
+
                 slaveRadioProto.setRotate((centerCycle.hAngle % 360) * 2 * (float) Math.PI / 360);
                 slaveRadioProto.packReply(); // 生成回应报文
                 //StringTool.showCharArray1(slaveRadioProto.modleChars);
@@ -711,16 +742,38 @@ public class MainActivity extends AppCompatActivity {
 
         if (!radioProto.isQuery) { // 收到其他从机的回应命令 & 分自己的 主从 身份
             waitFlag = false;
-            //System.out.printf("### %f- %f \n", radioProto.getRange(), radioProto.getRotate());
-            //long currTime = System.currentTimeMillis(); // 当前时间
-            //String sourceNo = "" + radioProto.getSourceNoInt();
 
             // 更新从机
-            CycleElem slave = craneMap.get(radioProto.getSourceNo());
+            CycleElem slave = craneMap.get(radioProto.getSourceNo()); // TODO 根据塔基类型，计算仰角
             if (slave != null) {
-                slave.setCarRange(radioProto.getRange());
-                slave.setHAngle(MathTool.radiansToAngle(radioProto.getRotate()));
+
+                SavedData savedData = savedDataMap.get(radioProto.getSourceNo());
+                if (savedData == null) {
+                    savedData = new SavedData(0, 0);
+                    savedDataMap.put(radioProto.getSourceNo(), savedData);
+                }
+
+                if (Math.abs(radioProto.getRange() - savedData.range) >= 0.1f) {
+                    if (slave.type == 1) { // 动臂式
+                        double vangle = MathTool.calcVAngle(slave.bigArmLen, radioProto.getRange(), slave.archPara);
+                        slave.setVAngle((float)Math.toDegrees(vangle)); // 设置动臂式的仰角
+                        slave.setHeight(slave.getOrgHeight() + slave.bigArmLen * (float)Math.sin(Math.toRadians(vangle)));
+                        slave.setCarRange(slave.bigArmLen); // 动臂式 幅度最大
+                    } else {
+                        slave.setCarRange(radioProto.getRange()); // 平臂式实际幅度
+                    }
+
+                    savedData.range = radioProto.getRange();
+                }
+
+                float hangle = MathTool.radiansToAngle(radioProto.getRotate()); // 水平方向的夹角
+                if (Math.abs(hangle - savedData.angle) >= 0.1) {
+                    slave.setHAngle(hangle);
+                    savedData.angle = hangle;
+                }
+
                 slave.setColor(Color.rgb(46, 139, 87));
+                slave.setOnline(true); // 设置离线状态
                 radioStatusMap.put(radioProto.getSourceNo(), currTime);
             }
         }
@@ -730,6 +783,8 @@ public class MainActivity extends AppCompatActivity {
             long prevRecTimer = radioStatusMap.get(no); // 上次记录时间
             if (currTime - prevRecTimer > 10000) { // 通信10失联，判断超时
                 craneMap.get(no).setColor(Color.LTGRAY);
+                craneMap.get(no).setCarRange(0); // 失联设备, 设置小车幅度为0
+                craneMap.get(no).setOnline(false); // 设置离线状态
             }
         }
     }
@@ -1264,21 +1319,23 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 设置主界面显示
-        craneArmType = mainCrane.getType(); // 塔基类型
-        float vAngle = 0.0f; // 垂直方向夹角
-        if (craneArmType == 1) {
-            //vAngle =
-            // TODO
-        }
 
         String number = Integer.parseInt(mainCrane.getName().replaceAll("[^0-9]+", "")) + ""; // 当前主环的编号
         myCraneNo = number;
         ((TextView) findViewById(R.id.craneNo)).setText("No.:" + number); // 显示塔基类型
         craneNumbers.add(number); // 本机的编号
 
+        float prvLength = prevProto.getRealLength(); // 前次小车位置
+        float prvVAngle = prevProto.getRealVAngle(); // 前次垂直角度
+        float prvHAngle = (float) prevRotateProto.getAngle(); // 前次水平角度
+
         // 1. 画中心圆环
         centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(), mainCrane.getBigArmLength(),
-            mainCrane.getBalancArmLength(), 0, 0, 0, mainCrane.getCraneHeight(), number);
+            mainCrane.getBalancArmLength(), prvHAngle, prvVAngle, prvLength, mainCrane.getCraneHeight(), number);
+        centerCycle.setType(mainCrane.getType()); // 设置塔基式样: 平臂 ~ 动臂
+        centerCycle.setArchPara(mainCrane.getArchPara()); // 保存结构参数
+        centerCycle.setBigArmLen(mainCrane.getBigArmLength()); // 保存大臂长度
+        centerCycle.setOrgHeight(mainCrane.getCraneHeight()); // 塔基原始身高
         elemMap.addElem(myCraneNo, centerCycle);
         mainCycleId = centerCycle.getUuid();
         centerCycle.drawCenterCycle(this, mainFrame);
@@ -1344,12 +1401,16 @@ public class MainActivity extends AppCompatActivity {
             number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "";
             SideCycle sideCycle = new SideCycle(centerCycle, cp.getCoordX1(), cp.getCoordY1(), cp.getBigArmLength(),
                 mainCrane.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight(), number);
-
+            sideCycle.setType(cp.getType()); // 平臂或动臂
+            sideCycle.setArchPara(cp.getArchPara()); // 保存结构参数
+            sideCycle.setBigArmLen(cp.getBigArmLength()); // 保存大臂长度
+            sideCycle.setOrgHeight(cp.getCraneHeight()); // 塔基原始身高
             elemMap.addElem(number, sideCycle);
             sideCycleId = sideCycle.getUuid();
             sideCycle.drawSideCycle(this, mainFrame);
             craneNumbers.add(number);
             craneMap.put(number, sideCycle);
+            sideCycle.setOnline(false); // 初始状态离线
         }
     }
 
@@ -1412,7 +1473,7 @@ public class MainActivity extends AppCompatActivity {
         calibration = calibrationDao.selectAll().get(0);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    //@RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -101,7 +101,7 @@ public class Alarm {
 
                 Geometry gsc = sc.getArmGeo(0f);
                 float sideHeight = sc.height;
-                if (Math.abs(myHeight - sideHeight) <= 1) { // 高度差相差1m, 当成等高, 查看当前圆心和对端 大臂端点的距离, 无前后告警, 只有左右告警
+                if (Math.abs(myHeight - sideHeight) <= 1 && sc.online) { // 高度差相差1m, 当成等高, 查看当前圆心和对端 大臂端点的距离, 无前后告警, 只有左右告警
                     float distance = (float) gcc.distance(gsc);
                     int alarmLevel = getAlarmLevel(distance, alarmSet, 0);
                     if (alarmLevel != -1) { // 有距离告警
@@ -129,7 +129,7 @@ public class Alarm {
                                 alarmEvent.hiPropAlmLevel = alarmLevel;
                         }
                     }
-                } else if ((myHeight - sideHeight) > 1) { // 中心塔基比边缘塔基高, 计算中心塔基小车位置和 边缘塔基距离
+                } else if ((myHeight - sideHeight) > 1 && sc.online) { // 中心塔基比边缘塔基高, 计算中心塔基小车位置和 边缘塔基距离
                     Geometry carPos = cc.getCarGeo(0f, 0f);
                     float carToArmDis = (float) carPos.distance(gsc); // 本机小车 到 旁机 大臂的距离
                     //System.out.printf("### center car to side[%s] arm distance: %f \n", id, carToArmDis);
@@ -227,7 +227,6 @@ public class Alarm {
 
     public static void craneToAreaAlarm(List<BaseElem> elems, CenterCycle cc, AlarmSet alarmSet) throws Exception {
         Geometry gcc = cc.getArmGeo(0f);
-
         for (BaseElem elem : elems) {
             SideArea sa = (SideArea) elem;
             Geometry sideGeo = sa.getGeometry();
@@ -416,25 +415,6 @@ public class Alarm {
                 float moment2 = ww * alarmSet.getMoment2() / 100;
                 float moment1 = ww * alarmSet.getMoment1() / 100;
 
-                /*
-                if (curWeight >= moment3) {
-                    //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight1() / 100);
-                    //System.out.println("@@@ moment overload 3");
-                    alarmEvent.momentAlarm = true;
-                    alarmEvent.momentAlarmLevel = 3;
-                } else if (curWeight >= moment2) {
-                    //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight2() / 100);
-                    //System.out.println("@@@ moment overload 2");
-                    alarmEvent.momentAlarm = true;
-                    alarmEvent.momentAlarmLevel = 2;
-                } else if (curWeight >= moment1) {
-                    //System.out.printf("## %f -- %f : ", curWeight, maxWeight * alarmSet.getWeight3() / 100);
-                    //System.out.println("@@@ moment overload 1");
-                    alarmEvent.momentAlarm = true;
-                    alarmEvent.momentAlarmLevel = 1;
-                }
-                */
-
                 if (curWeight >= moment1) {
                     alarmEvent.momentAlarm = true;
                     alarmEvent.momentAlarmLevel = 1;
@@ -450,19 +430,6 @@ public class Alarm {
                     alarmEvent.momentAlarmLevel = 3;
                 }
 
-                /*
-                if (curWeight <= 0.85 * moment1) {
-                    alarmEvent.momentAlarmDispearLevel = 1; // 3挡吊重告警消失
-                    System.out.println("momentAlarmDispearLevel1");
-                } else if (curWeight <= 0.85 * moment2) {
-                    alarmEvent.momentAlarmDispearLevel = 2; // 3挡吊重告警消失
-                    System.out.println("momentAlarmDispearLevel2");
-                } else if (curWeight < 0.85 * moment3) {
-                    alarmEvent.momentAlarmDispearLevel = 3; // 1挡吊重告警消失
-                    System.out.println("momentAlarmDispearLevel3");
-                }
-                */
-
                 if (curWeight < 0.85 * moment3) {
                     alarmEvent.momentAlarmDispearLevel = 3; // 1挡吊重告警消失
                     System.out.println("momentAlarmDispearLevel3");
@@ -477,7 +444,6 @@ public class Alarm {
                     alarmEvent.momentAlarmDispearLevel = 1; // 3挡吊重告警消失
                     System.out.println("momentAlarmDispearLevel1");
                 }
-
             }
         }
 
@@ -507,8 +473,7 @@ public class Alarm {
                 controlProto.setRightRote(false);
             }
 
-            int alarmLevel = alarmEvent.leftAlarmLevel;
-            if (alarmLevel == 0) alarmLevel = alarmEvent.rightAlarmLevel;
+            int alarmLevel = Math.min(alarmEvent.leftAlarmLevel, alarmEvent.rightAlarmLevel);
 
             switch (alarmLevel) {
                 case 2:

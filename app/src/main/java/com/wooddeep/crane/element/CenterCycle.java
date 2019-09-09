@@ -3,25 +3,15 @@ package com.wooddeep.crane.element;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Build;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import androidx.annotation.RequiresApi;
-
-import com.wooddeep.crane.tookit.StringTool;
 import com.wooddeep.crane.views.SuperCircleView;
 
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.WKTReader;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+//import androidx.annotation.RequiresApi;
 
 public class CenterCycle extends CycleElem {
     public float scale;
@@ -38,7 +28,7 @@ public class CenterCycle extends CycleElem {
     public float height;
     public String name;
     public SuperCircleView cycle;
-
+    public int color;
     private String centerGeoStr = "";
 
     private WKTReader wKTReader = new WKTReader();
@@ -68,7 +58,7 @@ public class CenterCycle extends CycleElem {
         this.name = name;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    //@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void drawCenterCycle(
         Activity activity,
         ViewGroup parent
@@ -103,7 +93,11 @@ public class CenterCycle extends CycleElem {
         float orgInnerRadius = originRadius / r * ir;
         cycle.setmInnerRadio(orgInnerRadius);
         cycle.sethAngle(hAngle);
-        cycle.setvAngle(vAngle);
+        if (this.type == 1) {
+            cycle.setvAngle(vAngle);
+        } else {
+            cycle.setvAngle(0);
+        }
         cycle.setCarRange(carRange * scale);
         cycle.setScale(scale);
         cycle.setName(name);
@@ -138,8 +132,15 @@ public class CenterCycle extends CycleElem {
 
     @Override
     public void setColor(int color) {
-        //Color.rgb(46, 139, 87)
-        this.cycle.setmRingNormalColor(color);
+        if (this.color != color) {
+            this.color = color;
+            this.cycle.setmRingNormalColor(color);
+        }
+    }
+
+    @Override
+    public int getColor() {
+        return this.color;
     }
 
     @Override
@@ -154,6 +155,11 @@ public class CenterCycle extends CycleElem {
         if (this.vAngle == angle) return;
         this.vAngle = angle;
         this.cycle.setvAngle(angle);
+    }
+
+    @Override
+    public void setHeight(float height) {
+        this.height = height;
     }
 
     @Override

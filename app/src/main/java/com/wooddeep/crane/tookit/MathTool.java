@@ -39,4 +39,14 @@ public class MathTool {
         return momentOut;
     }
 
+
+    public static double calcVAngle(float armLen, float armShadowLen, float archPara) {
+        double cos = armLen / (armShadowLen + archPara);
+        double rands = Math.acos(cos);
+        return Math.toDegrees(rands);
+    }
+
+    public static double calcShadow(float armLen, float vangle, float archPara) {
+        return Math.cos(Math.toRadians(vangle)) * (armLen + archPara);
+    }
 }

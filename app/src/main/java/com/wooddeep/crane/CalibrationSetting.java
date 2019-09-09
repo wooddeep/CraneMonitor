@@ -879,7 +879,6 @@ public class CalibrationSetting extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-
     }
 
     private void setOnTouchListener(View view) {
