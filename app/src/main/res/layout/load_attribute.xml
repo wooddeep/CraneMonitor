@@ -213,12 +213,18 @@
 
     </LinearLayout>
 
+    <!--
     <LinearLayout
         android:id="@+id/load_attri_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
     </LinearLayout>
+    -->
+
+    <include
+        android:id="@+id/load_attr_container"
+        layout="@layout/table_temp"></include>
 
 
 </LinearLayout>

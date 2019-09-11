@@ -99,12 +99,17 @@
 
     </RelativeLayout>
 
+    <!--
     <LinearLayout
         android:id="@+id/area_setting_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
     </LinearLayout>
+    -->
 
+    <include
+        android:id="@+id/crane_setting_container"
+        layout="@layout/table_temp"></include>
 
 </LinearLayout>

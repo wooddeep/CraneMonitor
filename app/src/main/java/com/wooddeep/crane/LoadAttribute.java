@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,8 +30,11 @@ import com.wooddeep.crane.ebus.SysParaEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.dao.LoadDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
+import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.Load;
 import com.wooddeep.crane.persist.entity.SysPara;
+import com.wooddeep.crane.views.FixedTitleTable;
+import com.wooddeep.crane.views.TableCell;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
@@ -72,7 +76,7 @@ import java.util.List;
 
 public class LoadAttribute extends AppCompatActivity {
     private Context context;
-
+    private FixedTitleTable table;
     private int screenWidth = 400; // dp
 
     private ArrayList<ArrayList<DataCell>> gTable = null;
@@ -252,7 +256,7 @@ public class LoadAttribute extends AppCompatActivity {
                 });
 
                 //List<Load> paras = confLoad(context);
-                paraTableRender(); // 渲染出表格
+                showLoadInfo(); // 渲染出表格
             }
         });
 
@@ -270,8 +274,8 @@ public class LoadAttribute extends AppCompatActivity {
                         // TODO
                     }
                 });
-                List<Load> paras = confLoad(context);
-                paraTableRender(); // 渲染出表格
+                //List<Load> paras = confLoad(context);
+                showLoadInfo(); // 渲染出表格
             }
         });
 
@@ -281,8 +285,8 @@ public class LoadAttribute extends AppCompatActivity {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
                 //Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
-                List<Load> paras = confLoad(context);
-                paraTableRender(); // 渲染出表格
+                //List<Load> paras = confLoad(context);
+                showLoadInfo(); // 渲染出表格
             }
         });
 
@@ -448,98 +452,31 @@ public class LoadAttribute extends AppCompatActivity {
     }
 
 
-    public ArrayList<ArrayList<DataCell>> areaParaArrange() {
-
-        ArrayList<ArrayList<DataCell>> table = new ArrayList<ArrayList<DataCell>>();
+    public void showLoadInfo() {
+        table.init(this);
+        table.clearAll();
 
         // 头部信息
-        ArrayList<DataCell> head = new ArrayList<DataCell>() {{
-            add(new DataCell(0, "小车坐标"));
-            add(new DataCell(0, "额定吊重"));
+        ArrayList<TableCell> colNames = new ArrayList<TableCell>() {{
+            add(new TableCell(0, "小车坐标"));
+            add(new TableCell(0, "额定吊重"));
         }};
-        table.add(head);
+
+        List<Integer> idList = new ArrayList() {{
+            add(-1);
+            add(-1);
+        }};
+
+        table.setFirstRow(colNames, idList);
 
         // 数据信息
         List<Load> loads = queryLoadByCondition();
         for (Load load : loads) {
-            ArrayList<DataCell> row = new ArrayList<DataCell>();
-            row.add(new DataCell(0, load.getCoordinate()));
-            row.add(new DataCell(0, load.getWeight()));
-            table.add(row);
+            ArrayList<TableCell> row = new ArrayList<TableCell>();
+            row.add(new TableCell(0, load.getCoordinate()));
+            row.add(new TableCell(0, load.getWeight()));
+            table.addDataRow(row);
         }
-
-        return table;
-    }
-
-    public void paraTableRender() {
-
-        LinearLayout loadAttrContainer = (LinearLayout) findViewById(R.id.load_attri_container);
-        ArrayList<ArrayList<DataCell>> table = areaParaArrange();
-
-        gTable = table;
-        final LockTableView mLockTableView = new LockTableView(this, loadAttrContainer, table);
-        int firstColumnWidth = 100;
-        Log.e("表格加载开始", "当前线程：" + Thread.currentThread());
-        mLockTableView.setLockFristColumn(true) //是否锁定第一列
-            .setLockFristRow(true) //是否锁定第一行
-            .setMaxColumnWidth(firstColumnWidth) //列最大宽度
-            .setMinColumnWidth(60) //列最小宽度
-            .setColumnWidth(0, 60)
-            .setMinRowHeight(20)//行最小高度
-            .setMaxRowHeight(60)//行最大高度
-            .setTextViewSize(16) //单元格字体大小
-            .setCellPadding(5)//设置单元格内边距(dp)
-            .setFristRowBackGroudColor(R.color.table_head)//表头背景色
-            .setTableHeadTextColor(R.color.beijin)//表头字体颜色
-            .setTableContentTextColor(R.color.border_color)//单元格字体颜色
-            .setNullableString("N/A") //空值替换值
-            .setTableViewListener(new LockTableView.OnTableViewListener() {
-                //设置横向滚动监听
-                @Override
-                public void onTableViewScrollChange(int x, int y) {
-                    Log.e("滚动值", "[" + x + "]" + "[" + y + "]");
-                }
-            })
-            .setTableViewRangeListener(new LockTableView.OnTableViewRangeListener() {
-                //设置横向滚动边界监听
-                @Override
-                public void onLeft(HorizontalScrollView view) {
-                    Log.e("滚动边界", "滚动到最左边");
-                }
-
-                @Override
-                public void onRight(HorizontalScrollView view) {
-                    Log.e("滚动边界", "滚动到最右边");
-                }
-            })
-            .setOnLoadingListener(new LockTableView.OnLoadingListener() {
-                @Override
-                public void onRefresh(final XRecyclerView mXRecyclerView, final ArrayList<ArrayList<DataCell>> mTableDatas) {
-                    mLockTableView.setTableDatas(mTableDatas);
-                    //停止刷新
-                }
-
-                @Override
-                public void onLoadMore(final XRecyclerView mXRecyclerView, final ArrayList<ArrayList<DataCell>> mTableDatas) {
-                    mLockTableView.setTableDatas(mTableDatas);
-                }
-            })
-            .setOnItemClickListenter(new LockTableView.OnItemClickListenter() {
-                @Override
-                public void onItemClick(View item, int position) {
-                    Log.e("点击事件", position + "");
-                }
-            })
-            .setOnItemLongClickListenter(new LockTableView.OnItemLongClickListenter() {
-                @Override
-                public void onItemLongClick(View item, int position) {
-                    Log.e("长按事件", position + "");
-                }
-            })
-            .setOnItemSeletor(R.color.dashline_color);//设置Item被选中颜色
-
-        mLockTableView.setColumnWidth(1, screenWidth - firstColumnWidth); //设置指定列文本宽度(从0开始计算,宽度单位dp)
-        mLockTableView.show(); //显示表格,此方法必须调用
 
     }
 
@@ -549,12 +486,16 @@ public class LoadAttribute extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
 
-        LinearLayout craneSettingContainer = (LinearLayout) findViewById(R.id.load_attri_container);
-        int screenWidthPx = craneSettingContainer.getMeasuredWidth();
-        context = getApplicationContext();
-        screenWidth = DisplayUtil.px2dip(context, screenWidthPx); // 转换为dp
-        List<Load> paras = confLoad(context);
-        paraTableRender(); // 渲染出表格
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        table = new FixedTitleTable(dm.widthPixels); // 输入屏幕宽度
+
+        //List<Load> paras = confLoad(context);
+        try {
+            showLoadInfo();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         setOnTouchListener();
     }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/title_cell_width"
+    android:layout_height="@dimen/row_height"
+    android:layout_marginBottom="@dimen/grid_width"
+    android:layout_marginLeft="@dimen/grid_width"
+    android:layout_marginRight="@dimen/grid_width"
+    android:background="@color/white">
+</TableRow>
