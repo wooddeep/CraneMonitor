@@ -909,17 +909,18 @@ public class MainActivity extends AppCompatActivity {
 
         if (alarmEvent.hookMinHightAlarm == true) {
             Alarm.startAlarm(activity, R.id.hook_alarm_logo, R.mipmap.hook_mix);
-            hookAlarmVeiw.setText("min");
+            hookAlarmVeiw.setText("T");
+            hookAlarmVeiw.setRotation(180);
         }
 
         if (alarmEvent.hookMaxHightAlarm == true) {
             Alarm.startAlarm(activity, R.id.hook_alarm_logo, R.mipmap.hook_max);
-            hookAlarmVeiw.setText("max");
+            hookAlarmVeiw.setText("T");
         }
 
         if (alarmEvent.hookMinHightAlarm == false && alarmEvent.hookMaxHightAlarm == false) {
             Alarm.startAlarm(activity, R.id.hook_alarm_logo, R.mipmap.hook);
-            hookAlarmVeiw.setText("ok");
+            hookAlarmVeiw.setText("OK");
         }
 
         // 控制

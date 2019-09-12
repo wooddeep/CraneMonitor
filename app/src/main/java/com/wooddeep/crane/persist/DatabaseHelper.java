@@ -7,19 +7,14 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.wooddeep.crane.ProtectArea;
-import com.wooddeep.crane.persist.entity.AlarmSet;
 import com.wooddeep.crane.persist.entity.Area;
-import com.wooddeep.crane.persist.entity.Calibration;
 import com.wooddeep.crane.persist.entity.Crane;
-import com.wooddeep.crane.persist.entity.Load;
 import com.wooddeep.crane.persist.entity.Protect;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 数据库操作管理工具类

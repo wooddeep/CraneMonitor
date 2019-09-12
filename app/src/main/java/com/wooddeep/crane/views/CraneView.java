@@ -73,12 +73,12 @@ public class CraneView extends View {
             hCraneBitmap = BitmapFactory.decodeResource(getResources(), id);
         }
         Bitmap bitmap = hCraneBitmap;
-        int realWidth = getMeasuredWidth();
-        int realHeight = getMeasuredHeight();
-        int picWidth = bitmap.getWidth();
+        int realWidth = getMeasuredWidth();   // 控件的实际宽度
+        int realHeight = getMeasuredHeight(); // 控件的实际高度
+        int picWidth = bitmap.getWidth();     // 图片的实际宽度
         int picHeight = bitmap.getHeight();
         int centerX = realWidth / 2;
-        int centerY = realHeight / 2;
+        int centerY = realHeight / 2;         // 控件的集合中心
         float rate = (float) picHeight / picWidth;
         Rect src = new Rect(0, 0, picWidth, picHeight);
 
@@ -96,6 +96,30 @@ public class CraneView extends View {
         return new Offset(centerX - (int) showWidth / 2, centerY - (int) showHeight / 2, showWidth / picWidth);
     }
 
+
+    // 135 为固定值, 无需修改
+    private void drawHHook(Canvas canvas, int id, float scale, int left, int top, int armLen, int cableLen) {
+        if (hHoookBitMap == null) {
+            hHoookBitMap = BitmapFactory.decodeResource(getResources(), id);
+        }
+        Bitmap bitmap = hHoookBitMap;
+        int realWidth = getMeasuredWidth();
+        int realHeight = getMeasuredHeight();
+        int picWidth = bitmap.getWidth();
+        int picHeight = bitmap.getHeight();
+
+        Rect srcCableHook = new Rect(0, 50, picWidth, 80);
+        RectF srcCableDst = new RectF(left + armLen * scale, top + 135 * scale, (picWidth + armLen) * scale + left, (165 + cableLen) * scale + top);
+        canvas.drawBitmap(bitmap, srcCableHook, srcCableDst, null);
+
+        Rect hookTail = new Rect(0, 50, picWidth, picHeight);
+        RectF hookTailDst = new RectF(left + armLen * scale, top + (135 + cableLen) * scale, (picWidth + armLen) * scale + left, (picHeight + cableLen + 85) * scale + top);
+        canvas.drawBitmap(bitmap, hookTail, hookTailDst, null);
+
+        Rect hookHead = new Rect(0, 0, picWidth, 50);
+        RectF hookHeadDst = new RectF(left + armLen * scale, top + 135 * scale, (picWidth + armLen) * scale + left, 180 * scale + top);
+        canvas.drawBitmap(bitmap, hookHead, hookHeadDst, null);
+    }
 
     private Offset calcVCrane(Canvas canvas, int id) {
 
@@ -151,32 +175,7 @@ public class CraneView extends View {
     }
 
     // 135 为固定值, 无需修改
-    private void drawHHook(Canvas canvas, int id, float scale, int left, int top, int armLen, int cableLen) {
-        if (hHoookBitMap == null) {
-            hHoookBitMap = BitmapFactory.decodeResource(getResources(), id);
-        }
-        Bitmap bitmap = hHoookBitMap;
-        int realWidth = getMeasuredWidth();
-        int realHeight = getMeasuredHeight();
-        int picWidth = bitmap.getWidth();
-        int picHeight = bitmap.getHeight();
-
-        Rect srcCableHook = new Rect(0, 50, picWidth, 80);
-        RectF srcCableDst = new RectF(left + armLen * scale, top + 135 * scale, (picWidth + armLen) * scale + left, (165 + cableLen) * scale + top);
-        canvas.drawBitmap(bitmap, srcCableHook, srcCableDst, null);
-
-        Rect hookTail = new Rect(0, 50, picWidth, picHeight);
-        RectF hookTailDst = new RectF(left + armLen * scale, top + (135 + cableLen) * scale, (picWidth + armLen) * scale + left, (picHeight + cableLen + 85) * scale + top);
-        canvas.drawBitmap(bitmap, hookTail, hookTailDst, null);
-
-        Rect hookHead = new Rect(0, 0, picWidth, 50);
-        RectF hookHeadDst = new RectF(left + armLen * scale, top + 135 * scale, (picWidth + armLen) * scale + left, 180 * scale + top);
-        canvas.drawBitmap(bitmap, hookHead, hookHeadDst, null);
-    }
-
-
-    // 135 为固定值, 无需修改
-    private void drawVHook(Canvas canvas, int id, float scale, int left, int top, int armLen, int cableLen, float angle, Coordinate coord) {
+    private void drawVHookBak(Canvas canvas, int id, float scale, int left, int top, int armLen, int cableLen, float angle, Coordinate coord) {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), id);
 
         int realWidth = getMeasuredWidth();
@@ -196,11 +195,6 @@ public class CraneView extends View {
 
         float deltaX = (picHeight * (float) Math.sin(Math.toRadians(angle))); // x - deltaX
         float deltaY = (picHeight - picHeight * (float) Math.cos(Math.toRadians(angle))); // y + deltaY
-
-        //canvas.drawCircle(left + 220 * scale + anchorOffsetX * scale - deltaX * scale / 4, top + 400 * scale - anchorOffsetY * scale + deltaY * scale * 3, 5, paint); // 验证臂尖的坐标
-
-        //float dx = (left + 220 * scale + anchorOffsetX * scale - deltaX * scale / 4) - (left + armLen * scale);
-        //float dy = (top + 400 * scale - anchorOffsetY * scale + deltaY * scale * 3) - (top + 135 * scale);
 
         float x = left + 220 * scale + anchorOffsetX * scale - deltaX * scale / 4;
         float y = top + 400 * scale - anchorOffsetY * scale + deltaY * scale * 3;
@@ -224,6 +218,35 @@ public class CraneView extends View {
 
         canvas.drawBitmap(bitmap, hookTail, hookTailDst, null);
 
+    }
+
+    private void drawVHook(Canvas canvas, int id, float scale, int left, int top, int armLen, int cableLen, float angle, Coordinate coord) {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), id);
+
+        int realWidth = getMeasuredWidth();
+        int realHeight = getMeasuredHeight();
+        int picWidth = bitmap.getWidth();
+        int picHeight = bitmap.getHeight();
+
+        Paint paint = new Paint();//创建画笔
+        paint.setStrokeWidth(4);
+        paint.setColor(Color.BLACK);//为画笔设置颜色
+
+
+        Rect srcCableHook = new Rect(0, 50, picWidth, 80);
+        RectF srcCableDst = new RectF(coord.x - picWidth * scale / 2,
+            coord.y + 50 * scale,
+            coord.x + picWidth * scale / 2,
+            coord.y + (50 + cableLen) * scale);
+        canvas.drawBitmap(bitmap, srcCableHook, srcCableDst, null);
+
+        Rect hookTail = new Rect(0, 50, picWidth, picHeight);
+        RectF hookTailDst = new RectF(coord.x - picWidth * scale / 2,
+            coord.y + (50 + cableLen) * scale,
+            coord.x + picWidth * scale / 2,
+            coord.y + (50 + cableLen) * scale + (picHeight - 80) * scale);
+
+        canvas.drawBitmap(bitmap, hookTail, hookTailDst, null);
 
     }
 
@@ -242,6 +265,54 @@ public class CraneView extends View {
         }
         origin.recycle();
         return newBM;
+    }
+
+    private Coordinate drawArmBak(Canvas canvas, int id, float scale, int left, int top, float angle) {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), id);
+
+        int realWidth = getMeasuredWidth();
+        int realHeight = getMeasuredHeight();
+        int picWidth = bitmap.getWidth();
+        int picHeight = bitmap.getHeight();
+
+        Paint paint = new Paint();//创建画笔
+        paint.setStrokeWidth(2);
+        paint.setColor(Color.DKGRAY);//为画笔设置颜色
+
+        float armShowX = picWidth * (float) Math.cos(Math.toRadians(angle));
+        float anchorOffsetX = armShowX * 1.0f;
+
+        float armShowY = picWidth * (float) Math.sin(Math.toRadians(angle));
+        float anchorOffsetY = armShowY * 1.0f;
+
+        float deltaX = (picHeight * (float) Math.sin(Math.toRadians(angle))); // x - deltaX
+        float deltaY = (picHeight - picHeight * (float) Math.cos(Math.toRadians(angle))); // y + deltaY
+
+        float cableStartX = left + 40 * scale;
+        float cableStartY = top + 300 * scale;
+        float cableEndX = left + 220 * scale + anchorOffsetX * scale - deltaX * scale / 4;
+        float cableEndY = top + 400 * scale - anchorOffsetY * scale + deltaY * scale * 2.2f;
+
+        // 画缆绳
+        canvas.drawLine(cableStartX, cableStartY, cableEndX, cableEndY, paint);
+        canvas.drawCircle(left + 40 * scale, top + 300 * scale, 2, paint); // 验证塔尖的坐标
+        canvas.drawCircle(left + 220 * scale + anchorOffsetX * scale - deltaX * scale / 4,
+            top + 400 * scale - anchorOffsetY * scale + deltaY * scale * 2.2f, 2, paint); // 验证臂尖的坐标
+
+        // 画臂
+        Bitmap arm = rotateBitmap(bitmap, angle * -1);
+        Rect armSrc = new Rect(0, 0, arm.getWidth(), arm.getHeight());
+        RectF armDst = new RectF(
+            left + 250 * scale - deltaX * scale,
+            135 * scale - arm.getHeight() * scale + 300 * scale + 0 * scale,
+            left + arm.getWidth() * scale + 250 * scale - deltaX * scale,
+            135 * scale + 300 * scale + 0 * scale);
+
+        canvas.drawBitmap(arm, armSrc, armDst, null);
+
+        return new Coordinate(left + 220 * scale + anchorOffsetX * scale - deltaX * scale / 4,
+            top + 400 * scale - anchorOffsetY * scale + deltaY * scale * 2.2f);
+
     }
 
     private Coordinate drawArm(Canvas canvas, int id, float scale, int left, int top, float angle) {
@@ -272,21 +343,35 @@ public class CraneView extends View {
 
         // 画缆绳
         canvas.drawLine(cableStartX, cableStartY, cableEndX, cableEndY, paint);
-
-        canvas.drawCircle(left + 40 * scale, top + 300 * scale, 5, paint); // 验证塔尖的坐标
-        canvas.drawCircle(left + 220 * scale + anchorOffsetX * scale - deltaX * scale / 4, top + 400 * scale - anchorOffsetY * scale + deltaY * scale * 2.2f, 5, paint); // 验证臂尖的坐标
+        canvas.drawCircle(left + 40 * scale, top + 300 * scale, 2, paint); // 验证塔尖的坐标
+        canvas.drawCircle(left + 220 * scale + anchorOffsetX * scale - deltaX * scale / 4,
+            top + 400 * scale - anchorOffsetY * scale + deltaY * scale * 2.2f, 2, paint); // 验证臂尖的坐标
 
         // 画臂
         Bitmap arm = rotateBitmap(bitmap, angle * -1);
         Rect armSrc = new Rect(0, 0, arm.getWidth(), arm.getHeight());
-        RectF armDst = new RectF(left + 250 * scale - deltaX * scale,
-            135 * scale - arm.getHeight() * scale + 300 * scale + 0 * scale,
-            left + arm.getWidth() * scale + 250 * scale - deltaX * scale,
-            135 * scale + 300 * scale + 0 * scale);
+
+        int dx = 30; // x方向修正值
+        int dy = 0;  // y方向修正值
+        if (angle > 70) dx = 30;
+        if (angle <= 70 && angle > 40) dx = 25;
+        if (angle <= 40) dx = 10;
+
+        if (angle > 75) dy = 0;
+        if (angle <= 75 && angle > 50) dy = 10;
+        if (angle <= 50 && angle > 30) dy = 20;
+        if (angle <= 30) dy = 20;
+
+        RectF armDst = new RectF(
+            dx * scale + left + 250 * scale - deltaX * scale,
+            dy * scale + 135 * scale - arm.getHeight() * scale + 300 * scale + 0 * scale,
+            dx *scale + left + arm.getWidth() * scale + 250 * scale - deltaX * scale,
+            dy * scale + 135 * scale + 300 * scale + 0 * scale);
 
         canvas.drawBitmap(arm, armSrc, armDst, null);
 
-        return new Coordinate(left + 220 * scale + anchorOffsetX * scale - deltaX * scale / 4, top + 400 * scale - anchorOffsetY * scale + deltaY * scale * 2.2f);
+        return new Coordinate(left + 220 * scale + anchorOffsetX * scale - deltaX * scale / 4,
+            top + 400 * scale - anchorOffsetY * scale + deltaY * scale * 2.2f);
 
     }
 
@@ -297,15 +382,25 @@ public class CraneView extends View {
 
         if (craneType == 0) {
             Offset offset = drawHCrane(canvas, R.drawable.crane_without_hook);
-            drawHHook(canvas, R.drawable.crane_hook, offset.scale, offset.left, offset.top, armLenth, hookHeight);
+            if (hookHeight > 600) hookHeight = 600;
+            if (hookHeight < 0) hookHeight = 0;
+
+            if (armLenth < 250) armLenth = 250;
+            if (armLenth > 630) armLenth = 630;
+
+            drawHHook(canvas, R.drawable.crane_hook, offset.scale, offset.left, offset.top, armLenth, 600 - hookHeight);
         }
 
         if (craneType == 1) {
             drawVCrane(canvas, R.drawable.crane_rotate_arm); // 塔放到最后画，覆盖其他组件
             Offset offset = calcVCrane(canvas, R.drawable.crane_without_arm);
-            Coordinate coord = drawArm(canvas, R.drawable.crane_arm, offset.scale, offset.left, offset.top, armAngle);
-            drawVHook(canvas, R.drawable.crane_hook, offset.scale, offset.left, offset.top, armLenth, hookHeight, armAngle, coord);
+            if (armAngle < 15) armAngle = 15;
+            if (armAngle > 85) armAngle = 85;
 
+            Coordinate coord = drawArm(canvas, R.drawable.rotate_arm, offset.scale, offset.left, offset.top, armAngle);
+            if (hookHeight > 450) hookHeight = 450;
+            if (hookHeight < 0) hookHeight = 0;
+            drawVHook(canvas, R.drawable.rotate_hook, offset.scale, offset.left, offset.top, armLenth, 450 - hookHeight, armAngle, coord);
         }
 
     }
