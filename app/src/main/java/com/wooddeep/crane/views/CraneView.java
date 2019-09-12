@@ -233,15 +233,28 @@ public class CraneView extends View {
         paint.setColor(Color.BLACK);//为画笔设置颜色
 
 
+        int dx = 50; // x方向修正值
+        int dy = 0;  // y方向修正值
+        if (angle > 70) dx = 30;
+        if (angle <= 70 && angle > 40) dx = 25;
+        if (angle <= 40) dx = 10;
+
+        if (angle > 70) dy = -50;
+        if (angle <= 75 && angle > 50) dy = 10;
+        if (angle <= 50 && angle > 30) dy = 20;
+        if (angle <= 30) dy = 20;
+
         Rect srcCableHook = new Rect(0, 50, picWidth, 80);
-        RectF srcCableDst = new RectF(coord.x - picWidth * scale / 2,
+        RectF srcCableDst = new RectF(
+            dx * scale + coord.x - picWidth * scale / 2,
             coord.y + 50 * scale,
-            coord.x + picWidth * scale / 2,
+            dx * scale + coord.x + picWidth * scale / 2,
             coord.y + (50 + cableLen) * scale);
         canvas.drawBitmap(bitmap, srcCableHook, srcCableDst, null);
 
         Rect hookTail = new Rect(0, 50, picWidth, picHeight);
-        RectF hookTailDst = new RectF(coord.x - picWidth * scale / 2,
+        RectF hookTailDst = new RectF(
+            coord.x - picWidth * scale / 2,
             coord.y + (50 + cableLen) * scale,
             coord.x + picWidth * scale / 2,
             coord.y + (50 + cableLen) * scale + (picHeight - 80) * scale);
