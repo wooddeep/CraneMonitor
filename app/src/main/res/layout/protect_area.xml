@@ -28,7 +28,7 @@
     <RelativeLayout
         android:id="@+id/banner"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/banner_height"
+        android:layout_height="@dimen/dp80"
         android:layout_gravity="center"
         android:background="@drawable/spliter_background"
         android:gravity="center"

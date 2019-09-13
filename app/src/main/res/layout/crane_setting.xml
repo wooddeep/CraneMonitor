@@ -28,7 +28,7 @@
     <RelativeLayout
         android:id="@+id/banner"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/banner_height"
+        android:layout_height="@dimen/dp80"
         android:layout_gravity="center"
         android:background="@drawable/spliter_background"
         android:gravity="center"
@@ -36,10 +36,10 @@
 
         <ImageView
             android:id="@+id/crane_logo"
-            android:layout_width="60dp"
+            android:layout_width="@dimen/dp60"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/dp10"
             app:srcCompat="@mipmap/crane_setting" />
 
         <LinearLayout
@@ -64,38 +64,38 @@
 
         <ImageView
             android:id="@+id/add_logo"
-            android:layout_width="40px"
-            android:layout_height="40px"
+            android:layout_width="@dimen/px40"
+            android:layout_height="@dimen/px40"
             android:layout_centerInParent="true"
             android:layout_toLeftOf="@+id/minus_logo"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="@dimen/dp20"
             app:srcCompat="@mipmap/add_logo" />
 
         <ImageView
             android:id="@+id/minus_logo"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="@dimen/px46"
+            android:layout_height="@dimen/px46"
             android:layout_centerInParent="true"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="@dimen/dp20"
             android:layout_toLeftOf="@+id/save_logo"
             app:srcCompat="@mipmap/minus_logo" />
 
         <ImageView
             android:id="@+id/save_logo"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="@dimen/px46"
+            android:layout_height="@dimen/px46"
             android:layout_centerInParent="true"
-            android:layout_marginRight="40dp"
+            android:layout_marginRight="@dimen/dp40"
             android:layout_toLeftOf="@+id/close_logo"
             app:srcCompat="@drawable/save_logo" />
 
         <ImageView
             android:id="@+id/close_logo"
-            android:layout_width="45px"
-            android:layout_height="45px"
+            android:layout_width="@dimen/px45"
+            android:layout_height="@dimen/px45"
             android:layout_centerInParent="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="@dimen/dp20"
             app:srcCompat="@mipmap/close_logo" />
 
     </RelativeLayout>

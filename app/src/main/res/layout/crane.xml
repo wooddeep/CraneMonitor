@@ -35,7 +35,7 @@
             android:layout_height="match_parent"
             android:scaleX="1.0"
             android:scaleY="1.0"
-            app:arm_angle="15"
+            app:arm_angle="40"
             app:arm_length="300"
             app:crane_type="1"
             app:hook_height="200" />

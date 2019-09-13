@@ -13,19 +13,19 @@
     <RelativeLayout
         android:id="@+id/title_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_banner_height"
+        android:layout_height="@dimen/dp80"
         android:layout_gravity="center"
         android:background="@drawable/title_bar_background"
         android:gravity="center">
 
         <ImageView
             android:id="@+id/home_logo"
-            android:layout_width="80px"
-            android:layout_height="60px"
+            android:layout_width="@dimen/px80"
+            android:layout_height="@dimen/px60"
             android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/dp10"
             android:gravity="center"
             android:src="@mipmap/calibration_setting" />
 
@@ -33,11 +33,11 @@
 
         <LinearLayout
             android:id="@+id/text_container"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/dp100"
+            android:layout_height="@dimen/dp40"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/dp10"
             android:layout_toRightOf="@+id/home_logo"
             android:gravity="center"
             android:orientation="vertical">
@@ -45,30 +45,30 @@
             <TextView
                 android:id="@+id/tv"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_height="@dimen/dp0"
                 android:layout_weight="1"
                 android:text="标定值设置"
-                android:textSize="15dp"
+                android:textSize="@dimen/dp15"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_height="@dimen/dp0"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="calibration"
-                android:textSize="14dp"
+                android:textSize="@dimen/dp14"
                 android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/dp50"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/dp10"
             android:gravity="center"
-            android:padding="3dp"
+            android:padding="@dimen/dp3"
             android:visibility="invisible"
             android:orientation="horizontal">
             <Button
@@ -93,86 +93,86 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/dp50"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:gravity="center"
-            android:padding="3dp"
+            android:padding="@dimen/dp3"
             android:orientation="horizontal">
 
             <TextView
-                android:layout_marginLeft="50dp"
+                android:layout_marginLeft="@dimen/dp50"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:textSize="20dp"
+                android:textSize="@dimen/dp20"
                 android:text="幅度:" />
             <TextView
                 android:id="@+id/amp_value"
-                android:layout_width="100dp"
+                android:layout_width="@dimen/dp100"
                 android:layout_height="wrap_content"
-                android:textSize="20dp"
+                android:textSize="@dimen/dp20"
                 android:text="12345" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:textSize="20dp"
+                android:textSize="@dimen/dp20"
                 android:text="高度:" />
             <TextView
                 android:id="@+id/height_value"
-                android:layout_width="100dp"
+                android:layout_width="@dimen/dp100"
                 android:layout_height="wrap_content"
-                android:textSize="20dp"
+                android:textSize="@dimen/dp20"
                 android:text="12345" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:textSize="20dp"
+                android:textSize="@dimen/dp20"
                 android:text="重量:" />
 
             <TextView
                 android:id="@+id/weight_value"
-                android:layout_width="100dp"
+                android:layout_width="@dimen/dp100"
                 android:layout_height="wrap_content"
-                android:textSize="20dp"
+                android:textSize="@dimen/dp20"
                 android:text="12345" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:textSize="20dp"
+                android:textSize="@dimen/dp20"
                 android:text="编码值:" />
             <TextView
                 android:id="@+id/encoder_value"
-                android:layout_width="100dp"
+                android:layout_width="@dimen/dp100"
                 android:layout_height="wrap_content"
-                android:textSize="20dp"
+                android:textSize="@dimen/dp20"
                 android:text="12345" />
 
         </LinearLayout>
 
         <ImageView
             android:id="@+id/save_logo"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="@dimen/px46"
+            android:layout_height="@dimen/px46"
             android:layout_centerInParent="true"
             android:layout_toLeftOf="@+id/close_logo"
             app:srcCompat="@drawable/save_logo" />
 
         <ImageView
             android:id="@+id/close_logo"
-            android:layout_width="40px"
-            android:layout_height="40px"
+            android:layout_width="@dimen/px40"
+            android:layout_height="@dimen/px40"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="@dimen/dp30"
+            android:layout_marginRight="@dimen/dp20"
             android:gravity="center"
             app:srcCompat="@mipmap/close_logo" />
 
@@ -192,33 +192,33 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="@dimen/dp0"
                 android:visibility="gone"
                 android:background="@drawable/split_boder">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="@dimen/dp5"
                     android:orientation="vertical">
                     <ImageView
                         android:id="@+id/rotation_logo"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="@dimen/dp50"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:layout_marginBottom="5dp"
+                        android:layout_marginBottom="@dimen/dp5"
                         app:srcCompat="@mipmap/gear_shift" />
                     <TextView
                         android:id="@+id/rotation_logo"
                         android:layout_width="match_parent"
-                        android:layout_height="20dp"
+                        android:layout_height="@dimen/dp20"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
-                        android:textSize="10dp"
+                        android:textSize="@dimen/dp10"
                         android:textStyle="bold"
                         android:text="档位标定"
                         android:gravity="center" />
@@ -226,119 +226,119 @@
 
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="85dp"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp85"
                     android:layout_weight="8">
 
                     <Button
                         android:id="@+id/btn_first_gear"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="一档"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_first_gear"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="10/s"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <Button
                         android:id="@+id/btn_gear2"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="二挡"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_gear2"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="10/s"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <Button
                         android:id="@+id/btn_gear3"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="三挡"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_gear3"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="10/s"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <Button
                         android:id="@+id/btn_gear4"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="四挡"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_gear4"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="10/s"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <Button
                         android:id="@+id/btn_gear5"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="五档"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_gear5"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="10/s"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                 </LinearLayout>
             </TableRow>
@@ -346,7 +346,7 @@
             <!-- 回转角度标定 -->
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="140dp"
+                android:layout_height="@dimen/dp140"
                 android:layout_gravity="center"
                 android:background="@drawable/split_boder"
                 android:gravity="center">
@@ -354,52 +354,52 @@
                 <!--
                 <ImageView
                     android:id="@+id/rotation_logo"
-                    android:layout_width="0dp"
-                    android:layout_height="55dp"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp55"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:layout_margin="10dp"
+                    android:layout_margin="@dimen/dp10"
                     android:layout_weight="1"
                     android:gravity="center"
                     app:srcCompat="@mipmap/rotation" />
                 -->
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="1.25"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="@dimen/dp5"
                     android:orientation="vertical">
                     <ImageView
                         android:id="@+id/rotation_logo"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="@dimen/dp50"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:layout_marginBottom="5dp"
+                        android:layout_marginBottom="@dimen/dp5"
                         app:srcCompat="@mipmap/rotation" />
                     <TextView
                         android:id="@+id/rotation_logo"
                         android:layout_width="match_parent"
-                        android:layout_height="20dp"
+                        android:layout_height="@dimen/dp20"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
-                        android:textSize="10dp"
+                        android:textSize="@dimen/dp10"
                         android:textStyle="bold"
                         android:text="回转标定"
                         android:gravity="center" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="10">
 
                     <!--
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp100"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
@@ -407,28 +407,28 @@
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="0dp"
+                            android:layout_height="@dimen/dp0"
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="X1:"
-                            android:textSize="15dp" />
+                            android:textSize="@dimen/dp15" />
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="0dp"
+                            android:layout_height="@dimen/dp0"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="Y1:"
-                            android:textSize="15dp" />
+                            android:textSize="@dimen/dp15" />
                     </LinearLayout>
                     -->
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp100"
                         android:layout_gravity="center"
                         android:layout_weight="2"
                         android:gravity="center"
@@ -437,52 +437,52 @@
                         <EditText
                             android:id="@+id/etx1"
                             android:layout_width="wrap_content"
-                            android:layout_height="0dp"
+                            android:layout_height="@dimen/dp0"
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:minWidth="100dp"
+                            android:minWidth="@dimen/dp100"
                             android:text="X1"
-                            android:textSize="15dp" />
+                            android:textSize="@dimen/dp15" />
 
                         <EditText
                             android:id="@+id/ety1"
                             android:layout_width="wrap_content"
-                            android:layout_height="0dp"
+                            android:layout_height="@dimen/dp0"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:minWidth="100dp"
+                            android:minWidth="@dimen/dp100"
                             android:text="Y1"
-                            android:textSize="15dp" />
+                            android:textSize="@dimen/dp15" />
 
                     </LinearLayout>
 
                     <Button
                         android:id="@+id/btn_rotate_coord1"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="2"
                         android:gravity="center"
                         android:text="确定"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_rotate_coord1"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="2"
                         android:gravity="center"
                         android:text="0"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
                     <!--
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp100"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
@@ -490,28 +490,28 @@
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="0dp"
+                            android:layout_height="@dimen/dp0"
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="X2:"
-                            android:textSize="15dp" />
+                            android:textSize="@dimen/dp15" />
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="0dp"
+                            android:layout_height="@dimen/dp0"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="Y2:"
-                            android:textSize="15dp" />
+                            android:textSize="@dimen/dp15" />
 
                     </LinearLayout>
                     -->
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="100dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp100"
                         android:layout_gravity="center"
                         android:layout_weight="2"
                         android:gravity="center"
@@ -520,58 +520,58 @@
                         <EditText
                             android:id="@+id/etx2"
                             android:layout_width="wrap_content"
-                            android:layout_height="0dp"
+                            android:layout_height="@dimen/dp0"
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:minWidth="100dp"
+                            android:minWidth="@dimen/dp100"
                             android:text="X2"
-                            android:textSize="15dp" />
+                            android:textSize="@dimen/dp15" />
 
                         <EditText
                             android:id="@+id/ety2"
                             android:layout_width="wrap_content"
-                            android:layout_height="0dp"
+                            android:layout_height="@dimen/dp0"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:minWidth="100dp"
+                            android:minWidth="@dimen/dp100"
                             android:text="Y2"
-                            android:textSize="15dp" />
+                            android:textSize="@dimen/dp15" />
 
                     </LinearLayout>
 
                     <Button
                         android:id="@+id/btn_rotate_coord2"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="2"
                         android:gravity="center"
                         android:text="确定"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_rotate_coord2"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="2"
                         android:gravity="center"
                         android:text="0"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_rotate_rate"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="2"
                         android:gravity="center"
                         android:text="1/mv"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
                 </LinearLayout>
 
             </TableRow>
@@ -580,14 +580,14 @@
             <!-- 倾角标定  -->
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="85dp"
+                android:layout_height="@dimen/dp85"
                 android:background="@drawable/split_boder">
 
                 <!--
                 <ImageView
                     android:id="@+id/dip_angle_logo"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:layout_weight="1"
@@ -595,121 +595,121 @@
                     app:srcCompat="@mipmap/di_angle" />
                 -->
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="@dimen/dp5"
                     android:orientation="vertical">
                     <ImageView
                         android:id="@+id/rotation_logo"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="@dimen/dp50"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:layout_marginBottom="5dp"
+                        android:layout_marginBottom="@dimen/dp5"
                         app:srcCompat="@mipmap/di_angle" />
                     <TextView
                         android:id="@+id/rotation_logo"
                         android:layout_width="match_parent"
-                        android:layout_height="20dp"
+                        android:layout_height="@dimen/dp20"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
-                        android:textSize="10dp"
+                        android:textSize="@dimen/dp10"
                         android:textStyle="bold"
                         android:text="倾角标定"
                         android:gravity="center" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="8">
 
                     <EditText
                         android:id="@+id/et_dip_angle_start"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="0"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <Button
                         android:id="@+id/btn_dip_angle_start"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="确定"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_dip_angle_start"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="0"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <EditText
                         android:id="@+id/et_dip_angle_end"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="0"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <Button
                         android:id="@+id/btn_dip_angle_end"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="确定"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_dip_angle_end"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="50"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_dip_angle_rate"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="1/mv"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
                 </LinearLayout>
             </TableRow>
 
             <!-- 重量标定 -->
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="85dp"
+                android:layout_height="@dimen/dp85"
                 android:background="@drawable/split_boder">
                 <!--
                 <ImageView
                     android:id="@+id/weight_logo"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:layout_weight="1"
@@ -718,16 +718,16 @@
                 -->
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="@dimen/dp5"
                     android:orientation="vertical">
                     <ImageView
                         android:id="@+id/rotation_logo"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="@dimen/dp50"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:gravity="center"
@@ -735,104 +735,104 @@
                     <TextView
                         android:id="@+id/rotation_logo"
                         android:layout_width="match_parent"
-                        android:layout_height="20dp"
+                        android:layout_height="@dimen/dp20"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
-                        android:textSize="10dp"
+                        android:textSize="@dimen/dp10"
                         android:textStyle="bold"
                         android:text="重量标定"
                         android:gravity="center" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="8">
 
                     <EditText
                         android:id="@+id/et_weight_start"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="0"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <Button
                         android:id="@+id/btn_weight_start"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="确定"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_weight_start"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="0"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <EditText
                         android:id="@+id/et_weight_end"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="0"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <Button
                         android:id="@+id/btn_weight_end"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="确定"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_weight_end"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="60"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_weight_rate"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="1/mv"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
                 </LinearLayout>
             </TableRow>
 
             <!-- 臂长 -->
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="85dp"
+                android:layout_height="@dimen/dp85"
                 android:background="@drawable/split_boder">
 
                 <!--
                 <ImageView
                     android:id="@+id/clock_logo"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:layout_weight="1"
@@ -841,16 +841,16 @@
                 -->
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="@dimen/dp5"
                     android:orientation="vertical">
                     <ImageView
                         android:id="@+id/rotation_logo"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="@dimen/dp50"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:gravity="center"
@@ -858,10 +858,10 @@
                     <TextView
                         android:id="@+id/rotation_logo"
                         android:layout_width="match_parent"
-                        android:layout_height="20dp"
+                        android:layout_height="@dimen/dp20"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
-                        android:textSize="10dp"
+                        android:textSize="@dimen/dp10"
                         android:textStyle="bold"
                         android:text="幅度标定"
                         android:gravity="center" />
@@ -869,94 +869,94 @@
 
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="8">
 
                     <EditText
                         android:id="@+id/et_arm_length_start"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="0"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <Button
                         android:id="@+id/btn_arm_length_start"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="确定"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_arm_length_start"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="0"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <EditText
                         android:id="@+id/et_arm_length_end"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="0"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <Button
                         android:id="@+id/btn_arm_length_end"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="确定"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_arm_length_end"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="70"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_arm_length_rate"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="1/mv"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
                 </LinearLayout>
             </TableRow>
 
             <!-- 塔高 -->
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="85dp"
+                android:layout_height="@dimen/dp85"
                 android:background="@drawable/split_boder">
 
                 <!--
                 <ImageView
                     android:id="@+id/clock_logo"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:layout_weight="1"
@@ -965,16 +965,16 @@
                 -->
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="@dimen/dp5"
                     android:orientation="vertical">
                     <ImageView
                         android:id="@+id/rotation_logo"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="@dimen/dp50"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:gravity="center"
@@ -982,90 +982,90 @@
                     <TextView
                         android:id="@+id/rotation_logo"
                         android:layout_width="match_parent"
-                        android:layout_height="20dp"
+                        android:layout_height="@dimen/dp20"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
-                        android:textSize="10dp"
+                        android:textSize="@dimen/dp10"
                         android:textStyle="bold"
                         android:text="高度标定"
                         android:gravity="center" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="8">
 
                     <EditText
                         android:id="@+id/et_tower_height_start"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="0"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <Button
                         android:id="@+id/btn_tower_height_start"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="确定"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_tower_height_start"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="0"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <EditText
                         android:id="@+id/et_tower_height_end"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="0"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <Button
                         android:id="@+id/btn_tower_height_end"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="确定"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_tower_height_end"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="80"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
 
                     <TextView
                         android:id="@+id/tv_tower_height_rate"
-                        android:layout_width="0dp"
-                        android:layout_height="80dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp80"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="1/mv"
-                        android:textSize="20dp" />
+                        android:textSize="@dimen/dp20" />
                 </LinearLayout>
             </TableRow>
 

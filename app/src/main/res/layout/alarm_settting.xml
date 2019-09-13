@@ -13,19 +13,19 @@
     <RelativeLayout
         android:id="@+id/title_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_banner_height"
+        android:layout_height="@dimen/dp80"
         android:layout_gravity="center"
         android:background="@drawable/title_bar_background"
         android:gravity="center">
 
         <ImageView
             android:id="@+id/home_logo"
-            android:layout_width="80px"
-            android:layout_height="60px"
+            android:layout_width="@dimen/px80"
+            android:layout_height="@dimen/px60"
             android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/dp10"
             android:gravity="center"
             android:src="@mipmap/alarm_setting" />
 
@@ -33,11 +33,11 @@
 
         <LinearLayout
             android:id="@+id/text_container"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/dp100"
+            android:layout_height="@dimen/dp40"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/dp10"
             android:layout_toRightOf="@+id/home_logo"
             android:gravity="center"
             android:orientation="vertical">
@@ -48,33 +48,33 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:text="告警参数设置"
-                android:textSize="14dp" />
+                android:textSize="@dimen/dp14" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:text="alarm setting"
-                android:textSize="14dp" />
+                android:textSize="@dimen/dp14" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/save_logo"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="@dimen/px46"
+            android:layout_height="@dimen/px46"
             android:layout_centerInParent="true"
             android:layout_toLeftOf="@+id/close_logo"
             app:srcCompat="@drawable/save_logo" />
 
         <ImageView
             android:id="@+id/close_logo"
-            android:layout_width="40px"
-            android:layout_height="40px"
+            android:layout_width="@dimen/px40"
+            android:layout_height="@dimen/px40"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="@dimen/dp40"
+            android:layout_marginRight="@dimen/dp20"
             android:gravity="center"
             app:srcCompat="@mipmap/close_logo" />
 
@@ -92,46 +92,46 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/dp40"
                 android:background="@color/gray">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="1">
 
                     <TextView
                         android:id="@+id/clock_logo"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
+                        android:layout_height="@dimen/dp40"
                         android:layout_gravity="left"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
                         android:text="塔基与塔基回转各档减速距离"
-                        android:textSize="20dp"
+                        android:textSize="@dimen/dp20"
                         android:textStyle="bold" />
                 </LinearLayout>
             </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="60dp">
+                android:layout_height="@dimen/dp60">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -144,28 +144,28 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="变幅减速距离"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_gear1"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="1.00" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -178,28 +178,28 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="变幅减速距离"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_gear2"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="2.00" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -212,28 +212,28 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="变幅减速距离"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_gear3"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="3.00" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -246,28 +246,28 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="变幅减速距离"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_gear4"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="4.00" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -280,13 +280,13 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="变幅减速距离"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_gear5"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="5.00" />
@@ -296,46 +296,46 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/dp40"
                 android:background="@color/gray">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="1">
 
                     <TextView
                         android:id="@+id/clock_logo"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
+                        android:layout_height="@dimen/dp40"
                         android:layout_gravity="left"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
                         android:text="塔基与区域回转各档减速距离"
-                        android:textSize="20dp"
+                        android:textSize="@dimen/dp20"
                         android:textStyle="bold" />
                 </LinearLayout>
             </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="60dp">
+                android:layout_height="@dimen/dp60">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -348,28 +348,28 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="变幅减速距离"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_ta_gear1"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="1.00" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -382,28 +382,28 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="变幅减速距离"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_ta_gear2"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="2.00" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -416,28 +416,28 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="变幅减速距离"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_ta_gear3"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="3.00" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -450,28 +450,28 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="变幅减速距离"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_ta_gear4"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="4.00" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -484,13 +484,13 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="变幅减速距离"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_ta_gear5"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="5.00" />
@@ -500,38 +500,38 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/dp40"
                 android:background="@color/gray">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="2">
 
                     <TextView
                         android:id="@+id/clock_logo"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
+                        android:layout_height="@dimen/dp40"
                         android:layout_gravity="left"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
                         android:text="幅度控制参数"
-                        android:textSize="20dp"
+                        android:textSize="@dimen/dp20"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="3">
 
                     <TextView
                         android:id="@+id/clock_logo"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
+                        android:layout_height="@dimen/dp40"
                         android:layout_gravity="left"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
                         android:text="力矩告警"
-                        android:textSize="20dp"
+                        android:textSize="@dimen/dp20"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -539,29 +539,29 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="70dp">
+                android:layout_height="@dimen/dp70">
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="70dp"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp70"
                     android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:paddingBottom="5dp"
+                            android:paddingBottom="@dimen/dp5"
                             app:srcCompat="@mipmap/speed_down" />
 
                         <TextView
@@ -571,33 +571,33 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="变幅减速距离"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
 
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_hook_dist1"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="1.00" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:paddingBottom="5dp"
+                            android:paddingBottom="@dimen/dp5"
                             app:srcCompat="@mipmap/park" />
 
                         <TextView
@@ -607,29 +607,29 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="变幅停车距离"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_hook_dist2"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="2.00" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical"
                         android:visibility="visible">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -642,30 +642,30 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="一档力矩告警"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_moment1"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="10%"
                         android:visibility="visible" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical"
                         android:visibility="visible">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -678,30 +678,30 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="二挡力矩告警"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_moment2"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="50%"
                         android:visibility="visible" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical"
                         android:visibility="visible">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="40dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp40"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -714,13 +714,13 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="三挡力矩告警"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_moment3"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="120%"
@@ -730,38 +730,38 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/dp40"
                 android:background="@color/gray">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="2">
 
                     <TextView
                         android:id="@+id/clock_logo"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
+                        android:layout_height="@dimen/dp40"
                         android:layout_gravity="left"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
                         android:text="风速告警设置"
-                        android:textSize="20dp"
+                        android:textSize="@dimen/dp20"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="3">
 
                     <TextView
                         android:id="@+id/clock_logo"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
+                        android:layout_height="@dimen/dp40"
                         android:layout_gravity="left"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
                         android:text="吊重告警设置"
-                        android:textSize="20dp"
+                        android:textSize="@dimen/dp20"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -769,29 +769,29 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="70dp">
+                android:layout_height="@dimen/dp70">
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="70dp"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp70"
                     android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:paddingBottom="5dp"
+                            android:paddingBottom="@dimen/dp5"
                             app:srcCompat="@mipmap/wind_warning" />
 
                         <TextView
@@ -801,33 +801,33 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="风速预警"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
 
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_wind_speed1"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="10m/s" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:paddingBottom="5dp"
+                            android:paddingBottom="@dimen/dp5"
                             app:srcCompat="@mipmap/wind_alarm" />
 
                         <TextView
@@ -837,30 +837,30 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="风速告警"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_wind_speed2"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="20m/s" />
 
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical"
                         android:visibility="visible">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -873,30 +873,30 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="一档吊重百分比"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_weight_gear1"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="20%"
                         android:visibility="visible" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical"
                         android:visibility="visible">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -909,30 +909,30 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="二挡吊重百分比"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_weight_gear2"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="50%"
                         android:visibility="visible" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical"
                         android:visibility="visible">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="40dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp40"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -945,13 +945,13 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="三挡吊重百分比"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_weight_gear3"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="120%"
@@ -961,38 +961,38 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/dp40"
                 android:background="@color/gray">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="2">
 
                     <TextView
                         android:id="@+id/clock_logo"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
+                        android:layout_height="@dimen/dp40"
                         android:layout_gravity="left"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
                         android:text="大臂长度告警设置"
-                        android:textSize="20dp"
+                        android:textSize="@dimen/dp20"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/dp0"
                     android:layout_weight="3">
 
                     <TextView
                         android:id="@+id/clock_logo"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
+                        android:layout_height="@dimen/dp40"
                         android:layout_gravity="left"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
                         android:text="吊钩高度告警设置"
-                        android:textSize="20dp"
+                        android:textSize="@dimen/dp20"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -1000,29 +1000,29 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="70dp">
+                android:layout_height="@dimen/dp70">
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="70dp"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp70"
                     android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:paddingBottom="5dp"
+                            android:paddingBottom="@dimen/dp5"
                             app:srcCompat="@mipmap/min" />
 
                         <TextView
@@ -1032,33 +1032,33 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="最小值"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
 
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_arm_min"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="0.1m" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:paddingBottom="5dp"
+                            android:paddingBottom="@dimen/dp5"
                             app:srcCompat="@mipmap/max" />
 
                         <TextView
@@ -1068,30 +1068,30 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="最大值"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_arm_max"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="20m" />
 
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical"
                         android:visibility="visible">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -1104,30 +1104,30 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="最小值"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_height_min"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="0.1m"
                         android:visibility="visible" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical"
                         android:visibility="visible">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -1140,30 +1140,30 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="最大值"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_height_max"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="100m"
                         android:visibility="visible" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_margin="10dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_margin="@dimen/dp10"
                         android:layout_weight="1"
                         android:orientation="vertical"
                         android:visibility="invisible">
 
                         <ImageView
                             android:id="@+id/clock_logo"
-                            android:layout_width="40dp"
-                            android:layout_height="45dp"
+                            android:layout_width="@dimen/dp40"
+                            android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
@@ -1176,12 +1176,12 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="三挡吊重百分比"
-                            android:textSize="10dp" />
+                            android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
                     <EditText
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="120%"
