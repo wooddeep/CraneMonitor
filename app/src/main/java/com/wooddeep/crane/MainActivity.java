@@ -311,13 +311,14 @@ public class MainActivity extends AppCompatActivity {
     private RadioProto masterRadioProto = new RadioProto(); // 本机作为主机时，需要radio通信的对象
     private int currSlaveIndex = 0; // 当前和本主机通信的从机名称
 
-    private SerialPort serialttyS0;
-    private SerialPort serialttyS1;
+    private com.example.x6.serialportlib.SerialPort serialttyS0;
+    private com.example.x6.serialportlib.SerialPort serialttyS1;
+    private com.example.x6.serialportlib.SerialPort serialttyS2;
     private InputStream ttyS0InputStream;
     private OutputStream ttyS0OutputStream;
     private InputStream ttyS1InputStream;
     private OutputStream ttyS1OutputStream;
-    private com.example.x6.serialportlib.SerialPort serialttyS2;
+
     private OutputStream ttyS2OutputStream;
     private InputStream ttyS2InputStream;
 
@@ -797,7 +798,7 @@ public class MainActivity extends AppCompatActivity {
                 if (Math.abs(radioProto.getRange() - savedData.range) >= 0.1f) {
                     if (slave.type == 1) { // 动臂式
                         double vangle = MathTool.calcVAngle(slave.getBigArmLen(), radioProto.getRange(), slave.archPara);
-                        slave.setVAngle((float)vangle); // 设置动臂式的仰角
+                        slave.setVAngle((float) vangle); // 设置动臂式的仰角
                         slave.setHeight(slave.getOrgHeight() + slave.getBigArmLen() * (float) Math.sin(Math.toRadians(vangle)));
                         slave.setCarRange(slave.getBigArmLen()); // 动臂式 幅度最大
                     } else {
@@ -1562,8 +1563,19 @@ public class MainActivity extends AppCompatActivity {
         ratedWeightView = (TextView) findViewById(R.id.rated_weight);
 
         try {
-            serialttyS0 = new SerialPort(new File("/dev/ttyS0"), 115200, 0); // 19200 // AD数据
-            serialttyS1 = new SerialPort(new File("/dev/ttyS1"), 19200, 0);
+            String s0Name = "S0";
+            String s1Name = "S1";
+            String model = android.os.Build.MODEL;
+            if (model.equals("rk3288")) {
+                s0Name = "S1";
+                s1Name = "S2";
+            }
+
+            serialttyS0 = new com.example.x6.serialportlib.SerialPort(
+                s0Name, 115200, 8, 0, 'o', true); // 19200 // AD数据
+            serialttyS1 = new com.example.x6.serialportlib.SerialPort(
+                s1Name, 19200, 8, 0, 'o', true);
+
             ttyS0InputStream = serialttyS0.getInputStream();
             ttyS0OutputStream = serialttyS0.getOutputStream();
             ttyS0OutputStream.write(ControlProto.control);

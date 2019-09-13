@@ -75,7 +75,14 @@ public class CenterCycle extends CycleElem {
         float originBackWidth = originRadius * 2 + ringWidth * 2 + 10; // 默认圆环正方形背景高度
         float originBackHeight = originBackWidth; // 默认圆环正方形背景宽度
         float scale = originRadius / r;
-        float centerX = width / 2 + 100;   // 中心点x坐标(到左边距的长度)，相对于FrameLayout的左下角
+
+        float delta = 100;
+        String model = android.os.Build.MODEL;
+        if (model.equals("rk3288")) {
+            delta = 150;
+        }
+
+        float centerX = width / 2 + delta;   // 中心点x坐标(到左边距的长度)，相对于FrameLayout的左下角
         float centerY = height / 2;   // 中心点y坐标(到下边距的长度)，相对于FrameLayout的左下角
 
         SuperCircleView cycle = new SuperCircleView(context);

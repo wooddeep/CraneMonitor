@@ -53,7 +53,7 @@ public class GridLineView extends View {
     public GridLineView(Context context, AttributeSet attrs) {
         super(context);
         paint = new Paint();
-        paint.setColor(Color.BLACK);
+        paint.setColor(Color.DKGRAY);
         //paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStyle(Paint.Style.STROKE);
         //paint.setStrokeCap(Paint.Cap.ROUND);
@@ -65,6 +65,7 @@ public class GridLineView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(Color.TRANSPARENT);
+        setLayerType(LAYER_TYPE_SOFTWARE, null);
         widthSize = getMeasuredWidth();
         heighSize = getMeasuredHeight();
         final int space = 100;
