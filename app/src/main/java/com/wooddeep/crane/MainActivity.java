@@ -44,6 +44,8 @@ import com.wooddeep.crane.element.CycleElem;
 import com.wooddeep.crane.element.ElemMap;
 import com.wooddeep.crane.element.SideArea;
 import com.wooddeep.crane.element.SideCycle;
+import com.wooddeep.crane.main.Constant;
+import com.wooddeep.crane.main.SavedData;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.dao.AlarmSetDao;
 import com.wooddeep.crane.persist.dao.AreaDao;
@@ -234,76 +236,49 @@ try {
 @SuppressWarnings("unused")
 public class MainActivity extends AppCompatActivity {
 
-    class SavedData {
-        public float angle;
-        public float range;
-        public float vangle;
-
-        public SavedData() {
-        }
-
-        public SavedData(float a, float r) {
-            this.angle = a;
-            this.range = r;
-        }
-
-        public SavedData(float a, float va, float r) {
-            this.angle = a;
-            this.range = r;
-            this.vangle = va;
-        }
-    }
-
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final String TAG = "MainActivity";
-    private Context context;
     private android.app.Activity activity = this;
+    private Context context;
 
-    private List<BaseElem> elemList = new ArrayList<>();
-    private HashMap<String, CycleElem> craneMap = new HashMap<>();
     private HashMap<String, SavedData> savedDataMap = new HashMap<>();
+    private HashMap<String, CycleElem> craneMap = new HashMap<>();
+    private HashMap<String, SavedData> slaveMap = new HashMap<>();
+    private HashMap<String, Long> radioStatusMap = new HashMap();
+    private List<String> craneNumbers = new ArrayList<>();
+    private List<BaseElem> elemList = new ArrayList<>();
     private ElemMap elemMap = new ElemMap();
+    private List<Load> loadParas = null; // 负荷特性设置
 
-    private HashMap<String, Long> radioStatusMap = new HashMap(); // 收到从机的通信数据状态
-
-    private static HashMap<String, Object> viewMapBak = new HashMap<>();
-    private static HashMap<String, Object> zoomMapBak = new HashMap<>();
-
+    private int currSlaveIndex = 0; // 当前和本主机通信的从机名称
+    private float shadowLength = 0;
     private float oscale = 1.0f;
-    private String mainCycleId = null; // 主环的uuid
-    private String sideCycleId = null;
-
-    private Protocol prevProto = new Protocol(); // 记录前次ad数据解析结果
-    private Protocol currProto = new Protocol(); // 记录当次ad数据解析结果
+    private int craneType = 0; // 塔基类型: 0 ~ 平臂式, 2动臂式
+    private String myCraneNo = "";
 
     private RotateProto currRotateProto = new RotateProto();
     private RotateProto prevRotateProto = new RotateProto();
     private RadioProto radioProto = new RadioProto();
-    private HashMap<String, SavedData> slaveMap = new HashMap<>();
+    private Protocol prevProto = new Protocol(); // 记录前次ad数据解析结果
+    private Protocol currProto = new Protocol(); // 记录当次ad数据解析结果
 
-    private int craneType = 0; // 塔基类型: 0 ~ 平臂式, 2动臂式
-    private Crane mainCrane;   // 本塔基参数
     private CenterCycle centerCycle; // 本塔基圆环
-    private AlarmSet alarmSet = null;
-    private AlarmEvent alarmEvent = null;
-    private Calibration calibration = null;
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private Crane mainCrane;   // 本塔基参数
 
-    private boolean isMasterCrane = false; // 是否主塔机
-    private String myCraneNo = "x";
-    private List<String> craneNumbers = new ArrayList<>();
-
-    private SimulatorFlags flags = new SimulatorFlags();
-    private UartEmitter emitter = new UartEmitter();
-
-    private boolean calibrationFlag = false;
     private EventBus eventBus = EventBus.getDefault();
+    private UartEmitter emitter = new UartEmitter();
+    private Calibration calibration = null;
+    private AlarmSet alarmSet = null;
 
-    private AtomicBoolean iAmMaster = new AtomicBoolean(false); //false; // 本机是否为通信主机
+    private AtomicBoolean iAmMaster = new AtomicBoolean(false); // 本机是否为通信主机
+    private SimulatorFlags flags = new SimulatorFlags();
+    private boolean calibrationFlag = false;
+    private boolean isMasterCrane = false; // 是否主塔机
     private boolean waitFlag = true; // 等待主机信号标识
 
+    private ControlProto controlProto = new ControlProto();
     private RadioProto slaveRadioProto = new RadioProto();  // 本机作为从机时，需要radio通信的对象
     private RadioProto masterRadioProto = new RadioProto(); // 本机作为主机时，需要radio通信的对象
-    private int currSlaveIndex = 0; // 当前和本主机通信的从机名称
 
     private com.example.x6.serialportlib.SerialPort serialttyS0;
     private com.example.x6.serialportlib.SerialPort serialttyS1;
@@ -312,10 +287,10 @@ public class MainActivity extends AppCompatActivity {
     private OutputStream ttyS0OutputStream;
     private InputStream ttyS1InputStream;
     private OutputStream ttyS1OutputStream;
-
     private OutputStream ttyS2OutputStream;
     private InputStream ttyS2InputStream;
 
+    private byte[] rotateCmd = new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B};
     private byte[] adXBuff = new byte[2048];
     private byte[] rotateXBuff = new byte[1024];
     private byte[] radioXBuff = new byte[1024];
@@ -323,54 +298,17 @@ public class MainActivity extends AppCompatActivity {
     private byte[] rotateRBuff = new byte[10];
     private byte[] radioRBuff = new byte[39];
 
-    private UartEvent uartEvent = new UartEvent();
+    private AlarmDetectEvent alarmDetectEvent = new AlarmDetectEvent();
     private HeightEvent heightEvent = new HeightEvent();
     private WeightEvent weightEvent = new WeightEvent();
     private LengthEvent lengthEvent = new LengthEvent();
     private RotateEvent rotateEvent = new RotateEvent();
     private RadioEvent radioEvent = new RadioEvent();
-    private AlarmDetectEvent alarmDetectEvent = new AlarmDetectEvent();
+    private UartEvent uartEvent = new UartEvent();
+    private AlarmEvent alarmEvent = null;
 
     private SysParaDao paraDao; // 系统参数
     private LoadDao loadDao; // 负荷特性
-    private List<Load> loadParas = null; // 负荷特性设置
-    private ControlProto controlProto = new ControlProto();
-
-    private byte[] rotateCmd = new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B};
-
-    private HashMap<Integer, Integer> rotateAlarmMap = new HashMap() {{
-        put(1, R.mipmap.forward5);
-        put(2, R.mipmap.forward4);
-        put(3, R.mipmap.forward3);
-        put(4, R.mipmap.forward2);
-        put(5, R.mipmap.forward1);
-    }};
-
-    private HashMap<Integer, Integer> carRangeAlarmMap = new HashMap() {{
-        put(1, R.mipmap.forward5);
-        put(2, R.mipmap.forward2);
-    }};
-
-    private HashMap<Integer, Integer> weightAlarmMap = new HashMap() {{
-        put(3, R.mipmap.weight3);
-        put(2, R.mipmap.weight2);
-        put(1, R.mipmap.weight1);
-    }};
-
-    private HashMap<Integer, Integer> momentAlarmMap = new HashMap() {{
-        put(3, R.mipmap.moment3);
-        put(2, R.mipmap.moment2);
-        put(1, R.mipmap.moment1);
-    }};
-
-    private HashMap<Integer, String> levelMap = new HashMap() {{
-        put(0, "〇");
-        put(1, "①");
-        put(2, "②");
-        put(3, "③");
-        put(4, "④");
-        put(5, "⑤");
-    }};
 
     private CraneView craneView;
     private TextView angleView;
@@ -508,7 +446,6 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    private float shadowLength = 0;
 
     private void startSensorThread() {
         new Thread(() -> {
@@ -545,9 +482,10 @@ public class MainActivity extends AppCompatActivity {
                                     //lengthShow(shadow);
                                     shadowLength = shadow;
                                     System.out.println("--1--" + shadowLength);
-                                    // TODO 力矩变化显示
                                     lengthEvent.setLength(shadow);
                                     eventBus.post(lengthEvent);
+                                    MomentOut moment = MathTool.momentCalc(loadParas, currProto.getRealWeight(), currProto.getRealLength());
+                                    weigthChangeShow(moment.moment, moment.ratedWeight);
                                 });
                             }
                         } else { // 平臂式
@@ -855,51 +793,51 @@ public class MainActivity extends AppCompatActivity {
         alarmEvent = event;
         if (alarmEvent == null) return;
         if (alarmEvent.leftAlarm == true) {
-            Alarm.startAlarm(activity, R.id.left_alarm, rotateAlarmMap.get(event.leftAlarmLevel));
-            leftAlarmView.setText(levelMap.get(event.leftAlarmLevel));
+            Alarm.startAlarm(activity, R.id.left_alarm, Constant.rotateAlarmMap.get(event.leftAlarmLevel));
+            leftAlarmView.setText(Constant.levelMap.get(event.leftAlarmLevel));
         } else {
             Alarm.stopAlarm(activity, R.id.left_alarm, R.mipmap.forward);
-            leftAlarmView.setText(levelMap.get(0));
+            leftAlarmView.setText(Constant.levelMap.get(0));
         }
 
         if (alarmEvent.rightAlarm == true) {
-            Alarm.startAlarm(activity, R.id.right_alarm, rotateAlarmMap.get(event.rightAlarmLevel));
-            rightAlarmView.setText(levelMap.get(event.rightAlarmLevel));
+            Alarm.startAlarm(activity, R.id.right_alarm, Constant.rotateAlarmMap.get(event.rightAlarmLevel));
+            rightAlarmView.setText(Constant.levelMap.get(event.rightAlarmLevel));
         } else {
             Alarm.stopAlarm(activity, R.id.right_alarm, R.mipmap.forward);
-            rightAlarmView.setText(levelMap.get(0));
+            rightAlarmView.setText(Constant.levelMap.get(0));
         }
 
         if (alarmEvent.forwardAlarm == true) {
-            Alarm.startAlarm(activity, R.id.forward_alarm, carRangeAlarmMap.get(event.forwardAlarmLevel));
-            forwardAlarmView.setText(levelMap.get(event.forwardAlarmLevel));
+            Alarm.startAlarm(activity, R.id.forward_alarm, Constant.carRangeAlarmMap.get(event.forwardAlarmLevel));
+            forwardAlarmView.setText(Constant.levelMap.get(event.forwardAlarmLevel));
         } else {
             Alarm.stopAlarm(activity, R.id.forward_alarm, R.mipmap.forward);
-            forwardAlarmView.setText(levelMap.get(0));
+            forwardAlarmView.setText(Constant.levelMap.get(0));
         }
 
         if (alarmEvent.backendAlarm == true) {
-            Alarm.startAlarm(activity, R.id.back_alarm, carRangeAlarmMap.get(event.backendAlarmLevel));
-            backwardAlarmView.setText(levelMap.get(event.backendAlarmLevel));
+            Alarm.startAlarm(activity, R.id.back_alarm, Constant.carRangeAlarmMap.get(event.backendAlarmLevel));
+            backwardAlarmView.setText(Constant.levelMap.get(event.backendAlarmLevel));
         } else {
             Alarm.stopAlarm(activity, R.id.back_alarm, R.mipmap.forward);
-            backwardAlarmView.setText(levelMap.get(0));
+            backwardAlarmView.setText(Constant.levelMap.get(0));
         }
 
         if (alarmEvent.weightAlarm == true) {
-            Alarm.startAlarm(activity, R.id.weight_alarm, weightAlarmMap.get(event.weightAlarmLevel));
-            weightAlarmView.setText(levelMap.get(event.weightAlarmLevel));
+            Alarm.startAlarm(activity, R.id.weight_alarm, Constant.weightAlarmMap.get(event.weightAlarmLevel));
+            weightAlarmView.setText(Constant.levelMap.get(event.weightAlarmLevel));
         } else {
             Alarm.stopAlarm(activity, R.id.weight_alarm, R.mipmap.weight0);
-            weightAlarmView.setText(levelMap.get(0));
+            weightAlarmView.setText(Constant.levelMap.get(0));
         }
 
         if (alarmEvent.momentAlarm == true) {
-            Alarm.startAlarm(activity, R.id.moment_alarm, momentAlarmMap.get(event.momentAlarmLevel));
-            momentAlarmView.setText(levelMap.get(event.momentAlarmLevel));
+            Alarm.startAlarm(activity, R.id.moment_alarm, Constant.momentAlarmMap.get(event.momentAlarmLevel));
+            momentAlarmView.setText(Constant.levelMap.get(event.momentAlarmLevel));
         } else {
             Alarm.stopAlarm(activity, R.id.moment_alarm, R.mipmap.moment0);
-            momentAlarmView.setText(levelMap.get(0));
+            momentAlarmView.setText(Constant.levelMap.get(0));
         }
 
         if (alarmEvent.hookMinHightAlarm == true) {
@@ -1366,7 +1304,7 @@ public class MainActivity extends AppCompatActivity {
         centerCycle.setOrgHeight(mainCrane.getCraneHeight()); // 塔基原始身高
         centerCycle.setMinVAngle(mainCrane.getMinAngle()); // 最小垂直方向倾角
         elemMap.addElem(myCraneNo, centerCycle);
-        mainCycleId = centerCycle.getUuid();
+        //mainCycleId = centerCycle.getUuid();
         centerCycle.drawCenterCycle(this, mainFrame);
         craneMap.put(myCraneNo, centerCycle);
 
@@ -1437,7 +1375,7 @@ public class MainActivity extends AppCompatActivity {
             sideCycle.setBigArmLen(bigArmLength); // 保存大臂长度
             sideCycle.setOrgHeight(cp.getCraneHeight()); // 塔基原始身高
             elemMap.addElem(number, sideCycle);
-            sideCycleId = sideCycle.getUuid();
+            //sideCycleId = sideCycle.getUuid();
             sideCycle.drawSideCycle(this, mainFrame);
             craneNumbers.add(number);
             craneMap.put(number, sideCycle);
@@ -1515,7 +1453,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         angleView = (TextView) findViewById(R.id.angle);
-        vAngleView = (TextView)findViewById(R.id.vangle);
+        vAngleView = (TextView) findViewById(R.id.vangle);
         controlProto.clear();
         EventBus.getDefault().register(this);
         initTable(); // 初始化表
