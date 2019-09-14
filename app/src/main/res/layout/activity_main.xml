@@ -52,7 +52,7 @@
                     android:layout_height="@dimen/dp40"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/dp5"
+                    android:layout_marginLeft="@dimen/dp2"
                     android:gravity="center"
                     app:srcCompat="@mipmap/rotation" />
 
@@ -108,9 +108,9 @@
                     android:id="@+id/vangle_logo"
                     android:layout_width="@dimen/dp40"
                     android:layout_height="@dimen/dp40"
+                    android:layout_marginLeft="@dimen/dp2"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/dp5"
                     android:gravity="center"
                     app:srcCompat="@mipmap/vangle" />
 
@@ -136,6 +136,7 @@
                     android:id="@+id/length_logo"
                     android:layout_width="@dimen/dp40"
                     android:layout_height="@dimen/dp40"
+                    android:layout_marginLeft="@dimen/dp2"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:layout_toLeftOf="@+id/length"
@@ -164,9 +165,9 @@
                     android:id="@+id/weight_logo"
                     android:layout_width="@dimen/dp40"
                     android:layout_height="@dimen/dp40"
+                    android:layout_marginLeft="@dimen/dp2"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/dp5"
                     android:gravity="center"
                     app:srcCompat="@mipmap/weight" />
 
@@ -219,9 +220,9 @@
                     android:id="@+id/moment_logo"
                     android:layout_width="@dimen/dp40"
                     android:layout_height="@dimen/dp40"
+                    android:layout_marginLeft="@dimen/dp2"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/dp5"
                     android:gravity="center"
                     app:srcCompat="@mipmap/moment_logo" />
 
@@ -503,7 +504,7 @@
                     android:background="@drawable/frame_border"
                     android:elevation="@dimen/dp10"
                     android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <ImageView
                         android:id="@+id/menu"
@@ -588,7 +589,7 @@
                     android:elevation="@dimen/dp10"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <ImageView
                         android:id="@+id/zoom_in"

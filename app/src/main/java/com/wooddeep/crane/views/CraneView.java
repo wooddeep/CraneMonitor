@@ -233,15 +233,15 @@ public class CraneView extends View {
         paint.setColor(Color.BLACK);//为画笔设置颜色
 
 
-        int dx = 50; // x方向修正值
+        int dx = 25; // x方向修正值
         int dy = 0;  // y方向修正值
-        if (angle > 70) dx = 30;
-        if (angle <= 70 && angle > 40) dx = 25;
-        if (angle <= 40) dx = 10;
+        if (angle > 70) dx = 60;
+        if (angle <= 70 && angle > 40) dx = 10;
+        if (angle <= 40) dx = 5;
 
-        if (angle > 70) dy = -50;
+        if (angle > 70) dy = -60;
         if (angle <= 75 && angle > 50) dy = 10;
-        if (angle <= 50 && angle > 30) dy = 20;
+        if (angle <= 50 && angle > 30) dy = 15;
         if (angle <= 30) dy = 20;
 
         Rect srcCableHook = new Rect(0, 50, picWidth, 80);
@@ -254,10 +254,10 @@ public class CraneView extends View {
 
         Rect hookTail = new Rect(0, 50, picWidth, picHeight);
         RectF hookTailDst = new RectF(
-            coord.x - picWidth * scale / 2,
-            coord.y + (50 + cableLen) * scale,
-            coord.x + picWidth * scale / 2,
-            coord.y + (50 + cableLen) * scale + (picHeight - 80) * scale);
+            dx * scale + coord.x - picWidth * scale / 2,
+            dy * scale + coord.y + (50 + cableLen) * scale,
+            dx * scale + coord.x + picWidth * scale / 2,
+            dy * scale + coord.y + (50 + cableLen) * scale + (picHeight - 80) * scale);
 
         canvas.drawBitmap(bitmap, hookTail, hookTailDst, null);
 
@@ -367,12 +367,12 @@ public class CraneView extends View {
         int dx = 30; // x方向修正值
         int dy = 0;  // y方向修正值
         if (angle > 70) dx = 30;
-        if (angle <= 70 && angle > 40) dx = 25;
-        if (angle <= 40) dx = 10;
+        if (angle <= 70 && angle > 40) dx = 15;
+        if (angle <= 40) dx = 5;
 
         if (angle > 75) dy = 0;
         if (angle <= 75 && angle > 50) dy = 10;
-        if (angle <= 50 && angle > 30) dy = 20;
+        if (angle <= 50 && angle > 30) dy = 15;
         if (angle <= 30) dy = 20;
 
         RectF armDst = new RectF(

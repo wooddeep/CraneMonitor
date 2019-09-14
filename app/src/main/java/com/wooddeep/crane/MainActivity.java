@@ -13,15 +13,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.x6.serial.SerialPort;
 import com.wooddeep.crane.alarm.Alarm;
 import com.wooddeep.crane.comm.ControlProto;
 import com.wooddeep.crane.comm.Protocol;
@@ -35,7 +32,6 @@ import com.wooddeep.crane.ebus.CalibrationEvent;
 import com.wooddeep.crane.ebus.FanSpeedEvent;
 import com.wooddeep.crane.ebus.HeightEvent;
 import com.wooddeep.crane.ebus.LengthEvent;
-import com.wooddeep.crane.ebus.MessageEvent;
 import com.wooddeep.crane.ebus.RadioEvent;
 import com.wooddeep.crane.ebus.RotateEvent;
 import com.wooddeep.crane.ebus.SimulatorEvent;
@@ -70,7 +66,6 @@ import com.wooddeep.crane.simulator.SimulatorFlags;
 import com.wooddeep.crane.simulator.UartEmitter;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
-import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.tookit.MathTool;
 import com.wooddeep.crane.tookit.MomentOut;
 import com.wooddeep.crane.tookit.StringTool;
@@ -81,7 +76,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -380,6 +374,7 @@ public class MainActivity extends AppCompatActivity {
 
     private CraneView craneView;
     private TextView angleView;
+    private TextView vAngleView;
     private TextView leftAlarmView;
     private TextView rightAlarmView;
     private TextView forwardAlarmView;
@@ -541,6 +536,7 @@ public class MainActivity extends AppCompatActivity {
                                     craneView.setArmAngle(currProto.getRealVAngle());
                                     centerCycle.setCarRange(centerCycle.getBigArmLen());
                                     centerCycle.setVAngle(currProto.getRealVAngle());
+                                    vAngleView.setText(currProto.getRealVAngle() + "°");
                                     double deltaHeight = centerCycle.getBigArmLen() * Math.sin(Math.toRadians(currProto.getRealVAngle()));
                                     centerCycle.setHeight(centerCycle.getOrgHeight() + (float) deltaHeight); // 修改高度
 
@@ -561,7 +557,10 @@ public class MainActivity extends AppCompatActivity {
                                 shadowLength = currProto.getRealLength();
                                 eventBus.post(lengthEvent);
                                 MomentOut moment = MathTool.momentCalc(loadParas, currProto.getRealWeight(), currProto.getRealLength());
-                                runOnUiThread(() -> weigthChangeShow(moment.moment, moment.ratedWeight));
+                                runOnUiThread(() -> {
+                                    weigthChangeShow(moment.moment, moment.ratedWeight);
+                                    vAngleView.setText("0°");
+                                });
                             }
                         }
 
@@ -845,11 +844,6 @@ public class MainActivity extends AppCompatActivity {
         calibration = event.calibration;
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void messageEventBus(MessageEvent userEvent) {
-        fanRotate();
-        //elemMap.alramFlink();
-    }
 
     // https://blog.csdn.net/robertcpp/article/details/51532161
     public void playAlarmBuz() {
@@ -1186,18 +1180,6 @@ public class MainActivity extends AppCompatActivity {
         view.setOnTouchListener(onTouchListener);
     }
 
-    private void fanRotate() {
-        ImageView windSpeedLog = (ImageView) findViewById(R.id.wind_speed_log);
-        Log.i(TAG, "## start rotate!!!");
-        //上述参数解释分别为：旋转起始角度，旋转结束角度，相对与自身，x轴方向的一半，相对于自身，y轴方向的一半
-
-        RotateAnimation rotateAnimation = new RotateAnimation(0, 360,
-            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.54f);
-        rotateAnimation.setDuration(500);
-        windSpeedLog.setAnimation(rotateAnimation);
-        windSpeedLog.startAnimation(rotateAnimation);
-    }
-
 
     private List<CranePara> confLoad(Context contex) {
         CraneParaDao dao = new CraneParaDao(contex);
@@ -1206,25 +1188,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void renderMenu() {
-        FrameLayout mainFrame = (FrameLayout) findViewById(R.id.main_frame);
 
-        HashMap<String, Object> viewMap = DrawTool.drawMenu(this, mainFrame);
-        HashMap<String, Object> zoomMap = DrawTool.drawZoom(this, mainFrame);
-
-        if (!viewMapBak.isEmpty()) {
-            DrawTool.eraseMenu(this, mainFrame, viewMapBak);
-        }
-        viewMapBak = viewMap;
-        if (!zoomMapBak.isEmpty()) {
-            DrawTool.eraseZoom(this, mainFrame, zoomMapBak);
-        }
-        zoomMapBak = zoomMap;
-
-        ((ImageView) viewMap.get("R.id.menu")).setOnClickListener(new View.OnClickListener() {
+        ((ImageView) findViewById(R.id.menu)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ImageView btnMenu = (ImageView) viewMap.get("R.id.menu");
-                LinearLayout menuExpand = (LinearLayout) viewMap.get("R.id.menu_expand");
+                ImageView btnMenu = (ImageView) findViewById(R.id.menu);
+                LinearLayout menuExpand = (LinearLayout) findViewById(R.id.menu_expand);
                 Context contex = getApplicationContext();
                 if (menuExpand.getVisibility() == View.GONE) {
                     menuExpand.setVisibility(View.VISIBLE);
@@ -1242,14 +1211,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
         List<ImageView> menuButtons = new ArrayList<ImageView>() {{
-            add((ImageView) viewMap.get("R.id.crane_setting"));
-            add((ImageView) viewMap.get("R.id.area_setting"));
-            add((ImageView) viewMap.get("R.id.protect_area_setting"));
-            add((ImageView) viewMap.get("R.id.calibration_setting"));
-            add((ImageView) viewMap.get("R.id.alarm_setting"));
-            add((ImageView) viewMap.get("R.id.load_attribute"));
-            add((ImageView) zoomMap.get("R.id.zoom_in"));
-            add((ImageView) zoomMap.get("R.id.zoom_out"));
+            add((ImageView) findViewById(R.id.crane_setting));
+            add((ImageView) findViewById(R.id.area_setting));
+            add((ImageView) findViewById(R.id.protect_area_setting));
+            add((ImageView) findViewById(R.id.calibration_setting));
+            add((ImageView) findViewById(R.id.alarm_setting));
+            add((ImageView) findViewById(R.id.load_attribute));
+            add((ImageView) findViewById(R.id.zoom_in));
+            add((ImageView) findViewById(R.id.zoom_out));
         }};
 
         for (ImageView view : menuButtons) {
@@ -1257,7 +1226,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 放大
-        ImageView zoomIn = (ImageView) zoomMap.get("R.id.zoom_in");
+        ImageView zoomIn = (ImageView) findViewById(R.id.zoom_in);
         zoomIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1270,7 +1239,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 缩小
-        ImageView zoomOut = (ImageView) zoomMap.get("R.id.zoom_out");
+        ImageView zoomOut = (ImageView) findViewById(R.id.zoom_out);
         zoomOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1284,7 +1253,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 跳到塔基设置页面
-        ImageView craneSetting = (ImageView) viewMap.get("R.id.crane_setting");
+        ImageView craneSetting = (ImageView) findViewById(R.id.crane_setting);
         craneSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1295,7 +1264,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // 跳到区域设置页面
-        ImageView areaSetting = (ImageView) viewMap.get("R.id.area_setting");
+        ImageView areaSetting = (ImageView) findViewById(R.id.area_setting);
         areaSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1304,7 +1273,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageView protectSetting = (ImageView) viewMap.get("R.id.protect_area_setting");
+        ImageView protectSetting = (ImageView) findViewById(R.id.protect_area_setting);
         protectSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1314,7 +1283,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 跳到标定设置页面
-        ImageView calibrationSetting = (ImageView) viewMap.get("R.id.calibration_setting");
+        ImageView calibrationSetting = (ImageView) findViewById(R.id.calibration_setting);
         calibrationSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1328,7 +1297,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 跳到告警设置页面
-        ImageView alarmSetting = (ImageView) viewMap.get("R.id.alarm_setting");
+        ImageView alarmSetting = (ImageView) findViewById(R.id.alarm_setting);
         alarmSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1338,7 +1307,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 跳转到负荷特性
-        ImageView loadAttribute = (ImageView) viewMap.get("R.id.load_attribute");
+        ImageView loadAttribute = (ImageView) findViewById(R.id.load_attribute);
         loadAttribute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1546,6 +1515,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         angleView = (TextView) findViewById(R.id.angle);
+        vAngleView = (TextView)findViewById(R.id.vangle);
         controlProto.clear();
         EventBus.getDefault().register(this);
         initTable(); // 初始化表
