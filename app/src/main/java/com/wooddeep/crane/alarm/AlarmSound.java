@@ -60,7 +60,7 @@ public class AlarmSound {
     public static void pause() {
         //player.pause();
         for (int i = 0; i < playsers.length; i++) {
-            if (!playsers[i].isPlaying()) {
+            if (playsers[i].isPlaying()) {
                 playsers[i].pause();
             }
         }

@@ -693,61 +693,78 @@ public class MainActivity extends AppCompatActivity {
         if (alarmEvent.leftAlarm == true) {
             Alarm.startAlarm(activity, R.id.left_alarm, Constant.rotateAlarmMap.get(event.leftAlarmLevel));
             leftAlarmView.setText(Constant.levelMap.get(event.leftAlarmLevel));
-            //AlarmSound.setStatus(R.raw.left_rotate_alarm, true);
+            AlarmSound.setStatus(R.raw.left_rotate_alarm, true);
         } else {
             Alarm.stopAlarm(activity, R.id.left_alarm, R.mipmap.forward);
             leftAlarmView.setText(Constant.levelMap.get(0));
+            AlarmSound.setStatus(R.raw.left_rotate_alarm, false);
         }
 
         if (alarmEvent.rightAlarm == true) {
             Alarm.startAlarm(activity, R.id.right_alarm, Constant.rotateAlarmMap.get(event.rightAlarmLevel));
             rightAlarmView.setText(Constant.levelMap.get(event.rightAlarmLevel));
+            AlarmSound.setStatus(R.raw.right_rotate_alarm, true);
         } else {
             Alarm.stopAlarm(activity, R.id.right_alarm, R.mipmap.forward);
             rightAlarmView.setText(Constant.levelMap.get(0));
+            AlarmSound.setStatus(R.raw.right_rotate_alarm, false);
         }
 
         if (alarmEvent.forwardAlarm == true) {
             Alarm.startAlarm(activity, R.id.forward_alarm, Constant.carRangeAlarmMap.get(event.forwardAlarmLevel));
             forwardAlarmView.setText(Constant.levelMap.get(event.forwardAlarmLevel));
+            AlarmSound.setStatus(R.raw.car_out_alarm, true);
         } else {
             Alarm.stopAlarm(activity, R.id.forward_alarm, R.mipmap.forward);
             forwardAlarmView.setText(Constant.levelMap.get(0));
+            AlarmSound.setStatus(R.raw.car_out_alarm, false);
         }
 
         if (alarmEvent.backendAlarm == true) {
             Alarm.startAlarm(activity, R.id.back_alarm, Constant.carRangeAlarmMap.get(event.backendAlarmLevel));
             backwardAlarmView.setText(Constant.levelMap.get(event.backendAlarmLevel));
+            AlarmSound.setStatus(R.raw.car_back_alarm, true);
         } else {
             Alarm.stopAlarm(activity, R.id.back_alarm, R.mipmap.forward);
             backwardAlarmView.setText(Constant.levelMap.get(0));
+            AlarmSound.setStatus(R.raw.car_back_alarm, false);
         }
 
         if (alarmEvent.weightAlarm == true) {
             Alarm.startAlarm(activity, R.id.weight_alarm, Constant.weightAlarmMap.get(event.weightAlarmLevel));
             weightAlarmView.setText(Constant.levelMap.get(event.weightAlarmLevel));
+            AlarmSound.setStatus(R.raw.weight_alarm, true);
         } else {
             Alarm.stopAlarm(activity, R.id.weight_alarm, R.mipmap.weight0);
             weightAlarmView.setText(Constant.levelMap.get(0));
+            AlarmSound.setStatus(R.raw.weight_alarm, false);
         }
 
         if (alarmEvent.momentAlarm == true) {
             Alarm.startAlarm(activity, R.id.moment_alarm, Constant.momentAlarmMap.get(event.momentAlarmLevel));
             momentAlarmView.setText(Constant.levelMap.get(event.momentAlarmLevel));
+            AlarmSound.setStatus(R.raw.moment_alarm, true);
         } else {
             Alarm.stopAlarm(activity, R.id.moment_alarm, R.mipmap.moment0);
             momentAlarmView.setText(Constant.levelMap.get(0));
+            AlarmSound.setStatus(R.raw.moment_alarm, false);
         }
 
         if (alarmEvent.hookMinHightAlarm == true) {
             Alarm.startAlarm(activity, R.id.hook_alarm_logo, R.mipmap.hook_mix);
             hookAlarmVeiw.setText("T");
             hookAlarmVeiw.setRotation(180);
+            AlarmSound.setStatus(R.raw.hook_down_warning, true);
+        } else {
+            AlarmSound.setStatus(R.raw.hook_down_warning, false);
         }
 
         if (alarmEvent.hookMaxHightAlarm == true) {
             Alarm.startAlarm(activity, R.id.hook_alarm_logo, R.mipmap.hook_max);
             hookAlarmVeiw.setText("T");
+            AlarmSound.setStatus(R.raw.hook_up_warning, true);
+        } else {
+            AlarmSound.setStatus(R.raw.hook_up_warning, false);
         }
 
         if (alarmEvent.hookMinHightAlarm == false && alarmEvent.hookMaxHightAlarm == false) {
@@ -772,10 +789,9 @@ public class MainActivity extends AppCompatActivity {
         //AlarmSound.setStatus(R.raw.left_rotate_alarm, true);
         //AlarmSound.start(0);
 
-
         // 告警铃声
         if (event.hasAlarm) {
-            AlarmSound.start(0);
+           AlarmSound.start(0);
         }
         // 告警铃声清除
         if (!event.hasAlarm) {
