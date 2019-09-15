@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,7 +20,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.x6.serialportlib.SerialPort;
 import com.wooddeep.crane.alarm.Alarm;
+import com.wooddeep.crane.alarm.AlarmSound;
 import com.wooddeep.crane.comm.ControlProto;
 import com.wooddeep.crane.comm.Protocol;
 import com.wooddeep.crane.comm.RadioProto;
@@ -95,110 +98,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 // adb connect 127.0.0.1:7555
 // 然后再调试, 就ok了
 
-// eventbus for android
-// https://www.jianshu.com/p/428a5257839c
-
-// set 按钮的前景 后台
-// https://blog.csdn.net/oathevil/article/details/23707359
-
-// FrameLayout 分层权重问题
-// https://www.jianshu.com/p/c1d17a39bc09
-
-// 仿qq弹出菜单
-// https://github.com/Zhaoss/HintPopupWindow
-
-// 仿苹果对话框
-// https://github.com/saiwu-bigkoo/Android-AlertView
-
-// 自定义按钮
-// https://www.cnblogs.com/Free-Thinker/p/5571876.html
-
-// ormlite
-// https://blog.csdn.net/u013501637/article/details/52388802
-
-// 颜色值查询  
-// https://www.colorhexa.com/d4237a
-
-/*
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.0.0-alpha1'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.1'
-    implementation 'org.locationtech.jts:jts-core:1.15.0'
-    implementation 'org.greenrobot:eventbus:3.0.0'
-    }
-*/
-
-/**
- * 获取主界面FrameLayout的坐标及长宽
- **/
-/*
-@Override
-public void onWindowFocusChanged (boolean hasFocus) {
-    FrameLayout mainFrame = findViewById(R.id.main_frame);
-    int[] location = new int[2];
-    mainFrame.getLocationInWindow(location);
-    Context context = getApplicationContext();
-    int width = mainFrame.getMeasuredWidth(); // 获取组件宽度
-    int height = mainFrame.getMeasuredHeight(); // 获取组件高度
-    Log.i(TAG, String.format("## MainFrame: x0:%d, y0:%d, width:%d, height:%d\n", location[0], location[1], width, height));
-}
-*/
-
-// 圆环设置
-/*
-SuperCircleView mSuperCircleView;
-mSuperCircleView = findViewById(R.id.superview);
-mSuperCircleView.setValue(100);
-mSuperCircleView.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        //随机设定圆环大小
-        int i = new Random().nextInt(100) + 1;
-        //int i = 2;
-        Log.i(TAG, "onClick: i::" + i);
-        mSuperCircleView.setValue(i);
-    }
-});
-*/
-
-// 进度条
-/*
-final SimpleProgressbar spb = (SimpleProgressbar) findViewById(R.id.spb);
-final int max = spb.getMax();
-new Thread(new Runnable() {
-    @Override
-    public void run() {
-        int progress = spb.getProgress();
-        while ((progress + 1) <= max) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            spb.setProgress(progress + 1);
-            progress = progress + 1;
-        }
-    }
-}).start();
-
-Coordinate pointer0 = new Coordinate(0, 0);
-Coordinate pointer1 = new Coordinate(0, 10);
-double distance = pointer0.distance(pointer1);
-try {
-    Geometry g1 = new WKTReader().read("LINESTRING (0 10, 10 0)");
-    Geometry g2 = new WKTReader().read("POINTSTRING (0 0)");
-    double d = g1.distance(g2);
-    Log.d(TAG, "### this distance = " + d);
-} catch (ParseException e) {
-    e.printStackTrace();
-}
-
-// android动画 https://blog.csdn.net/qq_19431333/article/details/87690200
-
-// Android绘制(三):Path结合属性动画, 让图标动起来! https://www.jianshu.com/p/923eb80e80a3
-
-*/
 
 // TODO list 20190908
 // 1. 不在线，幅度为0，角度为0, 不参与碰撞检测 （ok）
@@ -247,14 +146,14 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, Long> radioStatusMap = new HashMap();
     private List<String> craneNumbers = new ArrayList<>();
     private List<BaseElem> elemList = new ArrayList<>();
+    private List<Load> loadParas = new ArrayList<>();
     private ElemMap elemMap = new ElemMap();
-    private List<Load> loadParas = null; // 负荷特性设置
 
     private int currSlaveIndex = 0; // 当前和本主机通信的从机名称
     private float shadowLength = 0;
+    private String myCraneNo = "";
     private float oscale = 1.0f;
     private int craneType = 0; // 塔基类型: 0 ~ 平臂式, 2动臂式
-    private String myCraneNo = "";
 
     private RotateProto currRotateProto = new RotateProto();
     private RotateProto prevRotateProto = new RotateProto();
@@ -267,8 +166,8 @@ public class MainActivity extends AppCompatActivity {
 
     private EventBus eventBus = EventBus.getDefault();
     private UartEmitter emitter = new UartEmitter();
-    private Calibration calibration = null;
-    private AlarmSet alarmSet = null;
+    private Calibration calibration = new Calibration();
+    private AlarmSet alarmSet = new AlarmSet();
 
     private AtomicBoolean iAmMaster = new AtomicBoolean(false); // 本机是否为通信主机
     private SimulatorFlags flags = new SimulatorFlags();
@@ -280,9 +179,9 @@ public class MainActivity extends AppCompatActivity {
     private RadioProto slaveRadioProto = new RadioProto();  // 本机作为从机时，需要radio通信的对象
     private RadioProto masterRadioProto = new RadioProto(); // 本机作为主机时，需要radio通信的对象
 
-    private com.example.x6.serialportlib.SerialPort serialttyS0;
-    private com.example.x6.serialportlib.SerialPort serialttyS1;
-    private com.example.x6.serialportlib.SerialPort serialttyS2;
+    private SerialPort serialttyS0;
+    private SerialPort serialttyS1;
+    private SerialPort serialttyS2;
     private InputStream ttyS0InputStream;
     private OutputStream ttyS0OutputStream;
     private InputStream ttyS1InputStream;
@@ -481,10 +380,10 @@ public class MainActivity extends AppCompatActivity {
                                     shadow = Math.round(shadow * 10) / 10.0f;
                                     //lengthShow(shadow);
                                     shadowLength = shadow;
-                                    System.out.println("--1--" + shadowLength);
+                                    //System.out.println("--1--" + shadowLength);
                                     lengthEvent.setLength(shadow);
                                     eventBus.post(lengthEvent);
-                                    MomentOut moment = MathTool.momentCalc(loadParas, currProto.getRealWeight(), currProto.getRealLength());
+                                    MomentOut moment = MathTool.momentCalc(loadParas, currProto.getRealWeight(), shadow);
                                     weigthChangeShow(moment.moment, moment.ratedWeight);
                                 });
                             }
@@ -512,8 +411,14 @@ public class MainActivity extends AppCompatActivity {
                             weightEvent.setWeight(currProto.getRealWeight());
                             prevProto.setRealWeight(currProto.getRealWeight());
                             eventBus.post(weightEvent);
-                            MomentOut moment = MathTool.momentCalc(loadParas, currProto.getRealWeight(), currProto.getRealLength());
-                            runOnUiThread(() -> momentShow(moment.moment));
+
+                            if (centerCycle.getType() == 1) {
+                                MomentOut moment = MathTool.momentCalc(loadParas, currProto.getRealWeight(), shadowLength);
+                                runOnUiThread(() -> momentShow(moment.moment));
+                            } else {
+                                MomentOut moment = MathTool.momentCalc(loadParas, currProto.getRealWeight(), currProto.getRealLength());
+                                runOnUiThread(() -> momentShow(moment.moment));
+                            }
                         }
 
                         if (Math.abs(currProto.getWindSpeed() - prevProto.getWindSpeed()) >= 218) {
@@ -616,10 +521,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startTimerThread() {
-        player = MediaPlayer.create(this, R.raw.alarm);
-        player.setLooping(true);
-        player.start();
-        player.pause();
+        AlarmSound.init(getApplicationContext());
+        //AlarmSound.setStatus(R.raw.left_rotate_alarm, true);
+        //AlarmSound.start(0);
 
         new Thread(() -> {
             try {
@@ -629,7 +533,7 @@ public class MainActivity extends AppCompatActivity {
                         Alarm.alarmDetect(calibration, currProto.getRealHeight(), shadowLength, // TODO 吊钩高度 和 仰角 关联
                             elemList, craneMap, myCraneNo, alarmSet, eventBus); // 回转告警判断
                         Alarm.weightAlarmDetect(calibration, loadParas, alarmSet, eventBus,
-                            currProto.getRealWeight(), currProto.getRealLength()); // 吊重告警判断
+                            currProto.getRealWeight(), shadowLength); // 吊重告警判断
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -782,12 +686,6 @@ public class MainActivity extends AppCompatActivity {
         calibration = event.calibration;
     }
 
-
-    // https://blog.csdn.net/robertcpp/article/details/51532161
-    public void playAlarmBuz() {
-        MediaPlayer player = new MediaPlayer().create(this, R.raw.alarm);
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void alarmShowEventBus(AlarmEvent event) {
         alarmEvent = event;
@@ -795,6 +693,7 @@ public class MainActivity extends AppCompatActivity {
         if (alarmEvent.leftAlarm == true) {
             Alarm.startAlarm(activity, R.id.left_alarm, Constant.rotateAlarmMap.get(event.leftAlarmLevel));
             leftAlarmView.setText(Constant.levelMap.get(event.leftAlarmLevel));
+            //AlarmSound.setStatus(R.raw.left_rotate_alarm, true);
         } else {
             Alarm.stopAlarm(activity, R.id.left_alarm, R.mipmap.forward);
             leftAlarmView.setText(Constant.levelMap.get(0));
@@ -870,14 +769,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        //AlarmSound.setStatus(R.raw.left_rotate_alarm, true);
+        //AlarmSound.start(0);
+
+
         // 告警铃声
-        if (event.hasAlarm && !player.isPlaying()) {
-            player.start();
+        if (event.hasAlarm) {
+            AlarmSound.start(0);
         }
         // 告警铃声清除
         if (!event.hasAlarm) {
-            player.pause();
+            AlarmSound.pause();
         }
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -1479,9 +1383,9 @@ public class MainActivity extends AppCompatActivity {
                 s1Name = "S2";
             }
 
-            serialttyS0 = new com.example.x6.serialportlib.SerialPort(
+            serialttyS0 = new SerialPort(
                 s0Name, 115200, 8, 0, 'o', true); // 19200 // AD数据
-            serialttyS1 = new com.example.x6.serialportlib.SerialPort(
+            serialttyS1 = new SerialPort(
                 s1Name, 19200, 8, 0, 'o', true);
 
             ttyS0InputStream = serialttyS0.getInputStream();
@@ -1490,7 +1394,7 @@ public class MainActivity extends AppCompatActivity {
             ttyS1InputStream = serialttyS1.getInputStream();
             ttyS1OutputStream = serialttyS1.getOutputStream();
 
-            serialttyS2 = new com.example.x6.serialportlib.SerialPort(
+            serialttyS2 = new SerialPort(
                 "S3", 19200, 8, 1, 'e', true);
             ttyS2OutputStream = serialttyS2.getOutputStream();
             ttyS2InputStream = serialttyS2.getInputStream();

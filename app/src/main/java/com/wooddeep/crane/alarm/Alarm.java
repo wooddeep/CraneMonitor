@@ -443,6 +443,9 @@ public class Alarm {
                 float moment2 = ww * alarmSet.getMoment2() / 100;
                 float moment1 = ww * alarmSet.getMoment1() / 100;
 
+                // curr: 8.900000, ms = 9.999999, m3: 11.999999, m2: 8.999999, m1: 5.000000
+                System.out.printf("curr: %f, ms = %s, m3: %f, m2: %f, m1: %f\n", curWeight, ww, moment3, moment2, moment1);
+
                 if (curWeight >= moment1) {
                     alarmEvent.momentAlarm = true;
                     alarmEvent.momentAlarmLevel = 1;

@@ -16,6 +16,9 @@ public class MathTool {
     }
 
     public static MomentOut momentCalc(List<Load> loads, float curWeight, float cc) {
+        momentOut.moment = 100.0f;
+        momentOut.ratedWeight = 10;
+
         for (int i = 0; i < loads.size() - 1; i++) {
             float sc = Float.parseFloat(loads.get(i).getCoordinate());
             float ec = Float.parseFloat(loads.get(i + 1).getCoordinate());
@@ -35,8 +38,6 @@ public class MathTool {
             }
         }
 
-        momentOut.moment = 100.0f;
-        momentOut.ratedWeight = 10;
         return momentOut;
     }
 
