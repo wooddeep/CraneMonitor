@@ -26,7 +26,9 @@ public class Protocol {
 
     private float realWeight = 0;
 
-    private float realHeight = 0; // 吊钩高度
+    private float realHeight = 0; // 塔身高度
+
+    private float realHookHeight = 0; // 吊钩实际高度
 
     private float realLength = 0;
 
@@ -125,10 +127,18 @@ public class Protocol {
         return Math.round(weightValue * 10) / 10.0f;
     }
 
-    public float calcRealHeight(Calibration calibration) {
+    public float calcRealHookHeight(Calibration calibration, int craneType, float bigArmLen, float vangle) {
         float heightValue = calibration.getHeightStart() + calibration.getHeightRate() *
             (getHeight() - calibration.getHeightStartData());
-        setRealHeight(Math.round(heightValue * 10) / 10.0f);
+
+        if (craneType == 1) { // 动臂式
+            float deltaHeight1 = (float)Math.sin(Math.toRadians(calibration.getHookHeightVangle1())) * bigArmLen;
+            float deltaHeight2 = (float)Math.sin(Math.toRadians(vangle)) * bigArmLen;
+            heightValue = heightValue + (deltaHeight2 - deltaHeight1);
+        }
+
+        setRealHookHeight(Math.round(heightValue * 10) / 10.0f);
+
         return Math.round(heightValue * 10) / 10.0f;
     }
 
@@ -137,6 +147,7 @@ public class Protocol {
             ((float) getAmplitude() - calibration.getLengthStartData());
 
         setRealLength(Math.round(armLengthValue * 10) / 10.0f);
+
         return Math.round(armLengthValue * 10) / 10.0f;
     }
 
@@ -156,6 +167,15 @@ public class Protocol {
         this.realWeight = realWeight;
     }
 
+    public float getRealHookHeight() {
+        return realHookHeight;
+    }
+
+    public void setRealHookHeight(float realHookHeight) {
+        this.realHookHeight = realHookHeight;
+    }
+
+    /*
     public float getRealHeight() {
         return realHeight;
     }
@@ -163,6 +183,7 @@ public class Protocol {
     public void setRealHeight(float realHeight) {
         this.realHeight = realHeight;
     }
+    */
 
     public float getRealLength() {
         return realLength;

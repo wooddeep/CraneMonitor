@@ -91,6 +91,8 @@ public class CalibrationSetting extends AppCompatActivity {
 
     private MessageEvent gevent = null;
 
+    private UartEvent uartEvent = null;
+
     // 订阅消息, 可以获取串口的数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void registerUartDataReceiver(MessageEvent event) {
@@ -109,6 +111,7 @@ public class CalibrationSetting extends AppCompatActivity {
         try {
             byte[] data = event.data;
             parser.parse(data);
+            uartEvent = event;
             //System.out.printf("## %d - %d - %d - %d\n", parser.getAmplitude(), parser.getHeight(), parser.getWeight(), parser.getWindSpeed());
             ((TextView) findViewById(R.id.amp_value)).setText(parser.getAmplitude() + "");
             ((TextView) findViewById(R.id.height_value)).setText(parser.getHeight() + "");
@@ -716,11 +719,17 @@ public class CalibrationSetting extends AppCompatActivity {
 
                     float startUartData = Float.parseFloat(tvStart.getText().toString()); // uart 读值
                     float endUartData = Float.parseFloat(tvEnd.getText().toString()); // uart 读值
-                    float startDimValue = Float.parseFloat(etStart.getText().toString());
-                    float endDimValue = Float.parseFloat(etEnd.getText().toString());
+                    float startDimValue = Float.parseFloat(etStart.getText().toString()); // 设置的 吊钩距离 地面的距离
+                    float endDimValue = Float.parseFloat(etEnd.getText().toString()); // 设置的吊钩 距离地面的距离
                     float deltaUartData = endUartData - startUartData;
                     float deltaDimValue = endDimValue - startDimValue;
                     float rate = deltaDimValue / deltaUartData;
+
+                    if (uartEvent.craneType == 1) { // 动臂式
+                        float vAngleValue = calibration.getDipAngleStart() + calibration.getDipAngleRate() *
+                            (parser.getAmplitude() - calibration.getDipAngleStartData()); // 倾角值
+                        calibration.setHookHeightVangle1(vAngleValue); // 标定是的倾角
+                    }
 
                     calibration.setHeightStartData(startUartData);
                     calibration.setHeightEndData(endUartData);
@@ -728,6 +737,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibration.setHeightEnd(endDimValue);
                     calibration.setHeightRate(rate);
                     calibrationDao.update(calibration);
+
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
 
                     TextView tvRateShow = (TextView) findViewById(heightStart.rateShowId);
@@ -761,6 +771,12 @@ public class CalibrationSetting extends AppCompatActivity {
                     float deltaUartData = endUartData - startUartData;
                     float deltaDimValue = endDimValue - startDimValue;
                     float rate = deltaDimValue / deltaUartData;
+
+                    if (uartEvent.craneType == 1) { // 动臂式
+                        float vAngleValue = calibration.getDipAngleStart() + calibration.getDipAngleRate() *
+                            (parser.getAmplitude() - calibration.getDipAngleStartData()); // 倾角值
+                        calibration.setHookHeightVangle2(vAngleValue); // 标定是的倾角
+                    }
 
                     calibration.setHeightStartData(startUartData);
                     calibration.setHeightEndData(endUartData);

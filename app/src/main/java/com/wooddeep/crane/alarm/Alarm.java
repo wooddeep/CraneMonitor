@@ -335,7 +335,8 @@ public class Alarm {
         }
     }
 
-    public static void alarmDetect(Calibration calibration, float height, float length,
+    // @height: 塔高
+    public static void alarmDetect(Calibration calibration, float hookHeight, float length,
                                    List<BaseElem> elemList, HashMap<String, CycleElem>
         craneMap, String no, AlarmSet alarmSet, EventBus eventBus) throws Exception {
 
@@ -353,7 +354,7 @@ public class Alarm {
         alarmEvent.forwardAlarmLevel = 100;
         alarmEvent.backendAlarmLevel = 100;
 
-        Alarm.extremumDetect(height, length, alarmSet, eventBus); // 最大最小
+        Alarm.extremumDetect(hookHeight, length, alarmSet, eventBus); // 最大最小
         Alarm.craneToCraneAlarm(craneMap, no, alarmSet); // 塔基到塔基的距离
         Alarm.craneToAreaAlarm(elemList, cc, alarmSet);  // 塔基到区域的距离
     }
@@ -385,6 +386,8 @@ public class Alarm {
 
     public static void weightAlarmDetect(Calibration calibration, List<Load> loads, AlarmSet alarmSet,
                                          EventBus eventBus, float curWeight, float cc) {
+
+        if (loads == null || loads.size() <= 0) return;
 
         float maxWeight = Float.parseFloat(loads.get(0).getWeight());
 
@@ -444,7 +447,7 @@ public class Alarm {
                 float moment1 = ww * alarmSet.getMoment1() / 100;
 
                 // curr: 8.900000, ms = 9.999999, m3: 11.999999, m2: 8.999999, m1: 5.000000
-                System.out.printf("curr: %f, ms = %s, m3: %f, m2: %f, m1: %f\n", curWeight, ww, moment3, moment2, moment1);
+                //System.out.printf("curr: %f, ms = %s, m3: %f, m2: %f, m1: %f\n", curWeight, ww, moment3, moment2, moment1);
 
                 if (curWeight >= moment1) {
                     alarmEvent.momentAlarm = true;

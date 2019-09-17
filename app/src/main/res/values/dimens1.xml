@@ -10,7 +10,7 @@ sed -i "" 's/\(^.*\"\)\([0-9]*\)px\(\".*$\)/\1@dimen\/px\2\3/g' activity_main.xm
 -->
 
 <resources>
-    <!--
+
     <dimen name="crane_view_width">300px</dimen>
     <dimen name="dp150">200dp</dimen>
     <dimen name="dp320">424dp</dimen>
@@ -48,5 +48,5 @@ sed -i "" 's/\(^.*\"\)\([0-9]*\)px\(\".*$\)/\1@dimen\/px\2\3/g' activity_main.xm
     <dimen name="dp70">92dp</dimen>
     <dimen name="dp12">16dp</dimen>
     <dimen name="px45">60dp</dimen>
-    -->
+
 </resources>

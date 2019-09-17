@@ -84,7 +84,7 @@ public class StringTool {
     }
 
     public static void stringModify(String string, char[] value, char... repl) {
-        if (string == null || string.length() != value.length) return;
+        if (string == null) return;
 
         string.getChars(0, string.length(), value, 0);
 

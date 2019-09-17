@@ -96,7 +96,7 @@ public class Calibration {
     @DatabaseField(columnName = "lengthRate", useGetSet = true, defaultValue = "-1.0f")
     public float lengthRate;
 
-    // 小车高度
+    // 吊钩高度
     @DatabaseField(columnName = "heightStart", useGetSet = true, defaultValue = "-1.0f")
     public float heightStart;
 
@@ -111,6 +111,13 @@ public class Calibration {
 
     @DatabaseField(columnName = "heightRate", useGetSet = true, defaultValue = "-1.0f")
     public float heightRate;
+
+    @DatabaseField(columnName = "hookHeightVangle1", useGetSet = true, defaultValue = "15.0f")
+    public float hookHeightVangle1;
+
+
+    @DatabaseField(columnName = "hookHeightVangle2", useGetSet = true, defaultValue = "15.0f")
+    public float hookHeightVangle2;
 
     public Calibration() {
         super();
@@ -396,6 +403,22 @@ public class Calibration {
 
     public void setRotateStartAngle(float rotateStartAngle) {
         this.rotateStartAngle = rotateStartAngle;
+    }
+
+    public float getHookHeightVangle1() {
+        return hookHeightVangle1;
+    }
+
+    public void setHookHeightVangle1(float hookHeightVangle1) {
+        this.hookHeightVangle1 = hookHeightVangle1;
+    }
+
+    public float getHookHeightVangle2() {
+        return hookHeightVangle2;
+    }
+
+    public void setHookHeightVangle2(float hookHeightVangle2) {
+        this.hookHeightVangle2 = hookHeightVangle2;
     }
 
     public Calibration(

@@ -54,9 +54,10 @@ public class MathTool {
 
     public static float shadowToArm(Crane crane) {
         float bigArmLength = crane.getBigArmLength();
-        if (crane.getType() == 1) { // 动臂式模式下，需要转换得到 半径长度
+        if (crane.getType() == 1) { // 动臂式模式下(初始值bigArmLength 是 大臂投影长度)，需要转换得到 半径长度
             bigArmLength = (bigArmLength + crane.getArchPara()) / (float) Math.cos(Math.toRadians(crane.getMinAngle()));
         }
         return bigArmLength;
     }
+
 }

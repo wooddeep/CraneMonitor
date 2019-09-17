@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-
+    <!--
     <dimen name="crane_view_width">200px</dimen>
     <dimen name="dp150">150dp</dimen>
     <dimen name="dp320">320dp</dimen>
@@ -39,5 +39,5 @@
     <dimen name="dp70">70dp</dimen>
     <dimen name="dp12">12dp</dimen>
     <dimen name="px45">45dp</dimen>
-
+    -->
 </resources>
