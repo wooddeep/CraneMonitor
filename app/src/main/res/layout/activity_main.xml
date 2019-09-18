@@ -45,24 +45,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
-
                 <ImageView
                     android:id="@+id/angle_logo"
-                    android:layout_width="@dimen/dp40"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="@dimen/dp40"
-                    android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/dp2"
                     android:gravity="center"
                     app:srcCompat="@mipmap/rotation" />
-
                 <TextView
                     android:id="@+id/angle"
-                    android:layout_width="@dimen/dp80"
-                    android:layout_height="@dimen/dp50"
-                    android:layout_centerInParent="true"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="@dimen/dp40"
                     android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/dp5"
                     android:gravity="center"
                     android:text="0.0°"
                     android:singleLine="true"
@@ -70,44 +67,15 @@
                     android:textStyle="bold" />
             </TableRow>
 
-            <!--
             <TableRow
+                android:id="@+id/vangle_row"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
-
                 <ImageView
                     android:id="@+id/vangle_logo"
-                    android:layout_width="@dimen/dp35"
-                    android:layout_height="@dimen/dp35"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/dp5"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/vangle" />
-
-                <TextView
-                    android:id="@+id/vangle"
-                    android:layout_width="@dimen/dp80"
-                    android:layout_height="@dimen/dp50"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/dp5"
-                    android:gravity="center"
-                    android:text="45°"
-                    android:textSize="@dimen/dp22"
-                    android:textStyle="bold" />
-            </TableRow>
-            -->
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/vangle_logo"
-                    android:layout_width="@dimen/dp40"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="@dimen/dp40"
                     android:layout_marginLeft="@dimen/dp2"
                     android:layout_centerInParent="true"
@@ -117,11 +85,11 @@
 
                 <TextView
                     android:id="@+id/vangle"
-                    android:layout_width="@dimen/dp80"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
                     android:layout_height="@dimen/dp50"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/dp5"
                     android:gravity="center"
                     android:text="0.0°"
                     android:singleLine="true"
@@ -136,7 +104,8 @@
 
                 <ImageView
                     android:id="@+id/length_logo"
-                    android:layout_width="@dimen/dp40"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="@dimen/dp40"
                     android:layout_marginLeft="@dimen/dp2"
                     android:layout_centerInParent="true"
@@ -147,17 +116,18 @@
 
                 <TextView
                     android:id="@+id/length"
-                    android:layout_width="@dimen/dp100"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
                     android:layout_height="@dimen/dp40"
                     android:layout_centerInParent="true"
                     android:layout_toLeftOf="@+id/height_logo"
                     android:gravity="center"
+                    android:layout_gravity="center"
                     android:text="0.0m"
                     android:singleLine="true"
                     android:textSize="@dimen/dp22"
                     android:textStyle="bold" />
             </TableRow>
-
 
             <TableRow
                 android:layout_width="match_parent"
@@ -166,7 +136,8 @@
 
                 <ImageView
                     android:id="@+id/weight_logo"
-                    android:layout_width="@dimen/dp40"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="@dimen/dp40"
                     android:layout_marginLeft="@dimen/dp2"
                     android:layout_centerInParent="true"
@@ -175,7 +146,8 @@
                     app:srcCompat="@mipmap/weight" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:gravity="center"
@@ -183,11 +155,10 @@
 
                     <TextView
                         android:id="@+id/weight"
-                        android:layout_width="@dimen/dp80"
+                        android:layout_width="match_parent"
                         android:layout_height="@dimen/dp25"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
-                        android:layout_marginRight="@dimen/dp5"
                         android:gravity="center"
                         android:text="0.0t"
                         android:singleLine="true"
@@ -202,11 +173,10 @@
 
                     <TextView
                         android:id="@+id/rated_weight"
-                        android:layout_width="@dimen/dp80"
+                        android:layout_width="match_parent"
                         android:layout_height="@dimen/dp25"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
-                        android:layout_marginRight="@dimen/dp5"
                         android:gravity="center"
                         android:text="0.0t"
                         android:singleLine="true"
@@ -223,7 +193,8 @@
 
                 <ImageView
                     android:id="@+id/moment_logo"
-                    android:layout_width="@dimen/dp40"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="@dimen/dp40"
                     android:layout_marginLeft="@dimen/dp2"
                     android:layout_centerInParent="true"
@@ -233,11 +204,11 @@
 
                 <TextView
                     android:id="@+id/moment"
-                    android:layout_width="@dimen/dp80"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
                     android:layout_height="@dimen/dp50"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/dp5"
                     android:gravity="center"
                     android:text="0.0%"
                     android:singleLine="true"
@@ -263,11 +234,10 @@
 
                 <TextView
                     android:id="@+id/hook_alarm"
-                    android:layout_width="@dimen/dp80"
+                    android:layout_width="match_parent"
                     android:layout_height="@dimen/dp50"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/dp5"
                     android:gravity="center"
                     android:text="ok"
                     android:textSize="@dimen/dp22"
@@ -352,7 +322,7 @@
                 android:layout_marginLeft="@dimen/dp2"
                 android:layout_toLeftOf="@+id/cable_logo"
                 android:gravity="center"
-                android:text="1"
+                android:text="0"
                 android:textSize="@dimen/dp22"
                 android:textStyle="bold" />
 

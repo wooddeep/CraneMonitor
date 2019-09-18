@@ -205,6 +205,7 @@ public class LoadAttribute extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.load_attribute);
+        context = getApplicationContext();
         verifyStoragePermissions(this);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();

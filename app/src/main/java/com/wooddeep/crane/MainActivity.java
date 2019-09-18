@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -204,9 +203,10 @@ public class MainActivity extends AppCompatActivity {
     private byte[] adXBuff = new byte[2048];
     private byte[] rotateXBuff = new byte[1024];
     private byte[] radioXBuff = new byte[1024];
+    private byte[] radioYBuff = new byte[1024];
     private byte[] adRBuff = new byte[20];
     private byte[] rotateRBuff = new byte[10];
-    private byte[] radioRBuff = new byte[39];
+    private byte[] radioRBuff = new byte[40];
 
     private AlarmDetectEvent alarmDetectEvent = new AlarmDetectEvent();
     private HeightEvent heightEvent = new HeightEvent();
@@ -493,21 +493,104 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void startRadioThread() {
+    private void startRadioReadThread() {
+
+        new Thread(() -> {
+            try {
+                int index = 0;
+
+                while (true) {
+
+                    /*
+                    if (ttyS1InputStream.available() > 0) {
+                        int len = ttyS1InputStream.read(radioXBuff, 0, 1024);
+                        for (int i = 0; i < len; i++) {
+                            radioYBuff[i + index] = radioXBuff[i]; // 把XBuffer的数据暂存到YBuffer
+                        }
+                        index = index + len;
+
+                        //System.out.println(new String(radioYBuff));
+
+                        int start = 0;
+                        int end = 0;
+
+                        for (int i = 0; i < 128; i++) {
+                            if (radioYBuff[i] == '%') start = i;
+                        }
+
+                        for (int i = start; i < 128; i++) {
+                            if (radioYBuff[i] == '#') end = i;
+                        }
+
+                        if (index > 128) {
+                            index = 0;
+                            System.out.println("@@@@@@@@@@@@1");
+                            continue;
+                        }
+
+                        if (end > start) { // TODO: 如果收到的数据1024中，都没有 % #， 则退出
+                            index = 0;
+                            for (int i = start; i <= start + 39; i++ ) {
+                                radioRBuff[i - start] = radioYBuff[i];
+                            }
+                            System.out.println(new String(radioRBuff));
+                            radioEvent.setData(radioRBuff);
+
+                            try {
+                                RadioDateEventOps(radioEvent);
+                            } catch (Exception e) {
+                                index = 0;
+                                System.out.println("@@@@@@@@@@@@2");
+                                continue;
+                            }
+                        }
+                    }
+                    */
+
+                    int start = 0;
+                    while (true) {
+                        if (ttyS1InputStream.available() > 0) {
+                            int len = ttyS1InputStream.read(radioXBuff, 0, 1024);
+
+                            //System.out.println("## length = " + len);
+                            for (int i = 0; i < Math.min(len, 39); i++) {
+                                radioRBuff[Math.min(i + start, 39)] = radioXBuff[i]; // 把XBuffer的数据暂存到YBuffer
+                            }
+                            start = start + len;
+                            //System.out.println("## start = " + start);
+                            for (int i = 0; i < 0; i++) {
+
+                            }
+
+                            if (start >= 39) {
+                                System.out.println(new String(radioRBuff));
+                                radioEvent.setData(radioRBuff);
+                                try {
+                                    RadioDateEventOps(radioEvent);
+                                } catch (Exception e) {
+                                    break;
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+
+                    CommTool.sleep(20);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void startRadioWriteThread() {
         new Thread(() -> {
             try {
                 while (true) {
-                    if (ttyS1InputStream.available() > 0) {
-                        int len = ttyS1InputStream.read(radioXBuff, 0, 1024);
-                        for (int i = 0; i < 39; i++) {
-                            radioRBuff[i] = radioXBuff[i];
-                        }
-
-                        radioEvent.setData(radioRBuff);
-                        eventBus.post(radioEvent); // 发送
-                    }
-
+                    System.out.println("### " + iAmMaster.get() + " ### " + craneNumbers.size());
                     if (iAmMaster.get() && craneNumbers.size() > 1) { // 主机
+                        //System.out.println("##### I am master!!!");
                         int iMyCraneNo = Integer.parseInt(myCraneNo);
                         currSlaveIndex = (currSlaveIndex + 1) % craneNumbers.size();
                         int targetNo = Integer.parseInt(craneNumbers.get(currSlaveIndex));
@@ -515,12 +598,20 @@ public class MainActivity extends AppCompatActivity {
                         masterRadioProto.setSourceNo(iMyCraneNo);
                         masterRadioProto.setTargetNo(targetNo);
                         masterRadioProto.setPermitNo(targetNo);
-                        masterRadioProto.setRotate(centerCycle.hAngle);  // 实际的物理维度值，不是按比例值的值
-                        masterRadioProto.setRange(centerCycle.carRange); // 实际的物理维度值，不是按比例值的值
+
+                        double currAngle = Math.max(Math.toRadians(centerCycle.hAngle), 0);
+                        double currRange = Math.max(shadowLength, 0);
+
+                        masterRadioProto.setRotate(Math.round(currAngle * 10) / 10.0f);
+                        masterRadioProto.setRange(Math.round(currRange * 10) / 10.0f);
+
+                        //System.out.printf("### master write data: %f -- %f \n", currAngle, currRange); // TODO 幅度值，角度值不对
                         masterRadioProto.packReply(); // 生成回应报文
                         //StringTool.showCharArray1(masterRadioProto.modleChars);
+
                         try {
-                            ttyS1OutputStream.write(masterRadioProto.modleBytes); // 发送应答报文
+                            //ttyS1OutputStream.write(masterRadioProto.modleBytes); // 发送应答报文
+                            ttyS1OutputStream.write(masterRadioProto.modleBytes, 0, 39);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -561,35 +652,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 侦听电台数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void RadioDateEventBus(RadioEvent event) {
-
+    //@Subscribe(threadMode = ThreadMode.MAIN)
+    public void RadioDateEventOps(RadioEvent event) {
         int cmdRet = radioProto.parse(event.getData()); // 解析电台数据
 
+        if (radioProto.sourceNo.equals(myCraneNo)) return; // TODO 再次验证
+
+        //System.out.printf("#$$$$  %f -- %f \n", radioProto.getRotate(), radioProto.getRange());
+        // System.out.println("####  ---a---");
         if (cmdRet == RadioProto.CMD_START_MASTER && waitFlag == true) { // 启动主机命令
+            // System.out.println("####  ---a.0---");
             iAmMaster.set(true);
-            masterNoView.setText(myCraneNo);
+            runOnUiThread(() -> masterNoView.setText(myCraneNo));
             waitFlag = false;
             return;
         }
 
         long currTime = System.currentTimeMillis(); // 当前时间
 
+
         if (radioProto.isQuery) { // 收到主机的查询命令，本机必然为从机
+
             waitFlag = false;
+
+            System.out.println("-------------------------");
+            System.out.println(new String(event.getData()));
+            System.out.println("-------------------------");
             iAmMaster.set(false);
 
             CycleElem master = craneMap.get(radioProto.getSourceNo()); // 作为从机, 更新主机的信息 // TODO 根据塔基类型，计算仰角
-            masterNoView.setText(radioProto.getSourceNo());
+            runOnUiThread(() -> masterNoView.setText(radioProto.getSourceNo()));
+            //System.out.println("####  ---b---");
             if (master != null) {
-
+                //System.out.println("####  ---b.1---");
                 SavedData savedData = savedDataMap.get(radioProto.getSourceNo());
                 if (savedData == null) {
                     savedData = new SavedData(0, 0);
                     savedDataMap.put(radioProto.getSourceNo(), savedData);
                 }
 
-                if (Math.abs(radioProto.getRange() - savedData.range) >= 0.1f) {
+                //if (Math.abs(radioProto.getRange() - savedData.range) >= 0.1f) {
+                runOnUiThread(() -> {
                     if (master.type == 1) { // 动臂式
                         double vangle = MathTool.calcVAngle(master.getBigArmLen(), radioProto.getRange(), master.archPara);
                         master.setVAngle((float) vangle); // 设置动臂式的仰角
@@ -598,19 +701,23 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         master.setCarRange(radioProto.getRange()); // 平臂式实际幅度
                     }
+                    master.setColor(Color.rgb(46, 139, 87));
+                });
+                //    savedData.range = radioProto.getRange();
+                //}
 
-                    savedData.range = radioProto.getRange();
-                }
+                //System.out.printf("@@@@  %f -- %f \n", radioProto.getRotate(), radioProto.getRange());
 
                 float hangle = MathTool.radiansToAngle(radioProto.getRotate());
-                if (Math.abs(hangle - savedData.angle) >= 0.1) {
+                //if (Math.abs(hangle - savedData.angle) >= 0.1) {
+                runOnUiThread(() -> {
                     master.setHAngle(hangle);
-                    savedData.angle = hangle;
-                }
-
-                master.setColor(Color.rgb(46, 139, 87));
-                master.setOnline(true);
-                radioStatusMap.put(radioProto.getSourceNo(), currTime);
+                    master.setColor(Color.rgb(46, 139, 87));
+                    master.setOnline(true);
+                    radioStatusMap.put(radioProto.getSourceNo(), currTime);
+                });
+                savedData.angle = hangle;
+                //}
             }
 
             if (radioProto.getSourceNo().equals(radioProto.getTargetNo()) // 源ID和目标ID相同
@@ -620,7 +727,7 @@ public class MainActivity extends AppCompatActivity {
                 slaveRadioProto.setPermitNo(0);
 
                 if (centerCycle.type == 1) { // 动臂式, 计算投影值
-                    float shadow = (float) MathTool.calcShadow(master.getBigArmLen(), currProto.getRealVAngle(), master.archPara);
+                    float shadow = (float) MathTool.calcShadow(centerCycle.getBigArmLen(), currProto.getRealVAngle(), centerCycle.archPara);
                     shadow = Math.round(shadow * 10) / 10.0f;
                     slaveRadioProto.setRange(shadow);
                 } else {
@@ -629,10 +736,11 @@ public class MainActivity extends AppCompatActivity {
 
                 slaveRadioProto.setRotate((centerCycle.hAngle % 360) * 2 * (float) Math.PI / 360);
                 slaveRadioProto.packReply(); // 生成回应报文
-                StringTool.showCharArray1(slaveRadioProto.modleChars);
+                //StringTool.showCharArray1(slaveRadioProto.modleChars);
                 try {
                     if (ttyS1OutputStream != null) {
-                        ttyS1OutputStream.write(slaveRadioProto.modleBytes); // 发送应答报文
+                        //ttyS1OutputStream.write(slaveRadioProto.modleBytes); // 发送应答报文
+                        ttyS1OutputStream.write(slaveRadioProto.modleBytes, 0, 39);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -646,13 +754,15 @@ public class MainActivity extends AppCompatActivity {
 
             CycleElem slave = craneMap.get(radioProto.getSourceNo());
             if (slave != null) {
+
                 SavedData savedData = savedDataMap.get(radioProto.getSourceNo());
                 if (savedData == null) {
                     savedData = new SavedData(0, 0);
                     savedDataMap.put(radioProto.getSourceNo(), savedData);
                 }
 
-                if (Math.abs(radioProto.getRange() - savedData.range) >= 0.1f) {
+                //if (Math.abs(radioProto.getRange() - savedData.range) >= 0.1f) {
+                runOnUiThread(() -> {
                     if (slave.type == 1) { // 动臂式
                         double vangle = MathTool.calcVAngle(slave.getBigArmLen(), radioProto.getRange(), slave.archPara);
                         slave.setVAngle((float) vangle); // 设置动臂式的仰角
@@ -661,18 +771,18 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         slave.setCarRange(radioProto.getRange()); // 平臂式实际幅度
                     }
-
-                    savedData.range = radioProto.getRange();
-                }
+                });
+                savedData.range = radioProto.getRange();
+                //}
 
                 float hangle = MathTool.radiansToAngle(radioProto.getRotate()); // 水平方向的夹角
-                if (Math.abs(hangle - savedData.angle) >= 0.1) {
+                //if (Math.abs(hangle - savedData.angle) >= 0.1) {
+                runOnUiThread(() -> {
                     slave.setHAngle(hangle);
-                    savedData.angle = hangle;
-                }
-
-                slave.setColor(Color.rgb(46, 139, 87));
-
+                    slave.setColor(Color.rgb(46, 139, 87));
+                });
+                //}
+                savedData.angle = hangle;
                 slave.setOnline(true); // 设置离线状态
                 radioStatusMap.put(radioProto.getSourceNo(), currTime);
             }
@@ -682,8 +792,10 @@ public class MainActivity extends AppCompatActivity {
         for (String no : radioRecSet) {
             long prevRecTimer = radioStatusMap.get(no); // 上次记录时间
             if (currTime - prevRecTimer > 60000) { // 通信10失联，判断超时
-                craneMap.get(no).setColor(Color.LTGRAY);
-                craneMap.get(no).setCarRange(0); // 失联设备, 设置小车幅度为0
+                runOnUiThread(() -> {
+                    craneMap.get(no).setColor(Color.LTGRAY);
+                    craneMap.get(no).setCarRange(0); // 失联设备, 设置小车幅度为0
+                });
                 craneMap.get(no).setOnline(false); // 设置离线状态
             }
         }
@@ -807,7 +919,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 告警铃声
         if (event.hasAlarm) {
-           AlarmSound.start(0);
+            AlarmSound.start(0);
         }
         // 告警铃声清除
         if (!event.hasAlarm) {
@@ -815,19 +927,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
-    /*
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void AlarmJudgeEventBus(AlarmDetectEvent event) {
-        try {
-            if (elemList.size() == 0) return;
-            Alarm.alarmDetect(calibration, currProto.getRealHeight(), currProto.getRealLength(),
-                elemList, craneMap, myCraneNo, alarmSet, eventBus);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    */
 
     private void setCurrTime() {
         Date date = new Date();
@@ -1236,6 +1335,11 @@ public class MainActivity extends AppCompatActivity {
         float bigArmLength = MathTool.shadowToArm(mainCrane); // 先标定倾角 -> 通过投影 计算出大臂长度 -> 再标定 动臂式高度
         centerCycle = new CenterCycle(oscale, mainCrane.getCoordX1(), mainCrane.getCoordY1(), bigArmLength,
             mainCrane.getBalancArmLength(), prvHAngle, prvVAngle, prvLength, mainCrane.getCraneHeight(), number);
+        if (mainCrane.getType() == 0) {
+            findViewById(R.id.vangle_row).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.vangle_row).setVisibility(View.VISIBLE);
+        }
         centerCycle.setType(mainCrane.getType()); // 设置塔基式样: 平臂 ~ 动臂
         centerCycle.setArchPara(mainCrane.getArchPara()); // 保存结构参数
         centerCycle.setBigArmLen(bigArmLength); // 保存大臂长度
@@ -1408,7 +1512,7 @@ public class MainActivity extends AppCompatActivity {
         backwardAlarmView = (TextView) findViewById(R.id.back_alarm_level);
         momentView = (TextView) findViewById(R.id.moment);
         ratedWeightView = (TextView) findViewById(R.id.rated_weight);
-        masterNoView = (TextView)findViewById(R.id.master_no);
+        masterNoView = (TextView) findViewById(R.id.master_no);
 
         try {
             String s0Name = "S0";
@@ -1443,12 +1547,16 @@ public class MainActivity extends AppCompatActivity {
 
         // 触发判断本机是否为主机
         new Handler().postDelayed(() -> {
-            eventBus.post(new RadioEvent(radioProto.startMaster()));
             startSensorThread(); // 初始化串口线程
-            startRadioThread();
+            startRadioReadThread();
+            startRadioWriteThread();
             startTimerThread();
-            //startDataSimThread();
-        }, 2000);
+        }, 1000);
+
+        // 触发判断本机是否为主机
+        new Handler().postDelayed(() -> {
+            RadioDateEventOps(new RadioEvent(radioProto.startMaster()));
+        }, 3000);
     }
 
 }

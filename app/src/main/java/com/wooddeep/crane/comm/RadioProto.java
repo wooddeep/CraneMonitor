@@ -101,13 +101,12 @@ public class RadioProto {
             StringTool.showCharArray(sourceNoChars);
             System.out.printf(" - rotate: ");
             StringTool.showCharArray(rotateChars);
-            //rotate = Float.parseFloat(new String(rotateChars)); // TODO 替换成自己计算值
-            rotate = StringTool.arrayToFloat(rotateChars);
             System.out.printf(" , range: ");
             StringTool.showCharArray(rangeChars);
-            //range = Float.parseFloat(new String(rangeChars)); // TODO 替换成自己计算值
-            range = StringTool.arrayToFloat(rangeChars);
             System.out.println("");
+
+            rotate = StringTool.arrayToFloat(rotateChars);
+            range = StringTool.arrayToFloat(rangeChars);
             isQuery = false; // 从机的回文
         } else {
             System.out.printf("# request: "); // + "->" +" %s ", sourceNo, targetNo);
@@ -122,6 +121,8 @@ public class RadioProto {
             StringTool.showCharArray(rangeChars);
             System.out.println("");
 
+            rotate = StringTool.arrayToFloat(rotateChars);
+            range = StringTool.arrayToFloat(rangeChars);
             this.masterNo = sourceNo;
             isQuery = true;
         }

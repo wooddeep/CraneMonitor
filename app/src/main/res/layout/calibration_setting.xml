@@ -112,7 +112,7 @@
                 android:layout_width="@dimen/dp100"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/dp20"
-                android:text="12345" />
+                android:text="0" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -125,7 +125,7 @@
                 android:layout_width="@dimen/dp100"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/dp20"
-                android:text="12345" />
+                android:text="0" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -139,7 +139,7 @@
                 android:layout_width="@dimen/dp100"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/dp20"
-                android:text="12345" />
+                android:text="0" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -152,7 +152,7 @@
                 android:layout_width="@dimen/dp100"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/dp20"
-                android:text="12345" />
+                android:text="0" />
 
         </LinearLayout>
 
@@ -609,7 +609,7 @@
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:layout_marginBottom="@dimen/dp5"
-                        app:srcCompat="@mipmap/di_angle" />
+                        app:srcCompat="@mipmap/vangle" />
                     <TextView
                         android:id="@+id/rotation_logo"
                         android:layout_width="match_parent"
@@ -854,7 +854,7 @@
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        app:srcCompat="@mipmap/range" />
+                        app:srcCompat="@mipmap/length" />
                     <TextView
                         android:id="@+id/rotation_logo"
                         android:layout_width="match_parent"
@@ -978,7 +978,7 @@
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        app:srcCompat="@mipmap/height" />
+                        app:srcCompat="@mipmap/hook" />
                     <TextView
                         android:id="@+id/rotation_logo"
                         android:layout_width="match_parent"
