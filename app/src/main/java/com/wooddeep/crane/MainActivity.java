@@ -556,7 +556,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    CommTool.sleep(120);
+                    CommTool.sleep(130);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -670,12 +670,12 @@ public class MainActivity extends AppCompatActivity {
                 if (centerCycle.type == 1) { // 动臂式, 计算投影值
                     float shadow = (float) MathTool.calcShadow(centerCycle.getBigArmLen(), currProto.getRealVAngle(), centerCycle.archPara);
                     shadow = Math.round(shadow * 10) / 10.0f;
-                    slaveRadioProto.setRange(shadow);
+                    slaveRadioProto.setRange(Math.max(shadow, 0));
                 } else {
-                    slaveRadioProto.setRange(centerCycle.carRange);
+                    slaveRadioProto.setRange(Math.max(centerCycle.carRange, 0));
                 }
 
-                slaveRadioProto.setRotate((centerCycle.hAngle % 360) * 2 * (float) Math.PI / 360);
+                slaveRadioProto.setRotate(Math.max(0, ((centerCycle.hAngle % 360) * 2 * (float) Math.PI / 360)));
                 slaveRadioProto.packReply(); // 生成回应报文
                 //StringTool.showCharArray1(slaveRadioProto.modleChars);
                 try {

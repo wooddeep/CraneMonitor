@@ -92,6 +92,33 @@ public class Alarm {
             if (elem instanceof SideCycle) { // cycle
                 SideCycle sc = (SideCycle) craneMap.get(id);
 
+                // 小车和小车的距离判断
+                Geometry cargcc = cc.getCarGeo(0, 0);
+                Geometry cargsc = sc.getCarGeo(0, 0);
+                double carToCarDis = cargcc.distance(cargsc);
+                if (carToCarDis < alarmSet.getCarSpeedDownDist()) {
+                    int level = carToCarDis < alarmSet.getCarStopDist() ? 1 : 2; // 1挡停车距离，2挡减速距离
+
+                    Geometry gPredect1 = cc.getCarGeo(0.0f, 0.1f); // 向外运行
+                    float distPred1 = (float) gPredect1.distance(cargsc);
+                    Geometry gPredect2 = cc.getCarGeo(0.0f, -0.1f); // 向内运行
+                    float distPred2 = (float) gPredect2.distance(cargsc);
+
+                    if (distPred1 <= carToCarDis) { // 逆时针旋转 距离告警，则是 左转告警
+                        System.out.printf("### car forwardAlarm alarm!!!\n", id);
+                        alarmEvent.forwardAlarm = true;
+                        alarmEvent.hasAlarm = true;
+                        alarmEvent.forwardAlarmLevel = level;
+                    }
+
+                    if (distPred2 <= carToCarDis) {
+                        System.out.printf("### car backendAlarm alarm!!!\n", id);
+                        alarmEvent.backendAlarm = true;
+                        alarmEvent.hasAlarm = true;
+                        alarmEvent.backendAlarmLevel = level;
+                    }
+                }
+
                 Coordinate sideCenter = new Coordinate(sc.x, sc.y);
                 double cTocDist = myCenter.distance(sideCenter);
                 if (cTocDist > (cc.r * Math.cos(Math.toRadians(cc.getMinVAngle()) - cc.getArchPara())
