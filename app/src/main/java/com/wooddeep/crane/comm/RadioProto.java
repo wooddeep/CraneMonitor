@@ -93,6 +93,7 @@ public class RadioProto {
             (char) data[17], (char) data[18], (char) data[19]);
 
         if (targetNoChars[0] == ' ' &&  targetNoChars[1] == '0') { // 回应报文
+            /*
             System.out.printf("# reply: "); // + "->" +" %s ", sourceNo, targetNo);
             StringTool.showCharArray(sourceNoChars);
             System.out.printf(" -> ");
@@ -104,11 +105,12 @@ public class RadioProto {
             System.out.printf(" , range: ");
             StringTool.showCharArray(rangeChars);
             System.out.println("");
-
+            */
             rotate = StringTool.arrayToFloat(rotateChars);
             range = StringTool.arrayToFloat(rangeChars);
             isQuery = false; // 从机的回文
         } else {
+            /*
             System.out.printf("# request: "); // + "->" +" %s ", sourceNo, targetNo);
             StringTool.showCharArray(sourceNoChars);
             System.out.print(" -> ");
@@ -120,6 +122,7 @@ public class RadioProto {
             System.out.printf(" , range: ");
             StringTool.showCharArray(rangeChars);
             System.out.println("");
+            */
 
             rotate = StringTool.arrayToFloat(rotateChars);
             range = StringTool.arrayToFloat(rangeChars);
