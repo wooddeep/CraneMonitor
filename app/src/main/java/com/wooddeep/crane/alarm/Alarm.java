@@ -21,6 +21,7 @@ import org.locationtech.jts.geom.Geometry;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Alarm {
 
@@ -79,7 +80,8 @@ public class Alarm {
         return level;
     }
 
-    public static CenterCycle craneToCraneAlarm(HashMap<String, CycleElem> craneMap, String no, AlarmSet alarmSet) throws Exception {
+    public static CenterCycle craneToCraneAlarm(ConcurrentHashMap<String, CycleElem> craneMap,
+                                                String no, AlarmSet alarmSet) throws Exception {
         CenterCycle cc = (CenterCycle) craneMap.get(no);
         Geometry gcc = cc.getArmGeo(0f);
         float myHeight = cc.height; // 本塔高度
@@ -105,14 +107,14 @@ public class Alarm {
                     float distPred2 = (float) gPredect2.distance(cargsc);
 
                     if (distPred1 <= carToCarDis) { // 逆时针旋转 距离告警，则是 左转告警
-                        System.out.printf("### car forwardAlarm alarm!!!\n", id);
+                        //System.out.printf("### car forwardAlarm alarm!!!\n", id);
                         alarmEvent.forwardAlarm = true;
                         alarmEvent.hasAlarm = true;
                         alarmEvent.forwardAlarmLevel = level;
                     }
 
                     if (distPred2 <= carToCarDis) {
-                        System.out.printf("### car backendAlarm alarm!!!\n", id);
+                        //System.out.printf("### car backendAlarm alarm!!!\n", id);
                         alarmEvent.backendAlarm = true;
                         alarmEvent.hasAlarm = true;
                         alarmEvent.backendAlarmLevel = level;
@@ -168,7 +170,7 @@ public class Alarm {
                         Geometry gPredect2 = cc.getCarGeo(-0.1f, 0f); // 逆时针旋转
                         float distPred2 = (float) gPredect2.distance(gsc);
                         if (distPred1 <= carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
-                            System.out.printf("### center turn left to [%s] alarm!!!\n", id);
+                            //System.out.printf("### center turn left to [%s] alarm!!!\n", id);
                             alarmEvent.leftAlarm = true;
                             alarmEvent.hasAlarm = true;
                             if (alarmLevel < alarmEvent.leftAlarmLevel)
@@ -188,7 +190,7 @@ public class Alarm {
                     }
 
                     float carSpeedDownDist = alarmSet.getCarSpeedDownDist(); // 小车减速距离
-                    System.out.printf("### carToArmDis: %f -- carSpeedDownDist: %f \n", carToArmDis, carSpeedDownDist);
+                    //System.out.printf("### carToArmDis: %f -- carSpeedDownDist: %f \n", carToArmDis, carSpeedDownDist);
                     if (carToArmDis < carSpeedDownDist) {
                         int level = carToArmDis < alarmSet.getCarStopDist() ? 1 : 2; // 1挡停车距离，2挡减速距离
                         Geometry gPredect1 = cc.getCarGeo(0.0f, 0.1f); // 向外运行
@@ -197,7 +199,7 @@ public class Alarm {
                         float distPred2 = (float) gPredect2.distance(gsc);
 
                         if (distPred1 <= carToArmDis) { // 逆时针旋转 距离告警，则是 左转告警
-                            System.out.printf("### car forwardAlarm alarm!!!\n", id);
+                            //System.out.printf("### car forwardAlarm alarm!!!\n", id);
                             alarmEvent.forwardAlarm = true;
                             alarmEvent.hasAlarm = true;
                             if (alarmLevel < alarmEvent.forwardAlarmLevel)
@@ -207,7 +209,7 @@ public class Alarm {
                         }
 
                         if (distPred2 <= carToArmDis) {
-                            System.out.printf("### car backendAlarm alarm!!!\n", id);
+                            //System.out.printf("### car backendAlarm alarm!!!\n", id);
                             alarmEvent.backendAlarm = true;
                             alarmEvent.hasAlarm = true;
                             if (alarmLevel < alarmEvent.backendAlarmLevel)
@@ -278,7 +280,7 @@ public class Alarm {
                     float distPred2 = (float) gPredect2.distance(sideGeo);
 
                     if (distPred1 <= carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
-                        System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
+                        //System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
                         alarmEvent.leftAlarm = true;
                         alarmEvent.hasAlarm = true;
                         if (alarmLevel < alarmEvent.leftAlarmLevel)
@@ -308,7 +310,7 @@ public class Alarm {
                     float distPred2 = (float) gPredect2.distance(sideGeo);
 
                     if (distPred1 <= carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
-                        System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
+                        //System.out.printf("### center turn left to [%s] alarm!!!\n", "TODO");
                         alarmEvent.forwardAlarm = true;
                         alarmEvent.hasAlarm = true;
                         if (alarmLevel < alarmEvent.forwardAlarmLevel)
@@ -369,8 +371,8 @@ public class Alarm {
 
     // @height: 塔高
     public static void alarmDetect(Calibration calibration, float hookHeight, float length,
-                                   List<BaseElem> elemList, HashMap<String, CycleElem>
-        craneMap, String no, AlarmSet alarmSet, EventBus eventBus) throws Exception {
+                                   List<BaseElem> elemList, ConcurrentHashMap<String, CycleElem>
+                                       craneMap, String no, AlarmSet alarmSet, EventBus eventBus) throws Exception {
 
         CenterCycle cc = (CenterCycle) craneMap.get(no);
         if (cc == null) return;

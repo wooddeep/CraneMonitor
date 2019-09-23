@@ -53,13 +53,14 @@
                 android:id="@+id/tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="塔基设置"
-                android:textColor="#506946" />
+                android:text="塔机设置"
+                android:textSize="@dimen/dp18"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tower setting" />
+                android:text="tower setting"
+                android:textSize="@dimen/dp18"/>
         </LinearLayout>
 
         <ImageView

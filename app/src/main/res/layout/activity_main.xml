@@ -322,7 +322,7 @@
                 android:layout_marginLeft="@dimen/dp2"
                 android:layout_toLeftOf="@+id/cable_logo"
                 android:gravity="center"
-                android:text="0"
+                android:text="X"
                 android:textSize="@dimen/dp22"
                 android:textStyle="bold" />
 

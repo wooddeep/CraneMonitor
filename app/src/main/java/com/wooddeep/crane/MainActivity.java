@@ -89,6 +89,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 //import androidx.annotation.RequiresApi;
@@ -151,10 +152,10 @@ public class MainActivity extends AppCompatActivity {
     private android.app.Activity activity = this;
     private Context context;
 
-    private HashMap<String, SavedData> savedDataMap = new HashMap<>();
-    private HashMap<String, CycleElem> craneMap = new HashMap<>();
-    private HashMap<String, SavedData> slaveMap = new HashMap<>();
-    private HashMap<String, Long> radioStatusMap = new HashMap();
+    private ConcurrentHashMap<String, SavedData> savedDataMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, CycleElem> craneMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, SavedData> slaveMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, Long> radioStatusMap = new ConcurrentHashMap();
     private List<String> craneNumbers = new ArrayList<>();
     private List<BaseElem> elemList = new ArrayList<>();
     private List<Load> loadParas = new ArrayList<>();
@@ -594,8 +595,10 @@ public class MainActivity extends AppCompatActivity {
     //@Subscribe(threadMode = ThreadMode.MAIN)
     public void RadioDateEventOps(RadioEvent event) {
         int cmdRet = radioProto.parse(event.getData()); // 解析电台数据
-
         if (cmdRet == -1) return;
+
+        if (iAmMaster.get() && radioProto.isQuery) return;
+
         //System.out.printf("#$$$$  %f -- %f \n", radioProto.getRotate(), radioProto.getRange());
         // System.out.println("####  ---a---");
         if (cmdRet == RadioProto.CMD_START_MASTER && waitFlag == true) { // 启动主机命令
@@ -611,9 +614,7 @@ public class MainActivity extends AppCompatActivity {
         long currTime = System.currentTimeMillis(); // 当前时间
 
         if (radioProto.isQuery) { // 收到主机的查询命令，本机必然为从机
-
             waitFlag = false;
-
             System.out.println("-------------------------");
             System.out.println(new String(event.getData()));
             System.out.println("-------------------------");
@@ -1068,7 +1069,7 @@ public class MainActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.cable)).setText(power); // 显示塔基类型
 
         loadParas = loadDao.getLoads(craneType, armLength, power); // 获取负荷特性
-        if (loadParas != null) {
+        if (loadParas != null && loadParas.size() > 0) {
             ((TextView) findViewById(R.id.rated_weight)).setText(loadParas.get(0).getWeight() + "t"); // 显示塔基类型
             for (Load load : loadParas) {
                 //System.out.printf("%s--%s\n", load.getCoordinate(), load.getWeight());

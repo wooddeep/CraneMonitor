@@ -52,13 +52,14 @@
                 android:id="@+id/tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="保护区设置"
-                android:textColor="#506946" />
+                android:text="分界设置"
+                android:textSize="@dimen/dp18" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="protect area setting" />
+                android:text="dividing line setting"
+                android:textSize="@dimen/dp18"/>
         </LinearLayout>
 
         <ImageView

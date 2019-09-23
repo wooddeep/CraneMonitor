@@ -34,7 +34,7 @@
         <LinearLayout
             android:id="@+id/text_container"
             android:layout_width="@dimen/dp100"
-            android:layout_height="@dimen/dp40"
+            android:layout_height="@dimen/dp50"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/dp10"
@@ -48,14 +48,14 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:text="告警参数设置"
-                android:textSize="@dimen/dp14" />
+                android:textSize="@dimen/dp16" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:text="alarm setting"
-                android:textSize="@dimen/dp14" />
+                android:textSize="@dimen/dp16" />
         </LinearLayout>
 
         <ImageView

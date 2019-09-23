@@ -39,6 +39,8 @@ public class FixedTitleTable {
         this.screenWidth = sw;
     }
 
+    public int textSize = 24;
+
     @TargetApi(Build.VERSION_CODES.M)
     public void init(Activity activity) {
         this.activity = activity;
@@ -102,6 +104,7 @@ public class FixedTitleTable {
 
         TableLayout tableTitle = (TableLayout) activity.findViewById(R.id.title_table);
         TextView title = (TextView) activity.findViewById(R.id.title_tv);
+        title.setTextSize(textSize);
         title.setText(colNames.get(0).value);
         TableLayout firstRowTable = (TableLayout) activity.findViewById(R.id.first_row_table);
         TableRow firstRow = (TableRow) activity.findViewById(R.id.first_row_row);
@@ -112,6 +115,7 @@ public class FixedTitleTable {
             view.setId(idList.get(i));
             view.setText(colNames.get(i).value);
             view.setHeight(60);
+            view.setTextSize(textSize);
             view.setWidth((int)colWidth);
             view.setBackgroundColor(Color.rgb(176, 196, 222));
             view.setGravity(Gravity.CENTER);
@@ -149,6 +153,7 @@ public class FixedTitleTable {
         firstRow.setBackgroundColor(Color.WHITE);
         TextView view = (TextView) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_tv, null);
         view.setText(cells.get(0).value);
+        view.setTextSize(textSize);
         view.setHeight(60);
         view.setWidth(200);
         view.setBackgroundColor(0x00000000);
@@ -179,7 +184,7 @@ public class FixedTitleTable {
                     TableRow.LayoutParams rowLp = (TableRow.LayoutParams) contentView.getLayoutParams();
                     rowLp.setMargins(0, 0, 2, 0); // 再设置margin
                     contentView.setText(cell.value);
-                    contentView.setTextSize(16);
+                    contentView.setTextSize(textSize);
                     if (cell.clickListener != null) contentView.setOnClickListener(cell.clickListener);
                     break;
                 case 1:
@@ -194,7 +199,7 @@ public class FixedTitleTable {
                     rowLp = (TableRow.LayoutParams) editor.getLayoutParams();
                     rowLp.setMargins(0, 0, 2, 0); // 再设置margin
                     editor.setText(cell.value);
-                    editor.setTextSize(16);
+                    editor.setTextSize(textSize);
                     if (cell.clickListener != null) editor.setOnClickListener(cell.clickListener);
                     break;
                 case 2:
@@ -213,7 +218,7 @@ public class FixedTitleTable {
                     button.setText(opts.optString(Integer.parseInt(cell.value)));
                     int index = Integer.parseInt(cell.value);
                     button.setId(index);
-                    button.setTextSize(16);
+                    button.setTextSize(textSize);
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -221,6 +226,7 @@ public class FixedTitleTable {
                             int newId = (id + 1) % opts.length();
                             String value = opts.optString(newId);
                             ((TextView) v).setText(value);
+                            ((TextView) v).setTextSize(textSize);
                             v.setId(newId);
                         }
                     });

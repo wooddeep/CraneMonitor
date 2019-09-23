@@ -34,7 +34,7 @@
         <LinearLayout
             android:id="@+id/text_container"
             android:layout_width="@dimen/dp100"
-            android:layout_height="@dimen/dp40"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/dp10"
@@ -46,19 +46,23 @@
                 android:id="@+id/tv"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp0"
+                android:layout_marginTop="@dimen/dp10"
                 android:layout_weight="1"
-                android:text="标定值设置"
-                android:textSize="@dimen/dp15"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="标定设置"
+                android:textSize="@dimen/dp18"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp0"
+                android:layout_marginBottom="@dimen/dp10"
                 android:layout_weight="1"
+                android:layout_gravity="center"
                 android:gravity="center"
                 android:text="calibration"
-                android:textSize="@dimen/dp14"
-                android:textStyle="bold" />
+                android:textSize="@dimen/dp18"/>
         </LinearLayout>
 
         <LinearLayout

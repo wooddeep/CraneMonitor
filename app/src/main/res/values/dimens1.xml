@@ -27,6 +27,7 @@ sed -i "" 's/\(^.*\"\)\([0-9]*\)px\(\".*$\)/\1@dimen\/px\2\3/g' activity_main.xm
     <dimen name="dp1">2dp</dimen>
     <dimen name="dp35">47dp</dimen>
     <dimen name="dp16">21dp</dimen>
+    <dimen name="dp18">24dp</dimen>
     <dimen name="dp0">0dp</dimen>
     <dimen name="dp47">62dp</dimen>
     <dimen name="dp45">60dp</dimen>
