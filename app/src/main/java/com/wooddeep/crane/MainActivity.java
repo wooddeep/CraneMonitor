@@ -527,7 +527,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 while (true) {
                     //System.out.println("### " + iAmMaster.get() + " ### " + craneNumbers.size());
-                    if (iAmMaster.get() && craneNumbers.size() > 1) { // 主机
+                    if (iAmMaster.get() && craneNumbers.size() >= 1) { // 主机
                         //System.out.println("##### I am master!!!");
                         int iMyCraneNo = Integer.parseInt(myCraneNo);
                         currSlaveIndex = (currSlaveIndex + 1) % craneNumbers.size();
