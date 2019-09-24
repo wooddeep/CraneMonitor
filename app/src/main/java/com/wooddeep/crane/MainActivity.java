@@ -251,6 +251,16 @@ public class MainActivity extends AppCompatActivity {
             int counter = 0;
             while (true) {
 
+                if (centerCycle == null) {
+                    CommTool.sleep(100);
+                    continue;
+                }
+
+                if (ttyS0InputStream == null || ttyS1InputStream == null || ttyS2InputStream == null) {
+                    CommTool.sleep(100);
+                    continue;
+                }
+
                 try {
                     if (ttyS0InputStream.available() > 0) { // AD数据
                         int len = ttyS0InputStream.read(adXBuff, 0, 2048);
@@ -391,8 +401,14 @@ public class MainActivity extends AppCompatActivity {
     private void startRadioReadThread() {
 
         new Thread(() -> {
-
+            //try {
             while (true) {
+
+                if (ttyS0InputStream == null || ttyS1InputStream == null || ttyS2InputStream == null) {
+                    CommTool.sleep(100);
+                    continue;
+                }
+
                 try {
                     if (ttyS1InputStream.available() > 0) {
                         int len = ttyS1InputStream.read(radioXBuff, 0, 1024);
@@ -412,6 +428,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            //} catch (Exception e) {
+            //    e.printStackTrace();
+            //}
         }).start();
     }
 
@@ -419,6 +438,12 @@ public class MainActivity extends AppCompatActivity {
         new Thread(() -> {
             //try {
             while (true) {
+
+                if (ttyS0InputStream == null || ttyS1InputStream == null || ttyS2InputStream == null) {
+                    CommTool.sleep(100);
+                    continue;
+                }
+
                 try {
                     //System.out.println("### " + iAmMaster.get() + " ### " + craneNumbers.size());
                     if (iAmMaster.get() && craneNumbers.size() >= 1) { // 主机
@@ -471,6 +496,17 @@ public class MainActivity extends AppCompatActivity {
         new Thread(() -> {
             //try {
             while (true) {
+
+                if (ttyS0InputStream == null || ttyS1InputStream == null || ttyS2InputStream == null) {
+                    CommTool.sleep(100);
+                    continue;
+                }
+
+                if (craneMap.isEmpty()) {
+                    CommTool.sleep(100);
+                    continue;
+                }
+
                 try {
                     //System.out.println("--2--" + shadowLength);
                     Alarm.alarmDetect(calibration, currProto.getRealHookHeight(), shadowLength,
@@ -480,7 +516,6 @@ public class MainActivity extends AppCompatActivity {
                     CommTool.sleep(600);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    continue;
                 }
             }
             //} catch (Exception e) {
@@ -1380,7 +1415,7 @@ public class MainActivity extends AppCompatActivity {
 
             ttyS0InputStream = serialttyS0.getInputStream();
             ttyS0OutputStream = serialttyS0.getOutputStream();
-            ttyS0OutputStream.write(ControlProto.control);
+            if (ttyS0OutputStream != null) ttyS0OutputStream.write(ControlProto.control);
             ttyS1InputStream = serialttyS1.getInputStream();
             ttyS1OutputStream = serialttyS1.getOutputStream();
 
