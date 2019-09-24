@@ -245,127 +245,13 @@ public class MainActivity extends AppCompatActivity {
         this.oscale = oscale;
     }
 
-    private void startDataSimThread() {
-        new Thread(() -> {
-            int alarmTimes = 0;
-
-            while (true) {
-                /*
-                if (flags.isStart() || flags.isStop()) {
-                    currProto.setAmplitude(emitter.getsAmplitude());
-                    currProto.setHeight(emitter.getsHeight());
-                    currProto.setWeight(emitter.getsWeight());
-                    currProto.setWindSpeed(emitter.getsWindSpeed());
-                    currRotateProto.setData(emitter.getsAmplitude()); // TODO 单独做回转数据的发射器, 现在借用幅度值的发射器
-                }
-
-                if (flags.isRuning()) {
-                    currProto.setAmplitude(emitter.getsAmplitude());
-                    currProto.setHeight(emitter.getsHeight());
-                    currProto.setWeight(emitter.getsWeight());
-                    currProto.setWindSpeed(emitter.getsWindSpeed());
-                    currRotateProto.setData(emitter.getsAmplitude()); // TODO 单独做回转数据的发射器, 现在借用幅度值的发射器
-
-                    if (alarmTimes % 1 == 0) { // 100毫秒 累计一次
-                        emitter.emitter(); // 累计
-                    }
-                }
-
-                byte[] data = currProto.pack(); // TODO 判断值是否有变化, 无变化，则不发送消息
-                if (calibrationFlag) {
-                    eventBus.post(new UartEvent(data)); // 发送通知标定模块数据
-                }
-
-                currProto.parse(data);
-                currProto.calcRealHeight(calibration);
-                currProto.calcRealLength(calibration);
-                currProto.calcRealWeigth(calibration);
-                if (Math.abs(currProto.getRealLength() - prevProto.getRealLength()) >= 0.05f) {
-                    //lengthEvent.setLength(currProto.getRealLength());
-                    //eventBus.post(lengthEvent);
-                    prevProto.setRealLength(currProto.getRealLength());
-                    runOnUiThread(() -> lengthShow(currProto.getRealLength()));
-                    //alarmJdugeFlag = true;
-                }
-
-                if (Math.abs(currProto.getRealWeight() - prevProto.getRealWeight()) >= 0.05f) {
-                    //lengthEvent.setLength(currProto.getRealLength());
-                    //eventBus.post(lengthEvent);
-                    prevProto.setRealWeight(currProto.getRealWeight());
-                    runOnUiThread(() -> weightShow(currProto.getRealWeight()));
-                    //alarmJdugeFlag = true;
-                }
-
-                if (Math.abs(currProto.getRealHeight() - prevProto.getRealHeight()) >= 0.05f) {
-                    //lengthEvent.setLength(currProto.getRealLength());
-                    //eventBus.post(lengthEvent);
-                    prevProto.setRealHeight(currProto.getRealHeight());
-                    runOnUiThread(() -> heightShow(currProto.getRealHeight()));
-                    //alarmJdugeFlag = true;
-                }
-                */
-
-                if (mainCrane != null) {  // 次环
-                    // 模拟回转
-
-                    /*
-                    data = currRotateProto.pack();
-                    rotateEvent.setData(data);
-                    currRotateProto.parse(data);
-                    currRotateProto.calcAngle(calibration);
-                    if (Math.abs(currRotateProto.getAngle() - prevRotateProto.getAngle()) >= 0.2f) {
-                        rotateEvent.setCenterX(mainCrane.getCoordX1());
-                        rotateEvent.setCenterY(mainCrane.getCoordY1());
-                        rotateEvent.setAngle((float) currRotateProto.getAngle());
-                        //eventBus.post(rotateEvent);
-                        runOnUiThread(() -> rotateShow((float) currRotateProto.getAngle()));
-                        prevRotateProto.setAngle(currRotateProto.getAngle());
-                        //alarmJdugeFlag = true;
-                    }
-                    */
-
-                    // TODO
-                    radioProto.setSourceNo(2); // 从机的ID为2N
-                    radioProto.setTargetNo(0); // 从机回应
-                    radioProto.setRotate(Math.round(Math.toRadians(alarmTimes % 360) * 10) / 10.0f);
-                    radioProto.setRange(30.0f);
-
-                    //System.out.println(Math.round(emitter.getsAmplitude() * 10) / 10.00f);
-
-                    // 模拟电台
-                    radioEvent.setData(radioProto.packReply());
-                    eventBus.post(radioEvent);
-
-                }
-
-                /*
-                if (alarmTimes % 9 == 0) { // TODO 数据有变化才触发告警判断
-                    //eventBus.post(alarmDetectEvent); // 消息触发有延时
-                    System.out.println("#### I will do alarm judge!!!");
-                    try {
-
-                        Alarm.alarmDetect(calibration, currProto.getRealHeight(), currProto.getRealLength(),
-                            elemList, craneMap, myCraneNo, alarmSet, eventBus);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                */
-
-                alarmTimes++;
-                CommTool.sleep(500);
-            }
-        }).start();
-    }
-
-
     private void startSensorThread() {
         new Thread(() -> {
-            try {
-                int counter = 0;
-                while (true) {
+            //try {
+            int counter = 0;
+            while (true) {
 
+                try {
                     if (ttyS0InputStream.available() > 0) { // AD数据
                         int len = ttyS0InputStream.read(adXBuff, 0, 2048);
 
@@ -488,10 +374,15 @@ public class MainActivity extends AppCompatActivity {
 
                     CommTool.sleep(100);
                     counter++;
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    continue;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+            //} catch (Exception e) {
+            //    e.printStackTrace();
+            //}
         }).start();
     }
 
@@ -500,9 +391,9 @@ public class MainActivity extends AppCompatActivity {
     private void startRadioReadThread() {
 
         new Thread(() -> {
-            try {
-                while (true) {
 
+            while (true) {
+                try {
                     if (ttyS1InputStream.available() > 0) {
                         int len = ttyS1InputStream.read(radioXBuff, 0, 1024);
 
@@ -515,17 +406,20 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     CommTool.sleep(5);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    continue;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+
         }).start();
     }
 
     private void startRadioWriteThread() {
         new Thread(() -> {
-            try {
-                while (true) {
+            //try {
+            while (true) {
+                try {
                     //System.out.println("### " + iAmMaster.get() + " ### " + craneNumbers.size());
                     if (iAmMaster.get() && craneNumbers.size() >= 1) { // 主机
                         //System.out.println("##### I am master!!!");
@@ -558,10 +452,14 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     CommTool.sleep(130);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    continue;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+            //} catch (Exception e) {
+            //    e.printStackTrace();
+            //}
         }).start();
     }
 
@@ -571,23 +469,23 @@ public class MainActivity extends AppCompatActivity {
         //AlarmSound.start(0);
 
         new Thread(() -> {
-            try {
-                while (true) {
-                    try {
-                        //System.out.println("--2--" + shadowLength);
-                        Alarm.alarmDetect(calibration, currProto.getRealHookHeight(), shadowLength,
-                            elemList, craneMap, myCraneNo, alarmSet, eventBus); // 回转告警判断
-                        Alarm.weightAlarmDetect(calibration, loadParas, alarmSet, eventBus,
-                            currProto.getRealWeight(), shadowLength); // 吊重告警判断
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            //try {
+            while (true) {
+                try {
+                    //System.out.println("--2--" + shadowLength);
+                    Alarm.alarmDetect(calibration, currProto.getRealHookHeight(), shadowLength,
+                        elemList, craneMap, myCraneNo, alarmSet, eventBus); // 回转告警判断
+                    Alarm.weightAlarmDetect(calibration, loadParas, alarmSet, eventBus,
+                        currProto.getRealWeight(), shadowLength); // 吊重告警判断
                     CommTool.sleep(600);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    continue;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+            //} catch (Exception e) {
+            //    e.printStackTrace();
+            //}
         }).start();
     }
 
