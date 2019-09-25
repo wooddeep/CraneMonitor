@@ -71,6 +71,7 @@ import com.wooddeep.crane.simulator.UartEmitter;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DataUtil;
+import com.wooddeep.crane.tookit.DogTool;
 import com.wooddeep.crane.tookit.MathTool;
 import com.wooddeep.crane.tookit.MomentOut;
 import com.wooddeep.crane.tookit.StringTool;
@@ -194,12 +195,12 @@ public class MainActivity extends AppCompatActivity {
     private SerialPort serialttyS0;
     private SerialPort serialttyS1;
     private SerialPort serialttyS2;
-    private InputStream ttyS0InputStream;
-    private OutputStream ttyS0OutputStream;
-    private InputStream ttyS1InputStream;
-    private OutputStream ttyS1OutputStream;
-    private OutputStream ttyS2OutputStream;
-    private InputStream ttyS2InputStream;
+    private InputStream ttyS0InputStream = null;
+    private OutputStream ttyS0OutputStream = null;
+    private InputStream ttyS1InputStream = null;
+    private OutputStream ttyS1OutputStream = null;
+    private OutputStream ttyS2OutputStream = null;
+    private InputStream ttyS2InputStream = null;
 
     private byte[] rotateCmd = new byte[]{0x01, 0x04, 0x00, 0x01, 0x00, 0x02, 0x20, 0x0B};
     private byte[] adXBuff = new byte[2048];
@@ -237,6 +238,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView masterNoView;
     private MediaPlayer player;
 
+    private boolean sysExit = false;
+    private Intent intent = null;
+
     public float getOscale() {
         return oscale;
     }
@@ -247,9 +251,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void startSensorThread() {
         new Thread(() -> {
-            //try {
             int counter = 0;
-            while (true) {
+            while (true && !sysExit) {
 
                 if (centerCycle == null) {
                     CommTool.sleep(100);
@@ -390,9 +393,7 @@ public class MainActivity extends AppCompatActivity {
                     continue;
                 }
             }
-            //} catch (Exception e) {
-            //    e.printStackTrace();
-            //}
+
         }).start();
     }
 
@@ -401,8 +402,8 @@ public class MainActivity extends AppCompatActivity {
     private void startRadioReadThread() {
 
         new Thread(() -> {
-            //try {
-            while (true) {
+
+            while (true && !sysExit) {
 
                 if (ttyS0InputStream == null || ttyS1InputStream == null || ttyS2InputStream == null) {
                     CommTool.sleep(100);
@@ -428,16 +429,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            //} catch (Exception e) {
-            //    e.printStackTrace();
-            //}
         }).start();
     }
 
     private void startRadioWriteThread() {
         new Thread(() -> {
-            //try {
-            while (true) {
+
+            while (true && !sysExit) {
 
                 if (ttyS0InputStream == null || ttyS1InputStream == null || ttyS2InputStream == null) {
                     CommTool.sleep(100);
@@ -445,7 +443,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 try {
-                    //System.out.println("### " + iAmMaster.get() + " ### " + craneNumbers.size());
                     if (iAmMaster.get() && craneNumbers.size() >= 1) { // 主机
                         //System.out.println("##### I am master!!!");
                         int iMyCraneNo = Integer.parseInt(myCraneNo);
@@ -482,45 +479,46 @@ public class MainActivity extends AppCompatActivity {
                     continue;
                 }
             }
-            //} catch (Exception e) {
-            //    e.printStackTrace();
-            //}
+
         }).start();
     }
 
     private void startTimerThread() {
         AlarmSound.init(getApplicationContext());
-        //AlarmSound.setStatus(R.raw.left_rotate_alarm, true);
-        //AlarmSound.start(0);
 
         new Thread(() -> {
-            //try {
-            while (true) {
+            int count = 0;
+            while (true && !sysExit) {
+                CommTool.sleep(100);
+                count++;
+
+                if (count % 6 == 0) { // 喂软件狗
+                    feedWatchDog();
+                }
 
                 if (ttyS0InputStream == null || ttyS1InputStream == null || ttyS2InputStream == null) {
-                    CommTool.sleep(100);
                     continue;
                 }
 
                 if (craneMap.isEmpty()) {
-                    CommTool.sleep(100);
                     continue;
                 }
 
-                try {
-                    //System.out.println("--2--" + shadowLength);
-                    Alarm.alarmDetect(calibration, currProto.getRealHookHeight(), shadowLength,
-                        elemList, craneMap, myCraneNo, alarmSet, eventBus); // 回转告警判断
-                    Alarm.weightAlarmDetect(calibration, loadParas, alarmSet, eventBus,
-                        currProto.getRealWeight(), shadowLength); // 吊重告警判断
-                    CommTool.sleep(600);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (count % 6 == 0) { // 告警判断
+                    try {
+                        //System.out.println("--2--" + shadowLength);
+                        Alarm.alarmDetect(calibration, currProto.getRealHookHeight(), shadowLength,
+                            elemList, craneMap, myCraneNo, alarmSet, eventBus); // 回转告警判断
+                        Alarm.weightAlarmDetect(calibration, loadParas, alarmSet, eventBus,
+                            currProto.getRealWeight(), shadowLength); // 吊重告警判断
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
+
+
             }
-            //} catch (Exception e) {
-            //    e.printStackTrace();
-            //}
+
         }).start();
     }
 
@@ -532,10 +530,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (iAmMaster.get() && radioProto.isQuery) return;
 
-        //System.out.printf("#$$$$  %f -- %f \n", radioProto.getRotate(), radioProto.getRange());
-        // System.out.println("####  ---a---");
         if (cmdRet == RadioProto.CMD_START_MASTER && waitFlag == true) { // 启动主机命令
-            // System.out.println("####  ---a.0---");
             iAmMaster.set(true);
             runOnUiThread(() -> masterNoView.setText(myCraneNo));
             waitFlag = false;
@@ -548,16 +543,16 @@ public class MainActivity extends AppCompatActivity {
 
         if (radioProto.isQuery) { // 收到主机的查询命令，本机必然为从机
             waitFlag = false;
-            System.out.println("-------------------------");
-            System.out.println(new String(event.getData()));
-            System.out.println("-------------------------");
+
+            //System.out.println("-------------------------");
+            //System.out.println(new String(event.getData()));
+            //System.out.println("-------------------------");
             //iAmMaster.set(false);
 
             CycleElem master = craneMap.get(radioProto.getSourceNo()); // 作为从机, 更新主机的信息 // TODO 根据塔基类型，计算仰角
             runOnUiThread(() -> masterNoView.setText(radioProto.getSourceNo())); // TODO 缓存
-            //System.out.println("####  ---b---");
+
             if (master != null) {
-                //System.out.println("####  ---b.1---");
                 runOnUiThread(() -> {
                     master.setColor(Color.rgb(46, 139, 87));
                 });
@@ -578,17 +573,14 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             master.setCarRange(radioProto.getRange()); // 平臂式实际幅度
                         }
-                        //master.setColor(Color.rgb(46, 139, 87));
                     });
                     savedData.range = radioProto.getRange();
                 }
 
-                //System.out.printf("@@@@  %f -- %f \n", radioProto.getRotate(), radioProto.getRange());
                 float hangle = MathTool.radiansToAngle(radioProto.getRotate());
                 if (Math.abs(hangle - savedData.angle) >= 0.1) {
                     runOnUiThread(() -> {
                         master.setHAngle(hangle);
-                        //master.setColor(Color.rgb(46, 139, 87));
                         master.setOnline(true);
                     });
                     savedData.angle = hangle;
@@ -611,10 +603,8 @@ public class MainActivity extends AppCompatActivity {
 
                 slaveRadioProto.setRotate(Math.max(0, ((centerCycle.hAngle % 360) * 2 * (float) Math.PI / 360)));
                 slaveRadioProto.packReply(); // 生成回应报文
-                //StringTool.showCharArray1(slaveRadioProto.modleChars);
                 try {
                     if (ttyS1OutputStream != null) {
-                        //ttyS1OutputStream.write(slaveRadioProto.modleBytes); // 发送应答报文
                         ttyS1OutputStream.write(slaveRadioProto.modleBytes, 0, 39);
                         ttyS1OutputStream.flush();
                     }
@@ -689,7 +679,7 @@ public class MainActivity extends AppCompatActivity {
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void AlarmSetEventBus(AlarmSetEvent event) {
-        System.out.printf("######## userEvent = %f\n", event.alarmSet.t2cDistGear1);
+        //System.out.printf("######## userEvent = %f\n", event.alarmSet.t2cDistGear1);
         alarmSet = event.alarmSet; // 更新配置
     }
 
@@ -1370,10 +1360,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //@RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
         if (getSupportActionBar() != null) {
@@ -1442,6 +1432,33 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             RadioDateEventOps(new RadioEvent(radioProto.startMaster()));
         }, 3000);
+
+        //initWatchDog();
+        //setWatchDogTimeOut();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sysExit = true;
+    }
+
+
+    //Intent intentBroadcast = new Intent();   //定义Intent
+    //intentBroadcast.setAction("com.wooddeep.crane.HEARTBEAT");
+    //intentBroadcast.putExtra("temp","Lin");
+    //sendBroadcast(intentBroadcast);
+
+    private Intent feedIntent = new Intent();
+
+    private void feedWatchDog() {
+        feedIntent.setAction("cn.programmer.CUSTOM_INTENT");
+        //feedIntent.putExtra("temp","Lin");
+        runOnUiThread(() -> {
+            //intent = new Intent(DogTool.ACTION_WATCHDOG_KICK);
+            sendBroadcast(feedIntent);
+        });
+    }
+
 
 }
