@@ -46,16 +46,16 @@
                 android:id="@+id/tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:text="告警参数设置"
-                android:textSize="@dimen/dp16" />
+                android:textSize="@dimen/dp16"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:text="alarm setting"
-                android:textSize="@dimen/dp16" />
+                android:textSize="@dimen/dp16"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <ImageView
@@ -100,14 +100,13 @@
                     android:layout_weight="1">
 
                     <TextView
-                        android:id="@+id/clock_logo"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dp40"
                         android:layout_gravity="left"
                         android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
-                        android:text="塔机与塔机回转各档减速距离"
-                        android:textSize="@dimen/dp20"
+                        android:text="塔机与塔机回转各档减速距离(米)/Crane to Crane Alarm Distance(m)"
+                        android:textSize="@dimen/dp15"
                         android:textStyle="bold" />
                 </LinearLayout>
             </TableRow>
@@ -119,17 +118,17 @@
                 <LinearLayout
                     android:layout_width="@dimen/dp0"
                     android:layout_weight="1"
+                    android:layout_marginBottom="@dimen/dp3"
                     android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
+                        android:layout_gravity="center"
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -138,12 +137,11 @@
                             app:srcCompat="@mipmap/cc_coll_dist5" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="变幅减速距离"
+                            android:text="一档减速距离\nfirst gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -157,13 +155,12 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
+                        android:layout_gravity="center"
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -172,12 +169,11 @@
                             app:srcCompat="@mipmap/cc_coll_dist4" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="变幅减速距离"
+                            android:text="二档减速距离\nsecond gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -191,13 +187,11 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -206,12 +200,11 @@
                             app:srcCompat="@mipmap/cc_coll_dist3" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="变幅减速距离"
+                            android:text="三档减速距离\nthird gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -225,13 +218,11 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -240,12 +231,11 @@
                             app:srcCompat="@mipmap/cc_coll_dist2" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="变幅减速距离"
+                            android:text="四档减速距离\nfourth gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -259,13 +249,11 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -274,12 +262,12 @@
                             app:srcCompat="@mipmap/cc_coll_dist1" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
+
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="变幅减速距离"
+                            android:text="五档减速距离\nfifth gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -294,6 +282,8 @@
                 </LinearLayout>
             </TableRow>
 
+            <!-- 塔基到区域的告警距离 -->
+
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp40"
@@ -304,36 +294,36 @@
                     android:layout_weight="1">
 
                     <TextView
-                        android:id="@+id/clock_logo"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dp40"
                         android:layout_gravity="left"
                         android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
-                        android:text="塔机与区域回转各档减速距离"
-                        android:textSize="@dimen/dp20"
+                        android:text="塔机与区域回转各档减速距离(米)/Crane to Area Alarm Distance(m)"
+                        android:textSize="@dimen/dp15"
                         android:textStyle="bold" />
                 </LinearLayout>
             </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp60">
+                android:layout_height="@dimen/dp70"
+                android:layout_marginTop="@dimen/dp3"
+                android:layout_marginBottom="@dimen/dp3">
 
                 <LinearLayout
                     android:layout_width="@dimen/dp0"
                     android:layout_weight="1"
+                    android:layout_gravity="center"
                     android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -342,12 +332,11 @@
                             app:srcCompat="@mipmap/ca_coll_dist5" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="变幅减速距离"
+                            android:text="一档减速距离\nfirst gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -361,13 +350,10 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical">
-
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -376,12 +362,11 @@
                             app:srcCompat="@mipmap/ca_coll_dist4" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="变幅减速距离"
+                            android:text="二档减速距离\nsecond gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -395,13 +380,10 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical">
-
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -410,12 +392,11 @@
                             app:srcCompat="@mipmap/ca_coll_dist3" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="变幅减速距离"
+                            android:text="三档减速距离\nthird gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -429,13 +410,11 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -444,12 +423,11 @@
                             app:srcCompat="@mipmap/ca_coll_dist2" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="变幅减速距离"
+                            android:text="四档减速距离\nfourth gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -463,13 +441,11 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -478,12 +454,11 @@
                             app:srcCompat="@mipmap/ca_coll_dist1" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="变幅减速距离"
+                            android:text="五档减速距离\nfifth gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -508,14 +483,13 @@
                     android:layout_weight="2">
 
                     <TextView
-                        android:id="@+id/clock_logo"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dp40"
                         android:layout_gravity="left"
                         android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
-                        android:text="幅度控制参数"
-                        android:textSize="@dimen/dp20"
+                        android:text="幅度控制参数(米)/Amplitude control(m)"
+                        android:textSize="@dimen/dp15"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -524,14 +498,13 @@
                     android:layout_weight="3">
 
                     <TextView
-                        android:id="@+id/clock_logo"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dp40"
                         android:layout_gravity="left"
                         android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
-                        android:text="力矩告警"
-                        android:textSize="@dimen/dp20"
+                        android:text="力矩告警(%)/Moment Alarm(%)"
+                        android:textSize="@dimen/dp15"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -539,23 +512,25 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp70">
+                android:layout_height="@dimen/dp70"
+                android:layout_marginTop="@dimen/dp3"
+                android:layout_marginBottom="@dimen/dp3">
 
                 <LinearLayout
                     android:layout_width="@dimen/dp0"
                     android:layout_height="@dimen/dp70"
+                    android:layout_marginBottom="@dimen/dp3"
+                    android:layout_marginTop="@dimen/dp3"
                     android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -565,12 +540,11 @@
                             app:srcCompat="@mipmap/park" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="变幅停车距离"
+                            android:text="变幅停车距离\nParking Distance"
                             android:textSize="@dimen/dp10" />
 
                     </LinearLayout>
@@ -585,13 +559,11 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -601,12 +573,11 @@
                             app:srcCompat="@mipmap/speed_down" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="变幅减速距离"
+                            android:text="变幅减速距离\nDeceleration distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -620,14 +591,13 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_margin="@dimen/dp0"
+                        android:layout_weight="2"
                         android:orientation="vertical"
                         android:visibility="visible">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -636,12 +606,11 @@
                             app:srcCompat="@mipmap/moment1" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="一档力矩告警"
+                            android:text="一档力矩告警\nfirst gear moment"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -656,14 +625,13 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_margin="@dimen/dp0"
+                        android:layout_weight="2"
                         android:orientation="vertical"
                         android:visibility="visible">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -672,12 +640,11 @@
                             app:srcCompat="@mipmap/moment2" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="二挡力矩告警"
+                            android:text="二挡力矩告警\nsecond gear moment"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -692,14 +659,13 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_margin="@dimen/dp0"
+                        android:layout_weight="2"
                         android:orientation="vertical"
                         android:visibility="visible">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp40"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -708,12 +674,11 @@
                             app:srcCompat="@mipmap/moment3" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="三挡力矩告警"
+                            android:text="三挡力矩告警\nthird gear moment"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -738,30 +703,27 @@
                     android:layout_weight="2">
 
                     <TextView
-                        android:id="@+id/clock_logo"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dp40"
                         android:layout_gravity="left"
                         android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
-                        android:text="风速告警设置"
-                        android:textSize="@dimen/dp20"
+                        android:text="风速告警设置(米/秒)/Wind Speed(m/s)"
+                        android:textSize="@dimen/dp15"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="@dimen/dp0"
                     android:layout_weight="3">
-
                     <TextView
-                        android:id="@+id/clock_logo"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dp40"
                         android:layout_gravity="left"
                         android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
-                        android:text="吊重告警设置"
-                        android:textSize="@dimen/dp20"
+                        android:text="吊重百分比告警(%)/Lifting Percentage(%)"
+                        android:textSize="@dimen/dp15"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -769,7 +731,9 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp70">
+                android:layout_height="@dimen/dp70"
+                android:layout_marginBottom="@dimen/dp3"
+                android:layout_marginTop="@dimen/dp3">
 
                 <LinearLayout
                     android:layout_width="@dimen/dp0"
@@ -779,13 +743,11 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -795,33 +757,29 @@
                             app:srcCompat="@mipmap/wind_warning" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="风速预警"
+                            android:text="风速预警\nWind speed warning"
                             android:textSize="@dimen/dp10" />
-
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/et_wind_speed1"
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
+                        android:layout_height="@dimen/dp70"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="10m/s" />
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -831,12 +789,11 @@
                             app:srcCompat="@mipmap/wind_alarm" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="风速告警"
+                            android:text="风速告警\nWind Speed Alarm"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -848,31 +805,25 @@
                         android:layout_weight="1"
                         android:text="20m/s" />
 
-
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical"
                         android:visibility="visible">
-
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
                             app:srcCompat="@mipmap/weight1" />
-
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="一档吊重百分比"
+                            android:text="一档吊重百分比\nFirst Gear Lift"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -887,28 +838,23 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical"
                         android:visibility="visible">
-
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
                             android:layout_gravity="center"
                             android:gravity="center"
                             app:srcCompat="@mipmap/weight2" />
-
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="二挡吊重百分比"
+                            android:text="二挡吊重百分比\nSecond Gear Lift"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -923,14 +869,12 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical"
                         android:visibility="visible">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp40"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -939,12 +883,11 @@
                             app:srcCompat="@mipmap/weight3" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="三挡吊重百分比"
+                            android:text="三挡吊重百分比\nThird Gear Lift"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -969,14 +912,13 @@
                     android:layout_weight="2">
 
                     <TextView
-                        android:id="@+id/clock_logo"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dp40"
                         android:layout_gravity="left"
                         android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
-                        android:text="大臂长度告警设置"
-                        android:textSize="@dimen/dp20"
+                        android:text="大臂长度告警设置(米)/arm length(m)"
+                        android:textSize="@dimen/dp15"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -985,14 +927,13 @@
                     android:layout_weight="3">
 
                     <TextView
-                        android:id="@+id/clock_logo"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dp40"
                         android:layout_gravity="left"
                         android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
-                        android:text="吊钩高度告警设置"
-                        android:textSize="@dimen/dp20"
+                        android:text="吊钩高度告警设置(米)/hook height(m)"
+                        android:textSize="@dimen/dp15"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -1000,7 +941,8 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp70">
+                android:layout_height="@dimen/dp70"
+                android:layout_margin="@dimen/dp3">
 
                 <LinearLayout
                     android:layout_width="@dimen/dp0"
@@ -1010,13 +952,11 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -1026,12 +966,11 @@
                             app:srcCompat="@mipmap/min" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="最小值"
+                            android:text="最小值\nminimum"
                             android:textSize="@dimen/dp10" />
 
                     </LinearLayout>
@@ -1046,13 +985,11 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -1062,12 +999,11 @@
                             app:srcCompat="@mipmap/max" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="最大值"
+                            android:text="最大值\nMaximum"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -1079,17 +1015,14 @@
                         android:layout_weight="1"
                         android:text="20m" />
 
-
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical"
                         android:visibility="visible">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -1098,12 +1031,11 @@
                             app:srcCompat="@mipmap/min" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="最小值"
+                            android:text="最小值\nMinimum"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -1118,14 +1050,12 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical"
                         android:visibility="visible">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -1134,12 +1064,11 @@
                             app:srcCompat="@mipmap/max" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="最大值"
+                            android:text="最大值\nMaximum"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
 
@@ -1154,14 +1083,12 @@
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_margin="@dimen/dp10"
-                        android:layout_weight="1"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
                         android:orientation="vertical"
                         android:visibility="invisible">
 
                         <ImageView
-                            android:id="@+id/clock_logo"
                             android:layout_width="@dimen/dp40"
                             android:layout_height="@dimen/dp45"
                             android:layout_centerInParent="true"
@@ -1170,7 +1097,6 @@
                             app:srcCompat="@mipmap/third" />
 
                         <TextView
-                            android:id="@+id/clock_logo"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
