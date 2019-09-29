@@ -3,8 +3,8 @@ package com.wooddeep.crane.persist.dao;
 import android.content.Context;
 
 import com.j256.ormlite.dao.Dao;
-import com.wooddeep.crane.persist.DatabaseHelper;
-import com.wooddeep.crane.persist.entity.Load;
+import com.wooddeep.crane.persist.LoadDbHelper;
+import com.wooddeep.crane.persist.entity.TcParam;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,16 +13,16 @@ import java.util.List;
 // ormlite的使用
 // https://blog.csdn.net/industriously/article/details/50790624
 
-public class LoadDao {
+public class TcParamDao {
 
     private Context context;
     // ORMLite提供的DAO类对象，第一个泛型是要操作的数据表映射成的实体类；第二个泛型是这个实体类中ID的数据类型
-    private Dao<Load, Integer> dao;
+    private Dao<TcParam, Integer> dao;
 
-    public LoadDao(Context context) {
+    public TcParamDao(Context context) {
         this.context = context;
         try {
-            this.dao = DatabaseHelper.getInstance(context).getDaoX(Load.class);
+            this.dao = LoadDbHelper.getInstance(context).getDaoX(TcParam.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -32,9 +32,9 @@ public class LoadDao {
     public List<String> getCraneTypes() {
         List<String> out = new ArrayList<>();
         try {
-            List<Load> loads = dao.queryBuilder()
-                .selectColumns("craneType").distinct().query();
-            for (Load load : loads) {
+            List<TcParam> loads = dao.queryBuilder()
+                .selectColumns("Type").distinct().query();
+            for (TcParam load : loads) {
                 out.add(load.getCraneType());
             }
         } catch (Exception e) {
@@ -47,9 +47,9 @@ public class LoadDao {
         List<String> out = new ArrayList<>();
 
         try {
-            List<Load> loads = dao.queryBuilder().selectColumns("armLength").distinct()
-                .where().eq("craneType", craneType).query();
-            for (Load load : loads) {
+            List<TcParam> loads = dao.queryBuilder().selectColumns("Length").distinct()
+                .where().eq("Type", craneType).query();
+            for (TcParam load : loads) {
                 out.add(load.getArmLength());
             }
         } catch (Exception e) {
@@ -62,9 +62,9 @@ public class LoadDao {
         List<String> out = new ArrayList<>();
 
         try {
-            List<Load> loads = dao.queryBuilder().selectColumns("power").distinct().where()
-                .eq("craneType", craneType).and().eq("armLength", armLength).query();
-            for (Load load : loads) {
+            List<TcParam> loads = dao.queryBuilder().selectColumns("Rate").distinct().where()
+                .eq("Type", craneType).and().eq("Length", armLength).query();
+            for (TcParam load : loads) {
                 out.add(load.getPower());
             }
         } catch (Exception e) {
@@ -74,12 +74,12 @@ public class LoadDao {
     }
 
 
-    public List<Load> getLoads(String craneType, String armLength, String power) {
-        List<Load> out = new ArrayList<>();
+    public List<TcParam> getLoads(String craneType, String armLength, String power) {
+        List<TcParam> out = new ArrayList<>();
 
         try {
-            List<Load> loads = dao.queryBuilder().where().eq("craneType", craneType)
-                .and().eq("armLength", armLength).and().eq("power", power).query();
+            List<TcParam> loads = dao.queryBuilder().where().eq("Type", craneType)
+                .and().eq("Length", armLength).and().eq("Rate", power).query();
             out = loads;
         } catch (Exception e) {
             // NOTHING
@@ -87,11 +87,11 @@ public class LoadDao {
         return out;
     }
 
-    public Load getSaveLoad() {
-        List<Load> out = new ArrayList<>();
+    public TcParam getSaveLoad() {
+        List<TcParam> out = new ArrayList<>();
 
         try {
-            List<Load> loads = dao.queryBuilder().where().eq("coordinate", "-1").query();
+            List<TcParam> loads = dao.queryBuilder().where().eq("Distance", "-1").query();
             out = loads;
         } catch (Exception e) {
             // NOTHING
@@ -104,7 +104,7 @@ public class LoadDao {
 
 
     // 向user表中添加一条数据
-    public void insert(Load data) {
+    public void insert(TcParam data) {
         try {
             dao.create(data);
         } catch (SQLException e) {
@@ -113,7 +113,7 @@ public class LoadDao {
     }
 
     // 删除user表中的一条数据
-    public void delete(Load data) {
+    public void delete(TcParam data) {
         try {
             dao.delete(data);
         } catch (SQLException e) {
@@ -130,7 +130,7 @@ public class LoadDao {
     }
 
     // 修改user表中的一条数据
-    public void update(Load data) {
+    public void update(TcParam data) {
         try {
             dao.update(data);
         } catch (SQLException e) {
@@ -139,8 +139,8 @@ public class LoadDao {
     }
 
     // 查询user表中的所有数据
-    public List<Load> selectAll() {
-        List<Load> cranes = null;
+    public List<TcParam> selectAll() {
+        List<TcParam> cranes = null;
         try {
             cranes = dao.queryForAll();
             if (cranes == null) {
@@ -153,8 +153,8 @@ public class LoadDao {
     }
 
     // 根据ID取出用户信息
-    public Load queryById(int id) {
-        Load crane = null;
+    public TcParam queryById(int id) {
+        TcParam crane = null;
         try {
             crane = dao.queryForId(id);
         } catch (SQLException e) {
@@ -163,8 +163,8 @@ public class LoadDao {
         return crane;
     }
 
-    public List<Load> queryForMatching(Load crane) {
-        List<Load> cranes = null;
+    public List<TcParam> queryForMatching(TcParam crane) {
+        List<TcParam> cranes = null;
         try {
             cranes = dao.queryForMatching(crane);
         } catch (SQLException e) {

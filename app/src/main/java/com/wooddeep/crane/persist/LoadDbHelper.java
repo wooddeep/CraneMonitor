@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public class LoadDbHelper extends OrmLiteSqliteOpenHelper {
     // 数据库名称
-    public static final String DATABASE_NAME = "load.db";
+    public static final String DATABASE_NAME = "tc.db";
 
     // 本类的单例实例
     private static LoadDbHelper instance;

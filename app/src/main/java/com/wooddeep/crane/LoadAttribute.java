@@ -13,31 +13,24 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.rmondjone.locktableview.DataCell;
-import com.rmondjone.locktableview.DisplayUtil;
-import com.rmondjone.locktableview.LockTableView;
-import com.rmondjone.xrecyclerview.XRecyclerView;
 import com.wooddeep.crane.ebus.SysParaEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
-import com.wooddeep.crane.persist.dao.LoadDao;
+//import com.wooddeep.crane.persist.dao.LoadDao;
+import com.wooddeep.crane.persist.dao.TcParamDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
-import com.wooddeep.crane.persist.entity.Crane;
-import com.wooddeep.crane.persist.entity.Load;
+import com.wooddeep.crane.persist.entity.TcParam;
 import com.wooddeep.crane.persist.entity.SysPara;
 import com.wooddeep.crane.views.FixedTitleTable;
 import com.wooddeep.crane.views.TableCell;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -121,13 +114,13 @@ public class LoadAttribute extends AppCompatActivity {
     }
 
     private void loadDefautAttr(Context contex) {
-        LoadDao dao = new LoadDao(contex);
+        TcParamDao dao = new TcParamDao(contex);
         InputStream is = context.getResources().openRawResource(R.raw.load_attr); // 暂时放在这里
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
         try {
             dao.deleteAll();
             String str;
-            Load load = new Load();
+            TcParam load = new TcParam();
             while ((str = bufferedReader.readLine()) != null) {
                 //System.out.println(str);
                 String[] cells = str.split(",");
@@ -148,16 +141,17 @@ public class LoadAttribute extends AppCompatActivity {
         }
     }
 
-    private List<Load> confLoad(Context contex) {
-        DatabaseHelper.getInstance(contex).createTable(Load.class);
+    private List<TcParam> confLoad(Context contex) {
+        DatabaseHelper.getInstance(contex).createTable(TcParam.class);
         DatabaseHelper.getInstance(contex).createTable(SysPara.class);
-        LoadDao dao = new LoadDao(contex);
-        List<Load> paras = dao.selectAll();
-        if (paras == null || paras.size() <= 1) {
+        TcParamDao dao = new TcParamDao(contex);
+        List<TcParam> paras = dao.selectAll();
+        /*if (paras == null || paras.size() <= 1) {
             dao.deleteAll();
             loadDefautAttr(contex); // 加载配置文件中的配置
         }
         paras = dao.selectAll();
+        */
 
         return paras;
     }
@@ -218,7 +212,7 @@ public class LoadAttribute extends AppCompatActivity {
         }
 
         confLoad(getApplicationContext());
-        LoadDao loadDao = new LoadDao(getApplicationContext());
+        TcParamDao loadDao = new TcParamDao(getApplicationContext());
         SysParaDao paraDao = new SysParaDao(getApplicationContext());
 
         String savedCraneType = paraDao.queryValueByName("craneType");  // 塔基类型
@@ -293,7 +287,7 @@ public class LoadAttribute extends AppCompatActivity {
 
     }
 
-    public List<Load> queryLoadByCondition() {
+    public List<TcParam> queryLoadByCondition() {
 
         MaterialSpinner craneTypeSpinner = (MaterialSpinner) findViewById(R.id.crane_type_option);
         MaterialSpinner armLenSpinner = (MaterialSpinner) findViewById(R.id.arm_length_option);
@@ -305,7 +299,7 @@ public class LoadAttribute extends AppCompatActivity {
 
         System.out.printf("%s-%s-%s\n", craneType, armLength, cableNum);
 
-        LoadDao dao = new LoadDao(getApplicationContext());
+        TcParamDao dao = new TcParamDao(getApplicationContext());
         return dao.getLoads(craneType, armLength, cableNum);
 
     }
@@ -346,7 +340,7 @@ public class LoadAttribute extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (view.getId() == R.id.load_data) {
-                    LoadDao dao = new LoadDao(context);
+                    TcParamDao dao = new TcParamDao(context);
                     AlertView alertView = new AlertView("加载负荷特性参数", "", null,
                         new String[]{"确定", "取消"}, null, activity,
                         AlertView.Style.Alert, new OnItemClickListener() {
@@ -358,7 +352,7 @@ public class LoadAttribute extends AppCompatActivity {
                                 try {
                                     dao.deleteAll();
                                     String str;
-                                    Load load = new Load();
+                                    TcParam load = new TcParam();
                                     while ((str = bufferedReader.readLine()) != null) {
                                         //System.out.println(str);
                                         String[] cells = str.split(",");
@@ -471,8 +465,8 @@ public class LoadAttribute extends AppCompatActivity {
         table.setFirstRow(colNames, idList);
 
         // 数据信息
-        List<Load> loads = queryLoadByCondition();
-        for (Load load : loads) {
+        List<TcParam> loads = queryLoadByCondition();
+        for (TcParam load : loads) {
             ArrayList<TableCell> row = new ArrayList<TableCell>();
             row.add(new TableCell(0, load.getCoordinate()));
             row.add(new TableCell(0, load.getWeight()));
@@ -491,7 +485,6 @@ public class LoadAttribute extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         table = new FixedTitleTable(dm.widthPixels); // 输入屏幕宽度
 
-        //List<Load> paras = confLoad(context);
         try {
             showLoadInfo();
         } catch (Exception e) {
