@@ -66,6 +66,15 @@ public class WorkRecDao {
         return cranes;
     }
 
+    public long queryCount() {
+        try {
+            return dao.countOf();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     // 根据ID取出用户信息
     public WorkRecrod queryById(int id) {
         WorkRecrod crane = null;
