@@ -3,7 +3,7 @@ package com.wooddeep.crane.persist.dao;
 import android.content.Context;
 
 import com.j256.ormlite.dao.Dao;
-import com.wooddeep.crane.persist.DatabaseHelper;
+import com.wooddeep.crane.persist.LoadDbHelper;
 import com.wooddeep.crane.persist.entity.Load;
 
 import java.sql.SQLException;
@@ -22,7 +22,7 @@ public class LoadDao {
     public LoadDao(Context context) {
         this.context = context;
         try {
-            this.dao = DatabaseHelper.getInstance(context).getDaoX(Load.class);
+            this.dao = LoadDbHelper.getInstance(context).getDaoX(Load.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
