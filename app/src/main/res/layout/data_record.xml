@@ -80,7 +80,9 @@
                 android:layout_toRightOf="@+id/load_logo"
                 android:layout_marginRight="@dimen/dp35"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="@dimen/dp3"
+                android:background="@drawable/frame_border">
 
                 <ImageView
                     android:id="@+id/work_record"
@@ -109,7 +111,9 @@
                 android:layout_toRightOf="@+id/load_logo"
                 android:layout_marginRight="@dimen/dp35"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="@dimen/dp3"
+                android:background="@drawable/frame_border">
 
                 <ImageView
                     android:id="@+id/realtime_record"
@@ -140,7 +144,9 @@
                 android:layout_toRightOf="@+id/load_logo"
                 android:gravity="center"
                 android:layout_marginRight="@dimen/dp35"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="@dimen/dp3"
+                android:background="@drawable/frame_border">
 
                 <ImageView
                     android:id="@+id/collision_record"
@@ -171,7 +177,9 @@
                 android:layout_toRightOf="@+id/load_logo"
                 android:gravity="center"
                 android:layout_marginRight="@dimen/dp35"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="@dimen/dp3"
+                android:background="@drawable/frame_border">
 
                 <ImageView
                     android:id="@+id/oper_record"

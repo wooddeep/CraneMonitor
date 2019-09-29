@@ -271,7 +271,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/dp2"
                 android:gravity="center"
-                app:srcCompat="@mipmap/home" />
+                app:srcCompat="@mipmap/tmec" />
 
             <!-- No and name -->
             <LinearLayout

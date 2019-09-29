@@ -95,17 +95,17 @@ public class DataRecord extends AppCompatActivity {
 
     private List<Integer> widthList = new ArrayList() {{
         add(200);
-        add(400);
-        add(200);
-        add(200);
-        add(200);
-        add(200);
-        add(200);
-        add(200);
-        add(200);
-        add(200);
-        add(200);
-        add(200);
+        add(300); // 时间
+        add(150); // 倍率
+        add(200); // 力矩
+        add(200); // 高度
+        add(200); // 幅度
+        add(250); // 额重
+        add(150); // 重量
+        add(200); // 回转
+        add(150); // 行走
+        add(200); // 仰角
+        add(250); // 风速
         add(200);
     }};
 
