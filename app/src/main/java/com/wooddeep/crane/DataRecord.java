@@ -71,117 +71,24 @@ import java.util.List;
 public class DataRecord extends AppCompatActivity {
     private Context context;
     private FixedTitleTable table;
-    private int screenWidth = 400; // dp
-
-    private ArrayList<ArrayList<DataCell>> gTable = null;
-    private ArrayList<Integer> gColId = null;
 
     private Activity activity = this;
-
     private List<String> craneTypes = new ArrayList<>();
     private List<String> armLengths = new ArrayList<>();
-    private List<String> cables = new ArrayList<>();
 
     private WorkRecDao workRecDao;
-
-    /**
-     *  *
-     * 检查应用程序是否允许写入存储设备
-     * <p>
-     *  *
-     *  *
-     * 如果应用程序不允许那么会提示用户授予权限
-     * <p>
-     *  *
-     *  * @param activity
-     *  
-     */
-
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
-
-    public static void verifyStoragePermissions(Activity activity) {
-        // Check if we have write permission
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                activity,
-                PERMISSIONS_STORAGE,
-                REQUEST_EXTERNAL_STORAGE
-            );
-        }
-    }
-
-    private void loadDefautAttr(Context contex) {
-        LoadDao dao = new LoadDao(contex);
-        InputStream is = context.getResources().openRawResource(R.raw.load_attr); // 暂时放在这里
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
-        try {
-            dao.deleteAll();
-            String str;
-            Load load = new Load();
-            while ((str = bufferedReader.readLine()) != null) {
-                //System.out.println(str);
-                String[] cells = str.split(",");
-                if (cells.length != 5) continue;
-                // D5523, 4	,50	,0 ,10
-                load.setCraneType(cells[0].trim());
-                load.setPower(cells[1].trim());
-                load.setArmLength(cells[2].trim());
-                load.setCoordinate(cells[3].trim());
-                load.setWeight(cells[4].trim());
-                dao.insert(load);
-            }
-            craneTypes = dao.getCraneTypes();
-            armLengths = dao.getArmLengths(craneTypes.get(0));
-            cables = dao.getCables(craneTypes.get(0), armLengths.get(0));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private List<WorkRecrod> confWorkRecordLoad(Context contex) {
-        DatabaseHelper.getInstance(contex).createTable(WorkRecrod.class);
-        WorkRecDao dao = new WorkRecDao(contex);
-        List<WorkRecrod> paras = dao.selectAll();
-        if (paras == null || paras.size() <= 1) {
-            dao.deleteAll();
-        }
-        paras = dao.selectAll();
-
-        return paras;
-    }
-
-    // // 在SD卡目录下创建文件
-    private void createConfIfNotExist() throws Exception {
-        File file = new File(Environment.getExternalStorageDirectory(), "load_conf.csv");
-        Log.d("LoadAttribute", "file.exists():" + file.exists() + " file.getAbsolutePath():" + file.getAbsolutePath());
-        if (!file.exists()) {
-            //file.delete();
-            file.createNewFile();
-        }
-        //Toast.makeText(LoadAttribute.this, "SD卡目录下创建文件成功...", Toast.LENGTH_LONG).show();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.data_record);
         context = getApplicationContext();
-        verifyStoragePermissions(this);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
         workRecDao = new WorkRecDao(context);
 
-        //confWorkRecordLoad(getApplicationContext());
-        //LoadDao loadDao = new LoadDao(getApplicationContext());
-        //SysParaDao paraDao = new SysParaDao(getApplicationContext());
     }
 
     private void setOnTouchListener(View view) {
@@ -227,31 +134,6 @@ public class DataRecord extends AppCompatActivity {
                         @Override
                         public void onItemClick(Object o, int position) {
                             if (position == 0) {
-                                InputStream is = context.getResources().openRawResource(R.raw.load_attr); // 暂时放在这里
-                                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
-                                try {
-                                    dao.deleteAll();
-                                    String str;
-                                    Load load = new Load();
-                                    while ((str = bufferedReader.readLine()) != null) {
-                                        //System.out.println(str);
-                                        String[] cells = str.split(",");
-                                        if (cells.length != 5) continue;
-                                        // D5523, 4	,50	,0 ,10
-                                        load.setCraneType(cells[0].trim());
-                                        load.setPower(cells[1].trim());
-                                        load.setArmLength(cells[2].trim());
-                                        load.setCoordinate(cells[3].trim());
-                                        load.setWeight(cells[4].trim());
-                                        dao.insert(load);
-                                    }
-
-                                    craneTypes = dao.getCraneTypes();
-                                    armLengths = dao.getArmLengths(craneTypes.get(0));
-                                    cables = dao.getCables(craneTypes.get(0), armLengths.get(0));
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
                             }
                         }
                     });
@@ -277,7 +159,6 @@ public class DataRecord extends AppCompatActivity {
             setOnClickListener(view);
         }
     }
-
 
     // 头部信息  // ID, 时间，倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
     private ArrayList<TableCell> colNames = new ArrayList<TableCell>() {{
@@ -312,11 +193,28 @@ public class DataRecord extends AppCompatActivity {
         add(-1);
     }};
 
+
+    private List<Integer> widthList = new ArrayList() {{
+        add(200);
+        add(400);
+        add(200);
+        add(200);
+        add(200);
+        add(200);
+        add(200);
+        add(200);
+        add(200);
+        add(200);
+        add(200);
+        add(200);
+        add(200);
+    }};
+
     public void showWorkRecInfo() {
-        table.init(this);
+        table.init(this, null);
         table.clearAll();
 
-        table.setFirstRow(colNames, idList);
+        table.setFirstRow(colNames, idList, widthList);
 
         List<WorkRecrod> workRecrods = workRecDao.queryPage(0, 10);
 
@@ -339,9 +237,8 @@ public class DataRecord extends AppCompatActivity {
             row.add(new TableCell(0, String.valueOf(recrod.getWindspeed())));
             row.add(new TableCell(0, String.valueOf(recrod.getRemark())));
 
-            table.addDataRow(row, true);
+            table.addDataRow(row, true, widthList);
         }
-
     }
 
     /**
@@ -349,7 +246,6 @@ public class DataRecord extends AppCompatActivity {
      **/
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         table = new FixedTitleTable(dm.widthPixels); // 输入屏幕宽度
@@ -360,8 +256,6 @@ public class DataRecord extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
         setOnTouchListener();
-
     }
 }

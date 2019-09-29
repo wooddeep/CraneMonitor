@@ -211,7 +211,7 @@ public class AreaSetting extends AppCompatActivity {
     }
 
     public void showAreaInfo(List<Area> paras) throws Exception {
-        table.init(this);
+        table.init(this, null);
         table.clearAll();
 
         ArrayList<TableCell> head = new ArrayList<TableCell>() {{

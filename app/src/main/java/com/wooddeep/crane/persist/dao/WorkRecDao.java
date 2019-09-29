@@ -99,7 +99,7 @@ public class WorkRecDao {
     public List<WorkRecrod> queryPage(long offset, long limit) {
         List<WorkRecrod> cranes = null;
         try {
-            cranes = dao.queryBuilder().offset(offset).limit(limit).query();
+            cranes = dao.queryBuilder().offset(offset).limit(limit).orderBy("id", false).query();
         } catch (SQLException e) {
             e.printStackTrace();
         }

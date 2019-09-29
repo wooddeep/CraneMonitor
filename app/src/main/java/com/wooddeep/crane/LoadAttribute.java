@@ -454,7 +454,7 @@ public class LoadAttribute extends AppCompatActivity {
 
 
     public void showLoadInfo() {
-        table.init(this);
+        table.init(this, null);
         table.clearAll();
 
         // 头部信息

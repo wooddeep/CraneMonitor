@@ -202,7 +202,7 @@ public class ProtectSetting extends AppCompatActivity {
     }
 
     public void showProtectInfo(List<Protect> paras) throws Exception {
-        table.init(this);
+        table.init(this, null);
         table.clearAll();
 
         ArrayList<TableCell> head = new ArrayList<TableCell>() {{

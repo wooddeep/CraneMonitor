@@ -169,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
     private String myCraneNo = "";
     private float oscale = 1.0f;
     private int craneType = 0; // 塔基类型: 0 ~ 平臂式, 2动臂式
+    private int iPower = 2; // 倍率
 
     private RotateProto currRotateProto = new RotateProto();
     private RotateProto prevRotateProto = new RotateProto();
@@ -235,11 +236,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView forwardAlarmView;
     private TextView backwardAlarmView;
     private TextView weightAlarmView;
-    private TextView hookAlarmVeiw;
+    private TextView hookAlarmView;
     private TextView momentAlarmView;
     private TextView momentView;
     private TextView ratedWeightView;
+    private TextView weightView;
     private TextView masterNoView;
+    private TextView heightView;
+    private TextView windSpeedView;
     private MediaPlayer player;
 
     private boolean sysExit = false;
@@ -496,10 +500,19 @@ public class MainActivity extends AppCompatActivity {
                 CommTool.sleep(100);
                 count++;
 
+                //倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
                 if (count % 50 == 0) { // 没5秒钟记录一次
                     Date date = new Date();
                     String dateNowStr = sdf.format(date);
                     workRecrod.setTime(dateNowStr);
+                    workRecrod.setRopenum(iPower); // 倍率
+                    workRecrod.setHeigth(Float.parseFloat(heightView.getText().toString().split("m")[0]));
+                    workRecrod.setRange(centerCycle.carRange);
+                    workRecrod.setRatedweight(Float.parseFloat(ratedWeightView.getText().toString().split("t")[0]));
+                    workRecrod.setWeight(Float.parseFloat(weightView.getText().toString().split("t")[0]));
+                    workRecrod.setRotate(centerCycle.hAngle);
+                    workRecrod.setDipange(centerCycle.vAngle);
+                    workRecrod.setWindspeed(Float.parseFloat(windSpeedView.getText().toString().split("m")[0]));
                     workRecDao.insert(workRecrod);
                 }
 
@@ -766,8 +779,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (alarmEvent.hookMinHightAlarm == true) {
             Alarm.startAlarm(activity, R.id.hook_alarm_logo, R.mipmap.hook_mix);
-            hookAlarmVeiw.setText("T");
-            hookAlarmVeiw.setRotation(180);
+            hookAlarmView.setText("T");
+            hookAlarmView.setRotation(180);
             AlarmSound.setStatus(R.raw.hook_down_warning, true);
         } else {
             AlarmSound.setStatus(R.raw.hook_down_warning, false);
@@ -775,7 +788,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (alarmEvent.hookMaxHightAlarm == true) {
             Alarm.startAlarm(activity, R.id.hook_alarm_logo, R.mipmap.hook_max);
-            hookAlarmVeiw.setText("T");
+            hookAlarmView.setText("T");
             AlarmSound.setStatus(R.raw.hook_up_warning, true);
         } else {
             AlarmSound.setStatus(R.raw.hook_up_warning, false);
@@ -783,7 +796,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (alarmEvent.hookMinHightAlarm == false && alarmEvent.hookMaxHightAlarm == false) {
             Alarm.startAlarm(activity, R.id.hook_alarm_logo, R.mipmap.hook);
-            hookAlarmVeiw.setText("OK");
+            hookAlarmView.setText("OK");
         }
 
         // 控制
@@ -856,7 +869,7 @@ public class MainActivity extends AppCompatActivity {
             float hrate = heightDelat / craneHeight;
             float hratePerData = hrate / (calibration.getHeightEndData() - calibration.getHeightStartData());
             float hookHeight = (currProto.getHeight() - calibration.getHeightStartData()) * hratePerData * craneHeight1 + CraneView.minHookHeight;
-            craneView.setHookHeight((int) hookHeight);
+            craneView.setHookHeight((int) hookHeight); // 显示上的高度
         }
     }
 
@@ -1000,6 +1013,9 @@ public class MainActivity extends AppCompatActivity {
             power = paraDao.queryValueByName("power");
             if (power == null) power = "-1";
         }
+
+        iPower = Integer.parseInt(power);
+
         ((TextView) findViewById(R.id.cable)).setText(power); // 显示塔基类型
 
         loadParas = loadDao.getLoads(craneType, armLength, power); // 获取负荷特性
@@ -1093,6 +1109,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 float oscale = getOscale();
                 oscale = oscale + 0.1f;
+                SysPara scalePara = paraDao.queryParaByName("oscale");
+                if (scalePara == null) {
+                    paraDao.insert(new SysPara("oscale", String.valueOf(oscale)));
+                } else {
+                    scalePara.setParaValue(String.valueOf(oscale));
+                    paraDao.update(scalePara);
+                }
                 setOscale(oscale);
                 renderMain(oscale);
                 renderMenu();
@@ -1107,6 +1130,14 @@ public class MainActivity extends AppCompatActivity {
                 float oscale = getOscale();
                 if (oscale < 0.2) return;
                 oscale = oscale - 0.1f;
+                SysPara scalePara = paraDao.queryParaByName("oscale");
+                if (scalePara == null) {
+                    paraDao.insert(new SysPara("oscale", String.valueOf(oscale)));
+                } else {
+                    scalePara.setParaValue(String.valueOf(oscale));
+                    paraDao.update(scalePara);
+                }
+
                 setOscale(oscale);
                 renderMain(oscale);
                 renderMenu();
@@ -1327,6 +1358,15 @@ public class MainActivity extends AppCompatActivity {
      **/
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
+
+        String sSavedScale = paraDao.queryValueByName("oscale");
+        if (sSavedScale == null) {
+            oscale = 1.0f;
+            paraDao.insert(new SysPara("oscale", "1"));
+        } else {
+            oscale = Float.parseFloat(paraDao.queryValueByName("oscale"));
+        }
+
         renderMain(oscale);
         renderMenu();
 
@@ -1356,13 +1396,15 @@ public class MainActivity extends AppCompatActivity {
         loadDao = new LoadDao(MainActivity.this);
         workRecDao = new WorkRecDao(MainActivity.this);
         List<Crane> cranes = craneDao.selectAll();
+
+        DatabaseHelper.getInstance(context).createTable(WorkRecrod.class); // 告警
+
         if (cranes == null || cranes.size() == 0) { // 初始状态, 创建表
             DatabaseHelper.getInstance(context).createTable(Crane.class);
             DatabaseHelper.getInstance(context).createTable(Area.class); // 区域
             DatabaseHelper.getInstance(context).createTable(Protect.class); // 保护区
             DatabaseHelper.getInstance(context).createTable(SysPara.class);
             DatabaseHelper.getInstance(context).createTable(AlarmSet.class); // 告警
-            DatabaseHelper.getInstance(context).createTable(WorkRecrod.class); // 告警
             alarmSetDao.insert(AlarmSet.getInitData());
             DatabaseHelper.getInstance(context).createTable(Load.class); // 负载
             loadDao.insert(Load.getInitData());
@@ -1401,13 +1443,16 @@ public class MainActivity extends AppCompatActivity {
         leftAlarmView = (TextView) findViewById(R.id.left_alarm_level);
         rightAlarmView = (TextView) findViewById(R.id.right_alarm_level);
         weightAlarmView = (TextView) findViewById(R.id.weight_alarm_level);
-        hookAlarmVeiw = (TextView) findViewById(R.id.hook_alarm);
+        hookAlarmView = (TextView) findViewById(R.id.hook_alarm);
         momentAlarmView = (TextView) findViewById(R.id.moment_alarm_level);
         forwardAlarmView = (TextView) findViewById(R.id.forward_alarm_level);
         backwardAlarmView = (TextView) findViewById(R.id.back_alarm_level);
         momentView = (TextView) findViewById(R.id.moment);
         ratedWeightView = (TextView) findViewById(R.id.rated_weight);
+        weightView = (TextView) findViewById(R.id.weight);
+        heightView = (TextView) findViewById(R.id.height);
         masterNoView = (TextView) findViewById(R.id.master_no);
+        windSpeedView = (TextView) findViewById(R.id.wind_speed);
 
         try {
             String s0Name = "S0";

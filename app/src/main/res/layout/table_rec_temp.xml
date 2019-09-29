@@ -112,7 +112,7 @@
         <!-- first column -->
         <ScrollView
             android:id="@+id/first_column"
-            android:layout_width="@dimen/title_cell_width"
+            android:layout_width="@dimen/rec_id_width"
             android:layout_height="match_parent">
 
             <TableLayout

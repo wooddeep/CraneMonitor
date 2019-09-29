@@ -262,7 +262,7 @@ public class CraneSetting extends AppCompatActivity {
 
 
     public void showCranesInfo(List<Crane> paras) throws Exception {
-        table.init(this);
+        table.init(this, null);
         table.clearAll();
 
         List<TableCell> colNames = new ArrayList() {{
