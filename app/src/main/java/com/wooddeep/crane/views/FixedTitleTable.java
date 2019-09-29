@@ -42,7 +42,7 @@ public class FixedTitleTable {
     public int textSize = 24;
 
     @TargetApi(Build.VERSION_CODES.M)
-    public void init(Activity activity) {
+    public void init(Activity activity, List<Integer> widthList) {
         this.activity = activity;
         contentVerticle = (ScrollView) activity.findViewById(R.id.content_verticle);
         firstColumn = (ScrollView) activity.findViewById(R.id.first_column);
@@ -103,24 +103,32 @@ public class FixedTitleTable {
         }
 
         TableLayout tableTitle = (TableLayout) activity.findViewById(R.id.title_table);
+
         TextView title = (TextView) activity.findViewById(R.id.title_tv);
         title.setTextSize(textSize);
         title.setText(colNames.get(0).value);
+
+        title.setWidth(fisrtColWidth); // TODO
+
+        TextPaint tp = title.getPaint();
+        tp.setFakeBoldText(true);
         TableLayout firstRowTable = (TableLayout) activity.findViewById(R.id.first_row_table);
         TableRow firstRow = (TableRow) activity.findViewById(R.id.first_row_row);
         firstRow.removeAllViews();
 
         for (int i = 1; i < colNames.size(); i++) {
             TextView view = (TextView) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_tv, null);
+            //view.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));//加粗
             view.setId(idList.get(i));
             view.setText(colNames.get(i).value);
             view.setHeight(60);
             view.setTextSize(textSize);
+
             view.setWidth((int)colWidth);
             view.setBackgroundColor(Color.rgb(176, 196, 222));
             view.setGravity(Gravity.CENTER);
             view.setTextColor(Color.DKGRAY);
-            view.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
+            view.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
             if (colNames.get(i).clickListener != null) view.setOnClickListener(colNames.get(i).clickListener);
             firstRow.addView(view); // 先添加控件
             TableRow.LayoutParams lp = (TableRow.LayoutParams) view.getLayoutParams();
@@ -138,7 +146,10 @@ public class FixedTitleTable {
     }
 
 
-    public void addDataRow(List<TableCell> cells) {
+    public void addDataRow(List<TableCell> cells, boolean visible) {
+        if (!visible) {
+            return;
+        }
 
         float colWidth = 200;
         float spareWidth = this.screenWidth - fisrtColWidth;
@@ -155,7 +166,8 @@ public class FixedTitleTable {
         view.setText(cells.get(0).value);
         view.setTextSize(textSize);
         view.setHeight(60);
-        view.setWidth(200);
+        view.setWidth(fisrtColWidth); // TODO
+
         view.setBackgroundColor(0x00000000);
         view.setGravity(Gravity.CENTER);
         view.setTextColor(Color.DKGRAY);
@@ -168,6 +180,7 @@ public class FixedTitleTable {
         // 添加其他单元格
         TableLayout contentTable = (TableLayout) activity.findViewById(R.id.content_talble);
         TableRow contentRow = (TableRow) LayoutInflater.from(activity).inflate(R.layout.table_row, null);
+
         for (int i = 1; i < cells.size(); i++) {
             TableCell cell = cells.get(i);
 

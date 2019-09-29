@@ -35,6 +35,7 @@
     <dimen name="radius_alertview">15px</dimen>
 
     <dimen name="row_height">60px</dimen>
-    <dimen name="title_cell_width">200px</dimen>
+    <dimen name="title_cell_width">400px</dimen>
+    <dimen name="rec_id_width">200px</dimen>
     <dimen name="grid_width">2px</dimen>
 </resources>

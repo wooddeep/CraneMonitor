@@ -67,20 +67,37 @@ public class CraneSetting extends AppCompatActivity {
     private FixedTitleTable table;
 
     private static String[] craneParaNames = new String[]{
-        "塔基类型",
-        "X1(塔基X坐标)",
-        "Y1(塔基Y坐标)",
-        "X2(塔基X偏移)",
-        "Y2(塔基Y偏移)",
-        "塔机高度",
-        "大臂长度",
-        "平衡臂长度",
-        "塔身直径",
+        "塔基类型/Crane Type",
+        "X1坐标(米)/X1 coordinate(m)",
+        "Y1坐标(米)/Y1 coordinate(m)",
+        "X2偏移(米)/X2 offset(m)",
+        "Y2偏移(米)/X2 offset(m)",
+        "塔机高度(米)/Height(m)",
+        "大臂长度(米)/Big Arm(m)",
+        "平衡臂长度(米)/Balance Arm(m)",
+        "塔身直径(米)/Crane diameter(m)",
         "大臂宽度",
         "平衡臂宽度",
-        "最大仰角(动臂式)",
-        "最小仰角(动臂式)",
-        "结构参数(动臂式)",
+        "最大仰角(°)/Max Dip Angle(°)",
+        "最小仰角(°)/Min Dip Angle(°)",
+        "结构参数(米)/Arch parameter(m)",
+    };
+
+    private static boolean[] craneParaVisible = new boolean[]{
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        true,
+        true,
+        true,
     };
 
     private List<Crane> confLoad(Context contex) {
@@ -189,7 +206,7 @@ public class CraneSetting extends AppCompatActivity {
         dao.insert(new Crane(
             false,
             0,
-            String.format("%d号塔基", rowCnt + 1),
+            String.format("%d号塔基/No.%02d", rowCnt + 1, rowCnt + 1),
             0,
             100,
             100,
@@ -249,14 +266,14 @@ public class CraneSetting extends AppCompatActivity {
         table.clearAll();
 
         List<TableCell> colNames = new ArrayList() {{
-            add(new TableCell(0, "参数类型"));
+            add(new TableCell(0, "参数类型/Parameter"));
         }};
         List<Integer> idList = new ArrayList() {{
             add(-1);
         }};
 
         for (int i = 0; i < paras.size(); i++) {
-            colNames.add(new TableCell(0, String.format("%d号塔基", i + 1), new View.OnClickListener() {
+            colNames.add(new TableCell(0, String.format("%d号塔基/No.%d", i + 1, i + 1), new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     CraneDao dao = new CraneDao(context);
@@ -305,7 +322,7 @@ public class CraneSetting extends AppCompatActivity {
                 switch (i) {
                     case 0:
                         JSONObject privData = new JSONObject();
-                        JSONArray options = new JSONArray("[\"平臂式\", \"动臂式\"]");
+                        JSONArray options = new JSONArray("[\"平臂式(-)\", \"动臂式(/)\"]");
                         privData.put("options", options);
                         cells.add(new TableCell(2, String.valueOf(paras.get(j).getType()), privData));
                         break;
@@ -350,7 +367,7 @@ public class CraneSetting extends AppCompatActivity {
                         break;
                 }
             }
-            table.addDataRow(cells);
+            table.addDataRow(cells, craneParaVisible[i]);
         }
 
     }

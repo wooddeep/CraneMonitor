@@ -53,19 +53,19 @@ public class ProtectSetting extends AppCompatActivity {
     private Activity activity = this;
 
     private static String[] craneParaNames = new String[]{
-        "高度",
-        "X1",
-        "Y1",
-        "X2",
-        "Y2",
-        "X3",
-        "Y3",
-        "X4",
-        "Y4",
-        "X5",
-        "Y5",
-        "X6",
-        "Y6",
+        "高度(米)/height(m)",
+        "X1(m)",
+        "Y1(m)",
+        "X2(m)",
+        "Y2(m)",
+        "X3(m)",
+        "Y3(m)",
+        "X4(m)",
+        "Y4(m)",
+        "X5(m)",
+        "Y5(m)",
+        "X6(m)",
+        "Y6(m)",
     };
 
     private List<Protect> confLoad(Context contex) {
@@ -79,7 +79,7 @@ public class ProtectSetting extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.area_setting);
+        setContentView(R.layout.protect_area);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
@@ -206,7 +206,7 @@ public class ProtectSetting extends AppCompatActivity {
         table.clearAll();
 
         ArrayList<TableCell> head = new ArrayList<TableCell>() {{
-            add(new TableCell(0, "参数类型"));
+            add(new TableCell(0, "参数类型/Parameter"));
         }};
 
         List<Integer> idList = new ArrayList() {{
@@ -215,7 +215,7 @@ public class ProtectSetting extends AppCompatActivity {
 
         for (int i = 0; i < paras.size(); i++) {
             idList.add(paras.get(i).getId());
-            head.add(new TableCell(0, String.format("%02d号区域", i + 1)));
+            head.add(new TableCell(0, String.format("%02d号区域/No.%02d", i + 1, i + 1)));
         }
 
         table.setFirstRow(head, idList);
@@ -267,7 +267,7 @@ public class ProtectSetting extends AppCompatActivity {
                         break;
                 }
             }
-            table.addDataRow(row);
+            table.addDataRow(row, true);
         }
 
     }

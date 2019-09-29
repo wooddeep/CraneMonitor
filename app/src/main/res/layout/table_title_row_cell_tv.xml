@@ -6,4 +6,5 @@
     android:background="#00000000"
     android:gravity="center"
     android:text="XYZ"
+    android:textStyle="bold"
     android:typeface="monospace" />

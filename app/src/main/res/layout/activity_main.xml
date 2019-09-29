@@ -544,12 +544,21 @@
 
                         <ImageView
                             android:id="@+id/load_attribute"
-                            android:layout_width="@dimen/dp40"
-                            android:layout_height="@dimen/dp35"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp40"
                             android:layout_gravity="center"
                             android:layout_marginLeft="@dimen/dp15"
                             android:gravity="center"
                             android:src="@mipmap/load_attr" />
+
+                        <ImageView
+                            android:id="@+id/data_record"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp40"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="@dimen/dp15"
+                            android:gravity="center"
+                            android:src="@mipmap/log" />
 
                     </LinearLayout>
                 </LinearLayout>

@@ -62,6 +62,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="calibration"
+                android:textStyle="bold"
                 android:textSize="@dimen/dp18"/>
         </LinearLayout>
 
@@ -95,70 +96,72 @@
                 />
         </LinearLayout>
 
-        <LinearLayout
+        <TableLayout
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp50"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:padding="@dimen/dp3"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
 
-            <TextView
-                android:layout_marginLeft="@dimen/dp50"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="@dimen/dp20"
-                android:text="幅度:" />
-            <TextView
-                android:id="@+id/amp_value"
-                android:layout_width="@dimen/dp100"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/dp20"
-                android:text="0" />
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/dp15"
+                    android:layout_gravity="center"
+                    android:text="幅度(range):" />
+                <TextView
+                    android:id="@+id/amp_value"
+                    android:layout_width="@dimen/dp80"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/dp15"
+                    android:text="0" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="@dimen/dp20"
-                android:text="高度:" />
-            <TextView
-                android:id="@+id/height_value"
-                android:layout_width="@dimen/dp100"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/dp20"
-                android:text="0" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/dp15"
+                    android:text="高度(height):" />
+                <TextView
+                    android:id="@+id/height_value"
+                    android:layout_width="@dimen/dp80"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/dp15"
+                    android:text="0" />
+            </TableRow>
+            <TableRow>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="@dimen/dp20"
-                android:text="重量:" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/dp15"
+                    android:layout_gravity="center"
+                    android:text="重量(weight):" />
 
-            <TextView
-                android:id="@+id/weight_value"
-                android:layout_width="@dimen/dp100"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/dp20"
-                android:text="0" />
+                <TextView
+                    android:id="@+id/weight_value"
+                    android:layout_width="@dimen/dp80"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/dp15"
+                    android:text="0" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="@dimen/dp20"
-                android:text="编码值:" />
-            <TextView
-                android:id="@+id/encoder_value"
-                android:layout_width="@dimen/dp100"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/dp20"
-                android:text="0" />
-
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/dp15"
+                    android:text="编码值(code):" />
+                <TextView
+                    android:id="@+id/encoder_value"
+                    android:layout_width="@dimen/dp100"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/dp15"
+                    android:text="0" />
+            </TableRow>>
+        </TableLayout>
 
         <ImageView
             android:id="@+id/save_logo"
@@ -425,8 +428,8 @@
                         android:layout_gravity="center"
                         android:layout_weight="2"
                         android:gravity="center"
-                        android:text="confirm"
-                        android:textSize="@dimen/dp20" />
+                        android:text="确定\nconfirm"
+                        android:textSize="@dimen/dp15" />
 
                     <TextView
                         android:id="@+id/tv_rotate_coord1"
@@ -479,8 +482,8 @@
                         android:layout_gravity="center"
                         android:layout_weight="2"
                         android:gravity="center"
-                        android:text="confirm"
-                        android:textSize="@dimen/dp20" />
+                        android:text="确定\nconfirm"
+                        android:textSize="@dimen/dp15" />
 
                     <TextView
                         android:id="@+id/tv_rotate_coord2"
@@ -560,8 +563,8 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="confirm"
-                        android:textSize="@dimen/dp20" />
+                        android:text="确定\nconfirm"
+                        android:textSize="@dimen/dp15" />
 
                     <TextView
                         android:id="@+id/tv_dip_angle_start"
@@ -591,8 +594,8 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="confirm"
-                        android:textSize="@dimen/dp20" />
+                        android:text="确定\nconfirm"
+                        android:textSize="@dimen/dp15" />
 
                     <TextView
                         android:id="@+id/tv_dip_angle_end"
@@ -671,8 +674,8 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="confirm"
-                        android:textSize="@dimen/dp20" />
+                        android:text="确定\nconfirm"
+                        android:textSize="@dimen/dp15" />
 
                     <TextView
                         android:id="@+id/tv_weight_start"
@@ -702,8 +705,8 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="confirm"
-                        android:textSize="@dimen/dp20" />
+                        android:text="确定\nconfirm"
+                        android:textSize="@dimen/dp15" />
 
                     <TextView
                         android:id="@+id/tv_weight_end"
@@ -783,8 +786,8 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="confirm"
-                        android:textSize="@dimen/dp20" />
+                        android:text="确定\nconfirm"
+                        android:textSize="@dimen/dp15" />
 
                     <TextView
                         android:id="@+id/tv_arm_length_start"
@@ -814,8 +817,8 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="confirm"
-                        android:textSize="@dimen/dp20" />
+                        android:text="确定\nconfirm"
+                        android:textSize="@dimen/dp15" />
 
                     <TextView
                         android:id="@+id/tv_arm_length_end"
@@ -894,8 +897,8 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="confirm"
-                        android:textSize="@dimen/dp20" />
+                        android:text="确定\nconfirm"
+                        android:textSize="@dimen/dp15" />
 
                     <TextView
                         android:id="@+id/tv_tower_height_start"
@@ -925,8 +928,8 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="confirm"
-                        android:textSize="@dimen/dp20" />
+                        android:text="确定\nconfirm"
+                        android:textSize="@dimen/dp15" />
 
                     <TextView
                         android:id="@+id/tv_tower_height_end"

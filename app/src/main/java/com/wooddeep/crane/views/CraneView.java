@@ -230,7 +230,7 @@ public class CraneView extends View {
 
         Paint paint = new Paint();//创建画笔
         paint.setStrokeWidth(4);
-        paint.setColor(Color.BLACK);//为画笔设置颜色
+        paint.setColor(Color.DKGRAY);//为画笔设置颜色
 
 
         int dx = 25; // x方向修正值
@@ -255,9 +255,9 @@ public class CraneView extends View {
         Rect hookTail = new Rect(0, 50, picWidth, picHeight);
         RectF hookTailDst = new RectF(
             dx * scale + coord.x - picWidth * scale / 2,
-            dy * scale + coord.y + (50 + cableLen) * scale,
+            dy * scale + coord.y + (30 + cableLen) * scale,
             dx * scale + coord.x + picWidth * scale / 2,
-            dy * scale + coord.y + (50 + cableLen) * scale + (picHeight - 80) * scale);
+            dy * scale + coord.y + (30 + cableLen) * scale + (picHeight - 80) * scale);
 
         canvas.drawBitmap(bitmap, hookTail, hookTailDst, null);
 

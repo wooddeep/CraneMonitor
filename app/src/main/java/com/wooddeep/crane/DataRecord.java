@@ -13,31 +13,25 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.rmondjone.locktableview.DataCell;
-import com.rmondjone.locktableview.DisplayUtil;
-import com.rmondjone.locktableview.LockTableView;
-import com.rmondjone.xrecyclerview.XRecyclerView;
 import com.wooddeep.crane.ebus.SysParaEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.dao.LoadDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
-import com.wooddeep.crane.persist.entity.Crane;
+import com.wooddeep.crane.persist.dao.WorkRecDao;
 import com.wooddeep.crane.persist.entity.Load;
 import com.wooddeep.crane.persist.entity.SysPara;
+import com.wooddeep.crane.persist.entity.WorkRecrod;
 import com.wooddeep.crane.views.FixedTitleTable;
 import com.wooddeep.crane.views.TableCell;
 
 import org.greenrobot.eventbus.EventBus;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -74,7 +68,7 @@ import java.util.List;
 // greendao
 // https://www.cnblogs.com/wjtaigwh/p/6394288.html
 
-public class LoadAttribute extends AppCompatActivity {
+public class DataRecord extends AppCompatActivity {
     private Context context;
     private FixedTitleTable table;
     private int screenWidth = 400; // dp
@@ -87,6 +81,8 @@ public class LoadAttribute extends AppCompatActivity {
     private List<String> craneTypes = new ArrayList<>();
     private List<String> armLengths = new ArrayList<>();
     private List<String> cables = new ArrayList<>();
+
+    private WorkRecDao workRecDao;
 
     /**
      *  *
@@ -148,14 +144,12 @@ public class LoadAttribute extends AppCompatActivity {
         }
     }
 
-    private List<Load> confLoad(Context contex) {
-        DatabaseHelper.getInstance(contex).createTable(Load.class);
-        DatabaseHelper.getInstance(contex).createTable(SysPara.class);
-        LoadDao dao = new LoadDao(contex);
-        List<Load> paras = dao.selectAll();
+    private List<WorkRecrod> confWorkRecordLoad(Context contex) {
+        DatabaseHelper.getInstance(contex).createTable(WorkRecrod.class);
+        WorkRecDao dao = new WorkRecDao(contex);
+        List<WorkRecrod> paras = dao.selectAll();
         if (paras == null || paras.size() <= 1) {
             dao.deleteAll();
-            loadDefautAttr(contex); // 加载配置文件中的配置
         }
         paras = dao.selectAll();
 
@@ -173,141 +167,21 @@ public class LoadAttribute extends AppCompatActivity {
         //Toast.makeText(LoadAttribute.this, "SD卡目录下创建文件成功...", Toast.LENGTH_LONG).show();
     }
 
-    // 在SD卡目录下的文件，写入内容
-    private void write(File file) throws Exception {
-        FileWriter fw = new FileWriter(file);
-        fw.write("我的sdcard内容.....");
-        fw.close();
-        Toast.makeText(LoadAttribute.this, "SD卡写入内容完成...", Toast.LENGTH_LONG).show();
-        Log.d("LoadAttribute", "SD卡写入内容完成...");
-    }
-
-    // 读取SD卡文件里面的内容
-    private void read() throws Exception {
-        FileReader fr = new FileReader("/mnt/sdcard/mysdcard.txt");
-        BufferedReader r = new BufferedReader(fr);
-        String result = r.readLine();
-        Log.d("LoadAttribute", "SD卡文件里面的内容:" + result);
-    }
-
-    private int getIndex(List<String> list, String value) {
-        int index = 0;
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).equals(value)) {
-                index = i;
-                break;
-            }
-        }
-        return index;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.load_attribute);
+        setContentView(R.layout.data_record);
         context = getApplicationContext();
         verifyStoragePermissions(this);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
-        try {
-            createConfIfNotExist();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        workRecDao = new WorkRecDao(context);
 
-        confLoad(getApplicationContext());
-        LoadDao loadDao = new LoadDao(getApplicationContext());
-        SysParaDao paraDao = new SysParaDao(getApplicationContext());
-
-        String savedCraneType = paraDao.queryValueByName("craneType");  // 塔基类型
-        String savedAramLength = paraDao.queryValueByName("armLength"); // 臂长
-        String savedPower = paraDao.queryValueByName("power"); // 倍率
-
-        craneTypes = loadDao.getCraneTypes();
-        String craneType = savedCraneType != null ? savedCraneType : craneTypes.get(0);
-        armLengths = loadDao.getArmLengths(craneType);
-        String armLength = savedAramLength != null ? savedAramLength : armLengths.get(0);
-        cables = loadDao.getCables(craneType, armLength);
-        String power = savedPower != null ? savedPower : cables.get(0);
-        MaterialSpinner spinner = (MaterialSpinner) findViewById(R.id.crane_type_option); // 塔基类型
-        MaterialSpinner armLenSpinner = (MaterialSpinner) findViewById(R.id.arm_length_option); // 臂长
-        MaterialSpinner cableSpiner = (MaterialSpinner) findViewById(R.id.rope_num_option); // 吊绳倍率
-
-        spinner.setItems(craneTypes);
-        spinner.setSelectedIndex(getIndex(craneTypes, craneType));
-        spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, String currCraneType) {
-                armLengths = loadDao.getArmLengths(currCraneType);
-                armLenSpinner.setItems(armLengths);
-                armLenSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-                    @Override
-                    public void onItemSelected(MaterialSpinner view, int position, long id, String currArmLen) {
-                        cables = loadDao.getCables(currCraneType, currArmLen);
-                        cableSpiner.setItems(cables);
-                        cableSpiner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-                            @Override
-                            public void onItemSelected(MaterialSpinner view, int position, long id, String currPower) {
-                                // TODO
-                            }
-                        });
-                    }
-                });
-
-                //List<Load> paras = confLoad(context);
-                showLoadInfo(); // 渲染出表格
-            }
-        });
-
-        armLenSpinner.setItems(armLengths);
-        armLenSpinner.setSelectedIndex(getIndex(armLengths, armLength));
-        armLenSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, String currArmLen) {
-                String currCraneType = spinner.getText().toString();//spinner
-                cables = loadDao.getCables(currCraneType, currArmLen);
-                cableSpiner.setItems(cables);
-                cableSpiner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-                    @Override
-                    public void onItemSelected(MaterialSpinner view, int position, long id, String currPower) {
-                        // TODO
-                    }
-                });
-                //List<Load> paras = confLoad(context);
-                showLoadInfo(); // 渲染出表格
-            }
-        });
-
-        cableSpiner.setItems(cables);
-        cableSpiner.setSelectedIndex(getIndex(cables, power));
-        cableSpiner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                //Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
-                //List<Load> paras = confLoad(context);
-                showLoadInfo(); // 渲染出表格
-            }
-        });
-
-    }
-
-    public List<Load> queryLoadByCondition() {
-
-        MaterialSpinner craneTypeSpinner = (MaterialSpinner) findViewById(R.id.crane_type_option);
-        MaterialSpinner armLenSpinner = (MaterialSpinner) findViewById(R.id.arm_length_option);
-        MaterialSpinner cableNumSpinner = (MaterialSpinner) findViewById(R.id.rope_num_option);
-
-        String craneType = craneTypeSpinner.getText().toString();
-        String armLength = armLenSpinner.getText().toString();
-        String cableNum = cableNumSpinner.getText().toString();
-
-        System.out.printf("%s-%s-%s\n", craneType, armLength, cableNum);
-
-        LoadDao dao = new LoadDao(getApplicationContext());
-        return dao.getLoads(craneType, armLength, cableNum);
-
+        //confWorkRecordLoad(getApplicationContext());
+        //LoadDao loadDao = new LoadDao(getApplicationContext());
+        //SysParaDao paraDao = new SysParaDao(getApplicationContext());
     }
 
     private void setOnTouchListener(View view) {
@@ -384,52 +258,6 @@ public class LoadAttribute extends AppCompatActivity {
                     alertView.show();
                 } else if (view.getId() == R.id.save_data) { // 保持数据
 
-                    AlertView alertView = new AlertView("保存负荷特性参数", "", null,
-                        new String[]{"确定", "取消"}, null, activity,
-                        AlertView.Style.Alert, new OnItemClickListener() {
-                        @Override
-                        public void onItemClick(Object o, int position) {
-                            if (position == 0) {
-                                MaterialSpinner craneTypeSpinner = (MaterialSpinner) findViewById(R.id.crane_type_option);
-                                MaterialSpinner armLenSpinner = (MaterialSpinner) findViewById(R.id.arm_length_option);
-                                MaterialSpinner cableNumSpinner = (MaterialSpinner) findViewById(R.id.rope_num_option);
-                                String craneType = craneTypeSpinner.getText().toString();
-                                String armLength = armLenSpinner.getText().toString();
-                                String cableNum = cableNumSpinner.getText().toString();
-                                SysParaDao sysParadao = new SysParaDao(getApplicationContext());
-
-                                SysPara para = sysParadao.queryParaByName("craneType");
-                                if (para == null) {
-                                    para = new SysPara("craneType", craneType);
-                                    sysParadao.insert(para);
-                                } else {
-                                    para.setParaValue(craneType);
-                                    sysParadao.update(para);
-                                }
-
-                                para = sysParadao.queryParaByName("armLength");
-                                if (para == null) {
-                                    para = new SysPara("armLength", armLength);
-                                    sysParadao.insert(para);
-                                } else {
-                                    para.setParaValue(armLength);
-                                    sysParadao.update(para);
-                                }
-
-                                para = sysParadao.queryParaByName("power");
-                                if (para == null) {
-                                    para = new SysPara("power", cableNum);
-                                    sysParadao.insert(para);
-                                } else {
-                                    para.setParaValue(cableNum);
-                                    sysParadao.update(para);
-                                }
-
-                                EventBus.getDefault().post(new SysParaEvent(craneType, armLength, cableNum)); // 触发系统参数相关
-                            }
-                        }
-                    });
-                    alertView.show();
                 } else if (view.getId() == R.id.close_logo) {
                     finish();
                 }
@@ -441,9 +269,7 @@ public class LoadAttribute extends AppCompatActivity {
 
     private void setOnTouchListener() {
         List<ImageView> menuButtons = new ArrayList<ImageView>() {{
-            add((ImageView) findViewById(R.id.load_data));
             add((ImageView) findViewById(R.id.close_logo));
-            add((ImageView) findViewById(R.id.save_data));
         }};
 
         for (ImageView view : menuButtons) {
@@ -453,29 +279,66 @@ public class LoadAttribute extends AppCompatActivity {
     }
 
 
-    public void showLoadInfo() {
+    // 头部信息  // ID, 时间，倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
+    private ArrayList<TableCell> colNames = new ArrayList<TableCell>() {{
+        add(new TableCell(0, "编号/ID"));
+        add(new TableCell(0, "时间/Time"));
+        add(new TableCell(0, "倍率/Time"));
+        add(new TableCell(0, "力矩/Time"));
+        add(new TableCell(0, "高度/Time"));
+        add(new TableCell(0, "幅度/Time"));
+        add(new TableCell(0, "额重/Time"));
+        add(new TableCell(0, "时间/Time"));
+        add(new TableCell(0, "回转/Time"));
+        add(new TableCell(0, "行走/Time"));
+        add(new TableCell(0, "仰角/Time"));
+        add(new TableCell(0, "风速/Time"));
+        add(new TableCell(0, "备注/Time"));
+    }};
+
+    private List<Integer> idList = new ArrayList() {{
+        add(-1);
+        add(-1);
+        add(-1);
+        add(-1);
+        add(-1);
+        add(-1);
+        add(-1);
+        add(-1);
+        add(-1);
+        add(-1);
+        add(-1);
+        add(-1);
+        add(-1);
+    }};
+
+    public void showWorkRecInfo() {
         table.init(this);
         table.clearAll();
 
-        // 头部信息
-        ArrayList<TableCell> colNames = new ArrayList<TableCell>() {{
-            add(new TableCell(0, "小车坐标(米)/Car Pos(m)"));
-            add(new TableCell(0, "额定吊重(吨)/Lift Weight(t)"));
-        }};
-
-        List<Integer> idList = new ArrayList() {{
-            add(-1);
-            add(-1);
-        }};
-
         table.setFirstRow(colNames, idList);
 
+        List<WorkRecrod> workRecrods = workRecDao.queryPage(0, 10);
+
         // 数据信息
-        List<Load> loads = queryLoadByCondition();
-        for (Load load : loads) {
+        for (WorkRecrod recrod : workRecrods) {
             ArrayList<TableCell> row = new ArrayList<TableCell>();
-            row.add(new TableCell(0, load.getCoordinate()));
-            row.add(new TableCell(0, load.getWeight()));
+            row.add(new TableCell(0, String.valueOf(recrod.getId())));
+            row.add(new TableCell(0, recrod.getTime()));
+
+            // ID, 时间，倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
+            row.add(new TableCell(0, String.valueOf(recrod.getRopenum())));
+            row.add(new TableCell(0, String.valueOf(recrod.getMoment())));
+            row.add(new TableCell(0, String.valueOf(recrod.getHeigth())));
+            row.add(new TableCell(0, String.valueOf(recrod.getRange())));
+            row.add(new TableCell(0, String.valueOf(recrod.getRatedweight())));
+            row.add(new TableCell(0, String.valueOf(recrod.getWeight())));
+            row.add(new TableCell(0, String.valueOf(recrod.getRotate())));
+            row.add(new TableCell(0, String.valueOf(recrod.getWalk())));
+            row.add(new TableCell(0, String.valueOf(recrod.getDipange())));
+            row.add(new TableCell(0, String.valueOf(recrod.getWindspeed())));
+            row.add(new TableCell(0, String.valueOf(recrod.getRemark())));
+
             table.addDataRow(row, true);
         }
 
@@ -491,13 +354,14 @@ public class LoadAttribute extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         table = new FixedTitleTable(dm.widthPixels); // 输入屏幕宽度
 
-        //List<Load> paras = confLoad(context);
         try {
-            showLoadInfo();
+            showWorkRecInfo();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+
         setOnTouchListener();
+
     }
 }

@@ -58,6 +58,7 @@ import com.wooddeep.crane.persist.dao.LoadDao;
 import com.wooddeep.crane.persist.dao.ProtectAreaDao;
 import com.wooddeep.crane.persist.dao.ProtectDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
+import com.wooddeep.crane.persist.dao.WorkRecDao;
 import com.wooddeep.crane.persist.entity.AlarmSet;
 import com.wooddeep.crane.persist.entity.Area;
 import com.wooddeep.crane.persist.entity.Calibration;
@@ -66,6 +67,7 @@ import com.wooddeep.crane.persist.entity.CranePara;
 import com.wooddeep.crane.persist.entity.Load;
 import com.wooddeep.crane.persist.entity.Protect;
 import com.wooddeep.crane.persist.entity.SysPara;
+import com.wooddeep.crane.persist.entity.WorkRecrod;
 import com.wooddeep.crane.simulator.SimulatorFlags;
 import com.wooddeep.crane.simulator.UartEmitter;
 import com.wooddeep.crane.tookit.AnimUtil;
@@ -222,6 +224,8 @@ public class MainActivity extends AppCompatActivity {
 
     private SysParaDao paraDao; // 系统参数
     private LoadDao loadDao; // 负荷特性
+    private WorkRecDao workRecDao; // 工作记录DAO
+    private WorkRecrod workRecrod = new WorkRecrod(); // 工作记录
 
     private CraneView craneView;
     private TextView angleView;
@@ -491,6 +495,13 @@ public class MainActivity extends AppCompatActivity {
             while (true && !sysExit) {
                 CommTool.sleep(100);
                 count++;
+
+                if (count % 50 == 0) { // 没5秒钟记录一次
+                    Date date = new Date();
+                    String dateNowStr = sdf.format(date);
+                    workRecrod.setTime(dateNowStr);
+                    workRecDao.insert(workRecrod);
+                }
 
                 if (count % 6 == 0) { // 喂软件狗
                     feedWatchDog();
@@ -1165,6 +1176,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // 跳转到负荷特性
+        ImageView dataRecord = (ImageView) findViewById(R.id.data_record);
+        dataRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, DataRecord.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -1215,6 +1236,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             findViewById(R.id.vangle_row).setVisibility(View.VISIBLE);
         }
+
         centerCycle.setType(mainCrane.getType()); // 设置塔基式样: 平臂 ~ 动臂
         centerCycle.setArchPara(mainCrane.getArchPara()); // 保存结构参数
         centerCycle.setBigArmLen(bigArmLength); // 保存大臂长度
@@ -1332,18 +1354,16 @@ public class MainActivity extends AppCompatActivity {
         AlarmSetDao alarmSetDao = new AlarmSetDao(MainActivity.this);
         CalibrationDao calibrationDao = new CalibrationDao(MainActivity.this);
         loadDao = new LoadDao(MainActivity.this);
-
+        workRecDao = new WorkRecDao(MainActivity.this);
         List<Crane> cranes = craneDao.selectAll();
         if (cranes == null || cranes.size() == 0) { // 初始状态, 创建表
             DatabaseHelper.getInstance(context).createTable(Crane.class);
-
             DatabaseHelper.getInstance(context).createTable(Area.class); // 区域
-
             DatabaseHelper.getInstance(context).createTable(Protect.class); // 保护区
             DatabaseHelper.getInstance(context).createTable(SysPara.class);
             DatabaseHelper.getInstance(context).createTable(AlarmSet.class); // 告警
+            DatabaseHelper.getInstance(context).createTable(WorkRecrod.class); // 告警
             alarmSetDao.insert(AlarmSet.getInitData());
-
             DatabaseHelper.getInstance(context).createTable(Load.class); // 负载
             loadDao.insert(Load.getInitData());
         }
@@ -1432,9 +1452,6 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             RadioDateEventOps(new RadioEvent(radioProto.startMaster()));
         }, 3000);
-
-        //initWatchDog();
-        //setWatchDogTimeOut();
     }
 
     @Override
@@ -1443,19 +1460,11 @@ public class MainActivity extends AppCompatActivity {
         sysExit = true;
     }
 
-
-    //Intent intentBroadcast = new Intent();   //定义Intent
-    //intentBroadcast.setAction("com.wooddeep.crane.HEARTBEAT");
-    //intentBroadcast.putExtra("temp","Lin");
-    //sendBroadcast(intentBroadcast);
-
     private Intent feedIntent = new Intent();
 
     private void feedWatchDog() {
         feedIntent.setAction("cn.programmer.CUSTOM_INTENT");
-        //feedIntent.putExtra("temp","Lin");
         runOnUiThread(() -> {
-            //intent = new Intent(DogTool.ACTION_WATCHDOG_KICK);
             sendBroadcast(feedIntent);
         });
     }

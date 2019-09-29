@@ -256,7 +256,7 @@ public class SuperCircleView extends View {
     private void drawRadio(Canvas canvas) {
         //Paint radioPaint = mPaint; //new Paint(mPaint);
         radioPaint.setStyle(Paint.Style.STROKE);
-        radioPaint.setStrokeWidth(2.0f);
+        radioPaint.setStrokeWidth(5.0f);
         if (flink) {
             radioPaint.setMaskFilter(blurMaskFilter);
         }
@@ -283,16 +283,16 @@ public class SuperCircleView extends View {
         //Paint carPaint = mPaint; //new Paint(mPaint);
         carPaint.setColor(Color.rgb(255,165,0));
         carPaint.setStyle(Paint.Style.FILL);
-        carPaint.setStrokeWidth(8); // 车宽8， 车长8
+        carPaint.setStrokeWidth(10); // 车宽8， 车长8
 
-        float armPureLen = mMinRadio - 4 - 8; // 4 为圆心的半径, 8 为小车的长度
+        float armPureLen = mMinRadio - 4 - 10; // 4 为圆心的半径, 8 为小车的长度
         float lenRate = armPureLen / mMinRadio; // 实际长度和 配置的大臂长度的比例
 
         float carStartX = mViewCenterX + (float) ((carRange * lenRate + 4) * cosRate * sin);
         float carStartY = mViewCenterY + (float) ((carRange * lenRate + 4) * cosRate * cos);
 
-        float carEndX = mViewCenterX + (float) ((carRange * lenRate + 4 + 8) * cosRate * sin);
-        float carEndY = mViewCenterY + (float) ((carRange * lenRate + 4 + 8) * cosRate * cos);
+        float carEndX = mViewCenterX + (float) ((carRange * lenRate + 4 + 10) * cosRate * sin);
+        float carEndY = mViewCenterY + (float) ((carRange * lenRate + 4 + 10) * cosRate * cos);
 
         canvas.drawLine(carStartX, carStartY, carEndX, carEndY, carPaint);
 
@@ -300,7 +300,7 @@ public class SuperCircleView extends View {
         //Paint shortArmPaint = mPaint; //new Paint(mPaint);
         shortArmPaint.setColor(Color.BLACK);
         shortArmPaint.setStyle(Paint.Style.STROKE);
-        shortArmPaint.setStrokeWidth(4.0f);
+        shortArmPaint.setStrokeWidth(5.0f);
         double isin = Math.sin(Math.toRadians(hAngle + 90 + 180));
         double icos = Math.cos(Math.toRadians(hAngle + 90 + 180));
         float ixoffset = (float) (mInnerRadio * cosRate * isin);

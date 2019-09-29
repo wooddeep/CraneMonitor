@@ -68,7 +68,7 @@ public class CenterCycle extends CycleElem {
         int height = parent.getMeasuredHeight(); // 获取组件高度
 
         // 1号塔机坐标100.100圆环直径55。2号塔机坐标130.123圆环直径60
-        int ringWidth = 2; // 固定圆环宽度
+        int ringWidth = 5; // 固定圆环宽度
         float originRadius = Math.min(width, height) / 4; // 默认圆的直径为屏幕的一半
         originRadius = oscale * originRadius; // 比例变化
 
@@ -76,10 +76,10 @@ public class CenterCycle extends CycleElem {
         float originBackHeight = originBackWidth; // 默认圆环正方形背景宽度
         float scale = originRadius / r;
 
-        float delta = 100;
+        float delta = 75;
         String model = android.os.Build.MODEL;
         if (model.equals("rk3288")) {
-            delta = 150;
+            delta = 100;
         }
 
         float centerX = width / 2 + delta;   // 中心点x坐标(到左边距的长度)，相对于FrameLayout的左下角
