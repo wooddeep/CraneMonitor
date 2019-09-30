@@ -13,12 +13,12 @@ import android.widget.LinearLayout;
 
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
-import com.wooddeep.crane.log.CaliRecTable;
-import com.wooddeep.crane.log.CtrlRecTable;
-import com.wooddeep.crane.log.RealDataTable;
-import com.wooddeep.crane.log.SwitchRecTable;
-import com.wooddeep.crane.log.TableDesc;
-import com.wooddeep.crane.log.WorkRecTable;
+import com.wooddeep.crane.logtable.CaliRecTable;
+import com.wooddeep.crane.logtable.CtrlRecTable;
+import com.wooddeep.crane.logtable.RealDataTable;
+import com.wooddeep.crane.logtable.SwitchRecTable;
+import com.wooddeep.crane.logtable.TableDesc;
+import com.wooddeep.crane.logtable.WorkRecTable;
 import com.wooddeep.crane.views.FixedTitleTable;
 
 import java.util.ArrayList;

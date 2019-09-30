@@ -1,4 +1,4 @@
-package com.wooddeep.crane.log;
+package com.wooddeep.crane.logtable;
 
 import com.wooddeep.crane.persist.dao.log.LogDao;
 import com.wooddeep.crane.views.FixedTitleTable;

@@ -1,4 +1,4 @@
-package com.wooddeep.crane.log;
+package com.wooddeep.crane.logtable;
 
 import android.content.Context;
 
@@ -15,7 +15,7 @@ import java.util.List;
  */
 
 @SuppressWarnings("unused")
-public class WorkRecTable extends TableDesc {
+public class RealDataTable extends TableDesc {
 
     private Context context;
 
@@ -73,7 +73,7 @@ public class WorkRecTable extends TableDesc {
 
     private WorkRecDao dao;
 
-    public WorkRecTable(Context context) {
+    public RealDataTable(Context context) {
         this.context = context;
         this.dao = new WorkRecDao(context);
     }

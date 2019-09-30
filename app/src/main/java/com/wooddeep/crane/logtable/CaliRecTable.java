@@ -1,11 +1,9 @@
-package com.wooddeep.crane.log;
+package com.wooddeep.crane.logtable;
 
 import android.content.Context;
 
 import com.wooddeep.crane.persist.dao.log.CaliRecDao;
-import com.wooddeep.crane.persist.dao.log.WorkRecDao;
 import com.wooddeep.crane.persist.entity.log.CaliRec;
-import com.wooddeep.crane.persist.entity.log.WorkRecrod;
 import com.wooddeep.crane.views.FixedTitleTable;
 import com.wooddeep.crane.views.TableCell;
 

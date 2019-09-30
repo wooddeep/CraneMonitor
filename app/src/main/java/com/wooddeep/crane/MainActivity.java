@@ -59,6 +59,7 @@ import com.wooddeep.crane.persist.dao.LoadDao;
 import com.wooddeep.crane.persist.dao.ProtectAreaDao;
 import com.wooddeep.crane.persist.dao.ProtectDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
+import com.wooddeep.crane.persist.dao.log.CtrlRecDao;
 import com.wooddeep.crane.persist.dao.log.RealDataDao;
 import com.wooddeep.crane.persist.dao.log.SwitchRecDao;
 import com.wooddeep.crane.persist.dao.log.WorkRecDao;
@@ -161,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
     private Context context;
 
     private ConcurrentHashMap<String, SavedData> savedDataMap = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<String, CycleElem> craneMap = new ConcurrentHashMap<>();
+    private HashMap<String, CycleElem> craneMap = new HashMap<>();
     private ConcurrentHashMap<String, SavedData> slaveMap = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, Long> radioStatusMap = new ConcurrentHashMap();
     private List<String> craneNumbers = new ArrayList<>();
@@ -232,6 +233,8 @@ public class MainActivity extends AppCompatActivity {
     private LoadDao loadDao; // 负荷特性
     private RealDataDao realDataDao; // 工作记录DAO
     private RealData realData = new RealData(); // 工作记录
+    private CtrlRecDao ctrlRecDao;
+    private CtrlRec ctrlRec = new CtrlRec(); // 控制记录
 
     private SwitchRecDao switchRecDao;
     private SwitchRec switchRec = new SwitchRec();
@@ -500,7 +503,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void recPowerOnOff() {
+    private void recPowerOnOff(Date date) {
         RealData realData = realDataDao.queryLatestOne();
         try {
 
@@ -512,7 +515,7 @@ public class MainActivity extends AppCompatActivity {
                 switchRec.setTime(realData.getTime());
                 switchRec.setAction("power off");
                 switchRecDao.insert(switchRec);
-                switchRec.setTime(sdf.format(new Date()));
+                switchRec.setTime(sdf.format(date));
                 switchRec.setAction("power on");
                 switchRecDao.insert(switchRec);
             }
@@ -532,13 +535,13 @@ public class MainActivity extends AppCompatActivity {
                 count++;
 
                 if (count % 500 == 0) {
-                    recPowerOnOff();
                     setCurrTime();
                 }
 
                 //倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
                 if (count % 50 == 0) { // 没5秒钟记录一次
                     Date date = new Date();
+                    recPowerOnOff(date);
                     String dateNowStr = sdf.format(date);
                     realData.setTime(dateNowStr);
                     realData.setRopenum(iPower); // 倍率
@@ -605,11 +608,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (radioProto.isQuery) { // 收到主机的查询命令，本机必然为从机
             waitFlag = false;
-
-            //System.out.println("-------------------------");
-            //System.out.println(new String(event.getData()));
-            //System.out.println("-------------------------");
-            //iAmMaster.set(false);
 
             CycleElem master = craneMap.get(radioProto.getSourceNo()); // 作为从机, 更新主机的信息 // TODO 根据塔基类型，计算仰角
             runOnUiThread(() -> masterNoView.setText(radioProto.getSourceNo())); // TODO 缓存
@@ -845,14 +843,31 @@ public class MainActivity extends AppCompatActivity {
                 }
                 System.out.println("");
 
-                ttyS0OutputStream.write(controlProto.control);
+                ttyS0OutputStream.write(controlProto.control); // 控制
+
+                ctrlRec.setCarOut2(controlProto.isCarOut2());
+                ctrlRec.setCarOut1(controlProto.isCarOut1());
+                ctrlRec.setRotate5(controlProto.isRotate5());
+                ctrlRec.setRotate4(controlProto.isRotate4());
+                ctrlRec.setRotate3(controlProto.isRotate3());
+                ctrlRec.setRotate2(controlProto.isRotate2());
+                ctrlRec.setLeftRote(controlProto.isLeftRote());
+                ctrlRec.setRightRote(controlProto.isRightRote());
+                ctrlRec.setMoment3(controlProto.isMoment3());
+                ctrlRec.setMoment2(controlProto.isMoment2());
+                ctrlRec.setMoment1(controlProto.isMoment1());
+                ctrlRec.setWeight1(controlProto.isWeight1());
+                ctrlRec.setCarBack2(controlProto.isCarBack2());
+                ctrlRec.setCarBack1(controlProto.isCarBack1());
+                ctrlRecDao.insert(ctrlRec);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        //AlarmSound.setStatus(R.raw.left_rotate_alarm, true);
-        //AlarmSound.start(0);
+        //AlarmSound.setStatus(R.raw.left_rotate_alarm, true); // TODO
+        //AlarmSound.start(0); // TODO
 
         // 告警铃声
         if (event.hasAlarm) {
@@ -875,18 +890,17 @@ public class MainActivity extends AppCompatActivity {
         //currTime.setText(cells[1]);
     }
 
+    private float startWeight = 0.3f;
+    private float endWeight = 0.2f;
+
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void weightEventBus(WeightEvent event) {
         if (calibration == null) return;
         TextView view = (TextView) findViewById(R.id.weight);
-        view.setText(event.getWeight() + "t");
-    }
+        
 
-    public void weightShow(float weight) {
-        if (calibration == null) return;
-        TextView view = (TextView) findViewById(R.id.weight);
-        view.setText(weight + "t");
+        view.setText(event.getWeight() + "t");
     }
 
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
@@ -1481,6 +1495,7 @@ public class MainActivity extends AppCompatActivity {
         initTable(); // 初始化表
         paraDao = new SysParaDao(getApplicationContext()); // 系统参数
         switchRecDao = new SwitchRecDao(context); // 开关机
+        ctrlRecDao = new CtrlRecDao(context);
         eventBus.post(new SysParaEvent()); // 触发系统参数相关
 
         leftAlarmView = (TextView) findViewById(R.id.left_alarm_level);

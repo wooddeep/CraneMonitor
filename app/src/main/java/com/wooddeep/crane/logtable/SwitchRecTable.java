@@ -1,4 +1,4 @@
-package com.wooddeep.crane.log;
+package com.wooddeep.crane.logtable;
 
 import android.content.Context;
 
@@ -62,7 +62,8 @@ public class SwitchRecTable extends TableDesc {
             ArrayList<TableCell> row = new ArrayList<TableCell>();
             row.add(new TableCell(0, String.valueOf(recrod.getId())));
             row.add(new TableCell(0, recrod.getTime()));
-            table.addDataRow(row, true);
+            row.add(new TableCell(0, recrod.getAction()));
+            table.addDataRow(row, true, widthList);
         }
     }
 
