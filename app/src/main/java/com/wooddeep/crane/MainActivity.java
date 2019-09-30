@@ -1404,9 +1404,9 @@ public class MainActivity extends AppCompatActivity {
 
         LogDbHelper.getInstance(context).createTable(WorkRecrod.class);
         LogDbHelper.getInstance(context).createTable(RealData.class);
-        //LogDbHelper.getInstance(context).createTable(CaliRec.class);
-        //LogDbHelper.getInstance(context).createTable(CtrlRec.class);
-        //LogDbHelper.getInstance(context).createTable(SwitchRec.class);
+        LogDbHelper.getInstance(context).createTable(CaliRec.class);
+        LogDbHelper.getInstance(context).createTable(CtrlRec.class);
+        LogDbHelper.getInstance(context).createTable(SwitchRec.class);
 
         if (cranes == null || cranes.size() == 0) { // 初始状态, 创建表
             DatabaseHelper.getInstance(context).createTable(Crane.class);
