@@ -3,7 +3,10 @@ package com.wooddeep.crane;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -45,8 +48,17 @@ public class DataRecord extends AppCompatActivity {
 
     }
 
+    private int[] backgroudIdList = new int[]{
+        R.id.work_record,
+        R.id.real_record,
+        R.id.calibration_record,
+        R.id.oper_record,
+        R.id.switch_record,
+    };
+
     private void setOnTouchListener(View view) {
         View.OnTouchListener onTouchListener = new View.OnTouchListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -58,7 +70,18 @@ public class DataRecord extends AppCompatActivity {
                     oa2.setDuration(700);
                     oa.start();
                     oa2.start();
+
+                    for (int id : backgroudIdList) {
+                        if (id == view.getId()) {
+                            Drawable drawable = getResources().getDrawable(R.drawable.frame_border_selected);
+                            findViewById(id).setBackground(drawable);
+                        } else {
+                            Drawable drawable = getResources().getDrawable(R.drawable.frame_border);
+                            findViewById(id).setBackground(drawable);
+                        }
+                    }
                 }
+
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     ObjectAnimator oa = ObjectAnimator.ofFloat(view,
                         "scaleX", 1f, 0.93f);
@@ -80,7 +103,8 @@ public class DataRecord extends AppCompatActivity {
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (view.getId() == R.id.load_data) {
+
+                if (view.getId() == R.id.load_data) { // 导出数据库文件到 U盘
                     AlertView alertView = new AlertView("加载负荷特性参数", "", null,
                         new String[]{"确定", "取消"}, null, activity,
                         AlertView.Style.Alert, new OnItemClickListener() {
