@@ -185,10 +185,6 @@ public class FixedTitleTable {
 
 
     public void addDataRow(List<TableCell> cells, boolean visible) {
-        if (!visible) {
-            return;
-        }
-
         float colWidth = 200;
         float spareWidth = this.screenWidth - fisrtColWidth;
         float avgWidth = (float)spareWidth / (cells.size() - 1);
@@ -218,6 +214,10 @@ public class FixedTitleTable {
         // 添加其他单元格
         TableLayout contentTable = (TableLayout) activity.findViewById(R.id.content_talble);
         TableRow contentRow = (TableRow) LayoutInflater.from(activity).inflate(R.layout.table_row, null);
+
+        if (!visible) {
+            contentRow.setVisibility(View.GONE);
+        }
 
         for (int i = 1; i < cells.size(); i++) {
             TableCell cell = cells.get(i);
@@ -295,10 +295,6 @@ public class FixedTitleTable {
 
 
     public void addDataRow(List<TableCell> cells, boolean visible, List<Integer> widthList) {
-        if (!visible) {
-            return;
-        }
-
         TableLayout firstColTable = (TableLayout) activity.findViewById(R.id.first_column_table);
         // 添加一行的第一个单元
         TableRow firstRow = (TableRow) LayoutInflater.from(activity).inflate(R.layout.table_row, null);
@@ -321,6 +317,10 @@ public class FixedTitleTable {
         // 添加其他单元格
         TableLayout contentTable = (TableLayout) activity.findViewById(R.id.content_talble);
         TableRow contentRow = (TableRow) LayoutInflater.from(activity).inflate(R.layout.table_row, null);
+
+        if (!visible) {
+            contentRow.setVisibility(View.GONE);
+        }
 
         for (int i = 1; i < cells.size(); i++) {
             TableCell cell = cells.get(i);

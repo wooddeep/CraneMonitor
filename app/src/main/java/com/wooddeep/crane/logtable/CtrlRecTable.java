@@ -3,6 +3,7 @@ package com.wooddeep.crane.logtable;
 import android.content.Context;
 
 import com.wooddeep.crane.persist.dao.log.CtrlRecDao;
+import com.wooddeep.crane.persist.dao.log.LogDao;
 import com.wooddeep.crane.persist.entity.log.CtrlRec;
 import com.wooddeep.crane.views.FixedTitleTable;
 import com.wooddeep.crane.views.TableCell;
@@ -65,20 +66,20 @@ public class CtrlRecTable extends TableDesc {
     private List<Integer> widthList = new ArrayList() {{
         add(200);
         add(300); // 时间
+        add(300);
+        add(300);
+        add(300);
+        add(300);
+        add(300);
+        add(300);
+        add(300);
+        add(300);
         add(200);
         add(200);
         add(200);
         add(200);
-        add(200);
-        add(200);
-        add(200);
-        add(200);
-        add(200);
-        add(200);
-        add(200);
-        add(200);
-        add(200);
-        add(200);
+        add(300);
+        add(300);
     }};
 
     private CtrlRecDao dao;
@@ -144,5 +145,10 @@ public class CtrlRecTable extends TableDesc {
     @Override
     public void setGlobalIndex(int globalIndex) {
         this.globalIndex = globalIndex;
+    }
+
+    @Override
+    public LogDao getDao() {
+        return dao;
     }
 }

@@ -2,8 +2,9 @@ package com.wooddeep.crane.logtable;
 
 import android.content.Context;
 
-import com.wooddeep.crane.persist.dao.log.WorkRecDao;
-import com.wooddeep.crane.persist.entity.log.WorkRecrod;
+import com.wooddeep.crane.persist.dao.log.LogDao;
+import com.wooddeep.crane.persist.dao.log.RealDataDao;
+import com.wooddeep.crane.persist.entity.log.RealData;
 import com.wooddeep.crane.views.FixedTitleTable;
 import com.wooddeep.crane.views.TableCell;
 
@@ -71,19 +72,19 @@ public class RealDataTable extends TableDesc {
         add(200);
     }};
 
-    private WorkRecDao dao;
+    private RealDataDao dao;
 
     public RealDataTable(Context context) {
         this.context = context;
-        this.dao = new WorkRecDao(context);
+        this.dao = new RealDataDao(context);
     }
 
     @Override
     public void showDataInfo(FixedTitleTable table) {
-        List<WorkRecrod> workRecrods = dao.queryPage(globalIndex, pageSize);
+        List<RealData> workRecrods = dao.queryPage(globalIndex, pageSize);
 
         // 数据信息
-        for (WorkRecrod recrod : workRecrods) {
+        for (RealData recrod : workRecrods) {
             ArrayList<TableCell> row = new ArrayList<TableCell>();
             row.add(new TableCell(0, String.valueOf(recrod.getId())));
             row.add(new TableCell(0, recrod.getTime()));
@@ -133,5 +134,10 @@ public class RealDataTable extends TableDesc {
     @Override
     public void setGlobalIndex(int globalIndex) {
         this.globalIndex = globalIndex;
+    }
+
+    @Override
+    public LogDao getDao() {
+        return dao;
     }
 }

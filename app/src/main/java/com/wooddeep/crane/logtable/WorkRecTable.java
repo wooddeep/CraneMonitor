@@ -2,6 +2,7 @@ package com.wooddeep.crane.logtable;
 
 import android.content.Context;
 
+import com.wooddeep.crane.persist.dao.log.LogDao;
 import com.wooddeep.crane.persist.dao.log.WorkRecDao;
 import com.wooddeep.crane.persist.entity.log.WorkRecrod;
 import com.wooddeep.crane.views.FixedTitleTable;
@@ -133,5 +134,10 @@ public class WorkRecTable extends TableDesc {
     @Override
     public void setGlobalIndex(int globalIndex) {
         this.globalIndex = globalIndex;
+    }
+
+    @Override
+    public LogDao getDao() {
+        return dao;
     }
 }

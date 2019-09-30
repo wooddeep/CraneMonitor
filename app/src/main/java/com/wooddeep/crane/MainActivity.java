@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
     private Context context;
 
     private ConcurrentHashMap<String, SavedData> savedDataMap = new ConcurrentHashMap<>();
-    private HashMap<String, CycleElem> craneMap = new HashMap<>();
+    private ConcurrentHashMap<String, CycleElem> craneMap = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, SavedData> slaveMap = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, Long> radioStatusMap = new ConcurrentHashMap();
     private List<String> craneNumbers = new ArrayList<>();
@@ -886,10 +886,8 @@ public class MainActivity extends AppCompatActivity {
         Date date = new Date();
         String dateNowStr = sdf.format(date);
         String[] cells = dateNowStr.split(" ");
-        //TextView currTime = (TextView) findViewById(R.id.currTime);
         TextView currDate = (TextView) findViewById(R.id.currDate);
-        currDate.setText(cells[0]);
-        //currTime.setText(cells[1]);
+        runOnUiThread(() -> currDate.setText(cells[0]));
     }
 
     private float startWeight = 0.3f;
@@ -1172,6 +1170,7 @@ public class MainActivity extends AppCompatActivity {
             add((ImageView) findViewById(R.id.calibration_setting));
             add((ImageView) findViewById(R.id.alarm_setting));
             add((ImageView) findViewById(R.id.load_attribute));
+            add((ImageView) findViewById(R.id.data_record));
             add((ImageView) findViewById(R.id.zoom_in));
             add((ImageView) findViewById(R.id.zoom_out));
         }};
@@ -1538,6 +1537,7 @@ public class MainActivity extends AppCompatActivity {
         heightView = (TextView) findViewById(R.id.height);
         masterNoView = (TextView) findViewById(R.id.master_no);
         windSpeedView = (TextView) findViewById(R.id.wind_speed);
+        setCurrTime();
 
         try {
             String s0Name = "S0";

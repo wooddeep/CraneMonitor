@@ -3,6 +3,7 @@ package com.wooddeep.crane.logtable;
 import android.content.Context;
 
 import com.wooddeep.crane.persist.dao.log.CaliRecDao;
+import com.wooddeep.crane.persist.dao.log.LogDao;
 import com.wooddeep.crane.persist.entity.log.CaliRec;
 import com.wooddeep.crane.views.FixedTitleTable;
 import com.wooddeep.crane.views.TableCell;
@@ -54,11 +55,11 @@ public class CaliRecTable extends TableDesc {
         add(200); // ID
         add(300); // 时间
         add(200);
-        add(230);
-        add(200);
+        add(250);
         add(200);
         add(250);
         add(250);
+        add(200);
     }};
 
     private CaliRecDao dao;
@@ -117,5 +118,10 @@ public class CaliRecTable extends TableDesc {
     @Override
     public void setGlobalIndex(int globalIndex) {
         this.globalIndex = globalIndex;
+    }
+
+    @Override
+    public LogDao getDao() {
+        return dao;
     }
 }

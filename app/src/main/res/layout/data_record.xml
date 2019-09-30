@@ -76,7 +76,7 @@
 
             <LinearLayout
                 android:id="@+id/work_record"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp60"
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@+id/load_logo"
                 android:layout_marginRight="@dimen/dp20"
@@ -107,7 +107,7 @@
 
             <LinearLayout
                 android:id="@+id/real_record"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp60"
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@+id/load_logo"
                 android:layout_marginRight="@dimen/dp20"
@@ -150,8 +150,10 @@
                 android:background="@drawable/frame_border">
 
                 <ImageView
-                    android:layout_width="@dimen/dp30"
-                    android:layout_height="@dimen/dp30"
+                    android:layout_width="@dimen/dp25"
+                    android:layout_height="@dimen/dp25"
+                    android:layout_marginTop="@dimen/dp3"
+                    android:layout_marginBottom="@dimen/dp3"
                     android:layout_gravity="center"
                     app:srcCompat="@mipmap/calibration_setting" />
 
@@ -173,7 +175,7 @@
 
             <LinearLayout
                 android:id="@+id/oper_record"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp60"
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@+id/load_logo"
                 android:gravity="center"
@@ -183,9 +185,10 @@
                 android:background="@drawable/frame_border">
 
                 <ImageView
-                    android:layout_width="@dimen/dp30"
-                    android:layout_height="@dimen/dp30"
+                    android:layout_width="@dimen/dp35"
+                    android:layout_height="@dimen/dp35"
                     android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/dp_5"
                     app:srcCompat="@mipmap/oper_record" />
 
                 <TextView
@@ -204,10 +207,9 @@
 
             </LinearLayout>
 
-
             <LinearLayout
                 android:id="@+id/switch_record"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp60"
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@+id/load_logo"
                 android:gravity="center"
@@ -217,9 +219,11 @@
                 android:background="@drawable/frame_border">
 
                 <ImageView
-                    android:layout_width="@dimen/dp30"
-                    android:layout_height="@dimen/dp30"
+                    android:layout_width="@dimen/dp25"
+                    android:layout_height="@dimen/dp25"
                     android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/dp3"
+                    android:layout_marginBottom="@dimen/dp4"
                     app:srcCompat="@mipmap/dev_switch" />
 
                 <TextView
@@ -274,9 +278,18 @@
             android:layout_height="@dimen/dp35"
             android:layout_centerInParent="true"
             android:rotation="180"
-            android:layout_toLeftOf="@+id/close_logo"
+            android:layout_toLeftOf="@+id/export_logo"
             android:layout_marginRight="@dimen/dp20"
             app:srcCompat="@mipmap/first_page" />
+
+        <ImageView
+            android:id="@+id/export_logo"
+            android:layout_width="@dimen/dp35"
+            android:layout_height="@dimen/dp35"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/dp20"
+            android:layout_toLeftOf="@+id/close_logo"
+            app:srcCompat="@mipmap/export_logo" />
 
         <ImageView
             android:id="@+id/close_logo"

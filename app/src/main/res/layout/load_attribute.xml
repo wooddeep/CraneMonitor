@@ -233,8 +233,7 @@
             android:layout_centerInParent="true"
             android:layout_marginRight="@dimen/dp20"
             android:layout_toLeftOf="@+id/close_logo"
-            android:visibility="gone"
-            app:srcCompat="@mipmap/load_conf" />
+            app:srcCompat="@mipmap/import_logo" />
 
         <ImageView
             android:id="@+id/close_logo"

@@ -141,6 +141,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="一档减速距离\nfirst gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -173,6 +174,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="二档减速距离\nsecond gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -204,6 +206,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="三档减速距离\nthird gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -235,6 +238,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="四档减速距离\nfourth gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -267,6 +271,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="五档减速距离\nfifth gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -336,6 +341,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="一档减速距离\nfirst gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -366,6 +372,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="二档减速距离\nsecond gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -396,6 +403,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="三档减速距离\nthird gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -427,6 +435,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="四档减速距离\nfourth gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -458,6 +467,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="五档减速距离\nfifth gear distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -544,6 +554,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="变幅停车距离\nParking Distance"
                             android:textSize="@dimen/dp10" />
 
@@ -577,6 +588,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="变幅减速距离\nDeceleration distance"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -610,6 +622,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="一档力矩告警\nfirst gear moment"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -644,6 +657,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="二挡力矩告警\nsecond gear moment"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -678,6 +692,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="三挡力矩告警\nthird gear moment"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -761,6 +776,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="风速预警\nWind speed warning"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -793,6 +809,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="风速告警\nWind Speed Alarm"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -823,6 +840,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="一档吊重百分比\nFirst Gear Lift"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -854,6 +872,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="二挡吊重百分比\nSecond Gear Lift"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -887,6 +906,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="三挡吊重百分比\nThird Gear Lift"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -970,6 +990,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="最小值\nminimum"
                             android:textSize="@dimen/dp10" />
 
@@ -1003,6 +1024,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="最大值\nMaximum"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -1035,6 +1057,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="最小值\nMinimum"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>
@@ -1068,6 +1091,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="最大值\nMaximum"
                             android:textSize="@dimen/dp10" />
                     </LinearLayout>

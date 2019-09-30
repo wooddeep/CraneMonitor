@@ -2,6 +2,7 @@ package com.wooddeep.crane.logtable;
 
 import android.content.Context;
 
+import com.wooddeep.crane.persist.dao.log.LogDao;
 import com.wooddeep.crane.persist.dao.log.SwitchRecDao;
 import com.wooddeep.crane.persist.entity.log.SwitchRec;
 import com.wooddeep.crane.views.FixedTitleTable;
@@ -95,5 +96,10 @@ public class SwitchRecTable extends TableDesc {
     @Override
     public void setGlobalIndex(int globalIndex) {
         this.globalIndex = globalIndex;
+    }
+
+    @Override
+    public LogDao getDao() {
+        return dao;
     }
 }

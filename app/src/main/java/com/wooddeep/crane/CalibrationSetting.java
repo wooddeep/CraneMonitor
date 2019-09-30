@@ -201,8 +201,8 @@ public class CalibrationSetting extends AppCompatActivity {
                     caliRec.setStartAD(start);
                     caliRec.setEndAD(end);
                     caliRec.setKValue((float)rate);
-                    caliRec.setStartValue(String.format("(%f,%f)", x1, y1));
-                    caliRec.setEndValue(String.format("(%f,%f)", x2, y2));
+                    caliRec.setStartValue(String.format("(%.1f,%.1f)", x1, y1));
+                    caliRec.setEndValue(String.format("(%.1f,%.1f)", x2, y2));
                     caliRec.setTime(sdf.format(new Date()));
                     caliRecDao.insert(caliRec);
                 }
@@ -275,8 +275,8 @@ public class CalibrationSetting extends AppCompatActivity {
                     caliRec.setStartAD(start);
                     caliRec.setEndAD(end);
                     caliRec.setKValue((float)rate);
-                    caliRec.setStartValue(String.format("(%f,%f)", x1, y1));
-                    caliRec.setEndValue(String.format("(%f,%f)", x2, y2));
+                    caliRec.setStartValue(String.format("(%.1f,%.1f)", x1, y1));
+                    caliRec.setEndValue(String.format("(%.1f,%.1f)", x2, y2));
                     caliRec.setTime(sdf.format(new Date()));
                     caliRecDao.insert(caliRec);
                 }

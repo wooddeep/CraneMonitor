@@ -32,9 +32,7 @@ abstract public class TableDesc {
 
     abstract public void showDataInfo(FixedTitleTable table);
 
-    public LogDao getDao() {
-        return dao;
-    }
+    abstract public LogDao getDao();
 
     abstract public ArrayList<TableCell> getColNames();
 
