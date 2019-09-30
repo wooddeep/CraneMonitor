@@ -1,10 +1,10 @@
-package com.wooddeep.crane.persist.entity;
+package com.wooddeep.crane.persist.entity.log;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "workrec")
-public class WorkRecrod {
+public class WorkRecrod  extends LogEntity {
 
     @DatabaseField(generatedId = true, columnName = "id", useGetSet = true)
     private int id;

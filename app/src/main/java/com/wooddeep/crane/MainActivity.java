@@ -49,6 +49,7 @@ import com.wooddeep.crane.element.SideCycle;
 import com.wooddeep.crane.main.Constant;
 import com.wooddeep.crane.main.SavedData;
 import com.wooddeep.crane.persist.DatabaseHelper;
+import com.wooddeep.crane.persist.LogDbHelper;
 import com.wooddeep.crane.persist.dao.AlarmSetDao;
 import com.wooddeep.crane.persist.dao.AreaDao;
 import com.wooddeep.crane.persist.dao.CalibrationDao;
@@ -58,7 +59,7 @@ import com.wooddeep.crane.persist.dao.LoadDao;
 import com.wooddeep.crane.persist.dao.ProtectAreaDao;
 import com.wooddeep.crane.persist.dao.ProtectDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
-import com.wooddeep.crane.persist.dao.WorkRecDao;
+import com.wooddeep.crane.persist.dao.log.WorkRecDao;
 import com.wooddeep.crane.persist.entity.AlarmSet;
 import com.wooddeep.crane.persist.entity.Area;
 import com.wooddeep.crane.persist.entity.Calibration;
@@ -67,16 +68,18 @@ import com.wooddeep.crane.persist.entity.CranePara;
 import com.wooddeep.crane.persist.entity.Load;
 import com.wooddeep.crane.persist.entity.Protect;
 import com.wooddeep.crane.persist.entity.SysPara;
-import com.wooddeep.crane.persist.entity.WorkRecrod;
+import com.wooddeep.crane.persist.entity.log.CaliRec;
+import com.wooddeep.crane.persist.entity.log.CtrlRec;
+import com.wooddeep.crane.persist.entity.log.RealData;
+import com.wooddeep.crane.persist.entity.log.SwitchRec;
+import com.wooddeep.crane.persist.entity.log.WorkRecrod;
 import com.wooddeep.crane.simulator.SimulatorFlags;
 import com.wooddeep.crane.simulator.UartEmitter;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DataUtil;
-import com.wooddeep.crane.tookit.DogTool;
 import com.wooddeep.crane.tookit.MathTool;
 import com.wooddeep.crane.tookit.MomentOut;
-import com.wooddeep.crane.tookit.StringTool;
 import com.wooddeep.crane.views.CraneView;
 import com.wooddeep.crane.views.Vertex;
 
@@ -507,11 +510,13 @@ public class MainActivity extends AppCompatActivity {
                     workRecrod.setTime(dateNowStr);
                     workRecrod.setRopenum(iPower); // 倍率
                     workRecrod.setHeigth(Float.parseFloat(heightView.getText().toString().split("m")[0]));
-                    workRecrod.setRange(centerCycle.carRange);
+                    if (centerCycle != null) {
+                        workRecrod.setRange(centerCycle.carRange);
+                        workRecrod.setRotate(centerCycle.hAngle);
+                        workRecrod.setDipange(centerCycle.vAngle);
+                    }
                     workRecrod.setRatedweight(Float.parseFloat(ratedWeightView.getText().toString().split("t")[0]));
                     workRecrod.setWeight(Float.parseFloat(weightView.getText().toString().split("t")[0]));
-                    workRecrod.setRotate(centerCycle.hAngle);
-                    workRecrod.setDipange(centerCycle.vAngle);
                     workRecrod.setWindspeed(Float.parseFloat(windSpeedView.getText().toString().split("m")[0]));
                     workRecDao.insert(workRecrod);
                 }
@@ -1397,7 +1402,11 @@ public class MainActivity extends AppCompatActivity {
         workRecDao = new WorkRecDao(MainActivity.this);
         List<Crane> cranes = craneDao.selectAll();
 
-        DatabaseHelper.getInstance(context).createTable(WorkRecrod.class); // 告警
+        LogDbHelper.getInstance(context).createTable(WorkRecrod.class);
+        LogDbHelper.getInstance(context).createTable(RealData.class);
+        //LogDbHelper.getInstance(context).createTable(CaliRec.class);
+        //LogDbHelper.getInstance(context).createTable(CtrlRec.class);
+        //LogDbHelper.getInstance(context).createTable(SwitchRec.class);
 
         if (cranes == null || cranes.size() == 0) { // 初始状态, 创建表
             DatabaseHelper.getInstance(context).createTable(Crane.class);

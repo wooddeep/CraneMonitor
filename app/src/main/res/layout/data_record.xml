@@ -61,7 +61,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="data record"
+                android:text="log record"
                 android:textSize="@dimen/dp18"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -75,17 +75,17 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/work_record"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@+id/load_logo"
-                android:layout_marginRight="@dimen/dp35"
+                android:layout_marginRight="@dimen/dp20"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="@dimen/dp3"
                 android:background="@drawable/frame_border">
 
                 <ImageView
-                    android:id="@+id/work_record"
                     android:layout_width="@dimen/dp30"
                     android:layout_height="@dimen/dp30"
                     android:layout_gravity="center"
@@ -106,17 +106,17 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/real_record"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@+id/load_logo"
-                android:layout_marginRight="@dimen/dp35"
+                android:layout_marginRight="@dimen/dp20"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="@dimen/dp3"
                 android:background="@drawable/frame_border">
 
                 <ImageView
-                    android:id="@+id/realtime_record"
                     android:layout_width="@dimen/dp30"
                     android:layout_height="@dimen/dp30"
                     android:layout_gravity="center"
@@ -132,57 +132,57 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="realtime record"
+                    android:text="real record"
                     android:textStyle="bold"
                     android:textSize="@dimen/dp10" />
 
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/calibration_record"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@+id/load_logo"
                 android:gravity="center"
-                android:layout_marginRight="@dimen/dp35"
+                android:layout_marginRight="@dimen/dp20"
                 android:orientation="vertical"
                 android:padding="@dimen/dp3"
                 android:background="@drawable/frame_border">
 
                 <ImageView
-                    android:id="@+id/collision_record"
                     android:layout_width="@dimen/dp30"
                     android:layout_height="@dimen/dp30"
                     android:layout_gravity="center"
-                    app:srcCompat="@mipmap/collision_record" />
+                    app:srcCompat="@mipmap/calibration_setting" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="防撞记录"
+                    android:text="标定记录"
                     android:textStyle="bold"
                     android:textSize="@dimen/dp10" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="collision avoid record"
+                    android:text="calibration rec"
                     android:textStyle="bold"
                     android:textSize="@dimen/dp10" />
 
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/oper_record"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@+id/load_logo"
                 android:gravity="center"
-                android:layout_marginRight="@dimen/dp35"
+                android:layout_marginRight="@dimen/dp20"
                 android:orientation="vertical"
                 android:padding="@dimen/dp3"
                 android:background="@drawable/frame_border">
 
                 <ImageView
-                    android:id="@+id/oper_record"
                     android:layout_width="@dimen/dp30"
                     android:layout_height="@dimen/dp30"
                     android:layout_gravity="center"
@@ -191,14 +191,48 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="操作记录"
+                    android:text="控制记录"
                     android:textStyle="bold"
                     android:textSize="@dimen/dp10" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="operation record"
+                    android:text="ctrl record"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/dp10" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/switch_record"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@+id/load_logo"
+                android:gravity="center"
+                android:layout_marginRight="@dimen/dp20"
+                android:orientation="vertical"
+                android:padding="@dimen/dp3"
+                android:background="@drawable/frame_border">
+
+                <ImageView
+                    android:layout_width="@dimen/dp30"
+                    android:layout_height="@dimen/dp30"
+                    android:layout_gravity="center"
+                    app:srcCompat="@mipmap/dev_switch" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="开关记录"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/dp10" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="switch rec"
                     android:textStyle="bold"
                     android:textSize="@dimen/dp10" />
 

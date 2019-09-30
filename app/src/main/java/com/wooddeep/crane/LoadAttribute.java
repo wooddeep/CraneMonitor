@@ -113,45 +113,11 @@ public class LoadAttribute extends AppCompatActivity {
         }
     }
 
-    private void loadDefautAttr(Context contex) {
-        TcParamDao dao = new TcParamDao(contex);
-        InputStream is = context.getResources().openRawResource(R.raw.load_attr); // 暂时放在这里
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
-        try {
-            dao.deleteAll();
-            String str;
-            TcParam load = new TcParam();
-            while ((str = bufferedReader.readLine()) != null) {
-                //System.out.println(str);
-                String[] cells = str.split(",");
-                if (cells.length != 5) continue;
-                // D5523, 4	,50	,0 ,10
-                load.setCraneType(cells[0].trim());
-                load.setPower(cells[1].trim());
-                load.setArmLength(cells[2].trim());
-                load.setCoordinate(cells[3].trim());
-                load.setWeight(cells[4].trim());
-                dao.insert(load);
-            }
-            craneTypes = dao.getCraneTypes();
-            armLengths = dao.getArmLengths(craneTypes.get(0));
-            cables = dao.getCables(craneTypes.get(0), armLengths.get(0));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private List<TcParam> confLoad(Context contex) {
         DatabaseHelper.getInstance(contex).createTable(TcParam.class);
         DatabaseHelper.getInstance(contex).createTable(SysPara.class);
         TcParamDao dao = new TcParamDao(contex);
         List<TcParam> paras = dao.selectAll();
-        /*if (paras == null || paras.size() <= 1) {
-            dao.deleteAll();
-            loadDefautAttr(contex); // 加载配置文件中的配置
-        }
-        paras = dao.selectAll();
-        */
 
         return paras;
     }

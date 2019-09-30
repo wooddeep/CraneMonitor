@@ -46,9 +46,9 @@
                 android:id="@+id/tv"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp0"
+                android:layout_gravity="center"
                 android:layout_marginTop="@dimen/dp10"
                 android:layout_weight="1"
-                android:layout_gravity="center"
                 android:gravity="center"
                 android:text="标定设置"
                 android:textSize="@dimen/dp18"
@@ -57,13 +57,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp0"
+                android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/dp10"
                 android:layout_weight="1"
-                android:layout_gravity="center"
                 android:gravity="center"
                 android:text="calibration"
-                android:textStyle="bold"
-                android:textSize="@dimen/dp18"/>
+                android:textSize="@dimen/dp18"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
@@ -73,27 +73,27 @@
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/dp10"
             android:gravity="center"
+            android:orientation="horizontal"
             android:padding="@dimen/dp3"
-            android:visibility="invisible"
-            android:orientation="horizontal">
+            android:visibility="invisible">
+
             <Button
                 android:id="@+id/start_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="起始值"
-                />
+                android:text="起始值" />
+
             <Button
                 android:id="@+id/stop_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="终止值"
-                />
+                android:text="终止值" />
+
             <Button
                 android:id="@+id/running"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="运行中"
-                />
+                android:text="运行中" />
         </LinearLayout>
 
         <TableLayout
@@ -101,66 +101,85 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true">
 
-            <TableRow>
+            <TableRow
+                android:layout_margin="@dimen/dp10">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
+                    android:layout_gravity="left"
+                    android:layout_marginRight="@dimen/dp3"
+                    android:text="幅度(range):"
                     android:textSize="@dimen/dp15"
-                    android:layout_gravity="center"
-                    android:text="幅度(range):" />
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/amp_value"
-                    android:layout_width="@dimen/dp80"
+                    android:layout_width="@dimen/dp100"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/dp15"
-                    android:text="0" />
+                    android:text="0"
+                    android:layout_marginRight="@dimen/dp20"
+                    android:background="@color/gray"
+                    android:textSize="@dimen/dp15" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:layout_gravity="center"
+                    android:layout_gravity="left"
+                    android:layout_marginRight="@dimen/dp3"
+                    android:text="高度(height):"
                     android:textSize="@dimen/dp15"
-                    android:text="高度(height):" />
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/height_value"
-                    android:layout_width="@dimen/dp80"
+                    android:layout_width="@dimen/dp100"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/dp15"
-                    android:text="0" />
+                    android:background="@color/gray"
+                    android:text="0"
+                    android:textSize="@dimen/dp15" />
             </TableRow>
-            <TableRow>
+
+            <TableRow
+                android:layout_marginLeft="@dimen/dp10"
+                android:layout_marginRight="@dimen/dp10"
+                android:layout_marginBottom="@dimen/dp10">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
+                    android:layout_gravity="left"
+                    android:layout_marginRight="@dimen/dp3"
+                    android:text="重量(weight):"
                     android:textSize="@dimen/dp15"
-                    android:layout_gravity="center"
-                    android:text="重量(weight):" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/weight_value"
-                    android:layout_width="@dimen/dp80"
+                    android:layout_width="@dimen/dp100"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/dp15"
-                    android:text="0" />
+                    android:text="0"
+                    android:layout_marginRight="@dimen/dp20"
+                    android:background="@color/gray"
+                    android:textSize="@dimen/dp15" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:layout_gravity="center"
+                    android:layout_gravity="left"
+                    android:layout_marginRight="@dimen/dp3"
+                    android:text="编码值(code):"
                     android:textSize="@dimen/dp15"
-                    android:text="编码值(code):" />
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/encoder_value"
                     android:layout_width="@dimen/dp100"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/dp15"
-                    android:text="0" />
-            </TableRow>>
+                    android:text="0"
+                    android:background="@color/gray"
+                    android:textSize="@dimen/dp15" />
+            </TableRow>
+
         </TableLayout>
 
         <ImageView
@@ -185,775 +204,796 @@
 
     </RelativeLayout>
 
+    <!--
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+    -->
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
-        <TableLayout
+        <!-- 回转档位标定  -->
+
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:focusable="true"
-            android:focusableInTouchMode="true">
+            android:layout_height="@dimen/dp0"
+            android:layout_weight="1"
+            android:background="@drawable/split_boder"
+            android:visibility="gone">
 
-            <!-- 回转档位标定  -->
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp5"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp0"
-                android:visibility="gone"
-                android:background="@drawable/split_boder">
+                <ImageView
 
-                <LinearLayout
-                    android:layout_width="@dimen/dp0"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp50"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/dp5"
                     android:gravity="center"
-                    android:layout_marginTop="@dimen/dp5"
-                    android:orientation="vertical">
-                    <ImageView
-                         
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp50"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:layout_marginBottom="@dimen/dp5"
-                        app:srcCompat="@mipmap/gear_shift" />
-                    <TextView
-                         
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp20"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:textSize="@dimen/dp10"
-                        android:textStyle="bold"
-                        android:text="档位标定"
-                        android:gravity="center" />
-                </LinearLayout>
+                    app:srcCompat="@mipmap/gear_shift" />
 
-                <LinearLayout
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp85"
-                    android:layout_weight="8">
+                <TextView
 
-                    <Button
-                        android:id="@+id/btn_first_gear"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="一档"
-                        android:textSize="@dimen/dp20" />
-
-                    <TextView
-                        android:id="@+id/tv_first_gear"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="10/s"
-                        android:textSize="@dimen/dp20" />
-
-                    <Button
-                        android:id="@+id/btn_gear2"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="二挡"
-                        android:textSize="@dimen/dp20" />
-
-                    <TextView
-                        android:id="@+id/tv_gear2"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="10/s"
-                        android:textSize="@dimen/dp20" />
-
-                    <Button
-                        android:id="@+id/btn_gear3"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="三挡"
-                        android:textSize="@dimen/dp20" />
-
-                    <TextView
-                        android:id="@+id/tv_gear3"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="10/s"
-                        android:textSize="@dimen/dp20" />
-
-                    <Button
-                        android:id="@+id/btn_gear4"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="四挡"
-                        android:textSize="@dimen/dp20" />
-
-                    <TextView
-                        android:id="@+id/tv_gear4"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="10/s"
-                        android:textSize="@dimen/dp20" />
-
-                    <Button
-                        android:id="@+id/btn_gear5"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="五档"
-                        android:textSize="@dimen/dp20" />
-
-                    <TextView
-                        android:id="@+id/tv_gear5"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="10/s"
-                        android:textSize="@dimen/dp20" />
-
-                </LinearLayout>
-            </TableRow>
-
-            <!-- 回转角度标定 -->
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp140"
-                android:layout_gravity="center"
-                android:background="@drawable/split_boder"
-                android:gravity="center">
-
-                <LinearLayout
-                    android:layout_width="@dimen/dp0"
-                    android:layout_weight="1.25"
-                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp20"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
                     android:gravity="center"
-                    android:layout_marginTop="@dimen/dp5"
-                    android:orientation="vertical">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp50"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:layout_marginBottom="@dimen/dp5"
-                        app:srcCompat="@mipmap/rotation" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp20"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:textSize="@dimen/dp10"
-                        android:textStyle="bold"
-                        android:text="回转(rotate)"
-                        android:gravity="center" />
-                </LinearLayout>
+                    android:text="档位标定"
+                    android:textSize="@dimen/dp10"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="@dimen/dp0"
-                    android:layout_weight="10">
-
-                    <LinearLayout
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp100"
-                        android:layout_gravity="center"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <EditText
-                            android:id="@+id/etx1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/dp0"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:minWidth="@dimen/dp100"
-                            android:text="X1"
-                            android:textSize="@dimen/dp15" />
-
-                        <EditText
-                            android:id="@+id/ety1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/dp0"
-                            android:layout_centerInParent="true"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:minWidth="@dimen/dp100"
-                            android:text="Y1"
-                            android:textSize="@dimen/dp15" />
-
-                    </LinearLayout>
-
-                    <Button
-                        android:id="@+id/btn_rotate_coord1"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:text="确定\nconfirm"
-                        android:textSize="@dimen/dp15" />
-
-                    <TextView
-                        android:id="@+id/tv_rotate_coord1"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textSize="@dimen/dp20" />
-
-                    <LinearLayout
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp100"
-                        android:layout_gravity="center"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <EditText
-                            android:id="@+id/etx2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/dp0"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:minWidth="@dimen/dp100"
-                            android:text="X2"
-                            android:textSize="@dimen/dp15" />
-
-                        <EditText
-                            android:id="@+id/ety2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/dp0"
-                            android:layout_centerInParent="true"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:minWidth="@dimen/dp100"
-                            android:text="Y2"
-                            android:textSize="@dimen/dp15" />
-
-                    </LinearLayout>
-
-                    <Button
-                        android:id="@+id/btn_rotate_coord2"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:text="确定\nconfirm"
-                        android:textSize="@dimen/dp15" />
-
-                    <TextView
-                        android:id="@+id/tv_rotate_coord2"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textSize="@dimen/dp20" />
-
-                    <TextView
-                        android:id="@+id/tv_rotate_rate"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:text="1/mv"
-                        android:textSize="@dimen/dp20" />
-                </LinearLayout>
-
-            </TableRow>
-
-
-            <!-- 倾角标定  -->
-            <TableRow
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
                 android:layout_height="@dimen/dp85"
-                android:background="@drawable/split_boder">
+                android:layout_weight="8">
 
-                <LinearLayout
+                <Button
+                    android:id="@+id/btn_first_gear"
                     android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:layout_height="match_parent"
                     android:gravity="center"
-                    android:layout_marginTop="@dimen/dp5"
-                    android:orientation="vertical">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp50"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:layout_marginBottom="@dimen/dp5"
-                        app:srcCompat="@mipmap/vangle" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp20"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:textSize="@dimen/dp10"
-                        android:textStyle="bold"
-                        android:text="倾角(dip)"
-                        android:gravity="center" />
-                </LinearLayout>
+                    android:text="一档"
+                    android:textSize="@dimen/dp20" />
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/tv_first_gear"
                     android:layout_width="@dimen/dp0"
-                    android:layout_weight="8">
-
-                    <EditText
-                        android:id="@+id/et_dip_angle_start"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textSize="@dimen/dp20" />
-
-                    <Button
-                        android:id="@+id/btn_dip_angle_start"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="确定\nconfirm"
-                        android:textSize="@dimen/dp15" />
-
-                    <TextView
-                        android:id="@+id/tv_dip_angle_start"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textSize="@dimen/dp20" />
-
-                    <EditText
-                        android:id="@+id/et_dip_angle_end"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textSize="@dimen/dp20" />
-
-                    <Button
-                        android:id="@+id/btn_dip_angle_end"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="确定\nconfirm"
-                        android:textSize="@dimen/dp15" />
-
-                    <TextView
-                        android:id="@+id/tv_dip_angle_end"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="50"
-                        android:textSize="@dimen/dp20" />
-
-                    <TextView
-                        android:id="@+id/tv_dip_angle_rate"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="1/mv"
-                        android:textSize="@dimen/dp20" />
-                </LinearLayout>
-            </TableRow>
-
-            <!-- 重量标定 -->
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp85"
-                android:background="@drawable/split_boder">
-
-                <LinearLayout
-                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:layout_height="match_parent"
                     android:gravity="center"
-                    android:layout_marginTop="@dimen/dp5"
-                    android:orientation="vertical">
-                    <ImageView
-                         
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp50"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        app:srcCompat="@mipmap/weight" />
-                    <TextView
-                         
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp20"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:textSize="@dimen/dp10"
-                        android:textStyle="bold"
-                        android:text="重量(weight)"
-                        android:gravity="center" />
-                </LinearLayout>
+                    android:text="10/s"
+                    android:textSize="@dimen/dp20" />
 
-                <LinearLayout
+                <Button
+                    android:id="@+id/btn_gear2"
                     android:layout_width="@dimen/dp0"
-                    android:layout_weight="8">
-
-                    <EditText
-                        android:id="@+id/et_weight_start"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textSize="@dimen/dp20" />
-
-                    <Button
-                        android:id="@+id/btn_weight_start"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="确定\nconfirm"
-                        android:textSize="@dimen/dp15" />
-
-                    <TextView
-                        android:id="@+id/tv_weight_start"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textSize="@dimen/dp20" />
-
-                    <EditText
-                        android:id="@+id/et_weight_end"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textSize="@dimen/dp20" />
-
-                    <Button
-                        android:id="@+id/btn_weight_end"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="确定\nconfirm"
-                        android:textSize="@dimen/dp15" />
-
-                    <TextView
-                        android:id="@+id/tv_weight_end"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="60"
-                        android:textSize="@dimen/dp20" />
-
-                    <TextView
-                        android:id="@+id/tv_weight_rate"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="1/mv"
-                        android:textSize="@dimen/dp20" />
-                </LinearLayout>
-            </TableRow>
-
-            <!-- 臂长 -->
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp85"
-                android:background="@drawable/split_boder">
-
-                <LinearLayout
-                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:layout_height="match_parent"
                     android:gravity="center"
-                    android:layout_marginTop="@dimen/dp5"
-                    android:orientation="vertical">
-                    <ImageView
-                         
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp50"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        app:srcCompat="@mipmap/length" />
-                    <TextView
-                         
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp20"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:textSize="@dimen/dp10"
-                        android:textStyle="bold"
-                        android:text="幅度(length)"
-                        android:gravity="center" />
-                </LinearLayout>
+                    android:text="二挡"
+                    android:textSize="@dimen/dp20" />
 
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/tv_gear2"
                     android:layout_width="@dimen/dp0"
-                    android:layout_weight="8">
-
-                    <EditText
-                        android:id="@+id/et_arm_length_start"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textSize="@dimen/dp20" />
-
-                    <Button
-                        android:id="@+id/btn_arm_length_start"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="确定\nconfirm"
-                        android:textSize="@dimen/dp15" />
-
-                    <TextView
-                        android:id="@+id/tv_arm_length_start"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textSize="@dimen/dp20" />
-
-                    <EditText
-                        android:id="@+id/et_arm_length_end"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textSize="@dimen/dp20" />
-
-                    <Button
-                        android:id="@+id/btn_arm_length_end"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="确定\nconfirm"
-                        android:textSize="@dimen/dp15" />
-
-                    <TextView
-                        android:id="@+id/tv_arm_length_end"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="70"
-                        android:textSize="@dimen/dp20" />
-
-                    <TextView
-                        android:id="@+id/tv_arm_length_rate"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="1/mv"
-                        android:textSize="@dimen/dp20" />
-                </LinearLayout>
-            </TableRow>
-
-            <!-- 塔高 -->
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp85"
-                android:background="@drawable/split_boder">
-
-                <LinearLayout
-                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:layout_height="match_parent"
                     android:gravity="center"
-                    android:layout_marginTop="@dimen/dp5"
-                    android:orientation="vertical">
-                    <ImageView
-                         
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp50"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        app:srcCompat="@mipmap/hook" />
-                    <TextView
-                         
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp20"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:textSize="@dimen/dp10"
-                        android:textStyle="bold"
-                        android:text="高度标(height)"
-                        android:gravity="center" />
-                </LinearLayout>
+                    android:text="10/s"
+                    android:textSize="@dimen/dp20" />
+
+                <Button
+                    android:id="@+id/btn_gear3"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="三挡"
+                    android:textSize="@dimen/dp20" />
+
+                <TextView
+                    android:id="@+id/tv_gear3"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="10/s"
+                    android:textSize="@dimen/dp20" />
+
+                <Button
+                    android:id="@+id/btn_gear4"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="四挡"
+                    android:textSize="@dimen/dp20" />
+
+                <TextView
+                    android:id="@+id/tv_gear4"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="10/s"
+                    android:textSize="@dimen/dp20" />
+
+                <Button
+                    android:id="@+id/btn_gear5"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="五档"
+                    android:textSize="@dimen/dp20" />
+
+                <TextView
+                    android:id="@+id/tv_gear5"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="10/s"
+                    android:textSize="@dimen/dp20" />
+
+            </LinearLayout>
+        </TableRow>
+
+        <!-- 回转角度标定 -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp0"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:background="@drawable/split_boder"
+            android:gravity="center">
+
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp5"
+                android:layout_weight="1.25"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp50"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/dp5"
+                    android:gravity="center"
+                    app:srcCompat="@mipmap/rotation" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp20"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="回转(rotate)"
+                    android:textSize="@dimen/dp10"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_weight="10">
 
                 <LinearLayout
                     android:layout_width="@dimen/dp0"
-                    android:layout_weight="8">
+                    android:layout_height="@dimen/dp100"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <EditText
-                        android:id="@+id/et_tower_height_start"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
+                        android:id="@+id/etx1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp0"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="0"
-                        android:textSize="@dimen/dp20" />
+                        android:minWidth="@dimen/dp100"
+                        android:text="X1"
+                        android:textSize="@dimen/dp15" />
 
-                    <Button
-                        android:id="@+id/btn_tower_height_start"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
+                    <EditText
+                        android:id="@+id/ety1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp0"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="确定\nconfirm"
+                        android:minWidth="@dimen/dp100"
+                        android:text="Y1"
                         android:textSize="@dimen/dp15" />
 
-                    <TextView
-                        android:id="@+id/tv_tower_height_start"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textSize="@dimen/dp20" />
-
-                    <EditText
-                        android:id="@+id/et_tower_height_end"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textSize="@dimen/dp20" />
-
-                    <Button
-                        android:id="@+id/btn_tower_height_end"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp60"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="确定\nconfirm"
-                        android:textSize="@dimen/dp15" />
-
-                    <TextView
-                        android:id="@+id/tv_tower_height_end"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="80"
-                        android:textSize="@dimen/dp20" />
-
-                    <TextView
-                        android:id="@+id/tv_tower_height_rate"
-                        android:layout_width="@dimen/dp0"
-                        android:layout_height="@dimen/dp80"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="1/mv"
-                        android:textSize="@dimen/dp20" />
                 </LinearLayout>
-            </TableRow>
 
-        </TableLayout>
+                <Button
+                    android:id="@+id/btn_rotate_coord1"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="确定\nconfirm"
+                    android:textSize="@dimen/dp15" />
 
+                <TextView
+                    android:id="@+id/tv_rotate_coord1"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="@dimen/dp20" />
+
+                <LinearLayout
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp100"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/etx2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp0"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:minWidth="@dimen/dp100"
+                        android:text="X2"
+                        android:textSize="@dimen/dp15" />
+
+                    <EditText
+                        android:id="@+id/ety2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp0"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:minWidth="@dimen/dp100"
+                        android:text="Y2"
+                        android:textSize="@dimen/dp15" />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_rotate_coord2"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="确定\nconfirm"
+                    android:textSize="@dimen/dp15" />
+
+                <TextView
+                    android:id="@+id/tv_rotate_coord2"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="@dimen/dp20" />
+
+                <TextView
+                    android:id="@+id/tv_rotate_rate"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="1/mv"
+                    android:textSize="@dimen/dp20" />
+            </LinearLayout>
+
+        </TableRow>
+
+
+        <!-- 倾角标定  -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp0"
+            android:layout_weight="1"
+            android:background="@drawable/split_boder">
+
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp5"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp50"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/dp5"
+                    android:gravity="center"
+                    app:srcCompat="@mipmap/vangle" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp20"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="倾角(dip)"
+                    android:textSize="@dimen/dp10"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_weight="8">
+
+                <EditText
+                    android:id="@+id/et_dip_angle_start"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="@dimen/dp20" />
+
+                <Button
+                    android:id="@+id/btn_dip_angle_start"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="确定\nconfirm"
+                    android:textSize="@dimen/dp15" />
+
+                <TextView
+                    android:id="@+id/tv_dip_angle_start"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="@dimen/dp20" />
+
+                <EditText
+                    android:id="@+id/et_dip_angle_end"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="@dimen/dp20" />
+
+                <Button
+                    android:id="@+id/btn_dip_angle_end"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="确定\nconfirm"
+                    android:textSize="@dimen/dp15" />
+
+                <TextView
+                    android:id="@+id/tv_dip_angle_end"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="50"
+                    android:textSize="@dimen/dp20" />
+
+                <TextView
+                    android:id="@+id/tv_dip_angle_rate"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="1/mv"
+                    android:textSize="@dimen/dp20" />
+            </LinearLayout>
+        </TableRow>
+
+        <!-- 重量标定 -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp0"
+            android:layout_weight="1"
+            android:background="@drawable/split_boder">
+
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp5"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp50"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    app:srcCompat="@mipmap/weight" />
+
+                <TextView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp20"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="重量(weight)"
+                    android:textSize="@dimen/dp10"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_weight="8">
+
+                <EditText
+                    android:id="@+id/et_weight_start"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="@dimen/dp20" />
+
+                <Button
+                    android:id="@+id/btn_weight_start"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="确定\nconfirm"
+                    android:textSize="@dimen/dp15" />
+
+                <TextView
+                    android:id="@+id/tv_weight_start"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="@dimen/dp20" />
+
+                <EditText
+                    android:id="@+id/et_weight_end"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="@dimen/dp20" />
+
+                <Button
+                    android:id="@+id/btn_weight_end"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="确定\nconfirm"
+                    android:textSize="@dimen/dp15" />
+
+                <TextView
+                    android:id="@+id/tv_weight_end"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="60"
+                    android:textSize="@dimen/dp20" />
+
+                <TextView
+                    android:id="@+id/tv_weight_rate"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="1/mv"
+                    android:textSize="@dimen/dp20" />
+            </LinearLayout>
+        </TableRow>
+
+        <!-- 臂长 -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp0"
+            android:layout_weight="1"
+            android:background="@drawable/split_boder">
+
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp5"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp50"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    app:srcCompat="@mipmap/length" />
+
+                <TextView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp20"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="幅度(length)"
+                    android:textSize="@dimen/dp10"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_weight="8">
+
+                <EditText
+                    android:id="@+id/et_arm_length_start"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="@dimen/dp20" />
+
+                <Button
+                    android:id="@+id/btn_arm_length_start"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="确定\nconfirm"
+                    android:textSize="@dimen/dp15" />
+
+                <TextView
+                    android:id="@+id/tv_arm_length_start"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="@dimen/dp20" />
+
+                <EditText
+                    android:id="@+id/et_arm_length_end"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="@dimen/dp20" />
+
+                <Button
+                    android:id="@+id/btn_arm_length_end"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="确定\nconfirm"
+                    android:textSize="@dimen/dp15" />
+
+                <TextView
+                    android:id="@+id/tv_arm_length_end"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="70"
+                    android:textSize="@dimen/dp20" />
+
+                <TextView
+                    android:id="@+id/tv_arm_length_rate"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="1/mv"
+                    android:textSize="@dimen/dp20" />
+            </LinearLayout>
+        </TableRow>
+
+        <!-- 塔高 -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp0"
+            android:layout_weight="1"
+            android:background="@drawable/split_boder">
+
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp5"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp50"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    app:srcCompat="@mipmap/hook" />
+
+                <TextView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp20"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="高度标(height)"
+                    android:textSize="@dimen/dp10"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_weight="8">
+
+                <EditText
+                    android:id="@+id/et_tower_height_start"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="@dimen/dp20" />
+
+                <Button
+                    android:id="@+id/btn_tower_height_start"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="确定\nconfirm"
+                    android:textSize="@dimen/dp15" />
+
+                <TextView
+                    android:id="@+id/tv_tower_height_start"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="@dimen/dp20" />
+
+                <EditText
+                    android:id="@+id/et_tower_height_end"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="@dimen/dp20" />
+
+                <Button
+                    android:id="@+id/btn_tower_height_end"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="确定\nconfirm"
+                    android:textSize="@dimen/dp15" />
+
+                <TextView
+                    android:id="@+id/tv_tower_height_end"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="80"
+                    android:textSize="@dimen/dp20" />
+
+                <TextView
+                    android:id="@+id/tv_tower_height_rate"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="1/mv"
+                    android:textSize="@dimen/dp20" />
+            </LinearLayout>
+        </TableRow>
+
+    </TableLayout>
+
+    <!--
     </ScrollView>
+    -->
 </LinearLayout>

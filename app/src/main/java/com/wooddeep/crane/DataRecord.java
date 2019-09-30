@@ -9,113 +9,26 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
-import com.wooddeep.crane.persist.dao.WorkRecDao;
-import com.wooddeep.crane.persist.entity.WorkRecrod;
+import com.wooddeep.crane.log.TableDesc;
+import com.wooddeep.crane.log.WorkRec;
 import com.wooddeep.crane.views.FixedTitleTable;
-import com.wooddeep.crane.views.TableCell;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-//import android.support.design.widget.Snackbar;
-
-
-// android开源控件
-// https://www.cnblogs.com/porter/p/8135835.html
-// https://github.com/opendigg/awesome-github-android-ui (*)
-
-// 运行错误
-// https://blog.csdn.net/littlexbear/article/details/81022581
-
-// 表格展示
-// https://github.com/z3896823/PanelList
-
-// smartTable
-// https://github.com/huangyanbin/smartTable
-// https://juejin.im/post/5a5dce7651882573256bd043
-
-// 对话框
-// https://github.com/saiwu-bigkoo/Android-AlertView
-
-// java 代码写下拉列表
-// https://www.cnblogs.com/xiaodeyao/p/5049773.html
-
-// greendao
-// https://www.cnblogs.com/wjtaigwh/p/6394288.html
-
 public class DataRecord extends AppCompatActivity {
+
     private Context context;
     private FixedTitleTable table;
     private Activity activity = this;
-    private WorkRecDao workRecDao;
 
-    private ImageView firstPage;
-    private ImageView prevPage;
-    private ImageView nextPage;
-    private ImageView LatestPage;
-
-    private int pageSize = 10;
-    private int globalIndex = 0;
-
-    // 头部信息  // ID, 时间，倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
-    private ArrayList<TableCell> colNames = new ArrayList<TableCell>() {{
-        add(new TableCell(0, "编号/ID"));
-        add(new TableCell(0, "时间/Time"));
-        add(new TableCell(0, "倍率/power"));
-        add(new TableCell(0, "力矩/moment"));
-        add(new TableCell(0, "高度/height"));
-        add(new TableCell(0, "幅度/range"));
-        add(new TableCell(0, "额重/rated weight"));
-        add(new TableCell(0, "重量/weight"));
-        add(new TableCell(0, "回转/rotate"));
-        add(new TableCell(0, "行走/walk"));
-        add(new TableCell(0, "仰角/dip angle"));
-        add(new TableCell(0, "风速/wind speed"));
-        add(new TableCell(0, "备注/remark"));
-    }};
-
-    private List<Integer> idList = new ArrayList() {{
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-    }};
-
-    private List<Integer> widthList = new ArrayList() {{
-        add(200);
-        add(300); // 时间
-        add(150); // 倍率
-        add(200); // 力矩
-        add(200); // 高度
-        add(200); // 幅度
-        add(250); // 额重
-        add(150); // 重量
-        add(200); // 回转
-        add(150); // 行走
-        add(200); // 仰角
-        add(250); // 风速
-        add(200);
-    }};
-
-
-    private void viewInstance() {
-        firstPage = (ImageView) findViewById(R.id.first_page);
-        prevPage = (ImageView) findViewById(R.id.prev_page);
-        nextPage = (ImageView) findViewById(R.id.next_page);
-        LatestPage = (ImageView) findViewById(R.id.latest_page);
-    }
+    private TableDesc currTableDesc;
+    private HashMap<Integer, TableDesc> recTableDescs = new HashMap();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,8 +39,9 @@ public class DataRecord extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        workRecDao = new WorkRecDao(context);
-
+        recTableDescs.put(R.id.work_record, new WorkRec(context));
+        recTableDescs.put(R.id.real_record, new WorkRec(context));
+        currTableDesc = recTableDescs.get(R.id.work_record);
     }
 
     private void setOnTouchListener(View view) {
@@ -177,20 +91,30 @@ public class DataRecord extends AppCompatActivity {
                     });
                     alertView.show();
                 } else if (view.getId() == R.id.latest_page) { // 最后一页
-                    int count = (int)workRecDao.queryCount();
-                    globalIndex = count - pageSize;
+                    int count = (int) currTableDesc.getDao().queryCount();
+                    currTableDesc.setGlobalIndex(count - currTableDesc.getPageSize());
                     showWorkRecInfo();
                 } else if (view.getId() == R.id.next_page) { // 下一页
-                    globalIndex = globalIndex + pageSize;
+                    currTableDesc.setGlobalIndex(currTableDesc.getGlobalIndex() + currTableDesc.getPageSize());
                     showWorkRecInfo();
                 } else if (view.getId() == R.id.first_page) { // 第一页
-                    globalIndex = 0;
+                    currTableDesc.setGlobalIndex(0);
                     showWorkRecInfo();
                 } else if (view.getId() == R.id.prev_page) { // 上一页
-                    globalIndex = globalIndex - pageSize;
+                    currTableDesc.setGlobalIndex(currTableDesc.getGlobalIndex() - currTableDesc.getPageSize());
                     showWorkRecInfo();
-                } else if (view.getId() == R.id.close_logo) {
+                } else if (view.getId() == R.id.close_logo) { // 关闭
                     finish();
+                } else if (view.getId() == R.id.work_record) { // 工作记录
+
+                } else if (view.getId() == R.id.real_record) { // 实时记录
+
+                } else if (view.getId() == R.id.calibration_record) { // 标定记录
+
+                } else if (view.getId() == R.id.oper_record) { // 操作记录
+
+                } else if (view.getId() == R.id.switch_record) { // 开关机记录
+
                 }
             }
         };
@@ -211,37 +135,27 @@ public class DataRecord extends AppCompatActivity {
             setOnTouchListener(view);
             setOnClickListener(view);
         }
+
+        List<LinearLayout> groups = new ArrayList<LinearLayout>() {{
+            add((LinearLayout) findViewById(R.id.work_record));
+            add((LinearLayout) findViewById(R.id.real_record));
+            add((LinearLayout) findViewById(R.id.calibration_record));
+            add((LinearLayout) findViewById(R.id.oper_record));
+            add((LinearLayout) findViewById(R.id.switch_record));
+        }};
+
+        for (LinearLayout view : groups) {
+            setOnTouchListener(view);
+            setOnClickListener(view);
+        }
     }
+
 
     public void showWorkRecInfo() {
         table.init(this, null);
         table.clearAll();
-
-        table.setFirstRow(colNames, idList, widthList);
-
-        List<WorkRecrod> workRecrods = workRecDao.queryPage(globalIndex, pageSize);
-
-        // 数据信息
-        for (WorkRecrod recrod : workRecrods) {
-            ArrayList<TableCell> row = new ArrayList<TableCell>();
-            row.add(new TableCell(0, String.valueOf(recrod.getId())));
-            row.add(new TableCell(0, recrod.getTime()));
-
-            // ID, 时间，倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
-            row.add(new TableCell(0, String.valueOf(recrod.getRopenum())));
-            row.add(new TableCell(0, String.valueOf(recrod.getMoment())));
-            row.add(new TableCell(0, String.valueOf(recrod.getHeigth())));
-            row.add(new TableCell(0, String.valueOf(recrod.getRange())));
-            row.add(new TableCell(0, String.valueOf(recrod.getRatedweight())));
-            row.add(new TableCell(0, String.valueOf(recrod.getWeight())));
-            row.add(new TableCell(0, String.valueOf(recrod.getRotate())));
-            row.add(new TableCell(0, String.valueOf(recrod.getWalk())));
-            row.add(new TableCell(0, String.valueOf(recrod.getDipange())));
-            row.add(new TableCell(0, String.valueOf(recrod.getWindspeed())));
-            row.add(new TableCell(0, String.valueOf(recrod.getRemark())));
-
-            table.addDataRow(row, true, widthList);
-        }
+        table.setFirstRow(currTableDesc.getColNames(), currTableDesc.getIdList(), currTableDesc.getWidthList());
+        currTableDesc.showDataInfo(table);
     }
 
     /**
