@@ -235,6 +235,9 @@ public class MainActivity extends AppCompatActivity {
     private RealData realData = new RealData(); // 工作记录
     private CtrlRecDao ctrlRecDao;
     private CtrlRec ctrlRec = new CtrlRec(); // 控制记录
+    private WorkRecDao workRecDao; // 工作记录DAO
+    private WorkRecrod workRec = new WorkRecrod(); // 工作记录
+
 
     private SwitchRecDao switchRecDao;
     private SwitchRec switchRec = new SwitchRec();
@@ -739,7 +742,6 @@ public class MainActivity extends AppCompatActivity {
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void AlarmSetEventBus(AlarmSetEvent event) {
-        //System.out.printf("######## userEvent = %f\n", event.alarmSet.t2cDistGear1);
         alarmSet = event.alarmSet; // 更新配置
     }
 
@@ -892,13 +894,37 @@ public class MainActivity extends AppCompatActivity {
 
     private float startWeight = 0.3f;
     private float endWeight = 0.2f;
+    private float currWeight = 0.3f;
 
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void weightEventBus(WeightEvent event) {
         if (calibration == null) return;
         TextView view = (TextView) findViewById(R.id.weight);
-        
+
+        if (event.getWeight() > currWeight && event.getWeight() >= startWeight) { // 记录最大值
+            currWeight = event.getWeight();
+        }
+
+        if (event.getWeight() < endWeight && currWeight > startWeight) {
+            Date date = new Date();
+            recPowerOnOff(date);
+            String dateNowStr = sdf.format(date);
+            workRec.setTime(dateNowStr);
+            workRec.setRopenum(iPower); // 倍率
+            workRec.setHeigth(Float.parseFloat(heightView.getText().toString().split("m")[0]));
+            if (centerCycle != null) {
+                workRec.setRange(centerCycle.carRange);
+                workRec.setRotate(centerCycle.hAngle);
+                workRec.setDipange(centerCycle.vAngle);
+            }
+            workRec.setRatedweight(Float.parseFloat(ratedWeightView.getText().toString().split("t")[0]));
+            workRec.setWeight(Float.parseFloat(weightView.getText().toString().split("t")[0]));
+            workRec.setWindspeed(Float.parseFloat(windSpeedView.getText().toString().split("m")[0]));
+            workRecDao.insert(workRec);
+
+            currWeight = endWeight;
+        }
 
         view.setText(event.getWeight() + "t");
     }
@@ -1496,6 +1522,7 @@ public class MainActivity extends AppCompatActivity {
         paraDao = new SysParaDao(getApplicationContext()); // 系统参数
         switchRecDao = new SwitchRecDao(context); // 开关机
         ctrlRecDao = new CtrlRecDao(context);
+        workRecDao = new WorkRecDao(context);
         eventBus.post(new SysParaEvent()); // 触发系统参数相关
 
         leftAlarmView = (TextView) findViewById(R.id.left_alarm_level);
