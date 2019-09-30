@@ -12,14 +12,14 @@ public class SwitchRec  extends LogEntity {
     @DatabaseField(columnName = "time", useGetSet = true, defaultValue = "2019-10-01 00:00:00")
     private String time;
 
-    @DatabaseField(columnName = "action", useGetSet = true, defaultValue = "2")
-    private float action;
+    @DatabaseField(columnName = "action", useGetSet = true, defaultValue = "power on")
+    private String action;
 
 
     public SwitchRec() {
     }
 
-    public SwitchRec(int id, String time, float action) {
+    public SwitchRec(int id, String time, String action) {
         this.id = id;
         this.time = time;
         this.action = action;
@@ -41,11 +41,11 @@ public class SwitchRec  extends LogEntity {
         this.time = time;
     }
 
-    public float getAction() {
+    public String getAction() {
         return action;
     }
 
-    public void setAction(float action) {
+    public void setAction(String action) {
         this.action = action;
     }
 }

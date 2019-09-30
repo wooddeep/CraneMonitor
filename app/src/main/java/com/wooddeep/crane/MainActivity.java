@@ -59,6 +59,8 @@ import com.wooddeep.crane.persist.dao.LoadDao;
 import com.wooddeep.crane.persist.dao.ProtectAreaDao;
 import com.wooddeep.crane.persist.dao.ProtectDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
+import com.wooddeep.crane.persist.dao.log.RealDataDao;
+import com.wooddeep.crane.persist.dao.log.SwitchRecDao;
 import com.wooddeep.crane.persist.dao.log.WorkRecDao;
 import com.wooddeep.crane.persist.entity.AlarmSet;
 import com.wooddeep.crane.persist.entity.Area;
@@ -228,8 +230,11 @@ public class MainActivity extends AppCompatActivity {
 
     private SysParaDao paraDao; // 系统参数
     private LoadDao loadDao; // 负荷特性
-    private WorkRecDao workRecDao; // 工作记录DAO
-    private WorkRecrod workRecrod = new WorkRecrod(); // 工作记录
+    private RealDataDao realDataDao; // 工作记录DAO
+    private RealData realData = new RealData(); // 工作记录
+
+    private SwitchRecDao switchRecDao;
+    private SwitchRec switchRec = new SwitchRec();
 
     private CraneView craneView;
     private TextView angleView;
@@ -494,6 +499,29 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
+
+    private void recPowerOnOff() {
+        RealData realData = realDataDao.queryLatestOne();
+        try {
+
+            Date latest = sdf.parse(realData.getTime());
+            long prevMsec = latest.getTime();
+            long currMesc = System.currentTimeMillis();
+
+            if (currMesc - prevMsec > 60 * 1000) { // 大于1分钟, 则记录
+                switchRec.setTime(realData.getTime());
+                switchRec.setAction("power off");
+                switchRecDao.insert(switchRec);
+                switchRec.setTime(sdf.format(new Date()));
+                switchRec.setAction("power on");
+                switchRecDao.insert(switchRec);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void startTimerThread() {
         AlarmSound.init(getApplicationContext());
 
@@ -503,22 +531,27 @@ public class MainActivity extends AppCompatActivity {
                 CommTool.sleep(100);
                 count++;
 
+                if (count % 500 == 0) {
+                    recPowerOnOff();
+                    setCurrTime();
+                }
+
                 //倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
                 if (count % 50 == 0) { // 没5秒钟记录一次
                     Date date = new Date();
                     String dateNowStr = sdf.format(date);
-                    workRecrod.setTime(dateNowStr);
-                    workRecrod.setRopenum(iPower); // 倍率
-                    workRecrod.setHeigth(Float.parseFloat(heightView.getText().toString().split("m")[0]));
+                    realData.setTime(dateNowStr);
+                    realData.setRopenum(iPower); // 倍率
+                    realData.setHeigth(Float.parseFloat(heightView.getText().toString().split("m")[0]));
                     if (centerCycle != null) {
-                        workRecrod.setRange(centerCycle.carRange);
-                        workRecrod.setRotate(centerCycle.hAngle);
-                        workRecrod.setDipange(centerCycle.vAngle);
+                        realData.setRange(centerCycle.carRange);
+                        realData.setRotate(centerCycle.hAngle);
+                        realData.setDipange(centerCycle.vAngle);
                     }
-                    workRecrod.setRatedweight(Float.parseFloat(ratedWeightView.getText().toString().split("t")[0]));
-                    workRecrod.setWeight(Float.parseFloat(weightView.getText().toString().split("t")[0]));
-                    workRecrod.setWindspeed(Float.parseFloat(windSpeedView.getText().toString().split("m")[0]));
-                    workRecDao.insert(workRecrod);
+                    realData.setRatedweight(Float.parseFloat(ratedWeightView.getText().toString().split("t")[0]));
+                    realData.setWeight(Float.parseFloat(weightView.getText().toString().split("t")[0]));
+                    realData.setWindspeed(Float.parseFloat(windSpeedView.getText().toString().split("m")[0]));
+                    realDataDao.insert(realData);
                 }
 
                 if (count % 6 == 0) { // 喂软件狗
@@ -1399,7 +1432,7 @@ public class MainActivity extends AppCompatActivity {
         AlarmSetDao alarmSetDao = new AlarmSetDao(MainActivity.this);
         CalibrationDao calibrationDao = new CalibrationDao(MainActivity.this);
         loadDao = new LoadDao(MainActivity.this);
-        workRecDao = new WorkRecDao(MainActivity.this);
+        realDataDao = new RealDataDao(MainActivity.this);
         List<Crane> cranes = craneDao.selectAll();
 
         LogDbHelper.getInstance(context).createTable(WorkRecrod.class);
@@ -1447,6 +1480,7 @@ public class MainActivity extends AppCompatActivity {
         EventBus.getDefault().register(this);
         initTable(); // 初始化表
         paraDao = new SysParaDao(getApplicationContext()); // 系统参数
+        switchRecDao = new SwitchRecDao(context); // 开关机
         eventBus.post(new SysParaEvent()); // 触发系统参数相关
 
         leftAlarmView = (TextView) findViewById(R.id.left_alarm_level);
@@ -1491,8 +1525,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        setCurrTime();
 
         // 触发判断本机是否为主机
         new Handler().postDelayed(() -> {

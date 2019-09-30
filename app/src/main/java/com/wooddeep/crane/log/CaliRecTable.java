@@ -80,8 +80,12 @@ public class CaliRecTable extends TableDesc {
             row.add(new TableCell(0, String.valueOf(recrod.getId())));
             row.add(new TableCell(0, recrod.getTime()));
 
-            // ID, 时间，倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
-
+            row.add(new TableCell(0, recrod.getType()));
+            row.add(new TableCell(0, String.valueOf(recrod.getStartAD())));
+            row.add(new TableCell(0, String.valueOf(recrod.getEndAD())));
+            row.add(new TableCell(0, recrod.getStartValue()));
+            row.add(new TableCell(0, recrod.getEndValue()));
+            row.add(new TableCell(0, String.valueOf(recrod.getKValue())));
 
             table.addDataRow(row, true, widthList);
         }

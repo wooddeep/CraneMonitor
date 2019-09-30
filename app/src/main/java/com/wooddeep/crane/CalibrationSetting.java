@@ -22,7 +22,9 @@ import com.wooddeep.crane.ebus.SimulatorEvent;
 import com.wooddeep.crane.ebus.UartEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.dao.CalibrationDao;
+import com.wooddeep.crane.persist.dao.log.CaliRecDao;
 import com.wooddeep.crane.persist.entity.Calibration;
+import com.wooddeep.crane.persist.entity.log.CaliRec;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -30,7 +32,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.locationtech.jts.algorithm.Angle;
 
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 //import com.wooddeep.crane.tookit.Coordinate;
@@ -47,6 +51,11 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class CalibrationSetting extends AppCompatActivity {
+
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    private CaliRec caliRec = new CaliRec();
+    private CaliRecDao caliRecDao;
 
     abstract class CalibrationCell {
         public String dimValueName = null; // 对应的 维度起始值 名称
@@ -187,6 +196,15 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibrationDao.update(calibration);
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
 
+                    // 存储标定记录
+                    caliRec.setType("rotate");
+                    caliRec.setStartAD(start);
+                    caliRec.setEndAD(end);
+                    caliRec.setKValue((float)rate);
+                    caliRec.setStartValue(String.format("(%f,%f)", x1, y1));
+                    caliRec.setEndValue(String.format("(%f,%f)", x2, y2));
+                    caliRec.setTime(sdf.format(new Date()));
+                    caliRecDao.insert(caliRec);
                 }
             });
         }
@@ -252,6 +270,15 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibrationDao.update(calibration);
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
 
+                    // 存储标定记录
+                    caliRec.setType("rotate");
+                    caliRec.setStartAD(start);
+                    caliRec.setEndAD(end);
+                    caliRec.setKValue((float)rate);
+                    caliRec.setStartValue(String.format("(%f,%f)", x1, y1));
+                    caliRec.setEndValue(String.format("(%f,%f)", x2, y2));
+                    caliRec.setTime(sdf.format(new Date()));
+                    caliRecDao.insert(caliRec);
                 }
             });
         }
@@ -488,6 +515,16 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibrationDao.update(calibration);
 
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
+
+                    // 存储标定记录
+                    caliRec.setType("dipangle");
+                    caliRec.setStartAD(startUartData);
+                    caliRec.setEndAD(endUartData);
+                    caliRec.setKValue((float)rate);
+                    caliRec.setStartValue(String.valueOf(startDimValue));
+                    caliRec.setEndValue(String.valueOf(endDimValue));
+                    caliRec.setTime(sdf.format(new Date()));
+                    caliRecDao.insert(caliRec);
                 }
             });
         }
@@ -530,6 +567,16 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibrationDao.update(calibration);
 
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
+
+                    // 存储标定记录
+                    caliRec.setType("dipangle");
+                    caliRec.setStartAD(startUartData);
+                    caliRec.setEndAD(endUartData);
+                    caliRec.setKValue((float)rate);
+                    caliRec.setStartValue(String.valueOf(startDimValue));
+                    caliRec.setEndValue(String.valueOf(endDimValue));
+                    caliRec.setTime(sdf.format(new Date()));
+                    caliRecDao.insert(caliRec);
                 }
             });
         }
@@ -572,6 +619,15 @@ public class CalibrationSetting extends AppCompatActivity {
                     TextView tvRateShow = (TextView) findViewById(weightStart.rateShowId);
                     tvRateShow.setText(String.valueOf(rate));
 
+                    // 存储标定记录
+                    caliRec.setType("weight");
+                    caliRec.setStartAD(startUartData);
+                    caliRec.setEndAD(endUartData);
+                    caliRec.setKValue((float)rate);
+                    caliRec.setStartValue(String.valueOf(startDimValue));
+                    caliRec.setEndValue(String.valueOf(endDimValue));
+                    caliRec.setTime(sdf.format(new Date()));
+                    caliRecDao.insert(caliRec);
                 }
             });
         }
@@ -613,6 +669,15 @@ public class CalibrationSetting extends AppCompatActivity {
                     TextView tvRateShow = (TextView) findViewById(weightStart.rateShowId);
                     tvRateShow.setText(String.valueOf(rate));
 
+                    // 存储标定记录
+                    caliRec.setType("weight");
+                    caliRec.setStartAD(startUartData);
+                    caliRec.setEndAD(endUartData);
+                    caliRec.setKValue((float)rate);
+                    caliRec.setStartValue(String.valueOf(startDimValue));
+                    caliRec.setEndValue(String.valueOf(endDimValue));
+                    caliRec.setTime(sdf.format(new Date()));
+                    caliRecDao.insert(caliRec);
                 }
             });
         }
@@ -654,6 +719,15 @@ public class CalibrationSetting extends AppCompatActivity {
                     TextView tvRateShow = (TextView) findViewById(lengthStart.rateShowId);
                     tvRateShow.setText(String.valueOf(rate));
 
+                    // 存储标定记录
+                    caliRec.setType("length");
+                    caliRec.setStartAD(startUartData);
+                    caliRec.setEndAD(endUartData);
+                    caliRec.setKValue((float)rate);
+                    caliRec.setStartValue(String.valueOf(startDimValue));
+                    caliRec.setEndValue(String.valueOf(endDimValue));
+                    caliRec.setTime(sdf.format(new Date()));
+                    caliRecDao.insert(caliRec);
                 }
             });
         }
@@ -695,6 +769,15 @@ public class CalibrationSetting extends AppCompatActivity {
                     TextView tvRateShow = (TextView) findViewById(lengthStart.rateShowId);
                     tvRateShow.setText(String.valueOf(rate));
 
+                    // 存储标定记录
+                    caliRec.setType("length");
+                    caliRec.setStartAD(startUartData);
+                    caliRec.setEndAD(endUartData);
+                    caliRec.setKValue((float)rate);
+                    caliRec.setStartValue(String.valueOf(startDimValue));
+                    caliRec.setEndValue(String.valueOf(endDimValue));
+                    caliRec.setTime(sdf.format(new Date()));
+                    caliRecDao.insert(caliRec);
                 }
             });
         }
@@ -743,6 +826,15 @@ public class CalibrationSetting extends AppCompatActivity {
                     TextView tvRateShow = (TextView) findViewById(heightStart.rateShowId);
                     tvRateShow.setText(String.valueOf(rate));
 
+                    // 存储标定记录
+                    caliRec.setType("height");
+                    caliRec.setStartAD(startUartData);
+                    caliRec.setEndAD(endUartData);
+                    caliRec.setKValue((float)rate);
+                    caliRec.setStartValue(String.valueOf(startDimValue));
+                    caliRec.setEndValue(String.valueOf(endDimValue));
+                    caliRec.setTime(sdf.format(new Date()));
+                    caliRecDao.insert(caliRec);
                 }
             });
         }
@@ -789,6 +881,15 @@ public class CalibrationSetting extends AppCompatActivity {
                     TextView tvRateShow = (TextView) findViewById(heightStart.rateShowId);
                     tvRateShow.setText(String.valueOf(rate));
 
+                    // 存储标定记录
+                    caliRec.setType("height");
+                    caliRec.setStartAD(startUartData);
+                    caliRec.setEndAD(endUartData);
+                    caliRec.setKValue((float)rate);
+                    caliRec.setStartValue(String.valueOf(startDimValue));
+                    caliRec.setEndValue(String.valueOf(endDimValue));
+                    caliRec.setTime(sdf.format(new Date()));
+                    caliRecDao.insert(caliRec);
                 }
             });
         }
@@ -806,6 +907,7 @@ public class CalibrationSetting extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calibration_setting);
+        caliRecDao = new CaliRecDao(getApplicationContext());
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();

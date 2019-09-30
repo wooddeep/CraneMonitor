@@ -88,6 +88,20 @@ public class RealDataDao extends LogDao {
         return crane;
     }
 
+    public RealData queryLatestOne() {
+        List<RealData> cranes;
+        RealData out = null;
+        try {
+            cranes = dao.queryBuilder().offset((long) 0).limit((long) 1).orderBy("id", false).query();
+            if (cranes != null && cranes.size() > 0) {
+                out = cranes.get(0);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return out;
+    }
+
     public List<RealData> queryForMatching(RealData crane) {
         List<RealData> cranes = null;
         try {
