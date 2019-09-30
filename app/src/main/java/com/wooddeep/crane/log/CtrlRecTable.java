@@ -3,7 +3,6 @@ package com.wooddeep.crane.log;
 import android.content.Context;
 
 import com.wooddeep.crane.persist.dao.log.CtrlRecDao;
-import com.wooddeep.crane.persist.dao.log.WorkRecDao;
 import com.wooddeep.crane.persist.entity.log.CtrlRec;
 import com.wooddeep.crane.views.FixedTitleTable;
 import com.wooddeep.crane.views.TableCell;

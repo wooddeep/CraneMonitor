@@ -28,14 +28,21 @@ public class CaliRecTable extends TableDesc {
     private ArrayList<TableCell> colNames = new ArrayList<TableCell>() {{
         add(new TableCell(0, "编号/ID"));
         add(new TableCell(0, "时间/Time"));
-        add(new TableCell(0, "回转/power"));
-        add(new TableCell(0, "仰角/moment"));
-        add(new TableCell(0, "高度/height"));
-        add(new TableCell(0, "幅度/range"));
-        add(new TableCell(0, "重量/weight"));
+
+        add(new TableCell(0, "类型/type"));
+
+        add(new TableCell(0, "初始AD/start AD"));
+        add(new TableCell(0, "终止AD/end AD"));
+
+        add(new TableCell(0, "初始值/start value"));
+        add(new TableCell(0, "终止值/end value"));
+
+        add(new TableCell(0, "斜率/K value"));
+
     }};
 
     private List<Integer> idList = new ArrayList() {{
+        add(-1);
         add(-1);
         add(-1);
         add(-1);
@@ -52,6 +59,7 @@ public class CaliRecTable extends TableDesc {
         add(230);
         add(200);
         add(200);
+        add(250);
         add(250);
     }};
 
@@ -73,11 +81,7 @@ public class CaliRecTable extends TableDesc {
             row.add(new TableCell(0, recrod.getTime()));
 
             // ID, 时间，倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
-            row.add(new TableCell(0, String.valueOf(recrod.getRotate())));
-            row.add(new TableCell(0, String.valueOf(recrod.getDipangle())));
-            row.add(new TableCell(0, String.valueOf(recrod.getHeigth())));
-            row.add(new TableCell(0, String.valueOf(recrod.getRange())));
-            row.add(new TableCell(0, String.valueOf(recrod.getWeight())));
+
 
             table.addDataRow(row, true, widthList);
         }

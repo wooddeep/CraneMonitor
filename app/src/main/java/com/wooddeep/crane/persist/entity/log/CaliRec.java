@@ -2,6 +2,7 @@ package com.wooddeep.crane.persist.entity.log;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import com.wooddeep.crane.views.TableCell;
 
 @DatabaseTable(tableName = "calirec")
 public class CaliRec  extends LogEntity {
@@ -12,33 +13,38 @@ public class CaliRec  extends LogEntity {
     @DatabaseField(columnName = "time", useGetSet = true, defaultValue = "2019-10-01 00:00:00")
     private String time;
 
-    @DatabaseField(columnName = "dipangle", useGetSet = true, defaultValue = "100")
-    private float dipangle;
 
-    @DatabaseField(columnName = "heigth", useGetSet = true, defaultValue = "100")
-    private float heigth;
+    @DatabaseField(columnName = "type", useGetSet = true, defaultValue = "dipangle")
+    private String type; // dipangle, height, range, weight, rotate
 
-    @DatabaseField(columnName = "range", useGetSet = true, defaultValue = "40")
-    private float range;
+    @DatabaseField(columnName = "startAD", useGetSet = true, defaultValue = "100")
+    private float startAD;
 
-    @DatabaseField(columnName = "weight", useGetSet = true, defaultValue = "100")
-    private float weight;
+    @DatabaseField(columnName = "endAD", useGetSet = true, defaultValue = "200")
+    private float endAD;
 
-    @DatabaseField(columnName = "rotate", useGetSet = true, defaultValue = "100")
-    private float rotate;
+    @DatabaseField(columnName = "startValue", useGetSet = true, defaultValue = "(100,100)")
+    private String startValue;
 
+    @DatabaseField(columnName = "endValue", useGetSet = true, defaultValue = "(200,200)")
+    private String endValue;
+
+
+    @DatabaseField(columnName = "KValue", useGetSet = true, defaultValue = "1.0")
+    private float KValue;
 
     public CaliRec() {
     }
 
-    public CaliRec(int id, String time, float dipangle, float heigth, float range, float weight, float rotate) {
+    public CaliRec(int id, String time, String type, float startAD, float endAD, String startValue, String endValue, float kValue) {
         this.id = id;
         this.time = time;
-        this.dipangle = dipangle;
-        this.heigth = heigth;
-        this.range = range;
-        this.weight = weight;
-        this.rotate = rotate;
+        this.type = type;
+        this.startAD = startAD;
+        this.endAD = endAD;
+        this.startValue = startValue;
+        this.endValue = endValue;
+        this.KValue = kValue;
     }
 
     public int getId() {
@@ -57,43 +63,51 @@ public class CaliRec  extends LogEntity {
         this.time = time;
     }
 
-    public float getDipangle() {
-        return dipangle;
+    public String getType() {
+        return type;
     }
 
-    public void setDipangle(float dipangle) {
-        this.dipangle = dipangle;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public float getHeigth() {
-        return heigth;
+    public float getStartAD() {
+        return startAD;
     }
 
-    public void setHeigth(float heigth) {
-        this.heigth = heigth;
+    public void setStartAD(float startAD) {
+        this.startAD = startAD;
     }
 
-    public float getRange() {
-        return range;
+    public float getEndAD() {
+        return endAD;
     }
 
-    public void setRange(float range) {
-        this.range = range;
+    public void setEndAD(float endAD) {
+        this.endAD = endAD;
     }
 
-    public float getWeight() {
-        return weight;
+    public String getStartValue() {
+        return startValue;
     }
 
-    public void setWeight(float weight) {
-        this.weight = weight;
+    public void setStartValue(String startValue) {
+        this.startValue = startValue;
     }
 
-    public float getRotate() {
-        return rotate;
+    public String getEndValue() {
+        return endValue;
     }
 
-    public void setRotate(float rotate) {
-        this.rotate = rotate;
+    public void setEndValue(String endValue) {
+        this.endValue = endValue;
+    }
+
+    public float getKValue() {
+        return KValue;
+    }
+
+    public void setKValue(float KValue) {
+        this.KValue = KValue;
     }
 }

@@ -3,9 +3,7 @@ package com.wooddeep.crane.log;
 import android.content.Context;
 
 import com.wooddeep.crane.persist.dao.log.SwitchRecDao;
-import com.wooddeep.crane.persist.dao.log.WorkRecDao;
 import com.wooddeep.crane.persist.entity.log.SwitchRec;
-import com.wooddeep.crane.persist.entity.log.WorkRecrod;
 import com.wooddeep.crane.views.FixedTitleTable;
 import com.wooddeep.crane.views.TableCell;
 
@@ -24,7 +22,7 @@ public class SwitchRecTable extends TableDesc {
     private int pageSize = 10;
     private int globalIndex = 0;
 
-    // 头部信息  // ID, 时间，倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
+    // ID, 时间，倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
     private ArrayList<TableCell> colNames = new ArrayList<TableCell>() {{
         add(new TableCell(0, "编号/ID"));
         add(new TableCell(0, "时间/Time"));
@@ -35,23 +33,9 @@ public class SwitchRecTable extends TableDesc {
         add(-1);
         add(-1);
         add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
-        add(-1);
     }};
 
-    private List<Integer> widthList = new ArrayList() {{
-        add(200);
-        add(300); // 时间
-        add(150); // 倍率
-    }};
+    private List<Integer> widthList = null;
 
     private SwitchRecDao dao;
 
@@ -60,32 +44,25 @@ public class SwitchRecTable extends TableDesc {
         this.dao = new SwitchRecDao(context);
     }
 
+    public SwitchRecTable(Context context, int width) {
+        this.context = context;
+        this.dao = new SwitchRecDao(context);
+        this.widthList = new ArrayList() {{
+            add(200);
+            add(300);
+            add(width - 500);
+        }};
+    }
+
     @Override
     public void showDataInfo(FixedTitleTable table) {
         List<SwitchRec> records = dao.queryPage(globalIndex, pageSize);
-
         // 数据信息
         for (SwitchRec recrod : records) {
             ArrayList<TableCell> row = new ArrayList<TableCell>();
             row.add(new TableCell(0, String.valueOf(recrod.getId())));
             row.add(new TableCell(0, recrod.getTime()));
-
-            /*
-            // ID, 时间，倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
-            row.add(new TableCell(0, String.valueOf(recrod.getRopenum())));
-            row.add(new TableCell(0, String.valueOf(recrod.getMoment())));
-            row.add(new TableCell(0, String.valueOf(recrod.getHeigth())));
-            row.add(new TableCell(0, String.valueOf(recrod.getRange())));
-            row.add(new TableCell(0, String.valueOf(recrod.getRatedweight())));
-            row.add(new TableCell(0, String.valueOf(recrod.getWeight())));
-            row.add(new TableCell(0, String.valueOf(recrod.getRotate())));
-            row.add(new TableCell(0, String.valueOf(recrod.getWalk())));
-            row.add(new TableCell(0, String.valueOf(recrod.getDipange())));
-            row.add(new TableCell(0, String.valueOf(recrod.getWindspeed())));
-            row.add(new TableCell(0, String.valueOf(recrod.getRemark())));
-            */
-
-            table.addDataRow(row, true, widthList);
+            table.addDataRow(row, true);
         }
     }
 

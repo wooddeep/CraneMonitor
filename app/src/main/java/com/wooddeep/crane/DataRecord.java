@@ -43,12 +43,6 @@ public class DataRecord extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        recTableDescs.put(R.id.work_record, new WorkRecTable(context));
-        recTableDescs.put(R.id.real_record, new RealDataTable(context));
-        recTableDescs.put(R.id.calibration_record, new CaliRecTable(context));
-        recTableDescs.put(R.id.oper_record, new CtrlRecTable(context));
-        recTableDescs.put(R.id.switch_record, new SwitchRecTable(context));
-        currTableDesc = recTableDescs.get(R.id.work_record);
     }
 
     private void setOnTouchListener(View view) {
@@ -162,11 +156,14 @@ public class DataRecord extends AppCompatActivity {
         }
     }
 
-
     public void showWorkRecInfo() {
         table.init(this, null);
         table.clearAll();
-        table.setFirstRow(currTableDesc.getColNames(), currTableDesc.getIdList(), currTableDesc.getWidthList());
+        if (currTableDesc.getWidthList() != null) {
+            table.setFirstRow(currTableDesc.getColNames(), currTableDesc.getIdList(), currTableDesc.getWidthList());
+        } else {
+            table.setFirstRow(currTableDesc.getColNames(), currTableDesc.getIdList());
+        }
         currTableDesc.showDataInfo(table);
     }
 
@@ -178,6 +175,13 @@ public class DataRecord extends AppCompatActivity {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         table = new FixedTitleTable(dm.widthPixels); // 输入屏幕宽度
+
+        recTableDescs.put(R.id.work_record, new WorkRecTable(context));
+        recTableDescs.put(R.id.real_record, new RealDataTable(context));
+        recTableDescs.put(R.id.calibration_record, new CaliRecTable(context));
+        recTableDescs.put(R.id.oper_record, new CtrlRecTable(context));
+        recTableDescs.put(R.id.switch_record, new SwitchRecTable(context, dm.widthPixels));
+        currTableDesc = recTableDescs.get(R.id.work_record);
 
         try {
             showWorkRecInfo();
