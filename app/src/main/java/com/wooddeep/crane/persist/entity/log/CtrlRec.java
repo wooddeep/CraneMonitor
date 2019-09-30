@@ -4,7 +4,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "ctrlrec")
-public class CtrlRec  extends LogEntity {
+public class CtrlRec extends LogEntity {
 
     @DatabaseField(generatedId = true, columnName = "id", useGetSet = true)
     private int id;
@@ -12,57 +12,70 @@ public class CtrlRec  extends LogEntity {
     @DatabaseField(columnName = "time", useGetSet = true, defaultValue = "2019-10-01 00:00:00")
     private String time;
 
+
     // 倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
-    @DatabaseField(columnName = "ropenum", useGetSet = true, defaultValue = "2")
-    private float ropenum;
+    @DatabaseField(columnName = "carOut2", useGetSet = true, defaultValue = "false")
+    private boolean carOut2;
 
-    @DatabaseField(columnName = "moment", useGetSet = true, defaultValue = "100")
-    private float moment;
+    @DatabaseField(columnName = "carOut1", useGetSet = true, defaultValue = "false")
+    private boolean carOut1;
 
-    @DatabaseField(columnName = "heigth", useGetSet = true, defaultValue = "100")
-    private float heigth;
+    @DatabaseField(columnName = "rotate5", useGetSet = true, defaultValue = "false")
+    private boolean rotate5;
 
-    @DatabaseField(columnName = "range", useGetSet = true, defaultValue = "40")
-    private float range;
+    @DatabaseField(columnName = "rotate4", useGetSet = true, defaultValue = "false")
+    private boolean rotate4;
 
-    @DatabaseField(columnName = "ratedweight", useGetSet = true, defaultValue = "100")
-    private float ratedweight;
+    @DatabaseField(columnName = "rotate3", useGetSet = true, defaultValue = "false")
+    private boolean rotate3;
 
-    @DatabaseField(columnName = "weight", useGetSet = true, defaultValue = "100")
-    private float weight;
+    @DatabaseField(columnName = "rotate2", useGetSet = true, defaultValue = "false")
+    private boolean rotate2;
 
-    @DatabaseField(columnName = "rotate", useGetSet = true, defaultValue = "100")
-    private float rotate;
+    @DatabaseField(columnName = "leftRote", useGetSet = true, defaultValue = "false")
+    private boolean leftRote;
 
-    @DatabaseField(columnName = "walk", useGetSet = true, defaultValue = "100")
-    private float walk;
+    @DatabaseField(columnName = "rightRote", useGetSet = true, defaultValue = "false")
+    private boolean rightRote;
 
-    @DatabaseField(columnName = "dipange", useGetSet = true, defaultValue = "15")
-    private float dipange;
+    @DatabaseField(columnName = "moment3", useGetSet = true, defaultValue = "false")
+    private boolean moment3;
 
-    @DatabaseField(columnName = "windspeed", useGetSet = true, defaultValue = "5")
-    private float windspeed;
+    @DatabaseField(columnName = "moment2", useGetSet = true, defaultValue = "false")
+    private boolean moment2;
 
-    @DatabaseField(columnName = "remark", useGetSet = true, defaultValue = "无")
-    private String remark;
+    @DatabaseField(columnName = "moment1", useGetSet = true, defaultValue = "false")
+    private boolean moment1;
+
+    @DatabaseField(columnName = "weight1", useGetSet = true, defaultValue = "false")
+    private boolean weight1;
+
+    @DatabaseField(columnName = "carBack2", useGetSet = true, defaultValue = "false")
+    private boolean carBack2;
+
+    @DatabaseField(columnName = "carBack1", useGetSet = true, defaultValue = "false")
+    private boolean carBack1;
 
     public CtrlRec() {
     }
 
-    public CtrlRec(int id, String time, float ropenum, float moment, float heigth, float range, float ratedweight, float weight, float rotate, float walk, float dipange, float windspeed, String remark) {
+    public CtrlRec(int id, String time, boolean carOut2, boolean carOut1, boolean rotate5, boolean rotate4, boolean rotate3, boolean rotate2, boolean leftRote, boolean rightRote, boolean moment3, boolean moment2, boolean moment1, boolean weight1, boolean carBack2, boolean carBack1) {
         this.id = id;
         this.time = time;
-        this.ropenum = ropenum;
-        this.moment = moment;
-        this.heigth = heigth;
-        this.range = range;
-        this.ratedweight = ratedweight;
-        this.weight = weight;
-        this.rotate = rotate;
-        this.walk = walk;
-        this.dipange = dipange;
-        this.windspeed = windspeed;
-        this.remark = remark;
+        this.carOut2 = carOut2;
+        this.carOut1 = carOut1;
+        this.rotate5 = rotate5;
+        this.rotate4 = rotate4;
+        this.rotate3 = rotate3;
+        this.rotate2 = rotate2;
+        this.leftRote = leftRote;
+        this.rightRote = rightRote;
+        this.moment3 = moment3;
+        this.moment2 = moment2;
+        this.moment1 = moment1;
+        this.weight1 = weight1;
+        this.carBack2 = carBack2;
+        this.carBack1 = carBack1;
     }
 
     public int getId() {
@@ -81,93 +94,115 @@ public class CtrlRec  extends LogEntity {
         this.time = time;
     }
 
-    public float getRopenum() {
-        return ropenum;
+    public boolean isCarOut2() {
+        return carOut2;
     }
 
-    public void setRopenum(float ropenum) {
-        this.ropenum = ropenum;
+    public void setCarOut2(boolean carOut2) {
+        this.carOut2 = carOut2;
     }
 
-    public float getMoment() {
-        return moment;
+    public boolean isCarOut1() {
+        return carOut1;
     }
 
-    public void setMoment(float moment) {
-        this.moment = moment;
+    public void setCarOut1(boolean carOut1) {
+        this.carOut1 = carOut1;
     }
 
-    public float getHeigth() {
-        return heigth;
+    public boolean isRotate5() {
+        return rotate5;
     }
 
-    public void setHeigth(float heigth) {
-        this.heigth = heigth;
+    public void setRotate5(boolean rotate5) {
+        this.rotate5 = rotate5;
     }
 
-    public float getRange() {
-        return range;
+    public boolean isRotate4() {
+        return rotate4;
     }
 
-    public void setRange(float range) {
-        this.range = range;
+    public void setRotate4(boolean rotate4) {
+        this.rotate4 = rotate4;
     }
 
-    public float getRatedweight() {
-        return ratedweight;
+    public boolean isRotate3() {
+        return rotate3;
     }
 
-    public void setRatedweight(float ratedweight) {
-        this.ratedweight = ratedweight;
+    public void setRotate3(boolean rotate3) {
+        this.rotate3 = rotate3;
     }
 
-    public float getWeight() {
-        return weight;
+    public boolean isRotate2() {
+        return rotate2;
     }
 
-    public void setWeight(float weight) {
-        this.weight = weight;
+    public void setRotate2(boolean rotate2) {
+        this.rotate2 = rotate2;
     }
 
-    public float getRotate() {
-        return rotate;
+    public boolean isLeftRote() {
+        return leftRote;
     }
 
-    public void setRotate(float rotate) {
-        this.rotate = rotate;
+    public void setLeftRote(boolean leftRote) {
+        this.leftRote = leftRote;
     }
 
-    public float getWalk() {
-        return walk;
+    public boolean isRightRote() {
+        return rightRote;
     }
 
-    public void setWalk(float walk) {
-        this.walk = walk;
+    public void setRightRote(boolean rightRote) {
+        this.rightRote = rightRote;
     }
 
-    public float getDipange() {
-        return dipange;
+    public boolean isMoment3() {
+        return moment3;
     }
 
-    public void setDipange(float dipange) {
-        this.dipange = dipange;
+    public void setMoment3(boolean moment3) {
+        this.moment3 = moment3;
     }
 
-    public float getWindspeed() {
-        return windspeed;
+    public boolean isMoment2() {
+        return moment2;
     }
 
-    public void setWindspeed(float windspeed) {
-        this.windspeed = windspeed;
+    public void setMoment2(boolean moment2) {
+        this.moment2 = moment2;
     }
 
-    public String getRemark() {
-        return remark;
+    public boolean isMoment1() {
+        return moment1;
     }
 
-    public void setRemark(String remark) {
-        this.remark = remark;
+    public void setMoment1(boolean moment1) {
+        this.moment1 = moment1;
     }
 
+    public boolean isWeight1() {
+        return weight1;
+    }
 
+    public void setWeight1(boolean weight1) {
+        this.weight1 = weight1;
+    }
+
+    public boolean isCarBack2() {
+        return carBack2;
+    }
+
+    public void setCarBack2(boolean carBack2) {
+        this.carBack2 = carBack2;
+    }
+
+    public boolean isCarBack1() {
+        return carBack1;
+    }
+
+    public void setCarBack1(boolean carBack1) {
+        this.carBack1 = carBack1;
+    }
 }

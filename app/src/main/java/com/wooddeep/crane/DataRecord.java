@@ -13,8 +13,12 @@ import android.widget.LinearLayout;
 
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
+import com.wooddeep.crane.log.CaliRecTable;
+import com.wooddeep.crane.log.CtrlRecTable;
+import com.wooddeep.crane.log.RealDataTable;
+import com.wooddeep.crane.log.SwitchRecTable;
 import com.wooddeep.crane.log.TableDesc;
-import com.wooddeep.crane.log.WorkRec;
+import com.wooddeep.crane.log.WorkRecTable;
 import com.wooddeep.crane.views.FixedTitleTable;
 
 import java.util.ArrayList;
@@ -39,8 +43,11 @@ public class DataRecord extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        recTableDescs.put(R.id.work_record, new WorkRec(context));
-        recTableDescs.put(R.id.real_record, new WorkRec(context));
+        recTableDescs.put(R.id.work_record, new WorkRecTable(context));
+        recTableDescs.put(R.id.real_record, new RealDataTable(context));
+        recTableDescs.put(R.id.calibration_record, new CaliRecTable(context));
+        recTableDescs.put(R.id.oper_record, new CtrlRecTable(context));
+        recTableDescs.put(R.id.switch_record, new SwitchRecTable(context));
         currTableDesc = recTableDescs.get(R.id.work_record);
     }
 
@@ -106,15 +113,20 @@ public class DataRecord extends AppCompatActivity {
                 } else if (view.getId() == R.id.close_logo) { // 关闭
                     finish();
                 } else if (view.getId() == R.id.work_record) { // 工作记录
-
+                    currTableDesc = recTableDescs.get(R.id.work_record);
+                    showWorkRecInfo();
                 } else if (view.getId() == R.id.real_record) { // 实时记录
-
+                    currTableDesc = recTableDescs.get(R.id.real_record);
+                    showWorkRecInfo();
                 } else if (view.getId() == R.id.calibration_record) { // 标定记录
-
+                    currTableDesc = recTableDescs.get(R.id.calibration_record);
+                    showWorkRecInfo();
                 } else if (view.getId() == R.id.oper_record) { // 操作记录
-
+                    currTableDesc = recTableDescs.get(R.id.oper_record);
+                    showWorkRecInfo();
                 } else if (view.getId() == R.id.switch_record) { // 开关机记录
-
+                    currTableDesc = recTableDescs.get(R.id.switch_record);
+                    showWorkRecInfo();
                 }
             }
         };
