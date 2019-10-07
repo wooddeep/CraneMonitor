@@ -599,6 +599,7 @@ public class MainActivity extends AppCompatActivity {
     private void watchDogThread() {
 
         new Thread(() -> {
+            /*
             boolean live = true;
 
             Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
@@ -608,11 +609,12 @@ public class MainActivity extends AppCompatActivity {
                     live = false;
                 }
             }
+            */
 
             int count = 0;
-            if (live) {
+            //if (live) {
                 Thread.currentThread().setName("watchdog");
-                while (true) {
+                while (true && !sysExit) {
                     CommTool.sleep(100);
                     count++;
                     if (count % 100 == 0) {
@@ -623,14 +625,16 @@ public class MainActivity extends AppCompatActivity {
                         activity.finish();
                     }
 
+                    /*
                     if (sysExit) {
                         CommTool.sleep(2000);
                         System.out.println(sdf.format(new Date()) + ": I will launch again");
                         launchPackage("com.wooddeep.crane", 1);
                         sysExit = false;
                     }
+                    */
                 }
-            }
+            //}
         }).start();
     }
 
@@ -1680,6 +1684,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         sysExit = true;
+        SysTool.restartApp();
     }
 
     private Intent feedIntent = new Intent();

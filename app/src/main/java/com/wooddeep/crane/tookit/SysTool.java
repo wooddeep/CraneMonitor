@@ -57,4 +57,19 @@ public class SysTool {
         }
         return exist;
     }
+
+    public static boolean restartApp() {
+        boolean isshow;
+        try {
+            String command;
+            command = "sleep 2; am start -n com.wooddeep.crane/com.wooddeep.crane.MainActivity";
+            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            proc.waitFor();
+            isshow = true;
+        } catch (Exception e) {
+            isshow = false;
+            e.printStackTrace();
+        }
+        return isshow;
+    }
 }
