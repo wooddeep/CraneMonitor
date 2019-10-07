@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.text.InputType;
 import android.text.TextPaint;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -82,7 +83,7 @@ public class FixedTitleTable {
     public void setMainColumn(int id) {
         TableRow firstRow = (TableRow) activity.findViewById(R.id.first_row_row);
         for (int i = 0; i < firstRow.getChildCount(); i++) {
-            TextView textView = (TextView)firstRow.getChildAt(i);
+            TextView textView = (TextView) firstRow.getChildAt(i);
             if (id == textView.getId()) {
                 TextPaint paint = textView.getPaint();
                 paint.setFakeBoldText(true);
@@ -98,7 +99,7 @@ public class FixedTitleTable {
     public void setFirstRow(List<TableCell> colNames, List<Integer> idList) {
         float colWidth = 200;
         float spareWidth = this.screenWidth - fisrtColWidth;
-        float avgWidth = (float)spareWidth / (colNames.size() - 1);
+        float avgWidth = (float) spareWidth / (colNames.size() - 1);
         if (avgWidth >= 200) {
             colWidth = avgWidth;
         }
@@ -125,12 +126,13 @@ public class FixedTitleTable {
             view.setHeight(60);
             view.setTextSize(textSize);
 
-            view.setWidth((int)colWidth);
+            view.setWidth((int) colWidth);
             view.setBackgroundColor(Color.rgb(176, 196, 222));
             view.setGravity(Gravity.CENTER);
             view.setTextColor(Color.DKGRAY);
             view.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
-            if (colNames.get(i).clickListener != null) view.setOnClickListener(colNames.get(i).clickListener);
+            if (colNames.get(i).clickListener != null)
+                view.setOnClickListener(colNames.get(i).clickListener);
             firstRow.addView(view); // 先添加控件
             TableRow.LayoutParams lp = (TableRow.LayoutParams) view.getLayoutParams();
             lp.setMargins(0, 0, 2, 0); // 再设置margin
@@ -161,12 +163,13 @@ public class FixedTitleTable {
             view.setHeight(60);
             view.setTextSize(textSize);
 
-            view.setWidth((int)widthList.get(i));
+            view.setWidth((int) widthList.get(i));
             view.setBackgroundColor(Color.rgb(176, 196, 222));
             view.setGravity(Gravity.CENTER);
             view.setTextColor(Color.DKGRAY);
             view.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
-            if (colNames.get(i).clickListener != null) view.setOnClickListener(colNames.get(i).clickListener);
+            if (colNames.get(i).clickListener != null)
+                view.setOnClickListener(colNames.get(i).clickListener);
             firstRow.addView(view); // 先添加控件
             TableRow.LayoutParams lp = (TableRow.LayoutParams) view.getLayoutParams();
             lp.setMargins(0, 0, 2, 0); // 再设置margin
@@ -187,7 +190,7 @@ public class FixedTitleTable {
     public void addDataRow(List<TableCell> cells, boolean visible) {
         float colWidth = 200;
         float spareWidth = this.screenWidth - fisrtColWidth;
-        float avgWidth = (float)spareWidth / (cells.size() - 1);
+        float avgWidth = (float) spareWidth / (cells.size() - 1);
         if (avgWidth >= 200) {
             colWidth = avgWidth;
         }
@@ -214,9 +217,9 @@ public class FixedTitleTable {
         // 添加其他单元格
         TableLayout contentTable = (TableLayout) activity.findViewById(R.id.content_talble);
         TableRow contentRow = (TableRow) LayoutInflater.from(activity).inflate(R.layout.table_row, null);
-
-        if (!visible) {
-            contentRow.setVisibility(View.GONE);
+        if (visible) {
+            contentRow.setVisibility(View.VISIBLE);
+            firstRow.setVisibility(View.VISIBLE);
         }
 
         for (int i = 1; i < cells.size(); i++) {
@@ -226,7 +229,7 @@ public class FixedTitleTable {
                 case 0:
                     TextView contentView = (TextView) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_tv, null);
                     contentView.setHeight(60);
-                    contentView.setWidth((int)colWidth);
+                    contentView.setWidth((int) colWidth);
                     contentView.setBackgroundColor(Color.WHITE);
                     contentView.setGravity(Gravity.CENTER);
                     contentView.setTextColor(Color.DKGRAY);
@@ -236,12 +239,14 @@ public class FixedTitleTable {
                     rowLp.setMargins(0, 0, 2, 0); // 再设置margin
                     contentView.setText(cell.value);
                     contentView.setTextSize(textSize);
-                    if (cell.clickListener != null) contentView.setOnClickListener(cell.clickListener);
+                    if (cell.clickListener != null)
+                        contentView.setOnClickListener(cell.clickListener);
                     break;
                 case 1:
                     EditText editor = (EditText) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_et, null);
+                    editor.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
                     editor.setHeight(60);
-                    editor.setWidth((int)colWidth);
+                    editor.setWidth((int) colWidth);
                     editor.setBackgroundColor(Color.WHITE);
                     editor.setGravity(Gravity.CENTER);
                     editor.setTextColor(Color.DKGRAY);
@@ -256,7 +261,7 @@ public class FixedTitleTable {
                 case 2:
                     TextView button = (TextView) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_tv, null);
                     button.setHeight(60);
-                    button.setWidth((int)colWidth);
+                    button.setWidth((int) colWidth);
                     button.setBackgroundColor(Color.WHITE);
                     button.setGravity(Gravity.CENTER);
                     button.setTextColor(Color.DKGRAY);
@@ -318,8 +323,9 @@ public class FixedTitleTable {
         TableLayout contentTable = (TableLayout) activity.findViewById(R.id.content_talble);
         TableRow contentRow = (TableRow) LayoutInflater.from(activity).inflate(R.layout.table_row, null);
 
-        if (!visible) {
-            contentRow.setVisibility(View.GONE);
+        if (visible) {
+            contentRow.setVisibility(View.VISIBLE);
+            firstRow.setVisibility(View.VISIBLE);
         }
 
         for (int i = 1; i < cells.size(); i++) {
@@ -329,7 +335,7 @@ public class FixedTitleTable {
                 case 0:
                     TextView contentView = (TextView) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_tv, null);
                     contentView.setHeight(60);
-                    contentView.setWidth((int)widthList.get(i));
+                    contentView.setWidth((int) widthList.get(i));
                     contentView.setBackgroundColor(Color.WHITE);
                     contentView.setGravity(Gravity.CENTER);
                     contentView.setTextColor(Color.DKGRAY);
@@ -339,12 +345,14 @@ public class FixedTitleTable {
                     rowLp.setMargins(0, 0, 2, 0); // 再设置margin
                     contentView.setText(cell.value);
                     contentView.setTextSize(textSize);
-                    if (cell.clickListener != null) contentView.setOnClickListener(cell.clickListener);
+                    if (cell.clickListener != null)
+                        contentView.setOnClickListener(cell.clickListener);
                     break;
                 case 1:
                     EditText editor = (EditText) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_et, null);
+                    editor.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
                     editor.setHeight(60);
-                    editor.setWidth((int)widthList.get(i));
+                    editor.setWidth((int) widthList.get(i));
                     editor.setBackgroundColor(Color.WHITE);
                     editor.setGravity(Gravity.CENTER);
                     editor.setTextColor(Color.DKGRAY);
@@ -359,7 +367,7 @@ public class FixedTitleTable {
                 case 2:
                     TextView button = (TextView) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_tv, null);
                     button.setHeight(60);
-                    button.setWidth((int)widthList.get(i));
+                    button.setWidth((int) widthList.get(i));
                     button.setBackgroundColor(Color.WHITE);
                     button.setGravity(Gravity.CENTER);
                     button.setTextColor(Color.DKGRAY);

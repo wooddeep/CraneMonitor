@@ -22,7 +22,89 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
+
+    <LinearLayout
+        android:id="@+id/password_confirm"
+        android:layout_width="@dimen/dp320"
+        android:layout_height="@dimen/dp150"
+        android:layout_centerInParent="true"
+        android:background="@drawable/frame_border"
+        android:elevation="@dimen/dp5"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp40"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="请输入密码(please input password)"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dp16" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp60"
+            android:layout_gravity="center"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="@dimen/dp180"
+                android:layout_height="@dimen/dp35"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/split_boder"
+                android:inputType="numberPassword"
+                android:paddingLeft="@dimen/dp15"
+                android:text=""
+                android:textSize="@dimen/dp16" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp40">
+
+            <Button
+                android:id="@+id/confirm"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:text="确定(confirm)"
+                android:textColor="@color/deep_red"
+                android:textSize="@dimen/dp16" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/gray" />
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:text="取消(cancel)"
+                android:textColor="@color/deep_red"
+                android:textSize="@dimen/dp16" />
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/comm_alarm_show"
@@ -45,24 +127,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
+
                 <ImageView
                     android:id="@+id/angle_logo"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="@dimen/dp40"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/dp2"
+                    android:layout_weight="1"
                     android:gravity="center"
                     app:srcCompat="@mipmap/rotation" />
+
                 <TextView
                     android:id="@+id/angle"
                     android:layout_width="0dp"
-                    android:layout_weight="2"
                     android:layout_height="@dimen/dp40"
                     android:layout_gravity="center"
+                    android:layout_weight="2"
                     android:gravity="center"
-                    android:text="0.0°"
                     android:singleLine="true"
+                    android:text="0.0°"
                     android:textSize="@dimen/dp22"
                     android:textStyle="bold" />
             </TableRow>
@@ -72,27 +156,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
+
                 <ImageView
                     android:id="@+id/vangle_logo"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="@dimen/dp40"
-                    android:layout_marginLeft="@dimen/dp2"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp2"
+                    android:layout_weight="1"
                     android:gravity="center"
                     app:srcCompat="@mipmap/vangle" />
 
                 <TextView
                     android:id="@+id/vangle"
                     android:layout_width="0dp"
-                    android:layout_weight="2"
                     android:layout_height="@dimen/dp50"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
+                    android:layout_weight="2"
                     android:gravity="center"
-                    android:text="0.0°"
                     android:singleLine="true"
+                    android:text="0.0°"
                     android:textSize="@dimen/dp22"
                     android:textStyle="bold" />
             </TableRow>
@@ -105,26 +190,26 @@
                 <ImageView
                     android:id="@+id/length_logo"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="@dimen/dp40"
-                    android:layout_marginLeft="@dimen/dp2"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp2"
                     android:layout_toLeftOf="@+id/length"
+                    android:layout_weight="1"
                     android:gravity="center"
                     app:srcCompat="@mipmap/length" />
 
                 <TextView
                     android:id="@+id/length"
                     android:layout_width="0dp"
-                    android:layout_weight="2"
                     android:layout_height="@dimen/dp40"
                     android:layout_centerInParent="true"
-                    android:layout_toLeftOf="@+id/height_logo"
-                    android:gravity="center"
                     android:layout_gravity="center"
-                    android:text="0.0m"
+                    android:layout_toLeftOf="@+id/height_logo"
+                    android:layout_weight="2"
+                    android:gravity="center"
                     android:singleLine="true"
+                    android:text="0.0m"
                     android:textSize="@dimen/dp22"
                     android:textStyle="bold" />
             </TableRow>
@@ -137,19 +222,19 @@
                 <ImageView
                     android:id="@+id/weight_logo"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="@dimen/dp40"
-                    android:layout_marginLeft="@dimen/dp2"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp2"
+                    android:layout_weight="1"
                     android:gravity="center"
                     app:srcCompat="@mipmap/weight" />
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_weight="2"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
+                    android:layout_weight="2"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -160,8 +245,8 @@
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="0.0t"
                         android:singleLine="true"
+                        android:text="0.0t"
                         android:textSize="@dimen/dp22"
                         android:textStyle="bold" />
 
@@ -178,8 +263,8 @@
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="0.0t"
                         android:singleLine="true"
+                        android:text="0.0t"
                         android:textSize="@dimen/dp22"
                         android:textStyle="bold" />
 
@@ -194,24 +279,24 @@
                 <ImageView
                     android:id="@+id/moment_logo"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="@dimen/dp40"
-                    android:layout_marginLeft="@dimen/dp2"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp2"
+                    android:layout_weight="1"
                     android:gravity="center"
                     app:srcCompat="@mipmap/moment_logo" />
 
                 <TextView
                     android:id="@+id/moment"
                     android:layout_width="0dp"
-                    android:layout_weight="2"
                     android:layout_height="@dimen/dp50"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
+                    android:layout_weight="2"
                     android:gravity="center"
-                    android:text="0.0%"
                     android:singleLine="true"
+                    android:text="0.0%"
                     android:textSize="@dimen/dp22"
                     android:textStyle="bold" />
             </TableRow>
@@ -559,6 +644,16 @@
                             android:layout_marginLeft="@dimen/dp15"
                             android:gravity="center"
                             android:src="@mipmap/log" />
+
+                        <ImageView
+                            android:id="@+id/super_admin"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp40"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="@dimen/dp15"
+                            android:gravity="center"
+                            android:visibility="gone"
+                            android:src="@mipmap/super_admin" />
 
                     </LinearLayout>
                 </LinearLayout>

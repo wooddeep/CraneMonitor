@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -11,13 +12,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.x6.serialportlib.SerialPort;
 import com.wooddeep.crane.alarm.Alarm;
@@ -81,9 +86,12 @@ import com.wooddeep.crane.simulator.UartEmitter;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DataUtil;
+import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.tookit.MathTool;
 import com.wooddeep.crane.tookit.MomentOut;
+import com.wooddeep.crane.tookit.SysTool;
 import com.wooddeep.crane.views.CraneView;
+import com.wooddeep.crane.views.SuperAdmin;
 import com.wooddeep.crane.views.Vertex;
 
 import org.greenrobot.eventbus.EventBus;
@@ -158,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final String TAG = "MainActivity";
-    private android.app.Activity activity = this;
+    private volatile android.app.Activity activity = this;
     private Context context;
 
     private ConcurrentHashMap<String, SavedData> savedDataMap = new ConcurrentHashMap<>();
@@ -583,12 +591,49 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-
-
             }
 
         }).start();
     }
+
+    private void watchDogThread() {
+
+        new Thread(() -> {
+            boolean live = true;
+
+            Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+            for (Thread thread : threadSet) {
+                if (thread.getName().equals("watchdog")) {
+                    System.out.println("## thread exist, I will exit!");
+                    live = false;
+                }
+            }
+
+            int count = 0;
+            if (live) {
+                Thread.currentThread().setName("watchdog");
+                while (true) {
+                    CommTool.sleep(100);
+                    count++;
+                    if (count % 100 == 0) {
+                        //System.out.println(sdf.format(new Date()));
+                        System.out.println("## I will finish!");
+                        System.out.println("## activity = " + activity);
+                        // 获取activity的值
+                        activity.finish();
+                    }
+
+                    if (sysExit) {
+                        CommTool.sleep(2000);
+                        System.out.println(sdf.format(new Date()) + ": I will launch again");
+                        launchPackage("com.wooddeep.crane", 1);
+                        sysExit = false;
+                    }
+                }
+            }
+        }).start();
+    }
+
 
     // 侦听电台数据
     //@Subscribe(threadMode = ThreadMode.MAIN)
@@ -1149,17 +1194,51 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayout menuExpand = (LinearLayout) findViewById(R.id.menu_expand);
                 Context contex = getApplicationContext();
                 if (menuExpand.getVisibility() == View.GONE) {
-                    menuExpand.setVisibility(View.VISIBLE);
-                    AnimUtil.alphaAnimation(btnMenu);
-                    btnMenu.setImageResource(R.mipmap.menu_off);
-                    menuExpand.setAnimation(AnimationUtils.makeInAnimation(contex, true));
+                    findViewById(R.id.password_confirm).setVisibility(View.VISIBLE);
                 } else {
                     menuExpand.setVisibility(View.GONE);
                     AnimUtil.alphaAnimation(btnMenu);
                     menuExpand.setAnimation(AnimationUtils.makeOutAnimation(contex, false));
                     btnMenu.setImageResource(R.mipmap.menu_on);
                 }
-                Log.i(TAG, "## click!");
+            }
+        });
+
+        Button confirm = (Button) findViewById(R.id.confirm);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText input = (EditText) findViewById(R.id.password);
+                String password = input.getText().toString();
+                if (password.equals("1234") || password.equals("4321")) { // TODO 普通的密码与超管密码
+                    findViewById(R.id.password_confirm).setVisibility(View.GONE);
+                    input.setText("");
+                    ImageView btnMenu = (ImageView) findViewById(R.id.menu);
+                    LinearLayout menuExpand = (LinearLayout) findViewById(R.id.menu_expand);
+                    Context contex = getApplicationContext();
+                    menuExpand.setVisibility(View.VISIBLE);
+                    AnimUtil.alphaAnimation(btnMenu);
+                    btnMenu.setImageResource(R.mipmap.menu_off);
+                    menuExpand.setAnimation(AnimationUtils.makeInAnimation(contex, true));
+                    if (password.equals("4321")) {
+                        findViewById(R.id.super_admin).setVisibility(View.VISIBLE); // 超管
+                        System.out.println("######## super admin");
+                    } else {
+                        findViewById(R.id.super_admin).setVisibility(View.GONE); // 超管
+                        System.out.println("######## common admin");
+                    }
+                } else {
+                    Toast toast = Toast.makeText(MainActivity.this, "密码错误，重新输入(password error, try again!)", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }
+            }
+        });
+        Button cancel = (Button) findViewById(R.id.cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.password_confirm).setVisibility(View.GONE);
             }
         });
 
@@ -1171,6 +1250,7 @@ public class MainActivity extends AppCompatActivity {
             add((ImageView) findViewById(R.id.alarm_setting));
             add((ImageView) findViewById(R.id.load_attribute));
             add((ImageView) findViewById(R.id.data_record));
+            add((ImageView) findViewById(R.id.super_admin));
             add((ImageView) findViewById(R.id.zoom_in));
             add((ImageView) findViewById(R.id.zoom_out));
         }};
@@ -1285,12 +1365,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // 跳转到负荷特性
+        // 跳转到日志记录
         ImageView dataRecord = (ImageView) findViewById(R.id.data_record);
         dataRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, DataRecord.class);
+                startActivity(intent);
+            }
+        });
+
+        ImageView superAdmin = (ImageView) findViewById(R.id.super_admin);
+        superAdmin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SuperAdmin.class);
                 startActivity(intent);
             }
         });
@@ -1506,12 +1595,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = this;
+
+        System.out.println("$$ this = " + this);
 
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
+        mPackageManager = getPackageManager();
 
         angleView = (TextView) findViewById(R.id.angle);
         vAngleView = (TextView) findViewById(R.id.vangle);
@@ -1574,6 +1667,7 @@ public class MainActivity extends AppCompatActivity {
             startRadioReadThread();
             startRadioWriteThread();
             startTimerThread();
+            //watchDogThread();
         }, 100);
 
         // 触发判断本机是否为主机
@@ -1597,5 +1691,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
+    private PackageManager mPackageManager;
+    private void launchPackage(String packageName, int id) {
+        if (packageName != null && !packageName.equals("nonon")) {
+            //Log.d("Main", "packageName0" + id + " = " + packageName);
+            try {
+                mPackageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+                Intent intent = mPackageManager.getLaunchIntentForPackage(packageName);
+                startActivity(intent);
+            } catch (PackageManager.NameNotFoundException e) {
+                Toast.makeText(MainActivity.this, "应用" + id + "不存在", Toast.LENGTH_SHORT).show();
+            } catch (NullPointerException e) {
+                Toast.makeText(MainActivity.this, "应用" + id + "无法启动", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }

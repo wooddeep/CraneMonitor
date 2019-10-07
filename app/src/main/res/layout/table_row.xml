@@ -6,5 +6,6 @@
     android:layout_marginBottom="@dimen/grid_width"
     android:layout_marginLeft="@dimen/grid_width"
     android:layout_marginRight="@dimen/grid_width"
+    android:visibility="gone"
     android:background="@color/white">
 </TableRow>

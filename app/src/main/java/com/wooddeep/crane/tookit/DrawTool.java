@@ -11,7 +11,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bigkoo.alertview.AlertView;
 import com.wooddeep.crane.R;
+import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.views.GridLineView;
 import com.wooddeep.crane.views.Vertex;
 
@@ -219,5 +221,16 @@ public class DrawTool {
         alterDiaglog.show();
     }
 
+
+    public static void showPwDialog(Activity activity) {
+        AlertView alertView = new AlertView("请输入密码(password)", "确定保存(save)?", null,
+            new String[]{"确定(confirm)", "取消(cancel)"}, null, activity,
+            AlertView.Style.Alert, (o, position) -> {
+            if (position == 0) {
+                System.out.println("@@@@@@@@@@@@@@@@@@@@");
+            }
+        });
+        alertView.show();
+    }
 
 }

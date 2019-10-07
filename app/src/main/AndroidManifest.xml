@@ -33,6 +33,8 @@
         </activity>
         <activity android:name="com.wooddeep.crane.DataRecord">
         </activity>
+        <activity android:name="com.wooddeep.crane.views.SuperAdmin">
+        </activity>
 
         <receiver android:name="com.wooddeep.crane.message.BootUpReceiver">
             <intent-filter>

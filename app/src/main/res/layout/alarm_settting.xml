@@ -152,6 +152,7 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:text="1.00" />
 
                     <LinearLayout
@@ -185,6 +186,7 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:text="2.00" />
 
                     <LinearLayout
@@ -217,6 +219,7 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:text="3.00" />
 
                     <LinearLayout
@@ -249,6 +252,7 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:text="4.00" />
 
                     <LinearLayout
@@ -282,6 +286,7 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:text="5.00" />
 
                 </LinearLayout>
@@ -352,6 +357,7 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:text="1.00" />
 
                     <LinearLayout
@@ -383,6 +389,7 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:text="2.00" />
 
                     <LinearLayout
@@ -414,6 +421,7 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:text="3.00" />
 
                     <LinearLayout
@@ -446,6 +454,7 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:text="4.00" />
 
                     <LinearLayout
@@ -478,6 +487,7 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:text="5.00" />
 
                 </LinearLayout>
@@ -566,6 +576,7 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:text="1.00" />
 
                     <LinearLayout
@@ -599,6 +610,7 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:text="2.00" />
 
                     <LinearLayout
@@ -634,6 +646,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="10%"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:visibility="visible" />
 
                     <LinearLayout
@@ -669,6 +682,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="50%"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:visibility="visible" />
 
                     <LinearLayout
@@ -704,6 +718,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="120%"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:visibility="visible" />
                 </LinearLayout>
             </TableRow>
@@ -787,6 +802,7 @@
                         android:layout_height="@dimen/dp70"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:text="10m/s" />
 
                     <LinearLayout
@@ -820,6 +836,7 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:text="20m/s" />
 
                     <LinearLayout
@@ -852,6 +869,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="20%"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:visibility="visible" />
 
                     <LinearLayout
@@ -884,6 +902,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="50%"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:visibility="visible" />
 
                     <LinearLayout
@@ -918,6 +937,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="120%"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:visibility="visible" />
                 </LinearLayout>
             </TableRow>
@@ -1002,6 +1022,7 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:text="0.1m" />
 
                     <LinearLayout
@@ -1035,6 +1056,7 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:text="20m" />
 
                     <LinearLayout
@@ -1069,6 +1091,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="0.1m"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:visibility="visible" />
 
                     <LinearLayout
@@ -1103,6 +1126,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="100m"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:visibility="visible" />
 
                     <LinearLayout
@@ -1135,6 +1159,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="120%"
+                        android:inputType="number|numberDecimal|numberSigned"
                         android:visibility="invisible" />
                 </LinearLayout>
             </TableRow>
