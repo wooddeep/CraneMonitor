@@ -23,6 +23,7 @@ import com.rmondjone.locktableview.DataCell;
 import com.wooddeep.crane.ebus.SysParaEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
 //import com.wooddeep.crane.persist.dao.LoadDao;
+import com.wooddeep.crane.persist.LoadDbHelper;
 import com.wooddeep.crane.persist.dao.TcParamDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
 import com.wooddeep.crane.persist.entity.TcParam;
@@ -114,7 +115,7 @@ public class LoadAttribute extends AppCompatActivity {
     }
 
     private List<TcParam> confLoad(Context contex) {
-        DatabaseHelper.getInstance(contex).createTable(TcParam.class);
+        LoadDbHelper.getInstance(contex).createTable(TcParam.class);
         DatabaseHelper.getInstance(contex).createTable(SysPara.class);
         TcParamDao dao = new TcParamDao(contex);
         List<TcParam> paras = dao.selectAll();

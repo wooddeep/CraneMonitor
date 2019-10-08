@@ -1,4 +1,4 @@
-package com.wooddeep.crane.views;
+package com.wooddeep.crane;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -43,6 +43,7 @@ public class SuperAdmin extends AppCompatActivity {
         }
         setOnTouchListener();
 
+        /*
         findViewById(R.id.btn_keyboard_hide).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,6 +57,16 @@ public class SuperAdmin extends AppCompatActivity {
                 SysTool.showNavigation();
             }
         });
+        */
+
+        findViewById(R.id.btn_sysset_show).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SysTool.sysSetShow(activity);
+            }
+        });
+
+
     }
 
 

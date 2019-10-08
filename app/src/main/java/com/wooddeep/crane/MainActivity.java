@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -60,10 +59,10 @@ import com.wooddeep.crane.persist.dao.AreaDao;
 import com.wooddeep.crane.persist.dao.CalibrationDao;
 import com.wooddeep.crane.persist.dao.CraneDao;
 import com.wooddeep.crane.persist.dao.CraneParaDao;
-import com.wooddeep.crane.persist.dao.LoadDao;
 import com.wooddeep.crane.persist.dao.ProtectAreaDao;
 import com.wooddeep.crane.persist.dao.ProtectDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
+import com.wooddeep.crane.persist.dao.TcParamDao;
 import com.wooddeep.crane.persist.dao.log.CtrlRecDao;
 import com.wooddeep.crane.persist.dao.log.RealDataDao;
 import com.wooddeep.crane.persist.dao.log.SwitchRecDao;
@@ -73,9 +72,9 @@ import com.wooddeep.crane.persist.entity.Area;
 import com.wooddeep.crane.persist.entity.Calibration;
 import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.CranePara;
-import com.wooddeep.crane.persist.entity.Load;
 import com.wooddeep.crane.persist.entity.Protect;
 import com.wooddeep.crane.persist.entity.SysPara;
+import com.wooddeep.crane.persist.entity.TcParam;
 import com.wooddeep.crane.persist.entity.log.CaliRec;
 import com.wooddeep.crane.persist.entity.log.CtrlRec;
 import com.wooddeep.crane.persist.entity.log.RealData;
@@ -86,12 +85,10 @@ import com.wooddeep.crane.simulator.UartEmitter;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DataUtil;
-import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.tookit.MathTool;
 import com.wooddeep.crane.tookit.MomentOut;
 import com.wooddeep.crane.tookit.SysTool;
 import com.wooddeep.crane.views.CraneView;
-import com.wooddeep.crane.views.SuperAdmin;
 import com.wooddeep.crane.views.Vertex;
 
 import org.greenrobot.eventbus.EventBus;
@@ -103,7 +100,6 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -111,6 +107,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 //import androidx.annotation.RequiresApi;
 
+// adb shell am start com.android.settings/com.android.settings.Settings
 
 // 启动mumu之后, 输入：
 // adb connect 127.0.0.1:7555
@@ -175,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
     private ConcurrentHashMap<String, Long> radioStatusMap = new ConcurrentHashMap();
     private List<String> craneNumbers = new ArrayList<>();
     private List<BaseElem> elemList = new ArrayList<>();
-    private List<Load> loadParas = new ArrayList<>();
+    private List<TcParam> loadParas = new ArrayList<>();
     private ElemMap elemMap = new ElemMap();
 
     private int currSlaveIndex = 0; // 当前和本主机通信的从机名称
@@ -238,7 +235,8 @@ public class MainActivity extends AppCompatActivity {
     private AlarmEvent alarmEvent = null;
 
     private SysParaDao paraDao; // 系统参数
-    private LoadDao loadDao; // 负荷特性
+    //private LoadDao loadDao; // 负荷特性
+    private TcParamDao tcParamDao;
     private RealDataDao realDataDao; // 工作记录DAO
     private RealData realData = new RealData(); // 工作记录
     private CtrlRecDao ctrlRecDao;
@@ -357,9 +355,11 @@ public class MainActivity extends AppCompatActivity {
 
                             if (centerCycle.getType() == 1) {
                                 MomentOut moment = MathTool.momentCalc(loadParas, currProto.getRealWeight(), shadowLength);
+                                System.out.println("### 1 = " + moment.moment);
                                 runOnUiThread(() -> momentShow(moment.moment));
                             } else {
                                 MomentOut moment = MathTool.momentCalc(loadParas, currProto.getRealWeight(), currProto.getRealLength());
+                                System.out.println("### 0 = " + moment.moment);
                                 runOnUiThread(() -> momentShow(moment.moment));
                             }
                         }
@@ -517,7 +517,6 @@ public class MainActivity extends AppCompatActivity {
     private void recPowerOnOff(Date date) {
         RealData realData = realDataDao.queryLatestOne();
         try {
-
             Date latest = new Date();
             if (realData != null) {
                 latest = sdf.parse(realData.getTime());
@@ -542,9 +541,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void startTimerThread() {
         AlarmSound.init(getApplicationContext());
-
         new Thread(() -> {
             int count = 0;
+
             while (true && !sysExit) {
                 CommTool.sleep(100);
                 count++;
@@ -617,17 +616,17 @@ public class MainActivity extends AppCompatActivity {
 
             int count = 0;
             //if (live) {
-                Thread.currentThread().setName("watchdog");
-                while (true && !sysExit) {
-                    CommTool.sleep(100);
-                    count++;
-                    if (count % 100 == 0) {
-                        //System.out.println(sdf.format(new Date()));
-                        System.out.println("## I will finish!");
-                        System.out.println("## activity = " + activity);
-                        // 获取activity的值
-                        activity.finish();
-                    }
+            Thread.currentThread().setName("watchdog");
+            while (true && !sysExit) {
+                CommTool.sleep(100);
+                count++;
+                if (count % 100 == 0) {
+                    //System.out.println(sdf.format(new Date()));
+                    System.out.println("## I will finish!");
+                    System.out.println("## activity = " + activity);
+                    // 获取activity的值
+                    activity.finish();
+                }
 
                     /*
                     if (sysExit) {
@@ -637,7 +636,7 @@ public class MainActivity extends AppCompatActivity {
                         sysExit = false;
                     }
                     */
-                }
+            }
             //}
         }).start();
     }
@@ -1127,9 +1126,9 @@ public class MainActivity extends AppCompatActivity {
         String craneType = event.getCraneType(); // 塔基类型
         if (craneType == null) {
             craneType = paraDao.queryValueByName("craneType");
-            if (craneType == null) craneType = "UNSELECTED";
-            ((TextView) findViewById(R.id.craneType)).setText(craneType); // 显示塔基类型
+            if (craneType == null) craneType = "UNSEL";
         }
+        ((TextView) findViewById(R.id.craneType)).setText(craneType); // 显示塔基类型
 
         String armLength = event.getArmLength(); // 臂长
         if (armLength == null) {
@@ -1144,13 +1143,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         iPower = Integer.parseInt(power);
-
         ((TextView) findViewById(R.id.cable)).setText(power); // 显示塔基类型
 
-        loadParas = loadDao.getLoads(craneType, armLength, power); // 获取负荷特性
+        loadParas = tcParamDao.getLoads(craneType, armLength, power);
         if (loadParas != null && loadParas.size() > 0) {
             ((TextView) findViewById(R.id.rated_weight)).setText(loadParas.get(0).getWeight() + "t"); // 显示塔基类型
-            for (Load load : loadParas) {
+            for (TcParam load : loadParas) {
                 //System.out.printf("%s--%s\n", load.getCoordinate(), load.getWeight());
             }
         }
@@ -1567,7 +1565,8 @@ public class MainActivity extends AppCompatActivity {
         ProtectAreaDao protectAreaDao = new ProtectAreaDao(MainActivity.this);
         AlarmSetDao alarmSetDao = new AlarmSetDao(MainActivity.this);
         CalibrationDao calibrationDao = new CalibrationDao(MainActivity.this);
-        loadDao = new LoadDao(MainActivity.this);
+        //loadDao = new LoadDao(MainActivity.this);
+        tcParamDao = new TcParamDao(MainActivity.this);
         realDataDao = new RealDataDao(MainActivity.this);
         List<Crane> cranes = craneDao.selectAll();
 
@@ -1576,7 +1575,8 @@ public class MainActivity extends AppCompatActivity {
         LogDbHelper.getInstance(context).createTable(CaliRec.class);
         LogDbHelper.getInstance(context).createTable(CtrlRec.class);
         LogDbHelper.getInstance(context).createTable(SwitchRec.class);
-        LogDbHelper.getInstance(context).createTable(Calibration.class);
+        //LoadDbHelper.getInstance(context).createTable(TcParam.class);
+        //LoadDbHelper.getInstance(context).createTable(Load.class); // 负载
 
         if (cranes == null || cranes.size() == 0) { // 初始状态, 创建表
             DatabaseHelper.getInstance(context).createTable(Crane.class);
@@ -1585,8 +1585,7 @@ public class MainActivity extends AppCompatActivity {
             DatabaseHelper.getInstance(context).createTable(SysPara.class);
             DatabaseHelper.getInstance(context).createTable(AlarmSet.class); // 告警
             alarmSetDao.insert(AlarmSet.getInitData());
-            DatabaseHelper.getInstance(context).createTable(Load.class); // 负载
-            loadDao.insert(Load.getInitData());
+            SysTool.copyFilesFromRaw(this, R.raw.tc, "tc.db", "/data/data/com.wooddeep.crane/databases");
         }
 
         alarmSet = alarmSetDao.selectAll().get(0);
@@ -1605,9 +1604,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
-
-        System.out.println("$$ this = " + this);
-
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
         if (getSupportActionBar() != null) {
@@ -1689,7 +1685,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         sysExit = true;
-        SysTool.restartApp();
     }
 
     private Intent feedIntent = new Intent();
@@ -1702,6 +1697,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private PackageManager mPackageManager;
+
     private void launchPackage(String packageName, int id) {
         if (packageName != null && !packageName.equals("nonon")) {
             //Log.d("Main", "packageName0" + id + " = " + packageName);

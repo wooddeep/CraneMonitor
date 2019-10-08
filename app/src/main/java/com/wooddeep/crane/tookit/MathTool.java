@@ -2,6 +2,7 @@ package com.wooddeep.crane.tookit;
 
 import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.Load;
+import com.wooddeep.crane.persist.entity.TcParam;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class MathTool {
         return (float) angle;
     }
 
-    public static MomentOut momentCalc(List<Load> loads, float curWeight, float cc) {
+    public static MomentOut momentCalc(List<TcParam> loads, float curWeight, float cc) {
         momentOut.moment = 100.0f;
         momentOut.ratedWeight = 10;
 

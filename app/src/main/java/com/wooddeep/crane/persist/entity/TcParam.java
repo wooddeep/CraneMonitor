@@ -6,6 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "tcparam") // 指定数据表的名称
 public class TcParam {
 
+    // @DatabaseField(generatedId = true, columnName = "id", useGetSet = true)
     @DatabaseField(generatedId = true, columnName = "No", useGetSet = true)
     private int id;
 

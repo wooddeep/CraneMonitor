@@ -13,6 +13,7 @@ import com.wooddeep.crane.element.SideCycle;
 import com.wooddeep.crane.persist.entity.AlarmSet;
 import com.wooddeep.crane.persist.entity.Calibration;
 import com.wooddeep.crane.persist.entity.Load;
+import com.wooddeep.crane.persist.entity.TcParam;
 
 import org.greenrobot.eventbus.EventBus;
 import org.locationtech.jts.geom.Coordinate;
@@ -418,7 +419,7 @@ public class Alarm {
         }
     }
 
-    public static void weightAlarmDetect(Calibration calibration, List<Load> loads, AlarmSet alarmSet,
+    public static void weightAlarmDetect(Calibration calibration, List<TcParam> loads, AlarmSet alarmSet,
                                          EventBus eventBus, float curWeight, float cc) {
 
         if (loads == null || loads.size() <= 0) return;
