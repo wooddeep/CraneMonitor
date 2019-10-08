@@ -518,7 +518,11 @@ public class MainActivity extends AppCompatActivity {
         RealData realData = realDataDao.queryLatestOne();
         try {
 
-            Date latest = sdf.parse(realData.getTime());
+            Date latest = new Date();
+            if (realData != null) {
+                latest = sdf.parse(realData.getTime());
+            }
+
             long prevMsec = latest.getTime();
             long currMesc = System.currentTimeMillis();
 
@@ -1572,6 +1576,7 @@ public class MainActivity extends AppCompatActivity {
         LogDbHelper.getInstance(context).createTable(CaliRec.class);
         LogDbHelper.getInstance(context).createTable(CtrlRec.class);
         LogDbHelper.getInstance(context).createTable(SwitchRec.class);
+        LogDbHelper.getInstance(context).createTable(Calibration.class);
 
         if (cranes == null || cranes.size() == 0) { // 初始状态, 创建表
             DatabaseHelper.getInstance(context).createTable(Crane.class);
