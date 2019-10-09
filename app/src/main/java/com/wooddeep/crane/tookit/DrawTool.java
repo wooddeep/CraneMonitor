@@ -221,6 +221,34 @@ public class DrawTool {
         alterDiaglog.show();
     }
 
+    /**
+     * 普通dialog
+     */
+    public static void showExportDialog(Activity activity) {
+        final AlertDialog.Builder alterDiaglog = new AlertDialog.Builder(activity);
+        //alterDiaglog.setIcon(R.drawable.icon);//图标
+        alterDiaglog.setTitle("日志导出成功(export log database success!)");//文字
+        //alterDiaglog.setMessage("生存还是死亡");//提示消息
+
+        //积极的选择
+        alterDiaglog.setPositiveButton("确认(confirm)", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(activity, "点击了生存", Toast.LENGTH_SHORT).show();
+            }
+        });
+        //消极的选择
+        alterDiaglog.setNegativeButton("取消(cancel)", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(activity, "点击了死亡", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        //显示
+        alterDiaglog.show();
+    }
 
     public static void showPwDialog(Activity activity) {
         AlertView alertView = new AlertView("请输入密码(password)", "确定保存(save)?", null,

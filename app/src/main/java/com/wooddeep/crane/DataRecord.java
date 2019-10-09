@@ -22,6 +22,8 @@ import com.wooddeep.crane.logtable.RealDataTable;
 import com.wooddeep.crane.logtable.SwitchRecTable;
 import com.wooddeep.crane.logtable.TableDesc;
 import com.wooddeep.crane.logtable.WorkRecTable;
+import com.wooddeep.crane.tookit.DrawTool;
+import com.wooddeep.crane.tookit.SysTool;
 import com.wooddeep.crane.views.FixedTitleTable;
 
 import java.util.ArrayList;
@@ -145,6 +147,9 @@ public class DataRecord extends AppCompatActivity {
                 } else if (view.getId() == R.id.switch_record) { // 开关机记录
                     currTableDesc = recTableDescs.get(R.id.switch_record);
                     showWorkRecInfo();
+                } else if (view.getId() == R.id.export_logo) { // 导出
+                    SysTool.copyToUsbDisk("/data/data/com.wooddeep.crane/databases/log.db");
+                    DrawTool.showExportDialog(activity);
                 }
             }
         };
@@ -159,6 +164,7 @@ public class DataRecord extends AppCompatActivity {
             add((ImageView) findViewById(R.id.prev_page));
             add((ImageView) findViewById(R.id.latest_page));
             add((ImageView) findViewById(R.id.close_logo));
+            add((ImageView) findViewById(R.id.export_logo));
         }};
 
         for (ImageView view : menuButtons) {

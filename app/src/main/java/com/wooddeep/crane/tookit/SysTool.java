@@ -4,12 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SysTool {
 
@@ -143,13 +147,14 @@ public class SysTool {
 
     /**
      * 复制res/raw中的文件到指定目录
-     * @param context 上下文
-     * @param id 资源ID
-     * @param fileName 文件名
+     *
+     * @param context     上下文
+     * @param id          资源ID
+     * @param fileName    文件名
      * @param storagePath 目标文件夹的路径
      */
-    public static void copyFilesFromRaw(Context context, int id, String fileName,String storagePath){
-        InputStream inputStream=context.getResources().openRawResource(id);
+    public static void copyFilesFromRaw(Context context, int id, String fileName, String storagePath) {
+        InputStream inputStream = context.getResources().openRawResource(id);
         File file = new File(storagePath);
         if (!file.exists()) {//如果文件夹不存在，则创建新的文件夹
             file.mkdirs();
@@ -189,4 +194,35 @@ public class SysTool {
         }
     }
 
+    public static void copyToUsbDisk(String filepath) {
+        try {
+            List<String> usbDir = new ArrayList<>();
+            String command;
+            command = "ls /mnt/media_rw";
+            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            proc.waitFor();
+            InputStream fis = proc.getInputStream();
+            //用一个读输出流类去读
+            InputStreamReader isr = new InputStreamReader(fis);
+            //用缓冲器读行
+            BufferedReader br = new BufferedReader(isr);
+            String line = null;
+            //直到读完为止
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+                usbDir.add("/mnt/media_rw/" + line.replaceAll("\\s+", ""));
+            }
+
+            for (String dir: usbDir) {
+                command = String.format("cp -rf %s %s", filepath, dir);
+                proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+                proc.waitFor();
+            }
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

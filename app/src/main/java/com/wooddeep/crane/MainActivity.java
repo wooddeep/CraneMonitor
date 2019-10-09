@@ -1321,7 +1321,9 @@ public class MainActivity extends AppCompatActivity {
         craneSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // https://blog.csdn.net/qq_29924041/article/details/80141514
                 Intent intent = new Intent(MainActivity.this, CraneSetting.class);
+                //Intent intent = new Intent(MainActivity.this, UsbActivity.class);
                 startActivity(intent);
             }
         });
