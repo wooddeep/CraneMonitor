@@ -100,6 +100,7 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -803,6 +804,25 @@ public class MainActivity extends AppCompatActivity {
         calibration = event.calibration;
     }
 
+    private void recCtrlLog() {
+        ctrlRec.setTime(sdf.format(new Date()));
+        ctrlRec.setCarOut2(controlProto.isCarOut2());
+        ctrlRec.setCarOut1(controlProto.isCarOut1());
+        ctrlRec.setRotate5(controlProto.isRotate5());
+        ctrlRec.setRotate4(controlProto.isRotate4());
+        ctrlRec.setRotate3(controlProto.isRotate3());
+        ctrlRec.setRotate2(controlProto.isRotate2());
+        ctrlRec.setLeftRote(controlProto.isLeftRote());
+        ctrlRec.setRightRote(controlProto.isRightRote());
+        ctrlRec.setMoment3(controlProto.isMoment3());
+        ctrlRec.setMoment2(controlProto.isMoment2());
+        ctrlRec.setMoment1(controlProto.isMoment1());
+        ctrlRec.setWeight1(controlProto.isWeight1());
+        ctrlRec.setCarBack2(controlProto.isCarBack2());
+        ctrlRec.setCarBack1(controlProto.isCarBack1());
+        ctrlRecDao.insert(ctrlRec);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void alarmShowEventBus(AlarmEvent event) {
         alarmEvent = event;
@@ -899,22 +919,7 @@ public class MainActivity extends AppCompatActivity {
 
                 ttyS0OutputStream.write(controlProto.control); // 控制
 
-                ctrlRec.setCarOut2(controlProto.isCarOut2());
-                ctrlRec.setCarOut1(controlProto.isCarOut1());
-                ctrlRec.setRotate5(controlProto.isRotate5());
-                ctrlRec.setRotate4(controlProto.isRotate4());
-                ctrlRec.setRotate3(controlProto.isRotate3());
-                ctrlRec.setRotate2(controlProto.isRotate2());
-                ctrlRec.setLeftRote(controlProto.isLeftRote());
-                ctrlRec.setRightRote(controlProto.isRightRote());
-                ctrlRec.setMoment3(controlProto.isMoment3());
-                ctrlRec.setMoment2(controlProto.isMoment2());
-                ctrlRec.setMoment1(controlProto.isMoment1());
-                ctrlRec.setWeight1(controlProto.isWeight1());
-                ctrlRec.setCarBack2(controlProto.isCarBack2());
-                ctrlRec.setCarBack1(controlProto.isCarBack1());
-                ctrlRecDao.insert(ctrlRec);
-
+                recCtrlLog();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1586,6 +1591,7 @@ public class MainActivity extends AppCompatActivity {
             DatabaseHelper.getInstance(context).createTable(AlarmSet.class); // 告警
             alarmSetDao.insert(AlarmSet.getInitData());
             SysTool.copyFilesFromRaw(this, R.raw.tc, "tc.db", "/data/data/com.wooddeep.crane/databases");
+            SysTool.copyFilesFromRaw(this, R.raw.tc, "crane.db", "/data/data/com.wooddeep.crane/databases");
         }
 
         alarmSet = alarmSetDao.selectAll().get(0);

@@ -99,20 +99,20 @@ public class CtrlRecTable extends TableDesc {
             row.add(new TableCell(0, String.valueOf(recrod.getId())));
             row.add(new TableCell(0, recrod.getTime()));
 
-            // ID, 时间，倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
-            /*
-            row.add(new TableCell(0, String.valueOf(recrod.getRopenum())));
-            row.add(new TableCell(0, String.valueOf(recrod.getMoment())));
-            row.add(new TableCell(0, String.valueOf(recrod.getHeigth())));
-            row.add(new TableCell(0, String.valueOf(recrod.getRange())));
-            row.add(new TableCell(0, String.valueOf(recrod.getRatedweight())));
-            row.add(new TableCell(0, String.valueOf(recrod.getWeight())));
-            row.add(new TableCell(0, String.valueOf(recrod.getRotate())));
-            row.add(new TableCell(0, String.valueOf(recrod.getWalk())));
-            row.add(new TableCell(0, String.valueOf(recrod.getDipange())));
-            row.add(new TableCell(0, String.valueOf(recrod.getWindspeed())));
-            row.add(new TableCell(0, String.valueOf(recrod.getRemark())));
-            */
+            row.add(new TableCell(0, String.valueOf(recrod.isCarOut2())));
+            row.add(new TableCell(0, String.valueOf(recrod.isCarOut1())));
+            row.add(new TableCell(0, String.valueOf(recrod.isRotate5())));
+            row.add(new TableCell(0, String.valueOf(recrod.isRotate4())));
+            row.add(new TableCell(0, String.valueOf(recrod.isRotate3())));
+            row.add(new TableCell(0, String.valueOf(recrod.isRotate2())));
+            row.add(new TableCell(0, String.valueOf(recrod.isLeftRote())));
+            row.add(new TableCell(0, String.valueOf(recrod.isRightRote())));
+            row.add(new TableCell(0, String.valueOf(recrod.isMoment3())));
+            row.add(new TableCell(0, String.valueOf(recrod.isMoment2())));
+            row.add(new TableCell(0, String.valueOf(recrod.isMoment1())));
+            row.add(new TableCell(0, String.valueOf(recrod.isWeight1())));
+            row.add(new TableCell(0, String.valueOf(recrod.isCarBack2())));
+            row.add(new TableCell(0, String.valueOf(recrod.isCarBack1())));
             table.addDataRow(row, true, widthList);
         }
     }

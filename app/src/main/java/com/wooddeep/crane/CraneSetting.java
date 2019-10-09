@@ -311,8 +311,11 @@ public class CraneSetting extends AppCompatActivity {
         table.setFirstRow(colNames, idList);
 
         for (int i = 0; i < paras.size(); i++) {
-            if (paras.get(i).getIsMain() == true) table.setMainColumn(paras.get(i).getId());
-            break;
+            if (paras.get(i).getIsMain() == true) {
+                table.setMainColumn(paras.get(i).getId());
+                System.out.printf("## I am main, my id : %d\n", i);
+                break;
+            }
         }
 
         for (int i = 0; i < craneParaNames.length; i++) { // 遍历每个参数, 每个参数对应一列

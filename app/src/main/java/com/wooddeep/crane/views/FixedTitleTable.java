@@ -87,7 +87,7 @@ public class FixedTitleTable {
             if (id == textView.getId()) {
                 TextPaint paint = textView.getPaint();
                 paint.setFakeBoldText(true);
-                textView.setTextColor(Color.BLACK);
+                textView.setTextColor(Color.RED);
             } else {
                 TextPaint paint = textView.getPaint();
                 paint.setFakeBoldText(false);
