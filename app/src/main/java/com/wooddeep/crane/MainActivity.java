@@ -95,6 +95,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -1565,12 +1566,17 @@ public class MainActivity extends AppCompatActivity {
 
     // 初始化数据
     private void initTable() {
+        File dbFile = new File("/data/data/com.wooddeep.crane/databases/crane.db");
+        if (!dbFile.exists()) {
+            SysTool.copyFilesFromRaw(this, R.raw.tc, "tc.db", "/data/data/com.wooddeep.crane/databases");
+            SysTool.copyFilesFromRaw(this, R.raw.crane, "crane.db", "/data/data/com.wooddeep.crane/databases");
+        }
+
         CraneDao craneDao = new CraneDao(MainActivity.this);
         AreaDao areaDao = new AreaDao(MainActivity.this);
         ProtectAreaDao protectAreaDao = new ProtectAreaDao(MainActivity.this);
         AlarmSetDao alarmSetDao = new AlarmSetDao(MainActivity.this);
         CalibrationDao calibrationDao = new CalibrationDao(MainActivity.this);
-        //loadDao = new LoadDao(MainActivity.this);
         tcParamDao = new TcParamDao(MainActivity.this);
         realDataDao = new RealDataDao(MainActivity.this);
         List<Crane> cranes = craneDao.selectAll();
@@ -1580,19 +1586,6 @@ public class MainActivity extends AppCompatActivity {
         LogDbHelper.getInstance(context).createTable(CaliRec.class);
         LogDbHelper.getInstance(context).createTable(CtrlRec.class);
         LogDbHelper.getInstance(context).createTable(SwitchRec.class);
-        //LoadDbHelper.getInstance(context).createTable(TcParam.class);
-        //LoadDbHelper.getInstance(context).createTable(Load.class); // 负载
-
-        if (cranes == null || cranes.size() == 0) { // 初始状态, 创建表
-            DatabaseHelper.getInstance(context).createTable(Crane.class);
-            DatabaseHelper.getInstance(context).createTable(Area.class); // 区域
-            DatabaseHelper.getInstance(context).createTable(Protect.class); // 保护区
-            DatabaseHelper.getInstance(context).createTable(SysPara.class);
-            DatabaseHelper.getInstance(context).createTable(AlarmSet.class); // 告警
-            alarmSetDao.insert(AlarmSet.getInitData());
-            SysTool.copyFilesFromRaw(this, R.raw.tc, "tc.db", "/data/data/com.wooddeep.crane/databases");
-            SysTool.copyFilesFromRaw(this, R.raw.tc, "crane.db", "/data/data/com.wooddeep.crane/databases");
-        }
 
         alarmSet = alarmSetDao.selectAll().get(0);
 
