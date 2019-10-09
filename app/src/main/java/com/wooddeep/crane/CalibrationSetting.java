@@ -179,6 +179,9 @@ public class CalibrationSetting extends AppCompatActivity {
                     double startRotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
                         new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(centerX + 100, centerY)); // 计算起始角度
                     startRotate = Math.toDegrees(startRotate);
+                    if (y1 < centerY) {
+                        startRotate = 360.0f - startRotate;
+                    }
 
                     double rate = rotate / (end - start);
 
@@ -258,6 +261,9 @@ public class CalibrationSetting extends AppCompatActivity {
                     double startRotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
                         new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(centerX + 100, centerY)); // 计算起始角度
                     startRotate = Math.toDegrees(startRotate);
+                    if (y1 < centerY) {
+                        startRotate = 360.0f - startRotate;
+                    }
 
                     calibration.setRotateStartX1(x1);
                     calibration.setRotateStartY1(y1);

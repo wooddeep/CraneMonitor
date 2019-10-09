@@ -104,7 +104,7 @@ public class Replace {
         }
 
         for (int j = 0; j < arrayLen; j++) {
-            replacement[j + (size - arrayLen)] = charArray[j];
+            replacement[j + (size - arrayLen)] = charArray[arrayLen - 1 - j];
         }
 
     }

@@ -68,7 +68,7 @@ public class CenterCycle extends CycleElem {
         int height = parent.getMeasuredHeight(); // 获取组件高度
 
         // 1号塔机坐标100.100圆环直径55。2号塔机坐标130.123圆环直径60
-        int ringWidth = 5; // 固定圆环宽度
+        int ringWidth = 3; // 固定圆环宽度
         float originRadius = Math.min(width, height) / 4; // 默认圆的直径为屏幕的一半
         originRadius = oscale * originRadius; // 比例变化
 

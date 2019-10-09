@@ -256,7 +256,7 @@ public class SuperCircleView extends View {
     private void drawRadio(Canvas canvas) {
         //Paint radioPaint = mPaint; //new Paint(mPaint);
         radioPaint.setStyle(Paint.Style.STROKE);
-        radioPaint.setStrokeWidth(5.0f);
+        radioPaint.setStrokeWidth(4.0f);
         if (flink) {
             radioPaint.setMaskFilter(blurMaskFilter);
         }
@@ -266,6 +266,10 @@ public class SuperCircleView extends View {
         } else {
             radioPaint.setMaskFilter(blurMaskFilter);
             radioPaint.setColor(mRingNormalColor);
+            shortArmPaint.setColor(mRingNormalColor);
+            if (Color.LTGRAY != mRingNormalColor) {
+                shortArmPaint.setColor(Color.BLACK);
+            }
         }
 
         // long arm
@@ -298,7 +302,6 @@ public class SuperCircleView extends View {
 
         // 平衡臂相关参数
         //Paint shortArmPaint = mPaint; //new Paint(mPaint);
-        shortArmPaint.setColor(Color.BLACK);
         shortArmPaint.setStyle(Paint.Style.STROKE);
         shortArmPaint.setStrokeWidth(5.0f);
         double isin = Math.sin(Math.toRadians(hAngle + 90 + 180));

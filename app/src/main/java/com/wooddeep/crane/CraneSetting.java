@@ -156,7 +156,7 @@ public class CraneSetting extends AppCompatActivity {
             new String[]{"确定", "取消"}, null, activity,
             AlertView.Style.Alert, (o, position) -> {
             if (position == 0 && gTable != null) { // 确认
-                for (int j = 0; j < gTable.get(j).size(); j++) {
+                for (int j = 0; j < gTable.get(0).size(); j++) {
                     int id = Integer.parseInt(gTable.get(0).get(j));
                     Crane cp = dao.queryById(id);
                     cp.setId(id);

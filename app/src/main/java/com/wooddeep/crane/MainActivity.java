@@ -85,6 +85,7 @@ import com.wooddeep.crane.simulator.UartEmitter;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DataUtil;
+import com.wooddeep.crane.tookit.DogTool;
 import com.wooddeep.crane.tookit.MathTool;
 import com.wooddeep.crane.tookit.MomentOut;
 import com.wooddeep.crane.tookit.SysTool;
@@ -703,6 +704,8 @@ public class MainActivity extends AppCompatActivity {
                     savedData.angle = hangle;
                 }
             }
+
+            if (radioProto.getTargetNo() == null || radioProto.getSourceNo() == null) return;
 
             if (radioProto.getSourceNo().equals(radioProto.getTargetNo()) // 源ID和目标ID相同
                 || radioProto.getTargetNo().equals(myCraneNo)) { // 目标ID相同是本机
@@ -1526,6 +1529,7 @@ public class MainActivity extends AppCompatActivity {
             //sideCycleId = sideCycle.getUuid();
             sideCycle.drawSideCycle(this, mainFrame);
             craneNumbers.add(number);
+            //System.out.println("#### number = " + number);
             craneMap.put(number, sideCycle);
             sideCycle.setOnline(false); // 初始状态离线
         }
@@ -1677,8 +1681,35 @@ public class MainActivity extends AppCompatActivity {
         // 触发判断本机是否为主机
         new Handler().postDelayed(() -> {
             RadioDateEventOps(new RadioEvent(radioProto.startMaster()));
+            initWatchDog();
+            setWatchDogTimeOut();
         }, 3000);
     }
+
+    private void initWatchDog() {
+        DogTool.changePermission();
+        intent = new Intent(DogTool.ACTION_WATCHDOG_INIT);
+        sendBroadcast(intent);
+    }
+
+    private Intent feedIntent = new Intent(DogTool.ACTION_WATCHDOG_KICK);
+
+    private void feedWatchDog() {
+        runOnUiThread(
+            new Runnable() {
+                @Override
+                public void run() {
+                    sendBroadcast(feedIntent);
+                }
+            });
+    }
+
+    private void setWatchDogTimeOut() {
+        intent = new Intent(DogTool.ACTION_WATCHDOG_SETTIMEOUT);
+        intent.putExtra("timeout", 3);
+        sendBroadcast(intent);
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -1686,14 +1717,14 @@ public class MainActivity extends AppCompatActivity {
         sysExit = true;
     }
 
-    private Intent feedIntent = new Intent();
 
-    private void feedWatchDog() {
+    private void feedLaunchWatchDog() {
         feedIntent.setAction("cn.programmer.CUSTOM_INTENT");
         runOnUiThread(() -> {
             sendBroadcast(feedIntent);
         });
     }
+
 
     private PackageManager mPackageManager;
 

@@ -15,6 +15,8 @@ public class DogTool {
     public final static String ACTION_MOBILE_SWITCH = "android.intent.action.ACTION_MOBILE_SWITCH_CHANGED";
 
     public final static String ACTION_WATCHDOG_SETTIMEOUT = "android.intent.action.WATCHDOG_SET_TIMEOUT";
+    private Intent feedIntent = new Intent(ACTION_WATCHDOG_KICK);
+    private Intent intent = null;
 
     public static void changePermission() {
         execRootCmdSilent("chmod 777 /dev/watchdog");
@@ -30,7 +32,7 @@ public class DogTool {
         }
     }
 
-    public static  int execRootCmdSilent(String cmd) {
+    public static int execRootCmdSilent(String cmd) {
         int result = -1;
         DataOutputStream dos = null;
 
@@ -56,5 +58,6 @@ public class DogTool {
         }
         return result;
     }
+
 
 }
