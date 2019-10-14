@@ -543,7 +543,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startTimerThread() {
-        AlarmSound.init(getApplicationContext());
+        //AlarmSound.init(getApplicationContext());
         new Thread(() -> {
             int count = 0;
 
@@ -892,25 +892,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (alarmEvent.hookMinHightAlarm == true) {
-            Alarm.startAlarm(activity, R.id.hook_alarm_logo, R.mipmap.hook_mix);
-            hookAlarmView.setText("T");
-            hookAlarmView.setRotation(180);
+            Alarm.startAlarm(activity, R.id.height_logo, R.mipmap.hook_min);
             AlarmSound.setStatus(R.raw.hook_down_warning, true);
         } else {
             AlarmSound.setStatus(R.raw.hook_down_warning, false);
         }
 
         if (alarmEvent.hookMaxHightAlarm == true) {
-            Alarm.startAlarm(activity, R.id.hook_alarm_logo, R.mipmap.hook_max);
-            hookAlarmView.setText("T");
+            Alarm.startAlarm(activity, R.id.height_logo, R.mipmap.hook_max);
             AlarmSound.setStatus(R.raw.hook_up_warning, true);
         } else {
             AlarmSound.setStatus(R.raw.hook_up_warning, false);
         }
 
         if (alarmEvent.hookMinHightAlarm == false && alarmEvent.hookMaxHightAlarm == false) {
-            Alarm.startAlarm(activity, R.id.hook_alarm_logo, R.mipmap.hook);
-            hookAlarmView.setText("OK");
+            Alarm.startAlarm(activity, R.id.height_logo, R.mipmap.hook);
         }
 
         // 控制
@@ -933,12 +929,15 @@ public class MainActivity extends AppCompatActivity {
         //AlarmSound.start(0); // TODO
 
         // 告警铃声
-        if (event.hasAlarm) {
-            AlarmSound.start(0);
+        if (event.hasAlarm && !player.isPlaying()) {
+            //AlarmSound.start(0);
+            player.start();
         }
+
         // 告警铃声清除
-        if (!event.hasAlarm) {
-            AlarmSound.pause();
+        if (!event.hasAlarm && player.isPlaying()) {
+            //AlarmSound.pause();
+            player.pause();
         }
 
     }
@@ -1642,6 +1641,11 @@ public class MainActivity extends AppCompatActivity {
         windSpeedView = (TextView) findViewById(R.id.wind_speed);
         setCurrTime();
 
+        player = MediaPlayer.create(context, R.raw.comm_alarm_sound);
+        player.setLooping(true);
+        //player.start();
+        //player.pause();
+
         try {
             String s0Name = "S0";
             String s1Name = "S1";
@@ -1717,8 +1721,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         sysExit = true;
+        //SysTool.restartApp();
     }
 
+    @Override
+    public void onBackPressed() {
+        //按返回键返回桌面
+        moveTaskToBack(true);
+    }
 
     private void feedLaunchWatchDog() {
         feedIntent.setAction("cn.programmer.CUSTOM_INTENT");

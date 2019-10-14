@@ -380,6 +380,8 @@ public class Alarm {
 
         // 告警清零
         alarmEvent.hasAlarm = false;
+        alarmEvent.hookMinHightAlarm = false;
+        alarmEvent.hookMaxHightAlarm = false;
         alarmEvent.backendAlarm = false;
         alarmEvent.forwardAlarm = false;
         alarmEvent.rightAlarm = false;
@@ -388,6 +390,7 @@ public class Alarm {
         alarmEvent.leftAlarmLevel = 100;
         alarmEvent.forwardAlarmLevel = 100;
         alarmEvent.backendAlarmLevel = 100;
+
 
         Alarm.extremumDetect(hookHeight, length, alarmSet, eventBus); // 最大最小
         Alarm.craneToCraneAlarm(craneMap, no, alarmSet); // 塔基到塔基的距离

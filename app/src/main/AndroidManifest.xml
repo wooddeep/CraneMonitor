@@ -14,6 +14,7 @@
 
         <activity android:name=".MainActivity"
             android:hardwareAccelerated="false"
+            android:alwaysRetainTaskState='true'
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,24 +28,42 @@
         </activity>
 
 
-        <activity android:name="com.wooddeep.crane.UsbActivity">
+        <activity
+            android:name="com.wooddeep.crane.UsbActivity"
+            android:alwaysRetainTaskState='true'>
         </activity>
 
-        <activity android:name="com.wooddeep.crane.CraneSetting">
+        <activity
+            android:alwaysRetainTaskState='true'
+            android:name="com.wooddeep.crane.CraneSetting">
         </activity>
-        <activity android:name="com.wooddeep.crane.AreaSetting">
+        <activity
+            android:alwaysRetainTaskState='true'
+            android:name="com.wooddeep.crane.AreaSetting">
         </activity>
-        <activity android:name="com.wooddeep.crane.CalibrationSetting">
+        <activity
+            android:alwaysRetainTaskState='true'
+            android:name="com.wooddeep.crane.CalibrationSetting">
         </activity>
-        <activity android:name="com.wooddeep.crane.AlarmSetting">
+        <activity
+            android:alwaysRetainTaskState='true'
+            android:name="com.wooddeep.crane.AlarmSetting">
         </activity>
-        <activity android:name="com.wooddeep.crane.LoadAttribute">
+        <activity
+            android:alwaysRetainTaskState='true'
+            android:name="com.wooddeep.crane.LoadAttribute">
         </activity>
-        <activity android:name="com.wooddeep.crane.ProtectSetting">
+        <activity
+            android:alwaysRetainTaskState='true'
+            android:name="com.wooddeep.crane.ProtectSetting">
         </activity>
-        <activity android:name="com.wooddeep.crane.DataRecord">
+        <activity
+            android:alwaysRetainTaskState='true'
+            android:name="com.wooddeep.crane.DataRecord">
         </activity>
-        <activity android:name="com.wooddeep.crane.SuperAdmin">
+        <activity
+            android:alwaysRetainTaskState='true'
+            android:name="com.wooddeep.crane.SuperAdmin">
         </activity>
 
         <receiver android:name="com.wooddeep.crane.message.BootUpReceiver">
