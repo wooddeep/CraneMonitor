@@ -367,10 +367,10 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
-                        if (Math.abs(currProto.getWindSpeed() - prevProto.getWindSpeed()) >= 218) {
+                        if (Math.abs(currProto.getWindSpeed() - prevProto.getWindSpeed()) >= 17) { // 风速
                             prevProto.setWindSpeed(currProto.getWindSpeed());
                             runOnUiThread(() -> {
-                                float windSpeed = currProto.getWindSpeed() * 30 / 65536;
+                                float windSpeed = currProto.getWindSpeed() * 30 / 4096;
                                 windSpeed = Math.round(windSpeed * 10) / 10.0f;
                                 ((TextView) findViewById(R.id.wind_speed)).setText(windSpeed + "m/s");
                             });
@@ -1320,9 +1320,7 @@ public class MainActivity extends AppCompatActivity {
         craneSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // https://blog.csdn.net/qq_29924041/article/details/80141514
                 Intent intent = new Intent(MainActivity.this, CraneSetting.class);
-                //Intent intent = new Intent(MainActivity.this, UsbActivity.class);
                 startActivity(intent);
             }
         });
