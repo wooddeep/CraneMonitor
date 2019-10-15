@@ -19,15 +19,13 @@ import android.widget.Toast;
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
 import com.jaredrummler.materialspinner.MaterialSpinner;
-import com.rmondjone.locktableview.DataCell;
 import com.wooddeep.crane.ebus.SysParaEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
-//import com.wooddeep.crane.persist.dao.LoadDao;
 import com.wooddeep.crane.persist.LoadDbHelper;
-import com.wooddeep.crane.persist.dao.TcParamDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
-import com.wooddeep.crane.persist.entity.TcParam;
+import com.wooddeep.crane.persist.dao.TcParamDao;
 import com.wooddeep.crane.persist.entity.SysPara;
+import com.wooddeep.crane.persist.entity.TcParam;
 import com.wooddeep.crane.views.FixedTitleTable;
 import com.wooddeep.crane.views.TableCell;
 
@@ -41,6 +39,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+//import com.wooddeep.crane.persist.dao.LoadDao;
 
 //import android.support.design.widget.Snackbar;
 
@@ -73,8 +73,6 @@ public class LoadAttribute extends AppCompatActivity {
     private FixedTitleTable table;
     private int screenWidth = 400; // dp
 
-    private ArrayList<ArrayList<DataCell>> gTable = null;
-    private ArrayList<Integer> gColId = null;
 
     private Activity activity = this;
 

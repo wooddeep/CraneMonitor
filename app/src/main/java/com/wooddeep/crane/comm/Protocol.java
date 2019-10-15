@@ -16,7 +16,7 @@ public class Protocol {
 
     private int weight = 0x0003 & 0xFFFF; // 幅度
 
-    private int windSpeed = 0x0002 & 0xFFFF; // 风速  FFFF 为 30m/s
+    private int windSpeed = 0x0002 & 0xFFFF; // 风速  4096 为 30m/s
 
     private byte[] reserved = new byte[10];
 

@@ -44,12 +44,15 @@ public class SysParaDao {
     }
 
     // 修改user表中的一条数据
-    public void update(SysPara data) {
+    public boolean update(SysPara data) {
+        boolean ret = false;
         try {
             dao.update(data);
+            ret = true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return ret;
     }
 
     // 查询user表中的所有数据

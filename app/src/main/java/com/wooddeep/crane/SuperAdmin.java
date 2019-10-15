@@ -5,11 +5,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
@@ -17,7 +19,9 @@ import com.wooddeep.crane.R;
 import com.wooddeep.crane.ebus.AlarmSetEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.dao.AlarmSetDao;
+import com.wooddeep.crane.persist.dao.SysParaDao;
 import com.wooddeep.crane.persist.entity.AlarmSet;
+import com.wooddeep.crane.persist.entity.SysPara;
 import com.wooddeep.crane.tookit.SysTool;
 
 import org.greenrobot.eventbus.EventBus;
@@ -31,6 +35,7 @@ public class SuperAdmin extends AppCompatActivity {
 
     private Activity activity;
     private Context context;
+    private SysParaDao paraDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,26 +43,11 @@ public class SuperAdmin extends AppCompatActivity {
         setContentView(R.layout.super_admin);
         activity = this;
         context = getApplicationContext();
+        paraDao = new SysParaDao(context);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
         setOnTouchListener();
-
-        /*
-        findViewById(R.id.btn_keyboard_hide).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SysTool.hideNavigation(activity);
-            }
-        });
-
-        findViewById(R.id.btn_keyboard_show).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SysTool.showNavigation();
-            }
-        });
-        */
 
         findViewById(R.id.btn_sysset_show).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +56,31 @@ public class SuperAdmin extends AppCompatActivity {
             }
         });
 
-
+        findViewById(R.id.btn_pass_set).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String passOne = ((EditText)findViewById(R.id.et_pass_set)).getText().toString();
+                String passTwo = ((EditText)findViewById(R.id.et_pass_cfm)).getText().toString();
+                if (!passOne.equals(passOne) || passOne.length() == 0) {
+                    Toast toast = Toast.makeText(SuperAdmin.this, "密码数据错误(password data error!)", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                } else {
+                    SysPara superpwd = paraDao.queryParaByName("superpwd");
+                    superpwd.setParaValue(passOne);
+                    boolean ret = paraDao.update(superpwd);
+                    if (ret) {
+                        Toast toast = Toast.makeText(SuperAdmin.this, "密码修改成功(password update ok!)", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                    } else {
+                        Toast toast = Toast.makeText(SuperAdmin.this, "密码修改失败(password update fail!)", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                    }
+                }
+            }
+        });
     }
 
 

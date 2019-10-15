@@ -117,50 +117,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 // 然后再调试, 就ok了
 
 
-// TODO list 20190908
-// 1. 不在线，幅度为0，角度为0, 不参与碰撞检测 （ok）
-// 2. 告警铃声 更新
-// 3. 动臂式, 修改 塔基的 高度 和 大臂长度。（ok）
-
-// 4. 右回转，灯没有亮 ~ 控制问题 ！！！ (ok)
-
-// 6. 绘主界面时，特别是主环的 幅度 和 回转，要用当前的实际值 (ok)
-
-// 5. 小车出入的 告警控制 (a. 小车出入达到最大/最小值(ok), b. 力矩达到最大值(ok), c. 回转小车出入到警戒值(ok))
-
-// 9. 吊钩高度告警(ok)
-
-// 7. 力矩没有变化? 幅度为0，也需要计算力矩
-// 8. 数字更新
-
-// 10. 坐标标定
-
-//////////////////////////////
-
-// 11. 动臂式, 倾角变化，导致力矩的变化
-
-// 13. calcRealLength 根据 vangle计算
-
-// 14. 设置之后， 通信数据不更新
-
-// 15. 通信从机, 动臂式，投影（非大臂）
-
-// TODO list 20190908
-// 1. 动臂式吊钩高度变化
-// 2. 吊钩 高度 0 是地面
-// 3. 塔身 作为 固定障碍物
-
-// TODO list 20190916
-// 1. 无数据的情况下，需要周期刷新，每隔10s
-// 1. 主机接收到 其他主机的查询命令，收到目标是自己的编号的查询，不管
-// 3. 修改主机编号
-// 4. 主从切换, 逻辑上再验证
-// 5. 默认值修改成0
-// 6. 中英文对照
-// 7. 数字键盘
-// 8. 告警数字变小 50 -> 25
-// 9.
-
 @SuppressWarnings("unused")
 public class MainActivity extends AppCompatActivity {
 
@@ -238,7 +194,6 @@ public class MainActivity extends AppCompatActivity {
     private AlarmEvent alarmEvent = null;
 
     private SysParaDao paraDao; // 系统参数
-    //private LoadDao loadDao; // 负荷特性
     private TcParamDao tcParamDao;
     private RealDataDao realDataDao; // 工作记录DAO
     private RealData realData = new RealData(); // 工作记录
@@ -246,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
     private CtrlRec ctrlRec = new CtrlRec(); // 控制记录
     private WorkRecDao workRecDao; // 工作记录DAO
     private WorkRecrod workRec = new WorkRecrod(); // 工作记录
-
 
     private SwitchRecDao switchRecDao;
     private SwitchRec switchRec = new SwitchRec();
@@ -271,6 +225,12 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean sysExit = false;
     private Intent intent = null;
+
+    private float startWeight = 0.3f;
+    private float endWeight = 0.2f;
+    private float currWeight = 0.3f;
+    private PackageManager mPackageManager;
+    private DataUtil dataUtil = new DataUtil();
 
     public float getOscale() {
         return oscale;
@@ -430,8 +390,6 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    private DataUtil dataUtil = new DataUtil();
-
     private void startRadioReadThread() {
 
         new Thread(() -> {
@@ -515,7 +473,6 @@ public class MainActivity extends AppCompatActivity {
 
         }).start();
     }
-
 
     private void recPowerOnOff(Date date) {
         RealData realData = realDataDao.queryLatestOne();
@@ -643,7 +600,6 @@ public class MainActivity extends AppCompatActivity {
             //}
         }).start();
     }
-
 
     // 侦听电台数据
     //@Subscribe(threadMode = ThreadMode.MAIN)
@@ -950,9 +906,6 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(() -> currDate.setText(cells[0]));
     }
 
-    private float startWeight = 0.3f;
-    private float endWeight = 0.2f;
-    private float currWeight = 0.3f;
 
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -1224,7 +1177,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 EditText input = (EditText) findViewById(R.id.password);
                 String password = input.getText().toString();
-                if (password.equals("1234") || password.equals("4321")) { // TODO 普通的密码与超管密码
+                String superpwd = paraDao.queryValueByName("superpwd");
+                if (superpwd == null || superpwd.length() == 0) {
+                    superpwd = "4321";
+                    paraDao.insert(new SysPara("superpwd", "4321"));
+                }
+
+                if (password.equals("1234") || password.equals(superpwd)) { // TODO 普通的密码与超管密码
                     findViewById(R.id.password_confirm).setVisibility(View.GONE);
                     input.setText("");
                     ImageView btnMenu = (ImageView) findViewById(R.id.menu);
@@ -1234,7 +1193,7 @@ public class MainActivity extends AppCompatActivity {
                     AnimUtil.alphaAnimation(btnMenu);
                     btnMenu.setImageResource(R.mipmap.menu_off);
                     menuExpand.setAnimation(AnimationUtils.makeInAnimation(contex, true));
-                    if (password.equals("4321")) {
+                    if (password.equals(superpwd)) {
                         findViewById(R.id.super_admin).setVisibility(View.VISIBLE); // 超管
                         System.out.println("######## super admin");
                     } else {
@@ -1641,8 +1600,6 @@ public class MainActivity extends AppCompatActivity {
 
         player = MediaPlayer.create(context, R.raw.comm_alarm_sound);
         player.setLooping(true);
-        //player.start();
-        //player.pause();
 
         try {
             String s0Name = "S0";
@@ -1734,9 +1691,6 @@ public class MainActivity extends AppCompatActivity {
             sendBroadcast(feedIntent);
         });
     }
-
-
-    private PackageManager mPackageManager;
 
     private void launchPackage(String packageName, int id) {
         if (packageName != null && !packageName.equals("nonon")) {

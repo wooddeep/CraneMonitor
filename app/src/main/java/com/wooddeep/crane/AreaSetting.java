@@ -6,25 +6,16 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
-import com.rmondjone.locktableview.DataCell;
-import com.rmondjone.locktableview.DisplayUtil;
-import com.rmondjone.locktableview.LockTableView;
-import com.rmondjone.xrecyclerview.XRecyclerView;
 import com.wooddeep.crane.persist.dao.AreaDao;
-import com.wooddeep.crane.persist.dao.CraneDao;
 import com.wooddeep.crane.persist.entity.Area;
-import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.views.FixedTitleTable;
 import com.wooddeep.crane.views.TableCell;
 

@@ -93,517 +93,6 @@
         android:layout_height="match_parent"
         android:focusable="true"
         android:focusableInTouchMode="true">
-        <!--
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp0"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:background="@drawable/split_boder"
-            android:gravity="center">
-
-            <LinearLayout
-                android:layout_width="@dimen/dp0"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/dp5"
-                android:layout_weight="1.25"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp50"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/dp5"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/rotation" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp20"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="回转(rotate)"
-                    android:textSize="@dimen/dp10"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="@dimen/dp0"
-                android:layout_weight="10">
-
-                <LinearLayout
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp100"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <EditText
-                        android:id="@+id/etx1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/dp0"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:minWidth="@dimen/dp100"
-                        android:text="X1"
-                        android:inputType="number|numberDecimal|numberSigned"
-                        android:textSize="@dimen/dp15" />
-
-                    <EditText
-                        android:id="@+id/ety1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/dp0"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:minWidth="@dimen/dp100"
-                        android:text="Y1"
-                        android:inputType="number|numberDecimal|numberSigned"
-                        android:textSize="@dimen/dp15" />
-
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/btn_rotate_coord1"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp60"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:text="确定\nconfirm"
-                    android:textSize="@dimen/dp15" />
-
-                <TextView
-                    android:id="@+id/tv_rotate_coord1"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:text="0"
-                    android:textSize="@dimen/dp20" />
-
-                <LinearLayout
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp100"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <EditText
-                        android:id="@+id/etx2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/dp0"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:minWidth="@dimen/dp100"
-                        android:text="X2"
-                        android:inputType="number|numberDecimal|numberSigned"
-                        android:textSize="@dimen/dp15" />
-
-                    <EditText
-                        android:id="@+id/ety2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/dp0"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:minWidth="@dimen/dp100"
-                        android:text="Y2"
-                        android:inputType="number|numberDecimal|numberSigned"
-                        android:textSize="@dimen/dp15" />
-
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/btn_rotate_coord2"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp60"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:text="确定\nconfirm"
-                    android:textSize="@dimen/dp15" />
-
-                <TextView
-                    android:id="@+id/tv_rotate_coord2"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:text="0"
-                    android:textSize="@dimen/dp20" />
-
-                <TextView
-                    android:id="@+id/tv_rotate_rate"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:text="1/mv"
-                    android:textSize="@dimen/dp20" />
-            </LinearLayout>
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp0"
-            android:layout_weight="1"
-            android:background="@drawable/split_boder">
-
-            <LinearLayout
-                android:layout_width="@dimen/dp0"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/dp5"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp50"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/dp5"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/vangle" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp20"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="倾角(dip)"
-                    android:textSize="@dimen/dp10"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="@dimen/dp0"
-                android:layout_weight="8">
-
-                <EditText
-                    android:id="@+id/et_dip_angle_start"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="0"
-                    android:inputType="number|numberDecimal|numberSigned"
-                    android:textSize="@dimen/dp20" />
-
-                <Button
-                    android:id="@+id/btn_dip_angle_start"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp60"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="确定\nconfirm"
-                    android:textSize="@dimen/dp15" />
-
-                <TextView
-                    android:id="@+id/tv_dip_angle_start"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="0"
-                    android:textSize="@dimen/dp20" />
-
-                <EditText
-                    android:id="@+id/et_dip_angle_end"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="0"
-                    android:inputType="number|numberDecimal|numberSigned"
-                    android:textSize="@dimen/dp20" />
-
-                <Button
-                    android:id="@+id/btn_dip_angle_end"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp60"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="确定\nconfirm"
-                    android:textSize="@dimen/dp15" />
-
-                <TextView
-                    android:id="@+id/tv_dip_angle_end"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="50"
-                    android:textSize="@dimen/dp20" />
-
-                <TextView
-                    android:id="@+id/tv_dip_angle_rate"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="1/mv"
-                    android:textSize="@dimen/dp20" />
-            </LinearLayout>
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp0"
-            android:layout_weight="1"
-            android:background="@drawable/split_boder">
-
-            <LinearLayout
-                android:layout_width="@dimen/dp0"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/dp5"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp50"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/weight" />
-
-                <TextView
-
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp20"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="重量(weight)"
-                    android:textSize="@dimen/dp10"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="@dimen/dp0"
-                android:layout_weight="8">
-
-                <EditText
-                    android:id="@+id/et_weight_start"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="0"
-                    android:inputType="number|numberDecimal|numberSigned"
-                    android:textSize="@dimen/dp20" />
-
-                <Button
-                    android:id="@+id/btn_weight_start"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp60"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="确定\nconfirm"
-                    android:textSize="@dimen/dp15" />
-
-                <TextView
-                    android:id="@+id/tv_weight_start"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="0"
-                    android:textSize="@dimen/dp20" />
-
-                <EditText
-                    android:id="@+id/et_weight_end"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="0"
-                    android:inputType="number|numberDecimal|numberSigned"
-                    android:textSize="@dimen/dp20" />
-
-                <Button
-                    android:id="@+id/btn_weight_end"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp60"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="确定\nconfirm"
-                    android:textSize="@dimen/dp15" />
-
-                <TextView
-                    android:id="@+id/tv_weight_end"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="60"
-                    android:textSize="@dimen/dp20" />
-
-                <TextView
-                    android:id="@+id/tv_weight_rate"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="1/mv"
-                    android:textSize="@dimen/dp20" />
-            </LinearLayout>
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp0"
-            android:layout_weight="1"
-            android:background="@drawable/split_boder">
-
-            <LinearLayout
-                android:layout_width="@dimen/dp0"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/dp5"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp50"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/length" />
-
-                <TextView
-
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp20"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="幅度(length)"
-                    android:textSize="@dimen/dp10"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="@dimen/dp0"
-                android:layout_weight="8">
-
-                <EditText
-                    android:id="@+id/et_arm_length_start"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="0"
-                    android:inputType="number|numberDecimal|numberSigned"
-                    android:textSize="@dimen/dp20" />
-
-                <Button
-                    android:id="@+id/btn_arm_length_start"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp60"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="确定\nconfirm"
-                    android:textSize="@dimen/dp15" />
-
-                <TextView
-                    android:id="@+id/tv_arm_length_start"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="0"
-                    android:textSize="@dimen/dp20" />
-
-                <EditText
-                    android:id="@+id/et_arm_length_end"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="0"
-                    android:inputType="number|numberDecimal|numberSigned"
-                    android:textSize="@dimen/dp20" />
-
-                <Button
-                    android:id="@+id/btn_arm_length_end"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp60"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="确定\nconfirm"
-                    android:textSize="@dimen/dp15" />
-
-                <TextView
-                    android:id="@+id/tv_arm_length_end"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="70"
-                    android:textSize="@dimen/dp20" />
-
-                <TextView
-                    android:id="@+id/tv_arm_length_rate"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp80"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="1/mv"
-                    android:textSize="@dimen/dp20" />
-            </LinearLayout>
-        </TableRow>
-        -->
 
         <TableRow
             android:layout_width="match_parent"
@@ -669,13 +158,9 @@
 
             </LinearLayout>
         </TableRow>
-
-        <!--
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp0"
-            android:layout_weight="1"
-            android:visibility="gone"
+            android:layout_height="@dimen/dp60"
             android:background="@drawable/split_boder">
 
             <LinearLayout
@@ -691,7 +176,7 @@
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    app:srcCompat="@mipmap/keyboard" />
+                    app:srcCompat="@mipmap/password" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -699,27 +184,80 @@
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="按键(key)"
+                    android:text="密码(password)"
                     android:textSize="@dimen/dp10"
                     android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="@dimen/dp0"
-                android:layout_weight="8">
-                <Button
-                    android:id="@+id/btn_tower_height_start"
+                android:layout_weight="8"
+                android:layout_gravity="center">
+
+                <TextView
                     android:layout_width="@dimen/dp0"
                     android:layout_height="@dimen/dp60"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="确定\nconfirm"
+                    android:text="密码(pass):"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+
+                <EditText
+                    android:id="@+id/et_pass_set"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:inputType="numberPassword"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+
+                <TextView
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="确认(confirm):"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+
+                <EditText
+                    android:id="@+id/et_pass_cfm"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:inputType="numberPassword"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+
+                <Button
+                    android:id="@+id/btn_pass_set"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="确认(confirm)"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
                     android:textSize="@dimen/dp15" />
             </LinearLayout>
         </TableRow>
-        -->
 
     </TableLayout>
 

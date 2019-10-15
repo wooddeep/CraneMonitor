@@ -219,8 +219,6 @@ public class SysTool {
                 proc.waitFor();
             }
 
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
