@@ -49,6 +49,12 @@ public class LoadDbHelper extends OrmLiteSqliteOpenHelper {
         return instance;
     }
 
+
+    public static void reopen(Context context) {
+        instance.close();
+        instance = new LoadDbHelper(context);
+    }
+
     // 私有的构造方法
     private LoadDbHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);

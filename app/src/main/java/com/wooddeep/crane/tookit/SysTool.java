@@ -223,4 +223,36 @@ public class SysTool {
             e.printStackTrace();
         }
     }
+
+    public static void copyFromUsbDisk(String dstPath, String srcName) {
+        try {
+            List<String> usbDir = new ArrayList<>();
+            String command;
+            command = "ls /mnt/media_rw";
+            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            proc.waitFor();
+            InputStream fis = proc.getInputStream();
+            //用一个读输出流类去读
+            InputStreamReader isr = new InputStreamReader(fis);
+            //用缓冲器读行
+            BufferedReader br = new BufferedReader(isr);
+            String line = null;
+            //直到读完为止
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+                usbDir.add("/mnt/media_rw/" + line.replaceAll("\\s+", "")); // 遇到一个U盘退出
+                break;
+            }
+
+            for (String udir: usbDir) {
+                command = String.format("cp -rf %s/%s %s", udir, srcName, dstPath);
+                proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+                proc.waitFor();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

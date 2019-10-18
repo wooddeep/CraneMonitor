@@ -26,6 +26,8 @@ import com.wooddeep.crane.persist.dao.SysParaDao;
 import com.wooddeep.crane.persist.dao.TcParamDao;
 import com.wooddeep.crane.persist.entity.SysPara;
 import com.wooddeep.crane.persist.entity.TcParam;
+import com.wooddeep.crane.tookit.DrawTool;
+import com.wooddeep.crane.tookit.SysTool;
 import com.wooddeep.crane.views.FixedTitleTable;
 import com.wooddeep.crane.views.TableCell;
 
@@ -75,6 +77,9 @@ public class LoadAttribute extends AppCompatActivity {
 
 
     private Activity activity = this;
+
+    //TcParamDao loadDao;
+    //SysParaDao paraDao;
 
     private List<String> craneTypes = new ArrayList<>();
     private List<String> armLengths = new ArrayList<>();
@@ -306,45 +311,46 @@ public class LoadAttribute extends AppCompatActivity {
             public void onClick(View view) {
                 if (view.getId() == R.id.load_data) {
                     TcParamDao dao = new TcParamDao(context);
-                    AlertView alertView = new AlertView("加载负荷特性参数", "", null,
-                        new String[]{"确定", "取消"}, null, activity,
+                    AlertView alertView = new AlertView("加载负荷特性参数(load)?", "", null,
+                        new String[]{"确定(confirm)", "取消(cancel)"}, null, activity,
                         AlertView.Style.Alert, new OnItemClickListener() {
                         @Override
                         public void onItemClick(Object o, int position) {
                             if (position == 0) {
-                                InputStream is = context.getResources().openRawResource(R.raw.load_attr); // 暂时放在这里
-                                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
-                                try {
-                                    dao.deleteAll();
-                                    String str;
-                                    TcParam load = new TcParam();
-                                    while ((str = bufferedReader.readLine()) != null) {
-                                        //System.out.println(str);
-                                        String[] cells = str.split(",");
-                                        if (cells.length != 5) continue;
-                                        // D5523, 4	,50	,0 ,10
-                                        load.setCraneType(cells[0].trim());
-                                        load.setPower(cells[1].trim());
-                                        load.setArmLength(cells[2].trim());
-                                        load.setCoordinate(cells[3].trim());
-                                        load.setWeight(cells[4].trim());
-                                        dao.insert(load);
-                                    }
 
-                                    craneTypes = dao.getCraneTypes();
-                                    armLengths = dao.getArmLengths(craneTypes.get(0));
-                                    cables = dao.getCables(craneTypes.get(0), armLengths.get(0));
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                                SysTool.copyFromUsbDisk("/data/data/com.wooddeep.crane/databases", "tc.db");
+                                LoadDbHelper.reopen(context); // 重新打开
+
+                                TcParamDao loadDao = new TcParamDao(getApplicationContext());
+                                SysParaDao paraDao = new SysParaDao(getApplicationContext());
+
+                                SysPara savedCraneType = paraDao.queryParaByName("craneType");  // 塔基类型
+                                SysPara savedAramLength = paraDao.queryParaByName("armLength"); // 臂长
+                                SysPara savedPower = paraDao.queryParaByName("power"); // 倍率
+
+                                craneTypes = loadDao.getCraneTypes();
+                                armLengths = loadDao.getArmLengths(craneTypes.get(0));
+                                cables = loadDao.getCables(craneTypes.get(0), armLengths.get(0));
+
+                                savedCraneType.setParaValue(craneTypes.get(0));
+                                savedAramLength.setParaValue(armLengths.get(0));
+                                savedPower.setParaValue(cables.get(0));
+                                EventBus.getDefault().post(new SysParaEvent(craneTypes.get(0), armLengths.get(0), cables.get(0))); // 触发系统参数相关
+
+                                paraDao.update(savedCraneType);
+                                paraDao.update(savedAramLength);
+                                paraDao.update(savedPower);
+
+                                DrawTool.showExportDialog(activity);
+
                             }
                         }
                     });
                     alertView.show();
                 } else if (view.getId() == R.id.save_data) { // 保持数据
 
-                    AlertView alertView = new AlertView("保存负荷特性参数", "", null,
-                        new String[]{"确定", "取消"}, null, activity,
+                    AlertView alertView = new AlertView("保存负荷特性参数(save)?", "", null,
+                        new String[]{"确定(confirm)", "取消(cancel)"}, null, activity,
                         AlertView.Style.Alert, new OnItemClickListener() {
                         @Override
                         public void onItemClick(Object o, int position) {
