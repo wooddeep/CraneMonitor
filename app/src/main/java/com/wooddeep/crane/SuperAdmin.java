@@ -3,14 +3,19 @@ package com.wooddeep.crane;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TableRow;
 import android.widget.Toast;
 
 import com.bigkoo.alertview.AlertView;
@@ -30,6 +35,14 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.media.AudioManager.ADJUST_LOWER;
+import static android.media.AudioManager.ADJUST_RAISE;
+import static android.media.AudioManager.FLAG_PLAY_SOUND;
+import static android.view.View.GONE;
+
+// 音量调节
+// https://www.jianshu.com/p/a5f013e0dc3e
+
 @SuppressWarnings("unused")
 public class SuperAdmin extends AppCompatActivity {
 
@@ -37,10 +50,39 @@ public class SuperAdmin extends AppCompatActivity {
     private Context context;
     private SysParaDao paraDao;
 
+    private Activity[] activities = new Activity[]{
+
+    };
+
+    public void changeAppBrightness(Activity[] activities, float delta) {
+        for (Activity activity : activities) {
+
+            Window window = activity.getWindow();
+            WindowManager.LayoutParams lp = window.getAttributes();
+            float brightness = lp.screenBrightness;
+            //lp.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
+
+            brightness = brightness + delta;
+
+            if (brightness > 1) brightness = 1f;
+            if (brightness < 0.1) brightness = 0.1f;
+
+            lp.screenBrightness = brightness;
+
+            window.setAttributes(lp);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.super_admin);
+        Intent intent = getIntent();
+        boolean superSuper = intent.getBooleanExtra("superSuper", false);
+        if (!superSuper) {
+            TableRow row = (TableRow)findViewById(R.id.row_pass_set);
+            row.setVisibility(GONE);
+        }
         activity = this;
         context = getApplicationContext();
         paraDao = new SysParaDao(context);
@@ -59,8 +101,8 @@ public class SuperAdmin extends AppCompatActivity {
         findViewById(R.id.btn_pass_set).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String passOne = ((EditText)findViewById(R.id.et_pass_set)).getText().toString();
-                String passTwo = ((EditText)findViewById(R.id.et_pass_cfm)).getText().toString();
+                String passOne = ((EditText) findViewById(R.id.et_pass_set)).getText().toString();
+                String passTwo = ((EditText) findViewById(R.id.et_pass_cfm)).getText().toString();
                 if (!passOne.equals(passOne) || passOne.length() == 0) {
                     Toast toast = Toast.makeText(SuperAdmin.this, "密码数据错误(password data error!)", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
@@ -81,8 +123,49 @@ public class SuperAdmin extends AppCompatActivity {
                 }
             }
         });
-    }
 
+        findViewById(R.id.btn_light_add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        SysTool.adjustBackgroudLight(50);
+                    }
+                }).start();
+            }
+        });
+
+        findViewById(R.id.btn_light_sub).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        SysTool.adjustBackgroudLight(-50);
+                    }
+                }).start();
+            }
+        });
+
+        findViewById(R.id.btn_sound_add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                mAudioManager.adjustVolume(ADJUST_RAISE, FLAG_PLAY_SOUND);
+
+            }
+        });
+
+        findViewById(R.id.btn_sound_sub).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                mAudioManager.adjustVolume(ADJUST_LOWER, FLAG_PLAY_SOUND);
+            }
+        });
+
+    }
 
     private void setOnTouchListener(View view) {
         View.OnTouchListener onTouchListener = new View.OnTouchListener() {

@@ -20,6 +20,7 @@ public class AlarmSound {
     //private static MediaPlayer player;
 
     public static AlarmFile[] soundFileList = new AlarmFile[]{
+        /*
         new AlarmFile(R.raw.car_back_alarm, false),
         new AlarmFile(R.raw.car_back_warning, false),
         new AlarmFile(R.raw.car_out_alarm, false),
@@ -34,6 +35,7 @@ public class AlarmSound {
         new AlarmFile(R.raw.right_rotate_warning, false),
         new AlarmFile(R.raw.rigt_left_alarm, false),
         new AlarmFile(R.raw.weight_alarm, false)
+        */
     };
 
     public static MediaPlayer[] playsers = new MediaPlayer[soundFileList.length];

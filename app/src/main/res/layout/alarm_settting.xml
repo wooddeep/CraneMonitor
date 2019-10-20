@@ -58,6 +58,16 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
+
+        <Button
+            android:id="@+id/rvc_mode"
+            android:layout_width="@dimen/dp70"
+            android:layout_height="@dimen/px46"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/dp35"
+            android:layout_toLeftOf="@+id/save_logo"
+            android:text="NO-RVC" />
+
         <ImageView
             android:id="@+id/save_logo"
             android:layout_width="@dimen/px46"
@@ -112,20 +122,21 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/row_norvc_t2t"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp60">
 
                 <LinearLayout
                     android:layout_width="@dimen/dp0"
-                    android:layout_weight="1"
                     android:layout_marginBottom="@dimen/dp3"
+                    android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
                         android:layout_height="@dimen/dp70"
-                        android:layout_weight="2"
                         android:layout_gravity="center"
+                        android:layout_weight="2"
                         android:orientation="vertical">
 
                         <ImageView
@@ -141,9 +152,9 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="一档减速距离\nfirst gear distance"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -158,8 +169,8 @@
                     <LinearLayout
                         android:layout_width="@dimen/dp0"
                         android:layout_height="@dimen/dp70"
-                        android:layout_weight="2"
                         android:layout_gravity="center"
+                        android:layout_weight="2"
                         android:orientation="vertical">
 
                         <ImageView
@@ -175,9 +186,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="二档减速距离\nsecond gear distance"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -208,9 +219,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="三档减速距离\nthird gear distance"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -241,9 +252,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="四档减速距离\nfourth gear distance"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -275,9 +286,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="五档减速距离\nfifth gear distance"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -288,6 +299,222 @@
                         android:layout_weight="1"
                         android:inputType="number|numberDecimal|numberSigned"
                         android:text="5.00" />
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/row_rvc_t2t"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp60"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="@dimen/dp0"
+                    android:layout_marginBottom="@dimen/dp3"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_gravity="center"
+                        android:layout_weight="2"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            app:srcCompat="@mipmap/cc_coll_dist5" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="左一档减速\nleft first gear"
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/et_gear1"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
+                        android:text="1.00" />
+
+                    <LinearLayout
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_gravity="center"
+                        android:layout_weight="2"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            app:srcCompat="@mipmap/cc_coll_dist4" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="左二档减速\nleft second gear"
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/et_gear2"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
+                        android:text="2.00" />
+
+                    <LinearLayout
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            app:srcCompat="@mipmap/cc_coll_dist3" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="左三档减速\nleft third gear"
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/et_gear3"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
+                        android:text="3.00" />
+
+                    <LinearLayout
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            app:srcCompat="@mipmap/cc_coll_dist5" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="右一档减速\nright first gear"
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/et_gear4"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
+                        android:text="1.00" />
+
+                    <LinearLayout
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            app:srcCompat="@mipmap/cc_coll_dist4" />
+
+                        <TextView
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="右二档减速\nright second gear"
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/et_gear5"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
+                        android:text="2.00" />
+
+                    <LinearLayout
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            app:srcCompat="@mipmap/cc_coll_dist3" />
+
+                        <TextView
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="右三档减速\nright thrid gear"
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/et_gear5"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
+                        android:text="3.00" />
 
                 </LinearLayout>
             </TableRow>
@@ -316,6 +543,7 @@
             </TableRow>
 
             <TableRow
+                android:id="@+id/row_norvc_t2a"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp70"
                 android:layout_marginTop="@dimen/dp3"
@@ -323,8 +551,8 @@
 
                 <LinearLayout
                     android:layout_width="@dimen/dp0"
-                    android:layout_weight="1"
                     android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -346,9 +574,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="一档减速距离\nfirst gear distance"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -365,6 +593,7 @@
                         android:layout_height="@dimen/dp70"
                         android:layout_weight="2"
                         android:orientation="vertical">
+
                         <ImageView
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
@@ -378,9 +607,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="二档减速距离\nsecond gear distance"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -397,6 +626,7 @@
                         android:layout_height="@dimen/dp70"
                         android:layout_weight="2"
                         android:orientation="vertical">
+
                         <ImageView
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
@@ -410,9 +640,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="三档减速距离\nthird gear distance"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -443,9 +673,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="四档减速距离\nfourth gear distance"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -476,9 +706,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="五档减速距离\nfifth gear distance"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -489,6 +719,220 @@
                         android:layout_weight="1"
                         android:inputType="number|numberDecimal|numberSigned"
                         android:text="5.00" />
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/row_rvc_t2a"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp70"
+                android:layout_marginTop="@dimen/dp3"
+                android:layout_marginBottom="@dimen/dp3"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="@dimen/dp0"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            app:srcCompat="@mipmap/ca_coll_dist5" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="左一档减速\nleft first gear"
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/et_ta_gear1"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
+                        android:text="1.00" />
+
+                    <LinearLayout
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            app:srcCompat="@mipmap/ca_coll_dist4" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="左二档减速距离\nleft second gear"
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/et_ta_gear2"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
+                        android:text="2.00" />
+
+                    <LinearLayout
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            app:srcCompat="@mipmap/ca_coll_dist3" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="左三档减速\nleft third gear distance"
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/et_ta_gear3"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
+                        android:text="3.00" />
+
+                    <LinearLayout
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            app:srcCompat="@mipmap/ca_coll_dist5" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="右一档减速\nright first gear"
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/et_ta_gear4"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
+                        android:text="1.00" />
+
+                    <LinearLayout
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            app:srcCompat="@mipmap/ca_coll_dist4" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="右二档减速\nright second gear"
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/et_ta_gear5"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
+                        android:text="2.00" />
+
+                    <LinearLayout
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp70"
+                        android:layout_weight="2"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp45"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            app:srcCompat="@mipmap/ca_coll_dist3" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="右三档减速\nright third gear"
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/et_ta_gear5"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="@dimen/dp60"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:inputType="number|numberDecimal|numberSigned"
+                        android:text="3.00" />
 
                 </LinearLayout>
             </TableRow>
@@ -539,8 +983,8 @@
                 <LinearLayout
                     android:layout_width="@dimen/dp0"
                     android:layout_height="@dimen/dp70"
-                    android:layout_marginBottom="@dimen/dp3"
                     android:layout_marginTop="@dimen/dp3"
+                    android:layout_marginBottom="@dimen/dp3"
                     android:layout_weight="1"
                     android:orientation="horizontal">
 
@@ -564,9 +1008,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="变幅停车距离\nParking Distance"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -599,9 +1043,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="变幅减速距离\nDeceleration distance"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -634,9 +1078,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="一档力矩告警\nfirst gear moment"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -645,8 +1089,8 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="10%"
                         android:inputType="number|numberDecimal|numberSigned"
+                        android:text="10%"
                         android:visibility="visible" />
 
                     <LinearLayout
@@ -670,9 +1114,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="二挡力矩告警\nsecond gear moment"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -681,8 +1125,8 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="50%"
                         android:inputType="number|numberDecimal|numberSigned"
+                        android:text="50%"
                         android:visibility="visible" />
 
                     <LinearLayout
@@ -706,9 +1150,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="三挡力矩告警\nthird gear moment"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -717,8 +1161,8 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="120%"
                         android:inputType="number|numberDecimal|numberSigned"
+                        android:text="120%"
                         android:visibility="visible" />
                 </LinearLayout>
             </TableRow>
@@ -746,6 +1190,7 @@
                 <LinearLayout
                     android:layout_width="@dimen/dp0"
                     android:layout_weight="3">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dp40"
@@ -762,8 +1207,8 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp70"
-                android:layout_marginBottom="@dimen/dp3"
-                android:layout_marginTop="@dimen/dp3">
+                android:layout_marginTop="@dimen/dp3"
+                android:layout_marginBottom="@dimen/dp3">
 
                 <LinearLayout
                     android:layout_width="@dimen/dp0"
@@ -791,9 +1236,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="风速预警\nWind speed warning"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -825,9 +1270,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="风速告警\nWind Speed Alarm"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -845,6 +1290,7 @@
                         android:layout_weight="2"
                         android:orientation="vertical"
                         android:visibility="visible">
+
                         <ImageView
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
@@ -852,14 +1298,15 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             app:srcCompat="@mipmap/weight1" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="一档吊重百分比\nFirst Gear Lift"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -868,8 +1315,8 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="20%"
                         android:inputType="number|numberDecimal|numberSigned"
+                        android:text="20%"
                         android:visibility="visible" />
 
                     <LinearLayout
@@ -878,6 +1325,7 @@
                         android:layout_weight="2"
                         android:orientation="vertical"
                         android:visibility="visible">
+
                         <ImageView
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp45"
@@ -885,14 +1333,15 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             app:srcCompat="@mipmap/weight2" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="二挡吊重百分比\nSecond Gear Lift"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -901,8 +1350,8 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="50%"
                         android:inputType="number|numberDecimal|numberSigned"
+                        android:text="50%"
                         android:visibility="visible" />
 
                     <LinearLayout
@@ -925,9 +1374,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="三挡吊重百分比\nThird Gear Lift"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -936,8 +1385,8 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="120%"
                         android:inputType="number|numberDecimal|numberSigned"
+                        android:text="120%"
                         android:visibility="visible" />
                 </LinearLayout>
             </TableRow>
@@ -1010,9 +1459,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="最小值\nminimum"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -1045,9 +1494,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="最大值\nMaximum"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -1079,9 +1528,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="最小值\nMinimum"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -1090,8 +1539,8 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="0.1m"
                         android:inputType="number|numberDecimal|numberSigned"
+                        android:text="0.1m"
                         android:visibility="visible" />
 
                     <LinearLayout
@@ -1114,9 +1563,9 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="最大值\nMaximum"
-                            android:textSize="@dimen/dp10" />
+                            android:textSize="@dimen/dp10"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <EditText
@@ -1125,8 +1574,8 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="100m"
                         android:inputType="number|numberDecimal|numberSigned"
+                        android:text="100m"
                         android:visibility="visible" />
 
                     <LinearLayout
@@ -1158,8 +1607,8 @@
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="120%"
                         android:inputType="number|numberDecimal|numberSigned"
+                        android:text="120%"
                         android:visibility="invisible" />
                 </LinearLayout>
             </TableRow>

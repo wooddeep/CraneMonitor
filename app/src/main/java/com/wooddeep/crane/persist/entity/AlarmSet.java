@@ -6,6 +6,16 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "alarm") // 指定数据表的名称
 public class AlarmSet {
 
+    //ALTER TABLE 表名 ADD COLUMN 列名 数据类型
+    //eg: ALTER TABLE new_table ADD COLUMN sex Text;
+    //alter table alarm add column t2tDistGear21 float default 1.0;
+    //alter table alarm add column t2tDistGear22 float default 2.0;
+    //alter table alarm add column t2tDistGear23 float default 3.0;
+
+    //alter table alarm add column t2cDistGear21 float default 1.0;
+    //alter table alarm add column t2cDistGear22 float default 2.0;
+    //alter table alarm add column t2cDistGear23 float default 3.0;
+
     @DatabaseField(generatedId = true, columnName = "id", useGetSet = true)
     private int id;
 
@@ -17,6 +27,16 @@ public class AlarmSet {
 
     @DatabaseField(columnName = "t2tDistGear3", useGetSet = true, defaultValue = "3.0f") // 塔基与塔基1挡告警距离
     public float t2tDistGear3;
+
+    // RVC 模式
+    @DatabaseField(columnName = "t2tDistGear21", useGetSet = true, defaultValue = "1.0f") // 塔基与塔基1挡告警距离
+    public float t2tDistGear21;
+
+    @DatabaseField(columnName = "t2tDistGear22", useGetSet = true, defaultValue = "2.0f") // 塔基与塔基1挡告警距离
+    public float t2tDistGear22;
+
+    @DatabaseField(columnName = "t2tDistGear23", useGetSet = true, defaultValue = "3.0f") // 塔基与塔基1挡告警距离
+    public float t2tDistGear23;
 
     @DatabaseField(columnName = "t2tDistGear4", useGetSet = true, defaultValue = "4.0f") // 塔基与塔基1挡告警距离
     public float t2tDistGear4;
@@ -33,6 +53,16 @@ public class AlarmSet {
 
     @DatabaseField(columnName = "t2cDistGear3", useGetSet = true, defaultValue = "3.0f") // 塔基与区域1挡告警距离
     public float t2cDistGear3;
+
+    // RVC 模式
+    @DatabaseField(columnName = "t2cDistGear21", useGetSet = true, defaultValue = "1.0f") // 塔基与区域1挡告警距离
+    public float t2cDistGear21;
+
+    @DatabaseField(columnName = "t2cDistGear22", useGetSet = true, defaultValue = "2.0f") // 塔基与区域1挡告警距离
+    public float t2cDistGear22;
+
+    @DatabaseField(columnName = "t2cDistGear23", useGetSet = true, defaultValue = "3.0f") // 塔基与区域1挡告警距离
+    public float t2cDistGear23;
 
     @DatabaseField(columnName = "t2cDistGear4", useGetSet = true, defaultValue = "4.0f") // 塔基与区域1挡告警距离
     public float t2cDistGear4;
@@ -297,6 +327,54 @@ public class AlarmSet {
         this.hookHeightMax = hookHeightMax;
     }
 
+    public float getT2tDistGear21() {
+        return t2tDistGear21;
+    }
+
+    public void setT2tDistGear21(float t2tDistGear21) {
+        this.t2tDistGear21 = t2tDistGear21;
+    }
+
+    public float getT2tDistGear22() {
+        return t2tDistGear22;
+    }
+
+    public void setT2tDistGear22(float t2tDistGear22) {
+        this.t2tDistGear22 = t2tDistGear22;
+    }
+
+    public float getT2tDistGear23() {
+        return t2tDistGear23;
+    }
+
+    public void setT2tDistGear23(float t2tDistGear23) {
+        this.t2tDistGear23 = t2tDistGear23;
+    }
+
+    public float getT2cDistGear21() {
+        return t2cDistGear21;
+    }
+
+    public void setT2cDistGear21(float t2cDistGear21) {
+        this.t2cDistGear21 = t2cDistGear21;
+    }
+
+    public float getT2cDistGear22() {
+        return t2cDistGear22;
+    }
+
+    public void setT2cDistGear22(float t2cDistGear22) {
+        this.t2cDistGear22 = t2cDistGear22;
+    }
+
+    public float getT2cDistGear23() {
+        return t2cDistGear23;
+    }
+
+    public void setT2cDistGear23(float t2cDistGear23) {
+        this.t2cDistGear23 = t2cDistGear23;
+    }
+
     public AlarmSet(float t2tDistGear1, float t2tDistGear2, float t2tDistGear3, float t2tDistGear4, float t2tDistGear5, float t2cDistGear1, float t2cDistGear2, float t2cDistGear3, float t2cDistGear4, float t2cDistGear5, float carSpeedDownDist, float carStopDist, float moment1, float moment2, float moment3, float windSpeed1, float windSpeed2, float weight1, float weight2, float weight3, float armLengthMin, float armLengthMax, float hookHeightMin, float hookHeightMax) {
         this.t2tDistGear1 = t2tDistGear1;
         this.t2tDistGear2 = t2tDistGear2;
@@ -324,10 +402,44 @@ public class AlarmSet {
         this.hookHeightMax = hookHeightMax;
     }
 
+    public AlarmSet(float t2tDistGear1, float t2tDistGear2, float t2tDistGear3, float t2tDistGear21, float t2tDistGear22, float t2tDistGear23, float t2tDistGear4, float t2tDistGear5, float t2cDistGear1, float t2cDistGear2, float t2cDistGear3, float t2cDistGear21, float t2cDistGear22, float t2cDistGear23, float t2cDistGear4, float t2cDistGear5, float carSpeedDownDist, float carStopDist, float moment1, float moment2, float moment3, float windSpeed1, float windSpeed2, float weight1, float weight2, float weight3, float armLengthMin, float armLengthMax, float hookHeightMin, float hookHeightMax) {
+        this.id = id;
+        this.t2tDistGear1 = t2tDistGear1;
+        this.t2tDistGear2 = t2tDistGear2;
+        this.t2tDistGear3 = t2tDistGear3;
+        this.t2tDistGear21 = t2tDistGear21;
+        this.t2tDistGear22 = t2tDistGear22;
+        this.t2tDistGear23 = t2tDistGear23;
+        this.t2tDistGear4 = t2tDistGear4;
+        this.t2tDistGear5 = t2tDistGear5;
+        this.t2cDistGear1 = t2cDistGear1;
+        this.t2cDistGear2 = t2cDistGear2;
+        this.t2cDistGear3 = t2cDistGear3;
+        this.t2cDistGear21 = t2cDistGear21;
+        this.t2cDistGear22 = t2cDistGear22;
+        this.t2cDistGear23 = t2cDistGear23;
+        this.t2cDistGear4 = t2cDistGear4;
+        this.t2cDistGear5 = t2cDistGear5;
+        this.carSpeedDownDist = carSpeedDownDist;
+        this.carStopDist = carStopDist;
+        this.moment1 = moment1;
+        this.moment2 = moment2;
+        this.moment3 = moment3;
+        this.windSpeed1 = windSpeed1;
+        this.windSpeed2 = windSpeed2;
+        this.weight1 = weight1;
+        this.weight2 = weight2;
+        this.weight3 = weight3;
+        this.armLengthMin = armLengthMin;
+        this.armLengthMax = armLengthMax;
+        this.hookHeightMin = hookHeightMin;
+        this.hookHeightMax = hookHeightMax;
+    }
+
     public static AlarmSet getInitData() {
         return new AlarmSet(
-            10, 20, 30, 40, 50,
-            10, 20, 30, 40, 50,
+            10, 20, 30, 10, 20, 30, 40, 50,
+            10, 20, 30, 10, 20, 30, 40, 50,
             10, 20, 80, 100, 120,
             10, 20, 10, 20, 30,
             10, 40, 10, 40

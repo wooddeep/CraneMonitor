@@ -95,6 +95,108 @@
         android:focusableInTouchMode="true">
 
         <TableRow
+            android:id="@+id/row_pass_set"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp60"
+            android:background="@drawable/split_boder">
+
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_marginTop="@dimen/dp5"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp50"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    app:srcCompat="@mipmap/password" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp20"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="密码(password)"
+                    android:textSize="@dimen/dp10"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_weight="8"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:text="密码(pass):"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+
+                <EditText
+                    android:id="@+id/et_pass_set"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:inputType="numberPassword"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+
+                <TextView
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:text="确认(confirm):"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+
+                <EditText
+                    android:id="@+id/et_pass_cfm"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:inputType="numberPassword"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+
+                <Button
+                    android:id="@+id/btn_pass_set"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="5"
+                    android:gravity="center"
+                    android:text="确认(confirm)"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp60"
             android:background="@drawable/split_boder">
@@ -158,6 +260,7 @@
 
             </LinearLayout>
         </TableRow>
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp60"
@@ -176,7 +279,7 @@
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    app:srcCompat="@mipmap/password" />
+                    app:srcCompat="@mipmap/light" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -184,7 +287,7 @@
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="密码(password)"
+                    android:text="亮度设置(light set)"
                     android:textSize="@dimen/dp10"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -194,68 +297,97 @@
                 android:layout_weight="8"
                 android:layout_gravity="center">
 
-                <TextView
+                <Button
+                    android:id="@+id/btn_light_sub"
                     android:layout_width="@dimen/dp0"
                     android:layout_height="@dimen/dp60"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="密码(pass):"
-                    android:layout_marginLeft="@dimen/dp15"
-                    android:layout_marginRight="@dimen/dp15"
-                    android:textSize="@dimen/dp15" />
-
-                <EditText
-                    android:id="@+id/et_pass_set"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp60"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:inputType="numberPassword"
-                    android:layout_marginLeft="@dimen/dp15"
-                    android:layout_marginRight="@dimen/dp15"
-                    android:textSize="@dimen/dp15" />
-
-                <TextView
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp60"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="确认(confirm):"
-                    android:layout_marginLeft="@dimen/dp15"
-                    android:layout_marginRight="@dimen/dp15"
-                    android:textSize="@dimen/dp15" />
-
-                <EditText
-                    android:id="@+id/et_pass_cfm"
-                    android:layout_width="@dimen/dp0"
-                    android:layout_height="@dimen/dp60"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:inputType="numberPassword"
+                    android:text="-"
                     android:layout_marginLeft="@dimen/dp15"
                     android:layout_marginRight="@dimen/dp15"
                     android:textSize="@dimen/dp15" />
 
                 <Button
-                    android:id="@+id/btn_pass_set"
+                    android:id="@+id/btn_light_add"
                     android:layout_width="@dimen/dp0"
                     android:layout_height="@dimen/dp60"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:gravity="center"
-                    android:text="确认(confirm)"
+                    android:text="+"
                     android:layout_marginLeft="@dimen/dp15"
                     android:layout_marginRight="@dimen/dp15"
                     android:textSize="@dimen/dp15" />
+
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp60"
+            android:background="@drawable/split_boder">
+
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_marginTop="@dimen/dp5"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp50"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    app:srcCompat="@mipmap/sound" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp20"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="音量设置(sound set)"
+                    android:textSize="@dimen/dp10"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_weight="8"
+                android:layout_gravity="center">
+
+                <Button
+                    android:id="@+id/btn_sound_sub"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="-"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+
+                <Button
+                    android:id="@+id/btn_sound_add"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="+"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+
             </LinearLayout>
         </TableRow>
 

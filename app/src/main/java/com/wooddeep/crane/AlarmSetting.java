@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -15,7 +16,9 @@ import com.bigkoo.alertview.OnItemClickListener;
 import com.wooddeep.crane.ebus.AlarmSetEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.dao.AlarmSetDao;
+import com.wooddeep.crane.persist.dao.SysParaDao;
 import com.wooddeep.crane.persist.entity.AlarmSet;
+import com.wooddeep.crane.persist.entity.SysPara;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -23,13 +26,19 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 @SuppressWarnings("unused")
 public class AlarmSetting extends AppCompatActivity {
+
+    private SysParaDao sysParaDao;
 
     class AlarmCell {
         public String propName;
         public int editTextId;
         public Object value;
+
         public AlarmCell(String pn, int eti, Object v) {
             this.propName = pn;
             this.editTextId = eti;
@@ -37,7 +46,7 @@ public class AlarmSetting extends AppCompatActivity {
         }
     }
 
-    private AlarmCell [] alarmCells = new AlarmCell[] {
+    private AlarmCell[] alarmCells = new AlarmCell[]{
 
         // 塔基与塔基告警
         new AlarmCell("t2tDistGear1", R.id.et_gear1, 0),
@@ -135,10 +144,10 @@ public class AlarmSetting extends AppCompatActivity {
                             AlarmSetDao dao = new AlarmSetDao(context);
                             List<AlarmSet> alarmSets = dao.selectAll();
                             AlarmSet alarmSet = alarmSets.get(0);
-                            for (AlarmCell cell: alarmCells) {
+                            for (AlarmCell cell : alarmCells) {
                                 try {
                                     Field field = AlarmSet.class.getDeclaredField(cell.propName);
-                                    EditText etShow = (EditText)findViewById(cell.editTextId);
+                                    EditText etShow = (EditText) findViewById(cell.editTextId);
                                     float value = Float.parseFloat(etShow.getText().toString());
                                     field.setAccessible(true);
                                     field.set(alarmSet, value);
@@ -159,6 +168,31 @@ public class AlarmSetting extends AppCompatActivity {
             }
         };
         view.setOnClickListener(onClickListener);
+
+        findViewById(R.id.rvc_mode).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SysPara rvc = sysParaDao.queryParaByName("rvc");
+                boolean isRvcMode = Boolean.parseBoolean(rvc.getParaValue());
+                if (!isRvcMode) { // 反向操作
+                    ((Button) findViewById(R.id.rvc_mode)).setText("RVC");
+                    findViewById(R.id.row_rvc_t2t).setVisibility(VISIBLE);
+                    findViewById(R.id.row_norvc_t2t).setVisibility(GONE);
+                    findViewById(R.id.row_rvc_t2a).setVisibility(VISIBLE);
+                    findViewById(R.id.row_norvc_t2a).setVisibility(GONE);
+                } else {
+                    ((Button) findViewById(R.id.rvc_mode)).setText("NO-RVC");
+                    findViewById(R.id.row_rvc_t2t).setVisibility(GONE);
+                    findViewById(R.id.row_norvc_t2t).setVisibility(VISIBLE);
+                    findViewById(R.id.row_rvc_t2a).setVisibility(GONE);
+                    findViewById(R.id.row_norvc_t2a).setVisibility(VISIBLE);
+                }
+
+                rvc.setParaValue(String.valueOf(!isRvcMode));
+                sysParaDao.update(rvc);
+                MainActivity.isRvcMode.set(!isRvcMode);
+            }
+        });
     }
 
     private void setOnTouchListener() {
@@ -182,6 +216,29 @@ public class AlarmSetting extends AppCompatActivity {
     private void confLoad(Context contex) {
         DatabaseHelper.getInstance(contex).createTable(AlarmSet.class);
         AlarmSetDao dao = new AlarmSetDao(contex);
+        sysParaDao = new SysParaDao(contex);
+
+        SysPara rvc = sysParaDao.queryParaByName("rvc");
+        if (rvc == null) {
+            rvc = new SysPara("rvc", "false");
+            sysParaDao.insert(rvc);
+        }
+
+        boolean isRvcMode = Boolean.parseBoolean(rvc.getParaValue());
+        if (isRvcMode) {
+            ((Button) findViewById(R.id.rvc_mode)).setText("RVC");
+            findViewById(R.id.row_rvc_t2t).setVisibility(VISIBLE);
+            findViewById(R.id.row_norvc_t2t).setVisibility(GONE);
+            findViewById(R.id.row_rvc_t2a).setVisibility(VISIBLE);
+            findViewById(R.id.row_norvc_t2a).setVisibility(GONE);
+        } else {
+            ((Button) findViewById(R.id.rvc_mode)).setText("NO-RVC");
+            findViewById(R.id.row_rvc_t2t).setVisibility(GONE);
+            findViewById(R.id.row_norvc_t2t).setVisibility(VISIBLE);
+            findViewById(R.id.row_rvc_t2a).setVisibility(GONE);
+            findViewById(R.id.row_norvc_t2a).setVisibility(VISIBLE);
+        }
+
         List<AlarmSet> paras = dao.selectAll();
         if (paras == null || paras.size() == 0) {
             dao.insert(new AlarmSet());
@@ -191,12 +248,12 @@ public class AlarmSetting extends AppCompatActivity {
         if (paras.size() < 1) return;
         AlarmSet para = paras.get(0);
 
-        for (AlarmCell cell: alarmCells) {
+        for (AlarmCell cell : alarmCells) {
             try {
                 Field field = AlarmSet.class.getDeclaredField(cell.propName);
                 field.setAccessible(true);
-                float value = (float)field.get(para);
-                EditText etShow = (EditText)findViewById(cell.editTextId);
+                float value = (float) field.get(para);
+                EditText etShow = (EditText) findViewById(cell.editTextId);
                 etShow.setText(String.valueOf(value));
             } catch (Exception e) {
                 // TODO

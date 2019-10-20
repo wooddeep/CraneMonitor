@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.example.x6.serialportlib.SerialPort;
 import com.wooddeep.crane.alarm.Alarm;
 import com.wooddeep.crane.alarm.AlarmSound;
+import com.wooddeep.crane.alarm.AlertSound;
 import com.wooddeep.crane.comm.ControlProto;
 import com.wooddeep.crane.comm.Protocol;
 import com.wooddeep.crane.comm.RadioProto;
@@ -101,12 +102,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 //import androidx.annotation.RequiresApi;
 
@@ -160,6 +165,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean calibrationFlag = false;
     private boolean isMasterCrane = false; // 是否主塔机
     private boolean waitFlag = true; // 等待主机信号标识
+    private boolean superSuper = false;
+    public static AtomicBoolean isRvcMode = new AtomicBoolean(false);
 
     private ControlProto controlProto = new ControlProto();
     private RadioProto slaveRadioProto = new RadioProto();  // 本机作为从机时，需要radio通信的对象
@@ -501,6 +508,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startTimerThread() {
         //AlarmSound.init(getApplicationContext());
+        AlertSound.init(getApplicationContext());
         new Thread(() -> {
             int count = 0;
 
@@ -783,6 +791,19 @@ public class MainActivity extends AppCompatActivity {
         ctrlRecDao.insert(ctrlRec);
     }
 
+    private int getHighestAlarmLevel(AlarmEvent event) {
+        Integer[] array = new Integer[]{
+            event.backendAlarmLevel,
+            event.forwardAlarmLevel,
+            event.leftAlarmLevel,
+            event.rightAlarmLevel,
+            event.momentAlarmLevel,
+            event.weightAlarmLevel,
+        };
+
+        return (int) Collections.min(Arrays.asList(array));
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void alarmShowEventBus(AlarmEvent event) {
         alarmEvent = event;
@@ -790,75 +811,75 @@ public class MainActivity extends AppCompatActivity {
         if (alarmEvent.leftAlarm == true) {
             Alarm.startAlarm(activity, R.id.left_alarm, Constant.rotateAlarmMap.get(event.leftAlarmLevel));
             leftAlarmView.setText(Constant.levelMap.get(event.leftAlarmLevel));
-            AlarmSound.setStatus(R.raw.left_rotate_alarm, true);
+            //AlarmSound.setStatus(R.raw.left_rotate_alarm, true);
         } else {
             Alarm.stopAlarm(activity, R.id.left_alarm, R.mipmap.forward);
             leftAlarmView.setText(Constant.levelMap.get(0));
-            AlarmSound.setStatus(R.raw.left_rotate_alarm, false);
+            //AlarmSound.setStatus(R.raw.left_rotate_alarm, false);
         }
 
         if (alarmEvent.rightAlarm == true) {
             Alarm.startAlarm(activity, R.id.right_alarm, Constant.rotateAlarmMap.get(event.rightAlarmLevel));
             rightAlarmView.setText(Constant.levelMap.get(event.rightAlarmLevel));
-            AlarmSound.setStatus(R.raw.right_rotate_alarm, true);
+            //AlarmSound.setStatus(R.raw.right_rotate_alarm, true);
         } else {
             Alarm.stopAlarm(activity, R.id.right_alarm, R.mipmap.forward);
             rightAlarmView.setText(Constant.levelMap.get(0));
-            AlarmSound.setStatus(R.raw.right_rotate_alarm, false);
+            //AlarmSound.setStatus(R.raw.right_rotate_alarm, false);
         }
 
         if (alarmEvent.forwardAlarm == true) {
             Alarm.startAlarm(activity, R.id.forward_alarm, Constant.carRangeAlarmMap.get(event.forwardAlarmLevel));
             forwardAlarmView.setText(Constant.levelMap.get(event.forwardAlarmLevel));
-            AlarmSound.setStatus(R.raw.car_out_alarm, true);
+            //AlarmSound.setStatus(R.raw.car_out_alarm, true);
         } else {
             Alarm.stopAlarm(activity, R.id.forward_alarm, R.mipmap.forward);
             forwardAlarmView.setText(Constant.levelMap.get(0));
-            AlarmSound.setStatus(R.raw.car_out_alarm, false);
+            //AlarmSound.setStatus(R.raw.car_out_alarm, false);
         }
 
         if (alarmEvent.backendAlarm == true) {
             Alarm.startAlarm(activity, R.id.back_alarm, Constant.carRangeAlarmMap.get(event.backendAlarmLevel));
             backwardAlarmView.setText(Constant.levelMap.get(event.backendAlarmLevel));
-            AlarmSound.setStatus(R.raw.car_back_alarm, true);
+            //AlarmSound.setStatus(R.raw.car_back_alarm, true);
         } else {
             Alarm.stopAlarm(activity, R.id.back_alarm, R.mipmap.forward);
             backwardAlarmView.setText(Constant.levelMap.get(0));
-            AlarmSound.setStatus(R.raw.car_back_alarm, false);
+            //AlarmSound.setStatus(R.raw.car_back_alarm, false);
         }
 
         if (alarmEvent.weightAlarm == true) {
             Alarm.startAlarm(activity, R.id.weight_alarm, Constant.weightAlarmMap.get(event.weightAlarmLevel));
             weightAlarmView.setText(Constant.levelMap.get(event.weightAlarmLevel));
-            AlarmSound.setStatus(R.raw.weight_alarm, true);
+            //AlarmSound.setStatus(R.raw.weight_alarm, true);
         } else {
             Alarm.stopAlarm(activity, R.id.weight_alarm, R.mipmap.weight0);
             weightAlarmView.setText(Constant.levelMap.get(0));
-            AlarmSound.setStatus(R.raw.weight_alarm, false);
+            //AlarmSound.setStatus(R.raw.weight_alarm, false);
         }
 
         if (alarmEvent.momentAlarm == true) {
             Alarm.startAlarm(activity, R.id.moment_alarm, Constant.momentAlarmMap.get(event.momentAlarmLevel));
             momentAlarmView.setText(Constant.levelMap.get(event.momentAlarmLevel));
-            AlarmSound.setStatus(R.raw.moment_alarm, true);
+            //AlarmSound.setStatus(R.raw.moment_alarm, true);
         } else {
             Alarm.stopAlarm(activity, R.id.moment_alarm, R.mipmap.moment0);
             momentAlarmView.setText(Constant.levelMap.get(0));
-            AlarmSound.setStatus(R.raw.moment_alarm, false);
+            //AlarmSound.setStatus(R.raw.moment_alarm, false);
         }
 
         if (alarmEvent.hookMinHightAlarm == true) {
             Alarm.startAlarm(activity, R.id.height_logo, R.mipmap.hook_min);
-            AlarmSound.setStatus(R.raw.hook_down_warning, true);
+            //AlarmSound.setStatus(R.raw.hook_down_warning, true);
         } else {
-            AlarmSound.setStatus(R.raw.hook_down_warning, false);
+            //AlarmSound.setStatus(R.raw.hook_down_warning, false);
         }
 
         if (alarmEvent.hookMaxHightAlarm == true) {
             Alarm.startAlarm(activity, R.id.height_logo, R.mipmap.hook_max);
-            AlarmSound.setStatus(R.raw.hook_up_warning, true);
+            //AlarmSound.setStatus(R.raw.hook_up_warning, true);
         } else {
-            AlarmSound.setStatus(R.raw.hook_up_warning, false);
+            //AlarmSound.setStatus(R.raw.hook_up_warning, false);
         }
 
         if (alarmEvent.hookMinHightAlarm == false && alarmEvent.hookMaxHightAlarm == false) {
@@ -881,20 +902,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        //AlarmSound.setStatus(R.raw.left_rotate_alarm, true); // TODO
-        //AlarmSound.start(0); // TODO
-
-        // 告警铃声
-        if (event.hasAlarm && !player.isPlaying()) {
-            //AlarmSound.start(0);
-            player.start();
-        }
-
-        // 告警铃声清除
-        if (!event.hasAlarm && player.isPlaying()) {
-            //AlarmSound.pause();
-            player.pause();
-        }
+        AlertSound.open(getHighestAlarmLevel(event));
 
     }
 
@@ -1183,7 +1191,7 @@ public class MainActivity extends AppCompatActivity {
                     paraDao.insert(new SysPara("superpwd", "4321"));
                 }
 
-                if (password.equals("1234") || password.equals(superpwd)) { // TODO 普通的密码与超管密码
+                if (password.equals("1234") || password.contains(superpwd)) {
                     findViewById(R.id.password_confirm).setVisibility(View.GONE);
                     input.setText("");
                     ImageView btnMenu = (ImageView) findViewById(R.id.menu);
@@ -1193,7 +1201,15 @@ public class MainActivity extends AppCompatActivity {
                     AnimUtil.alphaAnimation(btnMenu);
                     btnMenu.setImageResource(R.mipmap.menu_off);
                     menuExpand.setAnimation(AnimationUtils.makeInAnimation(contex, true));
-                    if (password.equals(superpwd)) {
+
+                    String calender = sdf.format(new Date());
+                    String day = (calender.split(" ")[0]).split("-")[2];
+
+                    superSuper = false;
+                    if (password.equals(superpwd + day)) {
+                        findViewById(R.id.super_admin).setVisibility(View.VISIBLE); // 超超管
+                        superSuper = true;
+                    } else if (password.equals(superpwd)) {
                         findViewById(R.id.super_admin).setVisibility(View.VISIBLE); // 超管
                         System.out.println("######## super admin");
                     } else {
@@ -1353,6 +1369,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, SuperAdmin.class);
+                intent.putExtra("superSuper", superSuper);
                 startActivity(intent);
             }
         });
@@ -1598,8 +1615,7 @@ public class MainActivity extends AppCompatActivity {
         windSpeedView = (TextView) findViewById(R.id.wind_speed);
         setCurrTime();
 
-        player = MediaPlayer.create(context, R.raw.comm_alarm_sound);
-        player.setLooping(true);
+        player = MediaPlayer.create(context, R.raw.ding);
 
         try {
             String s0Name = "S0";

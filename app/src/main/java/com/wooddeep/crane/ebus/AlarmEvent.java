@@ -29,5 +29,5 @@ public class AlarmEvent {
     public int momentAlarmDispearLevel = 3;
 
     public boolean hasAlarm = false; // 是否有告警
-    public int hiPropAlmLevel  = 5;  // 最高优先级告警级别
+    public int hiPropAlmLevel  = 6;  // 最高优先级告警级别 // TODO 6 -> 5
 }

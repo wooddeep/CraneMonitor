@@ -255,4 +255,37 @@ public class SysTool {
         }
     }
 
+    //settings get system screen_brightness
+    public static void adjustBackgroudLight(int delta) {
+        try {
+            String command;
+            command = "settings get system screen_brightness";
+            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            proc.waitFor();
+            InputStream fis = proc.getInputStream();
+            //用一个读输出流类去读
+            InputStreamReader isr = new InputStreamReader(fis);
+            //用缓冲器读行
+            BufferedReader br = new BufferedReader(isr);
+            String line = null;
+            //直到读完为止
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+                break;
+            }
+
+            if (line != null) {
+                int currbright = Integer.parseInt(line);
+                if (currbright < 50 && delta < 0) return;
+                int brightness = Integer.parseInt(line) + delta;
+                command = String.format("settings put system screen_brightness %d", brightness);
+                proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+                proc.waitFor();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
