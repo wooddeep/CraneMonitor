@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import com.example.x6.serialportlib.SerialPort;
 import com.wooddeep.crane.alarm.Alarm;
-import com.wooddeep.crane.alarm.AlarmSound;
 import com.wooddeep.crane.alarm.AlertSound;
 import com.wooddeep.crane.comm.ControlProto;
 import com.wooddeep.crane.comm.Protocol;
@@ -103,15 +102,12 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 //import androidx.annotation.RequiresApi;
 
@@ -507,7 +503,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startTimerThread() {
-        //AlarmSound.init(getApplicationContext());
+
         AlertSound.init(getApplicationContext());
         new Thread(() -> {
             int count = 0;
@@ -553,7 +549,6 @@ public class MainActivity extends AppCompatActivity {
 
                 if (count % 6 == 0) { // 告警判断
                     try {
-                        //System.out.println("--2--" + shadowLength);
                         Alarm.alarmDetect(calibration, currProto.getRealHookHeight(), shadowLength,
                             elemList, craneMap, myCraneNo, alarmSet, eventBus); // 回转告警判断
                         Alarm.weightAlarmDetect(calibration, loadParas, alarmSet, eventBus,
@@ -570,7 +565,7 @@ public class MainActivity extends AppCompatActivity {
     private void watchDogThread() {
 
         new Thread(() -> {
-            /*
+
             boolean live = true;
 
             Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
@@ -580,37 +575,33 @@ public class MainActivity extends AppCompatActivity {
                     live = false;
                 }
             }
-            */
 
             int count = 0;
-            //if (live) {
-            Thread.currentThread().setName("watchdog");
-            while (true && !sysExit) {
-                CommTool.sleep(100);
-                count++;
-                if (count % 100 == 0) {
-                    //System.out.println(sdf.format(new Date()));
-                    System.out.println("## I will finish!");
-                    System.out.println("## activity = " + activity);
-                    // 获取activity的值
-                    activity.finish();
-                }
+            if (live) {
+                Thread.currentThread().setName("watchdog");
+                while (true && !sysExit) {
+                    CommTool.sleep(100);
+                    count++;
+                    if (count % 100 == 0) {
+                        //System.out.println(sdf.format(new Date()));
+                        System.out.println("## I will finish!");
+                        System.out.println("## activity = " + activity);
+                        // 获取activity的值
+                        activity.finish();
+                    }
 
-                    /*
                     if (sysExit) {
                         CommTool.sleep(2000);
                         System.out.println(sdf.format(new Date()) + ": I will launch again");
                         launchPackage("com.wooddeep.crane", 1);
                         sysExit = false;
                     }
-                    */
+                }
             }
-            //}
         }).start();
     }
 
     // 侦听电台数据
-    //@Subscribe(threadMode = ThreadMode.MAIN)
     public void RadioDateEventOps(RadioEvent event) {
         int cmdRet = radioProto.parse(event.getData()); // 解析电台数据
         if (cmdRet == -1) return;
@@ -737,7 +728,6 @@ public class MainActivity extends AppCompatActivity {
                 if (Math.abs(hangle - savedData.angle) >= 0.1) {
                     runOnUiThread(() -> {
                         slave.setHAngle(hangle);
-                        //slave.setColor(Color.rgb(46, 139, 87));
                     });
                     savedData.angle = hangle;
                 }
@@ -1121,6 +1111,14 @@ public class MainActivity extends AppCompatActivity {
                 //System.out.printf("%s--%s\n", load.getCoordinate(), load.getWeight());
             }
         }
+
+        SysPara rvc = paraDao.queryParaByName("rvc");
+        if (rvc == null) {
+            rvc = new SysPara("rvc", "false");
+            paraDao.insert(rvc);
+        }
+        
+        isRvcMode.set(Boolean.parseBoolean(paraDao.queryValueByName("rvc")));
     }
 
     public void setOnTouchListener(View view) {

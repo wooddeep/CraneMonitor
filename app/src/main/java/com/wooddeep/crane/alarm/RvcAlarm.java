@@ -3,7 +3,6 @@ package com.wooddeep.crane.alarm;
 import android.app.Activity;
 import android.widget.ImageView;
 
-import com.wooddeep.crane.MainActivity;
 import com.wooddeep.crane.comm.ControlProto;
 import com.wooddeep.crane.ebus.AlarmEvent;
 import com.wooddeep.crane.element.BaseElem;
@@ -25,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Alarm {
+public class RvcAlarm {
 
     public static AlarmEvent alarmEvent = new AlarmEvent();
     //public static AlarmEvent weightalarmEvent = new AlarmEvent();
@@ -65,7 +64,6 @@ public class Alarm {
         float alarmDisGear3 = alarmSet.t2tDistGear3;
         float alarmDisGear4 = alarmSet.t2tDistGear4;
         float alarmDisGear5 = alarmSet.t2tDistGear5;
-
         if (type == 1) { // crane to crane alarm distance
             alarmDisGear1 = alarmSet.t2cDistGear1;
             alarmDisGear2 = alarmSet.t2cDistGear2;
@@ -77,11 +75,8 @@ public class Alarm {
         if (distance <= alarmDisGear1) return 1; // 1挡为最小距离，告警亮红色
         if (distance <= alarmDisGear2) return 2;
         if (distance <= alarmDisGear3) return 3;
-
-        if (!MainActivity.isRvcMode.get()) { // 非RVC模式下，进行4, 5档的判断
-            if (distance <= alarmDisGear4) return 4;
-            if (distance <= alarmDisGear5) return 5;
-        }
+        if (distance <= alarmDisGear4) return 4;
+        if (distance <= alarmDisGear5) return 5;
 
         return level;
     }
@@ -104,7 +99,7 @@ public class Alarm {
                 Geometry cargcc = cc.getCarGeo(0, 0);
                 Geometry cargsc = sc.getCarGeo(0, 0);
                 double carToCarDis = cargcc.distance(cargsc);
-                if (carToCarDis < alarmSet.getCarSpeedDownDist()) { // 小车减速距离
+                if (carToCarDis < alarmSet.getCarSpeedDownDist()) {
                     int level = carToCarDis < alarmSet.getCarStopDist() ? 1 : 2; // 1挡停车距离，2挡减速距离
 
                     Geometry gPredect1 = cc.getCarGeo(0.0f, 0.1f); // 向外运行
@@ -138,7 +133,7 @@ public class Alarm {
                 Geometry gsc = sc.getArmGeo(0f);
                 float sideHeight = sc.height;
                 if (Math.abs(myHeight - sideHeight) <= 1 && sc.online) { // 高度差相差1m, 当成等高, 查看当前圆心和对端 大臂端点的距离, 无前后告警, 只有左右告警
-                    float distance = (float) gcc.distance(gsc); // 计算当前塔机 和 旁边 塔机 的距离
+                    float distance = (float) gcc.distance(gsc);
                     int alarmLevel = getAlarmLevel(distance, alarmSet, 0);
                     if (alarmLevel != -1) { // 有距离告警
                         Geometry leftPredect = cc.getArmGeo(0.1f); // 逆时针旋转
@@ -396,9 +391,9 @@ public class Alarm {
         alarmEvent.forwardAlarmLevel = 100;
         alarmEvent.backendAlarmLevel = 100;
 
-        Alarm.extremumDetect(hookHeight, length, alarmSet, eventBus); // 最大最小
-        Alarm.craneToCraneAlarm(craneMap, no, alarmSet); // 塔基到塔基的距离
-        Alarm.craneToAreaAlarm(elemList, cc, alarmSet);  // 塔基到区域的距离
+        RvcAlarm.extremumDetect(hookHeight, length, alarmSet, eventBus); // 最大最小
+        RvcAlarm.craneToCraneAlarm(craneMap, no, alarmSet); // 塔基到塔基的距离
+        RvcAlarm.craneToAreaAlarm(elemList, cc, alarmSet);  // 塔基到区域的距离
     }
 
     private static void extremumDetect(float hookHigth, float carRange, AlarmSet alarmSet, EventBus eventBus) throws Exception {
@@ -596,64 +591,6 @@ public class Alarm {
 
     }
 
-    /*
-     *   1—左
-     *   2—右
-     *   3—左二
-     *   4—右二
-     *   5—左三
-     *   6—右三
-     *
-     * */
-
-    public static void rotateRvcControl(AlarmEvent alarmEvent, ControlProto controlProto) {
-        if (alarmEvent.leftAlarm || alarmEvent.rightAlarm) {
-
-            controlProto.setLeftRote(false);  // 左 1 清除一档左告警
-            controlProto.setRightRote(false); // 右 1 清除一档右告警
-            controlProto.setRotate2(false); //  左 2 清除2挡告警
-            controlProto.setRotate3(false); //  右 2 清除2挡告警
-            controlProto.setRotate4(false); // 左 3
-            controlProto.setRotate5(false); // 右 3
-
-            if (alarmEvent.leftAlarm && alarmEvent.leftAlarmLevel == 1) {
-                controlProto.setLeftRote(true);
-                controlProto.setRotate2(false);
-                controlProto.setRotate4(false);
-            }
-
-            if (alarmEvent.leftAlarm && alarmEvent.leftAlarmLevel == 2) {
-                controlProto.setLeftRote(true);
-                controlProto.setRotate2(true);
-                controlProto.setRotate4(false);
-            }
-
-            if (alarmEvent.leftAlarm && alarmEvent.leftAlarmLevel == 3) {
-                controlProto.setLeftRote(true);
-                controlProto.setRotate2(true);
-                controlProto.setRotate4(true);
-            }
-
-            if (alarmEvent.rightAlarm && alarmEvent.rightAlarmLevel == 1) {
-                controlProto.setRightRote(true);
-                controlProto.setRotate3(false);
-                controlProto.setRotate5(false);
-            }
-
-            if (alarmEvent.rightAlarm && alarmEvent.rightAlarmLevel == 2) {
-                controlProto.setRightRote(true);
-                controlProto.setRotate3(true);
-                controlProto.setRotate5(false);
-            }
-
-            if (alarmEvent.rightAlarm && alarmEvent.rightAlarmLevel == 3) {
-                controlProto.setRightRote(true);
-                controlProto.setRotate3(true);
-                controlProto.setRotate5(true);
-            }
-        }
-    }
-
     public static void weightControl(AlarmEvent alarmEvent, ControlProto controlProto) {
         if (alarmEvent.weightAlarm) {
             if (alarmEvent.weightAlarmLevel == 3) {
@@ -748,14 +685,15 @@ public class Alarm {
     private static byte[] prevControl = new byte[]{0, 0};
 
     public static boolean controlSet(AlarmEvent event, ControlProto controlProto) {
-        if (MainActivity.isRvcMode.get()) {
-            rotateRvcControl(event, controlProto);
-        } else {
-            rotateControl(event, controlProto);
-        }
+        rotateControl(event, controlProto);
         weightControl(event, controlProto);
         momentControl(event, controlProto);
         carBackControl(event, controlProto);
+
+        /*
+        System.out.printf("## control[4] = %02x, pcontrol[0] = %02x, control[5] = %02x, pcontrol[1] = %02x\n",
+            controlProto.control[4], prevControl[0], controlProto.control[5], prevControl[1]);
+        */
 
         if (controlProto.control[4] != prevControl[0] || controlProto.control[5] != prevControl[1]) {
             prevControl[0] = controlProto.control[4];

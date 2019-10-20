@@ -176,16 +176,18 @@ public class AlarmSetting extends AppCompatActivity {
                 boolean isRvcMode = Boolean.parseBoolean(rvc.getParaValue());
                 if (!isRvcMode) { // 反向操作
                     ((Button) findViewById(R.id.rvc_mode)).setText("RVC");
-                    findViewById(R.id.row_rvc_t2t).setVisibility(VISIBLE);
-                    findViewById(R.id.row_norvc_t2t).setVisibility(GONE);
-                    findViewById(R.id.row_rvc_t2a).setVisibility(VISIBLE);
-                    findViewById(R.id.row_norvc_t2a).setVisibility(GONE);
+                    findViewById(R.id.et_gear4).setEnabled(false);
+                    findViewById(R.id.et_gear5).setEnabled(false);
+                    findViewById(R.id.et_ta_gear4).setEnabled(false);
+                    findViewById(R.id.et_ta_gear5).setEnabled(false);
+
                 } else {
                     ((Button) findViewById(R.id.rvc_mode)).setText("NO-RVC");
-                    findViewById(R.id.row_rvc_t2t).setVisibility(GONE);
-                    findViewById(R.id.row_norvc_t2t).setVisibility(VISIBLE);
-                    findViewById(R.id.row_rvc_t2a).setVisibility(GONE);
-                    findViewById(R.id.row_norvc_t2a).setVisibility(VISIBLE);
+                    findViewById(R.id.et_gear4).setEnabled(true);
+                    findViewById(R.id.et_gear5).setEnabled(true);
+                    findViewById(R.id.et_ta_gear4).setEnabled(true);
+                    findViewById(R.id.et_ta_gear5).setEnabled(true);
+
                 }
 
                 rvc.setParaValue(String.valueOf(!isRvcMode));
@@ -227,16 +229,18 @@ public class AlarmSetting extends AppCompatActivity {
         boolean isRvcMode = Boolean.parseBoolean(rvc.getParaValue());
         if (isRvcMode) {
             ((Button) findViewById(R.id.rvc_mode)).setText("RVC");
-            findViewById(R.id.row_rvc_t2t).setVisibility(VISIBLE);
-            findViewById(R.id.row_norvc_t2t).setVisibility(GONE);
-            findViewById(R.id.row_rvc_t2a).setVisibility(VISIBLE);
-            findViewById(R.id.row_norvc_t2a).setVisibility(GONE);
+            findViewById(R.id.et_gear4).setEnabled(false);
+            findViewById(R.id.et_gear5).setEnabled(false);
+            findViewById(R.id.et_ta_gear4).setEnabled(false);
+            findViewById(R.id.et_ta_gear5).setEnabled(false);
+
         } else {
             ((Button) findViewById(R.id.rvc_mode)).setText("NO-RVC");
-            findViewById(R.id.row_rvc_t2t).setVisibility(GONE);
-            findViewById(R.id.row_norvc_t2t).setVisibility(VISIBLE);
-            findViewById(R.id.row_rvc_t2a).setVisibility(GONE);
-            findViewById(R.id.row_norvc_t2a).setVisibility(VISIBLE);
+            findViewById(R.id.et_gear4).setEnabled(true);
+            findViewById(R.id.et_gear5).setEnabled(true);
+            findViewById(R.id.et_ta_gear4).setEnabled(true);
+            findViewById(R.id.et_ta_gear5).setEnabled(true);
+
         }
 
         List<AlarmSet> paras = dao.selectAll();

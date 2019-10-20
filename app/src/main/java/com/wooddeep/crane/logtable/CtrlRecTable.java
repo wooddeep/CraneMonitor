@@ -2,6 +2,7 @@ package com.wooddeep.crane.logtable;
 
 import android.content.Context;
 
+import com.wooddeep.crane.MainActivity;
 import com.wooddeep.crane.persist.dao.log.CtrlRecDao;
 import com.wooddeep.crane.persist.dao.log.LogDao;
 import com.wooddeep.crane.persist.entity.log.CtrlRec;
@@ -30,12 +31,31 @@ public class CtrlRecTable extends TableDesc {
         add(new TableCell(0, "时间/Time"));
         add(new TableCell(0, "小车出2/car out 2"));
         add(new TableCell(0, "小车出1/car out 1"));
-        add(new TableCell(0, "回转5/rotate gear 5"));
-        add(new TableCell(0, "回转4/rotate gear 4"));
-        add(new TableCell(0, "回转3/rotate gear 2"));
-        add(new TableCell(0, "回转2/rotate gear 2"));
-        add(new TableCell(0, "左回转/left rotate"));
-        add(new TableCell(0, "右回转/right rotate"));
+        add(new TableCell(0, "回转5/gear 5"));
+        add(new TableCell(0, "回转4/gear 4"));
+        add(new TableCell(0, "回转3/gear 2"));
+        add(new TableCell(0, "回转2/gear 2"));
+        add(new TableCell(0, "左回转/left"));
+        add(new TableCell(0, "右回转/right"));
+        add(new TableCell(0, "力矩3/moment 3"));
+        add(new TableCell(0, "力矩2/moment 2"));
+        add(new TableCell(0, "力矩1/moment 1"));
+        add(new TableCell(0, "吊重/weight"));
+        add(new TableCell(0, "小车回2/car back 2"));
+        add(new TableCell(0, "小车回1/car back 1"));
+    }};
+
+    private ArrayList<TableCell> colRvcNames = new ArrayList<TableCell>() {{
+        add(new TableCell(0, "编号/ID"));
+        add(new TableCell(0, "时间/Time"));
+        add(new TableCell(0, "小车出2/car out 2"));
+        add(new TableCell(0, "小车出1/car out 1"));
+        add(new TableCell(0, "右回转3/right 3"));
+        add(new TableCell(0, "左回转3/left 3"));
+        add(new TableCell(0, "右回转2/rignt 2"));
+        add(new TableCell(0, "左回转2/left 2"));
+        add(new TableCell(0, "左回转1/left 1"));
+        add(new TableCell(0, "右回转1/right 1"));
         add(new TableCell(0, "力矩3/moment 3"));
         add(new TableCell(0, "力矩2/moment 2"));
         add(new TableCell(0, "力矩1/moment 1"));
@@ -119,7 +139,11 @@ public class CtrlRecTable extends TableDesc {
 
     @Override
     public ArrayList<TableCell> getColNames() {
-        return colNames;
+        if (MainActivity.isRvcMode.get()) {
+            return colRvcNames;
+        } else {
+            return colNames;
+        }
     }
 
     @Override
