@@ -182,7 +182,7 @@ public class AlarmSetting extends AppCompatActivity {
                     findViewById(R.id.et_ta_gear5).setEnabled(false);
 
                 } else {
-                    ((Button) findViewById(R.id.rvc_mode)).setText("NO-RVC");
+                    ((Button) findViewById(R.id.rvc_mode)).setText("FREQ");
                     findViewById(R.id.et_gear4).setEnabled(true);
                     findViewById(R.id.et_gear5).setEnabled(true);
                     findViewById(R.id.et_ta_gear4).setEnabled(true);
@@ -235,7 +235,7 @@ public class AlarmSetting extends AppCompatActivity {
             findViewById(R.id.et_ta_gear5).setEnabled(false);
 
         } else {
-            ((Button) findViewById(R.id.rvc_mode)).setText("NO-RVC");
+            ((Button) findViewById(R.id.rvc_mode)).setText("FREQ");
             findViewById(R.id.et_gear4).setEnabled(true);
             findViewById(R.id.et_gear5).setEnabled(true);
             findViewById(R.id.et_ta_gear4).setEnabled(true);

@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AtomicBoolean iAmMaster = new AtomicBoolean(false); // 本机是否为通信主机
     private SimulatorFlags flags = new SimulatorFlags();
-    private boolean calibrationFlag = false;
+    public static boolean calibrationFlag = false;
     private boolean isMasterCrane = false; // 是否主塔机
     private boolean waitFlag = true; // 等待主机信号标识
     private boolean superSuper = false;

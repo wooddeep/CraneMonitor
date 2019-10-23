@@ -7,11 +7,11 @@ import com.wooddeep.crane.R;
 
 public class AlertSound {
     public static AlarmFile[] soundFileList = new AlarmFile[]{
-        new AlarmFile(R.raw.level1_alarm, false),
-        new AlarmFile(R.raw.level2_alarm, false),
-        new AlarmFile(R.raw.level3_alarm, false),
-        new AlarmFile(R.raw.level4_alarm, false),
-        new AlarmFile(R.raw.level5_alarm, false),
+        new AlarmFile(R.raw.alarm, false),
+        new AlarmFile(R.raw.warning, false),
+        new AlarmFile(R.raw.warning, false),
+        new AlarmFile(R.raw.warning, false),
+        new AlarmFile(R.raw.warning, false),
     };
 
     public static MediaPlayer[] playsers = new MediaPlayer[soundFileList.length];

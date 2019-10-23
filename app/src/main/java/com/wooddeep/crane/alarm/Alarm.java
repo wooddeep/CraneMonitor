@@ -616,42 +616,47 @@ public class Alarm {
             controlProto.setRotate4(false); // 左 3
             controlProto.setRotate5(false); // 右 3
 
-            if (alarmEvent.leftAlarm && alarmEvent.leftAlarmLevel == 1) {
-                controlProto.setLeftRote(true);
-                controlProto.setRotate2(false);
-                controlProto.setRotate4(false);
+            if (alarmEvent.leftAlarm) {
+                if (alarmEvent.leftAlarmLevel == 1) {
+                    controlProto.setLeftRote(true);
+                    controlProto.setRotate3(true);
+                    controlProto.setRotate5(true);
+                } else if (alarmEvent.leftAlarmLevel == 2) {
+                    controlProto.setLeftRote(false);
+                    controlProto.setRotate3(true);
+                    controlProto.setRotate5(true);
+                } else if (alarmEvent.leftAlarmLevel == 3) {
+                    controlProto.setLeftRote(false);
+                    controlProto.setRotate3(false);
+                    controlProto.setRotate5(true);
+                } else {
+                    controlProto.setLeftRote(false);
+                    controlProto.setRotate3(false);
+                    controlProto.setRotate5(false);
+                }
             }
 
-            if (alarmEvent.leftAlarm && alarmEvent.leftAlarmLevel == 2) {
-                controlProto.setLeftRote(true);
-                controlProto.setRotate2(true);
-                controlProto.setRotate4(false);
-            }
-
-            if (alarmEvent.leftAlarm && alarmEvent.leftAlarmLevel == 3) {
-                controlProto.setLeftRote(true);
-                controlProto.setRotate2(true);
-                controlProto.setRotate4(true);
-            }
-
-            if (alarmEvent.rightAlarm && alarmEvent.rightAlarmLevel == 1) {
-                controlProto.setRightRote(true);
-                controlProto.setRotate3(false);
-                controlProto.setRotate5(false);
-            }
-
-            if (alarmEvent.rightAlarm && alarmEvent.rightAlarmLevel == 2) {
-                controlProto.setRightRote(true);
-                controlProto.setRotate3(true);
-                controlProto.setRotate5(false);
-            }
-
-            if (alarmEvent.rightAlarm && alarmEvent.rightAlarmLevel == 3) {
-                controlProto.setRightRote(true);
-                controlProto.setRotate3(true);
-                controlProto.setRotate5(true);
+            if (alarmEvent.rightAlarm) {
+                if (alarmEvent.rightAlarmLevel == 1) {
+                    controlProto.setRightRote(true);
+                    controlProto.setRotate2(true);
+                    controlProto.setRotate4(true);
+                } else if (alarmEvent.rightAlarmLevel == 2) {
+                    controlProto.setRightRote(false);
+                    controlProto.setRotate2(true);
+                    controlProto.setRotate4(true);
+                } else if (alarmEvent.rightAlarmLevel == 3) {
+                    controlProto.setRightRote(false);
+                    controlProto.setRotate2(false);
+                    controlProto.setRotate4(true);
+                } else {
+                    controlProto.setRightRote(false);
+                    controlProto.setRotate2(false);
+                    controlProto.setRotate4(false);
+                }
             }
         }
+
     }
 
     public static void weightControl(AlarmEvent alarmEvent, ControlProto controlProto) {
@@ -756,6 +761,11 @@ public class Alarm {
         weightControl(event, controlProto);
         momentControl(event, controlProto);
         carBackControl(event, controlProto);
+
+        if (MainActivity.calibrationFlag) {
+            controlProto.control[4] = 0;
+            controlProto.control[5] = 0;
+        }
 
         if (controlProto.control[4] != prevControl[0] || controlProto.control[5] != prevControl[1]) {
             prevControl[0] = controlProto.control[4];
