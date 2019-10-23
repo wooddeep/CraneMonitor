@@ -2,6 +2,7 @@ package com.wooddeep.crane;
 
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +16,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -321,11 +323,11 @@ public class MainActivity extends AppCompatActivity {
 
                             if (centerCycle.getType() == 1) {
                                 MomentOut moment = MathTool.momentCalc(loadParas, currProto.getRealWeight(), shadowLength);
-                                System.out.println("### 1 = " + moment.moment);
+                                //System.out.println("### 1 = " + moment.moment);
                                 runOnUiThread(() -> momentShow(moment.moment));
                             } else {
                                 MomentOut moment = MathTool.momentCalc(loadParas, currProto.getRealWeight(), currProto.getRealLength());
-                                System.out.println("### 0 = " + moment.moment);
+                                //System.out.println("### 0 = " + moment.moment);
                                 runOnUiThread(() -> momentShow(moment.moment));
                             }
                         }
@@ -782,6 +784,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int getHighestAlarmLevel(AlarmEvent event) {
+
+        if (event.momentAlarmLevel <= 3) event.momentAlarmLevel = 4 - event.momentAlarmLevel;
+        if (event.weightAlarmLevel <= 3) event.momentAlarmLevel = 4 - event.weightAlarmLevel;
+
         Integer[] array = new Integer[]{
             event.backendAlarmLevel,
             event.forwardAlarmLevel,
@@ -1117,7 +1123,7 @@ public class MainActivity extends AppCompatActivity {
             rvc = new SysPara("rvc", "false");
             paraDao.insert(rvc);
         }
-        
+
         isRvcMode.set(Boolean.parseBoolean(paraDao.queryValueByName("rvc")));
     }
 
@@ -1223,9 +1229,13 @@ public class MainActivity extends AppCompatActivity {
         });
         Button cancel = (Button) findViewById(R.id.cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
+            @TargetApi(Build.VERSION_CODES.M)
             @Override
             public void onClick(View view) {
                 findViewById(R.id.password_confirm).setVisibility(View.GONE);
+                // 关闭 输入框
+                InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(findViewById(R.id.password).getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
 
@@ -1324,6 +1334,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, CalibrationSetting.class);
+                intent.putExtra("craneType", mainCrane.getType());
                 startActivity(intent);
 
                 new Handler().postDelayed(() -> {

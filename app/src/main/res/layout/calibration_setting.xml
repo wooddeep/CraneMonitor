@@ -101,8 +101,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true">
 
-            <TableRow
-                android:layout_margin="@dimen/dp10">
+            <TableRow android:layout_margin="@dimen/dp10">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -116,9 +116,9 @@
                     android:id="@+id/amp_value"
                     android:layout_width="@dimen/dp100"
                     android:layout_height="wrap_content"
-                    android:text="0"
                     android:layout_marginRight="@dimen/dp20"
                     android:background="@color/gray"
+                    android:text="0"
                     android:textSize="@dimen/dp15" />
 
                 <TextView
@@ -157,9 +157,9 @@
                     android:id="@+id/weight_value"
                     android:layout_width="@dimen/dp100"
                     android:layout_height="wrap_content"
-                    android:text="0"
                     android:layout_marginRight="@dimen/dp20"
                     android:background="@color/gray"
+                    android:text="0"
                     android:textSize="@dimen/dp15" />
 
                 <TextView
@@ -175,8 +175,8 @@
                     android:id="@+id/encoder_value"
                     android:layout_width="@dimen/dp100"
                     android:layout_height="wrap_content"
-                    android:text="0"
                     android:background="@color/gray"
+                    android:text="0"
                     android:textSize="@dimen/dp15" />
             </TableRow>
 
@@ -376,8 +376,8 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp0"
-            android:layout_weight="1"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:background="@drawable/split_boder"
             android:gravity="center">
 
@@ -421,31 +421,66 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <EditText
-                        android:id="@+id/etx1"
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/dp0"
-                        android:layout_gravity="center"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:gravity="center"
-                        android:minWidth="@dimen/dp100"
-                        android:text="X1"
-                        android:inputType="number|numberDecimal|numberSigned"
-                        android:textSize="@dimen/dp15" />
+                        android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/ety1"
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:inputType="number|numberDecimal|numberSigned"
+                            android:minWidth="@dimen/dp100"
+                            android:text="X1:"
+                            android:textSize="@dimen/dp15" />
+
+                        <EditText
+                            android:id="@+id/etx1"
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:inputType="number|numberDecimal|numberSigned"
+                            android:minWidth="@dimen/dp100"
+                            android:text="X1"
+                            android:textSize="@dimen/dp15" />
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/dp0"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:gravity="center"
-                        android:minWidth="@dimen/dp100"
-                        android:text="Y1"
-                        android:inputType="number|numberDecimal|numberSigned"
-                        android:textSize="@dimen/dp15" />
+                        android:orientation="horizontal">
 
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:inputType="number|numberDecimal|numberSigned"
+                            android:minWidth="@dimen/dp100"
+                            android:text="Y1:"
+                            android:textSize="@dimen/dp15" />
+
+                        <EditText
+                            android:id="@+id/ety1"
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:layout_height="match_parent"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:inputType="number|numberDecimal|numberSigned"
+                            android:minWidth="@dimen/dp100"
+                            android:text="Y1"
+                            android:textSize="@dimen/dp15" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <Button
@@ -477,30 +512,67 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <EditText
-                        android:id="@+id/etx2"
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/dp0"
-                        android:layout_gravity="center"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:gravity="center"
-                        android:minWidth="@dimen/dp100"
-                        android:text="X2"
-                        android:inputType="number|numberDecimal|numberSigned"
-                        android:textSize="@dimen/dp15" />
+                        android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/ety2"
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:inputType="number|numberDecimal|numberSigned"
+                            android:minWidth="@dimen/dp100"
+                            android:text="X2:"
+                            android:textSize="@dimen/dp15" />
+
+                        <EditText
+                            android:id="@+id/etx2"
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:inputType="number|numberDecimal|numberSigned"
+                            android:minWidth="@dimen/dp100"
+                            android:text="X2"
+                            android:textSize="@dimen/dp15" />
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/dp0"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:gravity="center"
-                        android:minWidth="@dimen/dp100"
-                        android:text="Y2"
-                        android:inputType="number|numberDecimal|numberSigned"
-                        android:textSize="@dimen/dp15" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:inputType="number|numberDecimal|numberSigned"
+                            android:minWidth="@dimen/dp100"
+                            android:text="Y2:"
+                            android:textSize="@dimen/dp15" />
+
+                        <EditText
+                            android:id="@+id/ety2"
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:layout_height="match_parent"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:inputType="number|numberDecimal|numberSigned"
+                            android:minWidth="@dimen/dp100"
+                            android:text="Y2"
+                            android:textSize="@dimen/dp15" />
+                    </LinearLayout>
+
 
                 </LinearLayout>
 
@@ -541,6 +613,7 @@
 
         <!-- 倾角标定  -->
         <TableRow
+            android:id="@+id/row_dip_angle"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp0"
             android:layout_weight="1"
@@ -585,8 +658,8 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="0"
                     android:inputType="number|numberDecimal|numberSigned"
+                    android:text="0"
                     android:textSize="@dimen/dp20" />
 
                 <Button
@@ -617,8 +690,8 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="0"
                     android:inputType="number|numberDecimal|numberSigned"
+                    android:text="0"
                     android:textSize="@dimen/dp20" />
 
                 <Button
@@ -701,8 +774,8 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="0"
                     android:inputType="number|numberDecimal|numberSigned"
+                    android:text="0"
                     android:textSize="@dimen/dp20" />
 
                 <Button
@@ -733,8 +806,8 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="0"
                     android:inputType="number|numberDecimal|numberSigned"
+                    android:text="0"
                     android:textSize="@dimen/dp20" />
 
                 <Button
@@ -772,6 +845,7 @@
 
         <!-- 臂长 -->
         <TableRow
+            android:id="@+id/row_arm_length"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp0"
             android:layout_weight="1"
@@ -818,8 +892,8 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="0"
                     android:inputType="number|numberDecimal|numberSigned"
+                    android:text="0"
                     android:textSize="@dimen/dp20" />
 
                 <Button
@@ -850,8 +924,8 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="0"
                     android:inputType="number|numberDecimal|numberSigned"
+                    android:text="0"
                     android:textSize="@dimen/dp20" />
 
                 <Button
@@ -934,8 +1008,8 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="0"
                     android:inputType="number|numberDecimal|numberSigned"
+                    android:text="0"
                     android:textSize="@dimen/dp20" />
 
                 <Button
@@ -966,8 +1040,8 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="0"
                     android:inputType="number|numberDecimal|numberSigned"
+                    android:text="0"
                     android:textSize="@dimen/dp20" />
 
                 <Button

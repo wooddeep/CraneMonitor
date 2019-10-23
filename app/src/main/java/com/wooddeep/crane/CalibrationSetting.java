@@ -1,12 +1,15 @@
 package com.wooddeep.crane;
 
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -101,6 +104,17 @@ public class CalibrationSetting extends AppCompatActivity {
     private MessageEvent gevent = null;
 
     private UartEvent uartEvent = null;
+
+    public void hideKeyboard() {
+        try {
+            View rootview = this.getWindow().getDecorView();
+            InputMethodManager inputMethodManager = (InputMethodManager) getApplicationContext()
+                .getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(rootview.findFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+        }
+    }
 
     // 订阅消息, 可以获取串口的数据
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -913,6 +927,17 @@ public class CalibrationSetting extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calibration_setting);
+
+        Intent intent = getIntent();
+        int craneType = intent.getIntExtra("craneType", 0);
+        if (craneType == 0) {
+            findViewById(R.id.row_arm_length).setVisibility(View.VISIBLE);
+            findViewById(R.id.row_dip_angle).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.row_arm_length).setVisibility(View.GONE);
+            findViewById(R.id.row_dip_angle).setVisibility(View.VISIBLE);
+        }
+
         caliRecDao = new CaliRecDao(getApplicationContext());
 
         if (getSupportActionBar() != null) {
@@ -1042,11 +1067,12 @@ public class CalibrationSetting extends AppCompatActivity {
                 if (view.getId() == R.id.close_logo) {
                     EventBus.getDefault().post(new CalibrationCloseEvent());
                     finish();
+                    hideKeyboard();
                 }
 
                 if (view.getId() == R.id.save_logo) {
-                    // TODO 保存数据
                     System.out.println("## save !!!!");
+                    hideKeyboard();
                 }
             }
         };

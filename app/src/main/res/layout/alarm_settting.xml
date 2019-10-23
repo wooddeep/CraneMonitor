@@ -583,7 +583,7 @@
                     </LinearLayout>
 
                     <EditText
-                        android:id="@+id/et_hook_dist1"
+                        android:id="@+id/et_hook_dist2"
                         android:layout_width="@dimen/dp0"
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"
@@ -617,7 +617,7 @@
                     </LinearLayout>
 
                     <EditText
-                        android:id="@+id/et_hook_dist2"
+                        android:id="@+id/et_hook_dist1"
                         android:layout_width="@dimen/dp0"
                         android:layout_height="@dimen/dp60"
                         android:layout_gravity="center"

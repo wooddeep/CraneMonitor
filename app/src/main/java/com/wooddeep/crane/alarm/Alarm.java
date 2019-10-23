@@ -607,56 +607,51 @@ public class Alarm {
      * */
 
     public static void rotateRvcControl(AlarmEvent alarmEvent, ControlProto controlProto) {
+        controlProto.setLeftRote(false);  // 左 1 清除一档左告警
+        controlProto.setRightRote(false); // 右 1 清除一档右告警
+        controlProto.setRotate2(false); //  左 2 清除2挡告警
+        controlProto.setRotate3(false); //  右 2 清除2挡告警
+        controlProto.setRotate4(false); // 左 3
+        controlProto.setRotate5(false); // 右 3
+
         if (alarmEvent.leftAlarm || alarmEvent.rightAlarm) {
 
-            controlProto.setLeftRote(false);  // 左 1 清除一档左告警
-            controlProto.setRightRote(false); // 右 1 清除一档右告警
-            controlProto.setRotate2(false); //  左 2 清除2挡告警
-            controlProto.setRotate3(false); //  右 2 清除2挡告警
-            controlProto.setRotate4(false); // 左 3
-            controlProto.setRotate5(false); // 右 3
-
-            if (alarmEvent.leftAlarm) {
-                if (alarmEvent.leftAlarmLevel == 1) {
-                    controlProto.setLeftRote(true);
-                    controlProto.setRotate3(true);
-                    controlProto.setRotate5(true);
-                } else if (alarmEvent.leftAlarmLevel == 2) {
-                    controlProto.setLeftRote(false);
-                    controlProto.setRotate3(true);
-                    controlProto.setRotate5(true);
-                } else if (alarmEvent.leftAlarmLevel == 3) {
-                    controlProto.setLeftRote(false);
-                    controlProto.setRotate3(false);
-                    controlProto.setRotate5(true);
-                } else {
-                    controlProto.setLeftRote(false);
-                    controlProto.setRotate3(false);
-                    controlProto.setRotate5(false);
-                }
+            if (alarmEvent.leftAlarm && alarmEvent.leftAlarmLevel == 1) {
+                controlProto.setLeftRote(true);
+                controlProto.setRotate3(true);
+                controlProto.setRotate5(true);
             }
 
-            if (alarmEvent.rightAlarm) {
-                if (alarmEvent.rightAlarmLevel == 1) {
-                    controlProto.setRightRote(true);
-                    controlProto.setRotate2(true);
-                    controlProto.setRotate4(true);
-                } else if (alarmEvent.rightAlarmLevel == 2) {
-                    controlProto.setRightRote(false);
-                    controlProto.setRotate2(true);
-                    controlProto.setRotate4(true);
-                } else if (alarmEvent.rightAlarmLevel == 3) {
-                    controlProto.setRightRote(false);
-                    controlProto.setRotate2(false);
-                    controlProto.setRotate4(true);
-                } else {
-                    controlProto.setRightRote(false);
-                    controlProto.setRotate2(false);
-                    controlProto.setRotate4(false);
-                }
+            if (alarmEvent.leftAlarm && alarmEvent.leftAlarmLevel == 2) {
+                controlProto.setLeftRote(false);
+                controlProto.setRotate3(true);
+                controlProto.setRotate5(true);
+            }
+
+            if (alarmEvent.leftAlarm && alarmEvent.leftAlarmLevel == 3) {
+                controlProto.setLeftRote(false);
+                controlProto.setRotate3(false);
+                controlProto.setRotate5(true);
+            }
+
+            if (alarmEvent.rightAlarm && alarmEvent.rightAlarmLevel == 1) {
+                controlProto.setRightRote(true);
+                controlProto.setRotate2(true);
+                controlProto.setRotate4(true);
+            }
+
+            if (alarmEvent.rightAlarm && alarmEvent.rightAlarmLevel == 2) {
+                controlProto.setRightRote(false);
+                controlProto.setRotate2(true);
+                controlProto.setRotate4(true);
+            }
+
+            if (alarmEvent.rightAlarm && alarmEvent.rightAlarmLevel == 3) {
+                controlProto.setRightRote(false);
+                controlProto.setRotate2(false);
+                controlProto.setRotate4(true);
             }
         }
-
     }
 
     public static void weightControl(AlarmEvent alarmEvent, ControlProto controlProto) {

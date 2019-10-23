@@ -82,6 +82,8 @@ public class SuperAdmin extends AppCompatActivity {
         if (!superSuper) {
             TableRow row = (TableRow)findViewById(R.id.row_pass_set);
             row.setVisibility(GONE);
+            TableRow rowSysSet = (TableRow)findViewById(R.id.row_sys_set);
+            rowSysSet.setVisibility(GONE);
         }
         activity = this;
         context = getApplicationContext();

@@ -9,6 +9,7 @@ import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -75,6 +76,17 @@ public class ProtectSetting extends AppCompatActivity {
     }
 
     private FixedTitleTable table;
+
+    public void hideKeyboard() {
+        try {
+            View rootview = this.getWindow().getDecorView();
+            InputMethodManager inputMethodManager = (InputMethodManager) getApplicationContext()
+                .getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(rootview.findFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,6 +188,7 @@ public class ProtectSetting extends AppCompatActivity {
                                     dao.update(cp);
                                 }
                             }
+                            hideKeyboard();
                         }
                     });
                     alertView.show();

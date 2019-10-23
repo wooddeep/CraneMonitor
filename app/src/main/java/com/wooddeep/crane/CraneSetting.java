@@ -9,6 +9,7 @@ import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,19 +61,19 @@ public class CraneSetting extends AppCompatActivity {
 
     private static String[] craneParaNames = new String[]{
         "塔基类型/Crane Type",
-        "X1坐标(米)/X1 coordinate(m)",
-        "Y1坐标(米)/Y1 coordinate(m)",
-        "X2偏移(米)/X2 offset(m)",
-        "Y2偏移(米)/X2 offset(m)",
+        "X1坐标(米)/X1 Coordinate(m)",
+        "Y1坐标(米)/Y1 Coordinate(m)",
+        "X2偏移(米)/X2 Offset(m)",
+        "Y2偏移(米)/X2 Offset(m)",
         "塔机高度(米)/Height(m)",
-        "大臂长度(米)/Big Arm(m)",
-        "平衡臂长度(米)/Balance Arm(m)",
-        "塔身直径(米)/Crane diameter(m)",
+        "大臂长度(米)/Main Jib(m)",
+        "平衡臂长度(米)/Counter Jib(m)",
+        "塔身直径(米)/Crane Diameter(m)",
         "大臂宽度",
         "平衡臂宽度",
-        "最大仰角(°)/Max Dip Angle(°)",
-        "最小仰角(°)/Min Dip Angle(°)",
-        "结构参数(米)/Arch parameter(m)",
+        "最大仰角(°)/Max Angle(°)",
+        "最小仰角(°)/Min Angle(°)",
+        "结构参数(米)/Arch Parameter(m)",
     };
 
     private static boolean[] craneParaVisible = new boolean[]{
@@ -91,6 +92,17 @@ public class CraneSetting extends AppCompatActivity {
         true,
         true,
     };
+
+    public void hideKeyboard() {
+        try {
+            View rootview = this.getWindow().getDecorView();
+            InputMethodManager inputMethodManager = (InputMethodManager) getApplicationContext()
+                .getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(rootview.findFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+        }
+    }
 
     private List<Crane> confLoad(Context contex) {
         CraneDao dao = new CraneDao(contex);
@@ -168,6 +180,7 @@ public class CraneSetting extends AppCompatActivity {
                     cp.setMinAngle(Float.parseFloat(gTable.get(13).get(j)));
                     cp.setArchPara(Float.parseFloat(gTable.get(14).get(j)));
                     dao.update(cp);
+                    hideKeyboard();
                 }
             }
         });
@@ -291,6 +304,7 @@ public class CraneSetting extends AppCompatActivity {
                                     dao.update(cp);
                                     table.setMainColumn(id);
                                 }
+                                hideKeyboard();
                             }
                         }
                     });
@@ -317,7 +331,7 @@ public class CraneSetting extends AppCompatActivity {
                 switch (i) {
                     case 0:
                         JSONObject privData = new JSONObject();
-                        JSONArray options = new JSONArray("[\"平臂式(-)\", \"动臂式(/)\"]");
+                        JSONArray options = new JSONArray("[\"平臂式(flat-top)\", \"动臂式(luffing)\"]");
                         privData.put("options", options);
                         cells.add(new TableCell(2, String.valueOf(paras.get(j).getType()), privData));
                         break;

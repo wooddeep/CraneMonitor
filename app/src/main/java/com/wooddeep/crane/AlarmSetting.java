@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -86,6 +87,13 @@ public class AlarmSetting extends AppCompatActivity {
     private Activity activity;
     private Context context;
 
+    public void hideKeyboard() {
+        View rootview = this.getWindow().getDecorView();
+        InputMethodManager inputMethodManager = (InputMethodManager) getApplicationContext()
+            .getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(rootview.findFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,7 +169,7 @@ public class AlarmSetting extends AppCompatActivity {
                         }
                     });
                     alertView.show();
-
+                    hideKeyboard();
                 } else if (view.getId() == R.id.close_logo) {
                     finish();
                 }
@@ -175,7 +183,7 @@ public class AlarmSetting extends AppCompatActivity {
                 SysPara rvc = sysParaDao.queryParaByName("rvc");
                 boolean isRvcMode = Boolean.parseBoolean(rvc.getParaValue());
                 if (!isRvcMode) { // 反向操作
-                    ((Button) findViewById(R.id.rvc_mode)).setText("RVC");
+                    ((Button) findViewById(R.id.rvc_mode)).setText("RCV");
                     findViewById(R.id.et_gear4).setEnabled(false);
                     findViewById(R.id.et_gear5).setEnabled(false);
                     findViewById(R.id.et_ta_gear4).setEnabled(false);
@@ -228,7 +236,7 @@ public class AlarmSetting extends AppCompatActivity {
 
         boolean isRvcMode = Boolean.parseBoolean(rvc.getParaValue());
         if (isRvcMode) {
-            ((Button) findViewById(R.id.rvc_mode)).setText("RVC");
+            ((Button) findViewById(R.id.rvc_mode)).setText("RCV");
             findViewById(R.id.et_gear4).setEnabled(false);
             findViewById(R.id.et_gear5).setEnabled(false);
             findViewById(R.id.et_ta_gear4).setEnabled(false);
