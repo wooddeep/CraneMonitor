@@ -309,7 +309,7 @@ public class AreaSetting extends AppCompatActivity {
     }
 
 
-    int[] coorBtnIdList = new int[]{
+    private int[] coorBtnIdList = new int[]{
         R.id.btn_coord1,
         R.id.btn_coord2,
         R.id.btn_coord3,
@@ -339,8 +339,10 @@ public class AreaSetting extends AppCompatActivity {
         });
 
         for (int i = 0; i < coorBtnIdList.length; i++) {
-            findViewById(coorBtnIdList[0]).setId(i); // 0, 1, 2, 3, 4, 5 ~ 坐标编号
-            findViewById(coorBtnIdList[0]).setOnClickListener(new View.OnClickListener() {
+            View view = findViewById(coorBtnIdList[i]);
+            System.out.println(view);
+            view.setId(i); // 0, 1, 2, 3, 4, 5 ~ 坐标编号
+            view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int areaNo = Integer.parseInt(((Button) findViewById(R.id.btn_area_no_show)).getText().toString()) - 1;
