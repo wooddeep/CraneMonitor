@@ -54,6 +54,7 @@ import com.wooddeep.crane.element.SideArea;
 import com.wooddeep.crane.element.SideCycle;
 import com.wooddeep.crane.main.Constant;
 import com.wooddeep.crane.main.SavedData;
+import com.wooddeep.crane.main.ShowData;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.LogDbHelper;
 import com.wooddeep.crane.persist.dao.AlarmSetDao;
@@ -236,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
     private float currWeight = 0.3f;
     private PackageManager mPackageManager;
     private DataUtil dataUtil = new DataUtil();
+    public static ShowData showData = new ShowData();
 
     public float getOscale() {
         return oscale;
@@ -966,55 +968,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void heightShow(float height) {
-        if (calibration == null) return;
-        TextView view = (TextView) findViewById(R.id.height);
-        view.setText(height + "m");
-
-        if (mainCrane == null) return;
-
-        if (mainCrane.getType() == 0) { // 平臂式
-            float craneHeight = mainCrane.getCraneHeight(); // 塔身高度
-            float craneHeight1 = CraneView.maxHookHeight - CraneView.minHookHeight;
-            float startHeight = calibration.getHeightStart(); // 吊钩起始位置
-            float endHeight = calibration.getHeightEnd(); // 吊钩终止位置
-            float heightDelat = endHeight - startHeight;
-            float hrate = heightDelat / craneHeight;
-            float hratePerData = hrate / (calibration.getHeightEndData() - calibration.getHeightStartData());
-            float hookHeight = (currProto.getHeight() - calibration.getHeightStartData()) * hratePerData * craneHeight1 + CraneView.minHookHeight;
-            craneView.setHookHeight((int) hookHeight);
-        }
-    }
-
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void lengthEventBus(LengthEvent event) {
         if (calibration == null) return;
         TextView view = (TextView) findViewById(R.id.length);
         view.setText(event.getLength() + "m");
-
-        if (mainCrane == null) return;
-
-        if (mainCrane.getType() == 0) { // 平臂式
-            float bigArmLength0 = mainCrane.getBigArmLength(); // 大臂总长度
-            float bigArmLength1 = CraneView.maxArmLength - CraneView.minArmLength;
-            float startCarRange = calibration.getLengthStart(); // 起始小车位置
-            float endCarRange = calibration.getLengthEnd(); // 终止小车位置
-            float valueDelat = endCarRange - startCarRange;
-            float rate = valueDelat / bigArmLength0; // 距离差 和 大臂的比例 (圆环)
-            float ratePerData0 = rate / (calibration.getLengthEndData() - calibration.getLengthStartData()); // 每一个Uart Data 和 大臂的比例
-            float ratePerData1 = rate / (calibration.getLengthEndData() - calibration.getLengthStartData());
-            float carRange0 = (currProto.getAmplitude() - calibration.getLengthStartData()) * ratePerData0 * bigArmLength0; // 圆环的小车当前坐标
-            float carRange1 = (currProto.getAmplitude() - calibration.getLengthStartData()) * ratePerData1 * bigArmLength1 + CraneView.minArmLength;
-            centerCycle.setCarRange(carRange0);
-            craneView.setArmLenth((int) (carRange1));
-        }
-    }
-
-    public void lengthShow(float length) {
-        if (calibration == null) return;
-        TextView view = (TextView) findViewById(R.id.length);
-        view.setText(length + "m");
+        showData.setShadowRange(event.getLength());
 
         if (mainCrane == null) return;
 
@@ -1052,6 +1012,7 @@ public class MainActivity extends AppCompatActivity {
         centerCycle.setHAngle(angle);
         float showAngle = angle;
         angleView.setText(showAngle + "°");
+        showData.setShowHAngle(angle);
     }
 
     public void momentShow(float moment) {
@@ -1432,6 +1393,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             findViewById(R.id.vangle_row).setVisibility(View.VISIBLE);
         }
+        showData.setCoordX(mainCrane.getCoordX1());
+        showData.setCoordY(mainCrane.getCoordY1());
 
         centerCycle.setType(mainCrane.getType()); // 设置塔基式样: 平臂 ~ 动臂
         centerCycle.setArchPara(mainCrane.getArchPara()); // 保存结构参数
@@ -1503,7 +1466,7 @@ public class MainActivity extends AppCompatActivity {
             number = Integer.parseInt(cp.getName().replaceAll("[^0-9]+", "")) + "";
             bigArmLength = MathTool.shadowToArm(cp);
             SideCycle sideCycle = new SideCycle(centerCycle, cp.getCoordX1(), cp.getCoordY1(), bigArmLength,
-                mainCrane.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight(), number);
+                cp.getBalancArmLength(), 0, 0, 0, cp.getCraneHeight(), number);
             sideCycle.setType(cp.getType()); // 平臂或动臂
             sideCycle.setArchPara(cp.getArchPara()); // 保存结构参数
             sideCycle.setMinVAngle(cp.getMinAngle()); // 最小垂直方向倾角

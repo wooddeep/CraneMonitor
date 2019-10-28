@@ -80,6 +80,23 @@ public class FixedTitleTable {
 
     private int fisrtColWidth = 400;
 
+    public List<View> getColumn(int index) {
+        List<View> viewList = new ArrayList<>();
+        TableLayout contentTable = (TableLayout) activity.findViewById(R.id.content_talble);
+
+        for (int col = 0; col < contentTable.getChildCount(); col++) {
+            TableRow row = (TableRow) contentTable.getChildAt(col); // 遍历行
+            viewList.add(row.getChildAt(index)); // 取列值
+        }
+        return viewList;
+    }
+
+    public int getColNum() {
+        TableLayout contentTable = (TableLayout) activity.findViewById(R.id.content_talble);
+        TableRow row = (TableRow) contentTable.getChildAt(0); // 遍历行
+        return row.getChildCount();
+    }
+
     public void setMainColumn(int id) {
         TableRow firstRow = (TableRow) activity.findViewById(R.id.first_row_row);
         for (int i = 0; i < firstRow.getChildCount(); i++) {
