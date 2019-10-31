@@ -562,6 +562,10 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+
+                if (count % 60 == 0) {
+                    AlertSound.reinit(getApplicationContext());
+                }
             }
 
         }).start();
@@ -804,7 +808,7 @@ public class MainActivity extends AppCompatActivity {
             momentAlarmLevel,
             weightAlarmLevel,
         };
-        System.out.println("## minAlarmLevel = " + Collections.min(Arrays.asList(array)));
+        //System.out.println("## minAlarmLevel = " + Collections.min(Arrays.asList(array)));
         return (int) Collections.min(Arrays.asList(array));
     }
 
