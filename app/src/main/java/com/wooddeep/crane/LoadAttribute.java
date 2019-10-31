@@ -78,8 +78,8 @@ public class LoadAttribute extends AppCompatActivity {
 
     private Activity activity = this;
 
-    //TcParamDao loadDao;
-    //SysParaDao paraDao;
+    private TcParamDao loadDao;
+    private SysParaDao paraDao;
 
     private List<String> craneTypes = new ArrayList<>();
     private List<String> armLengths = new ArrayList<>();
@@ -120,8 +120,8 @@ public class LoadAttribute extends AppCompatActivity {
     private List<TcParam> confLoad(Context contex) {
         LoadDbHelper.getInstance(contex).createTable(TcParam.class);
         DatabaseHelper.getInstance(contex).createTable(SysPara.class);
-        TcParamDao dao = new TcParamDao(contex);
-        List<TcParam> paras = dao.selectAll();
+        loadDao = new TcParamDao(contex);
+        List<TcParam> paras = loadDao.selectAll();
 
         return paras;
     }
@@ -182,8 +182,8 @@ public class LoadAttribute extends AppCompatActivity {
         }
 
         confLoad(getApplicationContext());
-        TcParamDao loadDao = new TcParamDao(getApplicationContext());
-        SysParaDao paraDao = new SysParaDao(getApplicationContext());
+        loadDao = new TcParamDao(getApplicationContext());
+        paraDao = new SysParaDao(getApplicationContext());
 
         String savedCraneType = paraDao.queryValueByName("craneType");  // 塔基类型
         String savedAramLength = paraDao.queryValueByName("armLength"); // 臂长
@@ -269,8 +269,8 @@ public class LoadAttribute extends AppCompatActivity {
 
         System.out.printf("%s-%s-%s\n", craneType, armLength, cableNum);
 
-        TcParamDao dao = new TcParamDao(getApplicationContext());
-        return dao.getLoads(craneType, armLength, cableNum);
+        loadDao = new TcParamDao(getApplicationContext());
+        return loadDao.getLoads(craneType, armLength, cableNum);
 
     }
 
@@ -310,7 +310,7 @@ public class LoadAttribute extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (view.getId() == R.id.load_data) {
-                    TcParamDao dao = new TcParamDao(context);
+                    loadDao = new TcParamDao(context);
                     AlertView alertView = new AlertView("加载负荷特性参数(load)?", "", null,
                         new String[]{"确定(confirm)", "取消(cancel)"}, null, activity,
                         AlertView.Style.Alert, new OnItemClickListener() {
@@ -318,31 +318,34 @@ public class LoadAttribute extends AppCompatActivity {
                         public void onItemClick(Object o, int position) {
                             if (position == 0) {
 
-                                SysTool.copyFromUsbDisk("/data/data/com.wooddeep.crane/databases", "tc.db");
-                                LoadDbHelper.reopen(context); // 重新打开
+                                int ret = SysTool.copyFromUsbDisk("/data/data/com.wooddeep.crane/databases", "tc.db");
+                                if (ret == 0) {
+                                    LoadDbHelper.reopen(context); // 重新打开
 
-                                TcParamDao loadDao = new TcParamDao(getApplicationContext());
-                                SysParaDao paraDao = new SysParaDao(getApplicationContext());
+                                    loadDao = new TcParamDao(getApplicationContext());
+                                    paraDao = new SysParaDao(getApplicationContext());
 
-                                SysPara savedCraneType = paraDao.queryParaByName("craneType");  // 塔基类型
-                                SysPara savedAramLength = paraDao.queryParaByName("armLength"); // 臂长
-                                SysPara savedPower = paraDao.queryParaByName("power"); // 倍率
+                                    SysPara savedCraneType = paraDao.queryParaByName("craneType");  // 塔基类型
+                                    SysPara savedAramLength = paraDao.queryParaByName("armLength"); // 臂长
+                                    SysPara savedPower = paraDao.queryParaByName("power"); // 倍率
 
-                                craneTypes = loadDao.getCraneTypes();
-                                armLengths = loadDao.getArmLengths(craneTypes.get(0));
-                                cables = loadDao.getCables(craneTypes.get(0), armLengths.get(0));
+                                    craneTypes = loadDao.getCraneTypes();
+                                    armLengths = loadDao.getArmLengths(craneTypes.get(0));
+                                    cables = loadDao.getCables(craneTypes.get(0), armLengths.get(0));
 
-                                savedCraneType.setParaValue(craneTypes.get(0));
-                                savedAramLength.setParaValue(armLengths.get(0));
-                                savedPower.setParaValue(cables.get(0));
-                                EventBus.getDefault().post(new SysParaEvent(craneTypes.get(0), armLengths.get(0), cables.get(0))); // 触发系统参数相关
+                                    savedCraneType.setParaValue(craneTypes.get(0));
+                                    savedAramLength.setParaValue(armLengths.get(0));
+                                    savedPower.setParaValue(cables.get(0));
+                                    EventBus.getDefault().post(new SysParaEvent(craneTypes.get(0), armLengths.get(0), cables.get(0))); // 触发系统参数相关
 
-                                paraDao.update(savedCraneType);
-                                paraDao.update(savedAramLength);
-                                paraDao.update(savedPower);
+                                    paraDao.update(savedCraneType);
+                                    paraDao.update(savedAramLength);
+                                    paraDao.update(savedPower);
 
-                                DrawTool.showExportDialog(activity);
-
+                                    DrawTool.showImportDialog(activity, true);
+                                } else {
+                                    DrawTool.showImportDialog(activity, false);
+                                }
                             }
                         }
                     });

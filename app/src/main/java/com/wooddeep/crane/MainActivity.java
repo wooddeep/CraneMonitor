@@ -56,6 +56,7 @@ import com.wooddeep.crane.main.Constant;
 import com.wooddeep.crane.main.SavedData;
 import com.wooddeep.crane.main.ShowData;
 import com.wooddeep.crane.persist.DatabaseHelper;
+import com.wooddeep.crane.persist.LoadDbHelper;
 import com.wooddeep.crane.persist.LogDbHelper;
 import com.wooddeep.crane.persist.dao.AlarmSetDao;
 import com.wooddeep.crane.persist.dao.AreaDao;
@@ -786,19 +787,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int getHighestAlarmLevel(AlarmEvent event) {
+        int momentAlarmLevel = event.momentAlarmLevel;
+        int weightAlarmLevel = event.weightAlarmLevel;
 
-        if (event.momentAlarmLevel <= 3) event.momentAlarmLevel = 4 - event.momentAlarmLevel;
-        if (event.weightAlarmLevel <= 3) event.momentAlarmLevel = 4 - event.weightAlarmLevel;
+        //System.out.println("## event.momentAlarmLevel = " + momentAlarmLevel); // 100
+        //System.out.println("## event.weightAlarmLevel = " + weightAlarmLevel); // 3
+
+        if (momentAlarmLevel <= 3) momentAlarmLevel = 4 - momentAlarmLevel;
+        if (weightAlarmLevel <= 3) weightAlarmLevel = 4 - weightAlarmLevel;
 
         Integer[] array = new Integer[]{
             event.backendAlarmLevel,
             event.forwardAlarmLevel,
             event.leftAlarmLevel,
             event.rightAlarmLevel,
-            event.momentAlarmLevel,
-            event.weightAlarmLevel,
+            momentAlarmLevel,
+            weightAlarmLevel,
         };
-
+        System.out.println("## minAlarmLevel = " + Collections.min(Arrays.asList(array)));
         return (int) Collections.min(Arrays.asList(array));
     }
 
@@ -1071,11 +1077,14 @@ public class MainActivity extends AppCompatActivity {
         iPower = Integer.parseInt(power);
         ((TextView) findViewById(R.id.cable)).setText(power); // 显示塔基类型
 
+        LoadDbHelper.reopen(context); // 重新打开
+        tcParamDao = new TcParamDao(getApplicationContext());
+
         loadParas = tcParamDao.getLoads(craneType, armLength, power);
         if (loadParas != null && loadParas.size() > 0) {
             ((TextView) findViewById(R.id.rated_weight)).setText(loadParas.get(0).getWeight() + "t"); // 显示塔基类型
             for (TcParam load : loadParas) {
-                //System.out.printf("%s--%s\n", load.getCoordinate(), load.getWeight());
+                System.out.printf("%s--%s\n", load.getCoordinate(), load.getWeight());
             }
         }
 
@@ -1186,6 +1195,8 @@ public class MainActivity extends AppCompatActivity {
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                 }
+                InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(findViewById(R.id.password).getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
         Button cancel = (Button) findViewById(R.id.cancel);
@@ -1624,7 +1635,6 @@ public class MainActivity extends AppCompatActivity {
             startRadioReadThread();
             startRadioWriteThread();
             startTimerThread();
-            //watchDogThread();
         }, 100);
 
         // 触发判断本机是否为主机
@@ -1641,6 +1651,12 @@ public class MainActivity extends AppCompatActivity {
         sendBroadcast(intent);
     }
 
+    private void setWatchDogTimeOut() {
+        intent = new Intent(DogTool.ACTION_WATCHDOG_SETTIMEOUT);
+        intent.putExtra("timeout", 3);
+        sendBroadcast(intent);
+    }
+
     private Intent feedIntent = new Intent(DogTool.ACTION_WATCHDOG_KICK);
 
     private void feedWatchDog() {
@@ -1653,18 +1669,10 @@ public class MainActivity extends AppCompatActivity {
             });
     }
 
-    private void setWatchDogTimeOut() {
-        intent = new Intent(DogTool.ACTION_WATCHDOG_SETTIMEOUT);
-        intent.putExtra("timeout", 3);
-        sendBroadcast(intent);
-    }
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         sysExit = true;
-        //SysTool.restartApp();
     }
 
     @Override
@@ -1682,7 +1690,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void launchPackage(String packageName, int id) {
         if (packageName != null && !packageName.equals("nonon")) {
-            //Log.d("Main", "packageName0" + id + " = " + packageName);
             try {
                 mPackageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
                 Intent intent = mPackageManager.getLaunchIntentForPackage(packageName);

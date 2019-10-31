@@ -224,7 +224,8 @@ public class SysTool {
         }
     }
 
-    public static void copyFromUsbDisk(String dstPath, String srcName) {
+    public static int copyFromUsbDisk(String dstPath, String srcName) {
+        int ret = 0;
         try {
             List<String> usbDir = new ArrayList<>();
             String command;
@@ -239,13 +240,18 @@ public class SysTool {
             String line = null;
             //直到读完为止
             while ((line = br.readLine()) != null) {
-                System.out.println(line);
+                //System.out.println(line);
                 usbDir.add("/mnt/media_rw/" + line.replaceAll("\\s+", "")); // 遇到一个U盘退出
                 break;
             }
 
+            if (usbDir.size() == 0) {
+                ret = -1;
+            }
+
             for (String udir: usbDir) {
                 command = String.format("cp -rf %s/%s %s", udir, srcName, dstPath);
+                System.out.println(command);
                 proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
                 proc.waitFor();
             }
@@ -253,6 +259,7 @@ public class SysTool {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return ret;
     }
 
     //settings get system screen_brightness
