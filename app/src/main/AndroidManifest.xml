@@ -27,12 +27,6 @@
 
         </activity>
 
-
-        <activity
-            android:name="com.wooddeep.crane.UsbActivity"
-            android:alwaysRetainTaskState='true'>
-        </activity>
-
         <activity
             android:alwaysRetainTaskState='true'
             android:name="com.wooddeep.crane.CraneSetting">

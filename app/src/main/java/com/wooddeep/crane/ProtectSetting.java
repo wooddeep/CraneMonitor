@@ -10,6 +10,8 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -95,6 +97,7 @@ public class ProtectSetting extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
+        setAutoCoordCalc();
     }
 
     private void setOnTouchListener(View view) {
@@ -303,5 +306,74 @@ public class ProtectSetting extends AppCompatActivity {
         }
 
         setOnTouchListener();
+    }
+
+
+    private int[] coorBtnIdList = new int[]{
+        R.id.btn_coord1,
+        R.id.btn_coord2,
+        R.id.btn_coord3,
+        R.id.btn_coord4,
+        R.id.btn_coord5,
+        R.id.btn_coord6,
+    };
+
+    private void setAutoCoordCalc() {
+
+        findViewById(R.id.btn_area_no_add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int areaNo = Integer.parseInt(((Button) findViewById(R.id.btn_area_no_show)).getText().toString());
+                if (areaNo >= table.getColNum()) return;
+                ((Button) findViewById(R.id.btn_area_no_show)).setText(String.valueOf(areaNo + 1));
+            }
+        });
+
+        findViewById(R.id.btn_area_no_sub).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int areaNo = Integer.parseInt(((Button) findViewById(R.id.btn_area_no_show)).getText().toString());
+                if (areaNo == 1) return;
+                ((Button) findViewById(R.id.btn_area_no_show)).setText(String.valueOf(areaNo - 1));
+            }
+        });
+
+        for (int i = 0; i < coorBtnIdList.length; i++) {
+            View view = findViewById(coorBtnIdList[i]);
+            System.out.println(view);
+            view.setId(i); // 0, 1, 2, 3, 4, 5 ~ 坐标编号
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int areaNo = Integer.parseInt(((Button) findViewById(R.id.btn_area_no_show)).getText().toString()) - 1;
+                    float cx = MainActivity.showData.getCoordX();
+                    float cy = MainActivity.showData.getCoordY();
+                    float angle = MainActivity.showData.getShowHAngle();
+                    float range = MainActivity.showData.getShadowRange();
+
+                    float x = cx + range * (float) Math.cos(Math.toRadians(angle));
+                    float y = cy + range * (float) Math.sin(Math.toRadians(angle));
+
+                    List<View> viewList = table.getColumn(areaNo);
+
+                    // 0 -> x:1, y,2; 1 -> x:3, y,4
+                    int id = v.getId();
+                    int xIndex = id * 2 + 1;
+                    int yIndex = id * 2 + 2;
+
+                    EditText etX = (EditText) viewList.get(xIndex);
+                    EditText etY = (EditText) viewList.get(yIndex);
+
+                    etX.setText(String.valueOf(x));
+                    etY.setText(String.valueOf(y));
+                    /*
+                    for (int i = 0; i < viewList.size(); i++) {
+                        EditText et = (EditText) viewList.get(i);
+                        System.out.println(et.getText().toString());
+                    }
+                    */
+                }
+            });
+        }
     }
 }

@@ -879,15 +879,11 @@ public class MainActivity extends AppCompatActivity {
         if (alarmEvent.hookMinHightAlarm == true) {
             Alarm.startAlarm(activity, R.id.height_logo, R.mipmap.hook_min);
             //AlarmSound.setStatus(R.raw.hook_down_warning, true);
-        } else {
-            //AlarmSound.setStatus(R.raw.hook_down_warning, false);
         }
 
         if (alarmEvent.hookMaxHightAlarm == true) {
             Alarm.startAlarm(activity, R.id.height_logo, R.mipmap.hook_max);
             //AlarmSound.setStatus(R.raw.hook_up_warning, true);
-        } else {
-            //AlarmSound.setStatus(R.raw.hook_up_warning, false);
         }
 
         if (alarmEvent.hookMinHightAlarm == false && alarmEvent.hookMaxHightAlarm == false) {
