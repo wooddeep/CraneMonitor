@@ -112,6 +112,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 //import androidx.annotation.RequiresApi;
 
@@ -239,6 +240,8 @@ public class MainActivity extends AppCompatActivity {
     private PackageManager mPackageManager;
     private DataUtil dataUtil = new DataUtil();
     public static ShowData showData = new ShowData();
+
+    public AtomicInteger alarmLevel = new AtomicInteger(100);
 
     public float getOscale() {
         return oscale;
@@ -517,6 +520,11 @@ public class MainActivity extends AppCompatActivity {
                 CommTool.sleep(100);
                 count++;
 
+                if (count % 10 == 0) {
+                    //System.out.println(alarmLevel.get());
+                    AlertSound.open(alarmLevel.get());
+                }
+
                 if (count % 500 == 0) {
                     setCurrTime();
                 }
@@ -563,9 +571,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-                if (count % 60 == 0) {
-                    AlertSound.reinit(getApplicationContext());
-                }
             }
 
         }).start();
@@ -906,8 +911,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        AlertSound.open(getHighestAlarmLevel(event));
-
+        alarmLevel.set(getHighestAlarmLevel(event));
+        //AlertSound.open(getHighestAlarmLevel(event));
     }
 
     private void setCurrTime() {
