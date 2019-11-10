@@ -22,11 +22,15 @@ import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
 import com.wooddeep.crane.R;
 import com.wooddeep.crane.ebus.AlarmSetEvent;
+import com.wooddeep.crane.ebus.SysParaEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
+import com.wooddeep.crane.persist.LoadDbHelper;
 import com.wooddeep.crane.persist.dao.AlarmSetDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
+import com.wooddeep.crane.persist.dao.TcParamDao;
 import com.wooddeep.crane.persist.entity.AlarmSet;
 import com.wooddeep.crane.persist.entity.SysPara;
+import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.tookit.SysTool;
 
 import org.greenrobot.eventbus.EventBus;
@@ -164,6 +168,27 @@ public class SuperAdmin extends AppCompatActivity {
             public void onClick(View view) {
                 AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                 mAudioManager.adjustVolume(ADJUST_LOWER, FLAG_PLAY_SOUND);
+            }
+        });
+
+        findViewById(R.id.btn_export_sys_cfg).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SysTool.copyToUsbDisk("/data/data/com.wooddeep.crane/databases/crane.db");
+                DrawTool.showExportSysCfgDialog(activity);
+            }
+        });
+
+        findViewById(R.id.btn_import_sys_cfg).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int ret = SysTool.copySysCfgFromUsbDisk("/data/data/com.wooddeep.crane/databases", "crane.db");
+                if (ret == 0) {
+                    DrawTool.showImportSysCfgDialog(activity, true);
+                } else {
+                    DrawTool.showImportSysCfgDialog(activity, false);
+                }
+
             }
         });
 

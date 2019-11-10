@@ -79,14 +79,14 @@ public class ElemMap {
         float cx = cc.x;
         float cy = cc.y;
         float cr = cc.r;
-        float cos = (float) Math.cos(Math.toRadians(cc.hAngle));
-        float sin = (float) Math.sin(Math.toRadians(cc.hAngle));
+        float cos = (float) Math.cos(Math.toRadians(cc.getHAngle()));
+        float sin = (float) Math.sin(Math.toRadians(cc.getHAngle()));
 
         float endpointX = cx + cos * cr; // 本塔基 大臂端点 X 坐标
         float endpointY = cy + sin * cr; // 本塔基 大臂端点 Y 坐标
 
-        double isin = Math.sin(Math.toRadians(cc.hAngle + 180));
-        double icos = Math.cos(Math.toRadians(cc.hAngle + 180));
+        double isin = Math.sin(Math.toRadians(cc.getHAngle() + 180));
+        double icos = Math.cos(Math.toRadians(cc.getHAngle() + 180));
         float iendpointX = cx + (float) (cc.ir * icos); // todo 添加垂直方向的斜率计算
         float iendpointY = cy + (float) (cc.ir * isin);
 

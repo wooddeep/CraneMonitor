@@ -262,6 +262,44 @@ public class SysTool {
         return ret;
     }
 
+    public static int copySysCfgFromUsbDisk(String dstPath, String srcName) {
+        int ret = 0;
+        try {
+            List<String> usbDir = new ArrayList<>();
+            String command;
+            command = "ls /mnt/media_rw";
+            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            proc.waitFor();
+            InputStream fis = proc.getInputStream();
+            //用一个读输出流类去读
+            InputStreamReader isr = new InputStreamReader(fis);
+            //用缓冲器读行
+            BufferedReader br = new BufferedReader(isr);
+            String line = null;
+            //直到读完为止
+            while ((line = br.readLine()) != null) {
+                //System.out.println(line);
+                usbDir.add("/mnt/media_rw/" + line.replaceAll("\\s+", "")); // 遇到一个U盘退出
+                break;
+            }
+
+            if (usbDir.size() == 0) {
+                ret = -1;
+            }
+
+            for (String udir: usbDir) {
+                command = String.format("rm -fr %s/crane.db-journal;cp -rf %s/%s %s", dstPath, udir, srcName, dstPath);
+                System.out.println(command);
+                proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+                proc.waitFor();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
     //settings get system screen_brightness
     public static void adjustBackgroudLight(int delta) {
         try {

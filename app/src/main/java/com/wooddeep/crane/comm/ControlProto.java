@@ -29,13 +29,16 @@ public class ControlProto {
     public boolean carBack2 = false;  // 小车回2
     public boolean carBack1 = false;  // 小车回1
 
+    // 0010 0000
+    // a3 07 01 01 20 00 00
+    // out: a3 07 01 01 fc 04 00
     public static byte[] control = new byte[]{(byte)0xA3, 0x07, 0x01, 0x01, (byte) 0x00, (byte) 0x00, 0x00};
 
-    public boolean isCarOut2() {
+    public boolean isCarBack2() {
         return carOut2;
     }
 
-    public void setCarOut2(boolean carOut2) {
+    public void setCarBack2(boolean carOut2) {
         this.carOut2 = carOut2;
 
         byte data = control[4];
@@ -47,11 +50,11 @@ public class ControlProto {
         control[4] = data;
     }
 
-    public boolean isCarOut1() {
+    public boolean isCarBack1() {
         return carOut1;
     }
 
-    public void setCarOut1(boolean carOut1) {
+    public void setCarBack1(boolean carOut1) {
         this.carOut1 = carOut1;
 
         byte data = control[4];
@@ -63,6 +66,39 @@ public class ControlProto {
         control[4] = data;
 
     }
+
+    public boolean isCarOut2() {
+        return carBack2;
+    }
+
+    public void setCarOut2(boolean carBack2) {
+        this.carBack2 = carBack2;
+
+        byte data = control[5];
+        if (carBack2 == false) {
+            data = (byte) (data & 0xFD);
+        } else {
+            data = (byte) (data | 0x02);
+        }
+        control[5] = data;
+    }
+
+    public boolean isCarOut1() {
+        return carBack1;
+    }
+
+    public void setCarOut1(boolean carBack1) {
+        this.carBack1 = carBack1;
+
+        byte data = control[5];
+        if (carBack1 == false) {
+            data = (byte) (data & 0xFE);
+        } else {
+            data = (byte) (data | 0x01);
+        }
+        control[5] = data;
+    }
+
 
     public boolean isRotate5() {
         return rotate5;
@@ -237,38 +273,6 @@ public class ControlProto {
             data = (byte) (data & 0xFB);
         } else {
             data = (byte) (data | 0x04);
-        }
-        control[5] = data;
-    }
-
-    public boolean isCarBack2() {
-        return carBack2;
-    }
-
-    public void setCarBack2(boolean carBack2) {
-        this.carBack2 = carBack2;
-
-        byte data = control[5];
-        if (carBack2 == false) {
-            data = (byte) (data & 0xFD);
-        } else {
-            data = (byte) (data | 0x02);
-        }
-        control[5] = data;
-    }
-
-    public boolean isCarBack1() {
-        return carBack1;
-    }
-
-    public void setCarBack1(boolean carBack1) {
-        this.carBack1 = carBack1;
-
-        byte data = control[5];
-        if (carBack1 == false) {
-            data = (byte) (data & 0xFE);
-        } else {
-            data = (byte) (data | 0x01);
         }
         control[5] = data;
     }

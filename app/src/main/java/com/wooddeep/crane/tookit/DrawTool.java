@@ -245,6 +245,30 @@ public class DrawTool {
             }
         });
 
+        //显示
+        alterDiaglog.show();
+    }
+
+    public static void showExportSysCfgDialog(Activity activity) {
+        final AlertDialog.Builder alterDiaglog = new AlertDialog.Builder(activity);
+        //alterDiaglog.setIcon(R.drawable.icon);//图标
+        alterDiaglog.setTitle("系统配置导出成功(export system config success!)");//文字
+        //alterDiaglog.setMessage("生存还是死亡");//提示消息
+
+        //积极的选择
+        alterDiaglog.setPositiveButton("确认(confirm)", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(activity, "点击了生存", Toast.LENGTH_SHORT).show();
+            }
+        });
+        //消极的选择
+        alterDiaglog.setNegativeButton("取消(cancel)", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(activity, "点击了死亡", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //显示
         alterDiaglog.show();
@@ -278,6 +302,37 @@ public class DrawTool {
             }
         });
 
+        //显示
+        alterDiaglog.show();
+    }
+
+    /**
+     * 普通dialog
+     */
+    public static void showImportSysCfgDialog(Activity activity, boolean ok) {
+        final AlertDialog.Builder alterDiaglog = new AlertDialog.Builder(activity);
+        //alterDiaglog.setIcon(R.drawable.icon);//图标
+        if (ok) {
+            alterDiaglog.setTitle("系统配置导入成功(import load feature success!)");//文字
+        } else {
+            alterDiaglog.setTitle("系统配置导入失败(import load feature fail!)");//文字
+        }
+        //alterDiaglog.setMessage("生存还是死亡");//提示消息
+
+        //积极的选择
+        alterDiaglog.setPositiveButton("确认(confirm)", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(activity, "点击了生存", Toast.LENGTH_SHORT).show();
+            }
+        });
+        //消极的选择
+        alterDiaglog.setNegativeButton("取消(cancel)", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(activity, "点击了死亡", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //显示
         alterDiaglog.show();

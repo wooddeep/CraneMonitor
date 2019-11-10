@@ -46,7 +46,10 @@ public class MathTool {
     public static double calcVAngle(float armLen, float armShadowLen, float archPara) {
         double cos =  (armShadowLen + archPara) / armLen;
         double rands = Math.acos(cos);
+
+        //System.out.println("cos:" + cos + " @@ rands:" + rands + "@@ degree:" + Math.toDegrees(rands));
         return Math.toDegrees(rands);
+        //return rands;
     }
 
     public static double calcShadow(float armLen, float vangle, float archPara) {

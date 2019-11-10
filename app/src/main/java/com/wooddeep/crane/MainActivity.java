@@ -241,7 +241,9 @@ public class MainActivity extends AppCompatActivity {
     private DataUtil dataUtil = new DataUtil();
     public static ShowData showData = new ShowData();
 
-    public AtomicInteger alarmLevel = new AtomicInteger(100);
+    public static AtomicInteger alarmLevel = new AtomicInteger(100);
+
+    public Float currXAngle = 0.0f;
 
     public float getOscale() {
         return oscale;
@@ -289,7 +291,11 @@ public class MainActivity extends AppCompatActivity {
                                     centerCycle.setVAngle(currProto.getRealVAngle());
                                     vAngleView.setText(currProto.getRealVAngle() + "°");
                                     double deltaHeight = centerCycle.getBigArmLen() * Math.sin(Math.toRadians(currProto.getRealVAngle()));
-                                    centerCycle.setHeight(centerCycle.getOrgHeight() + (float) deltaHeight); // 修改高度
+
+                                    //centerCycle.setHeight(centerCycle.getOrgHeight() + (float) deltaHeight); // 修改高度
+                                    centerCycle.setHeight(centerCycle.getOrgHeight() + (float) 0);
+
+                                    System.out.println("### " + centerCycle.getOrgHeight() + "@@" + deltaHeight + "$$" + centerCycle.height + "&&" + currProto.getRealVAngle());
 
                                     float shadow = centerCycle.getBigArmLen() * (float) Math.cos(Math.toRadians(currProto.getRealVAngle())) - centerCycle.getArchPara();
                                     shadow = Math.round(shadow * 10) / 10.0f;
@@ -365,6 +371,17 @@ public class MainActivity extends AppCompatActivity {
                         if (rotateRBuff[0] == 0x01 && rotateRBuff[1] == 0x04 && rotateRBuff[2] == 0x04) {
                             currRotateProto.parse(rotateRBuff);
                             currRotateProto.calcAngle(calibration);
+
+                            double xangle = currRotateProto.getAngle();
+                            if (xangle < 0) {
+                                xangle = 360 - (Math.abs(xangle) % 360);
+                            } else {
+                                xangle = xangle % 360;
+                            }
+                            //xangle = Math.round(xangle * 10) / 10.0f;
+                            //System.out.println("xangle:" + xangle);
+                            currXAngle = (float)xangle;
+
                             if (Math.abs(currRotateProto.getAngle() - prevRotateProto.getAngle()) >= 0.1f) {
                                 rotateEvent.setCenterX(mainCrane.getCoordX1());
                                 rotateEvent.setCenterY(mainCrane.getCoordY1());
@@ -379,6 +396,7 @@ public class MainActivity extends AppCompatActivity {
                                     angle = angle % 360;
                                 }
                                 angle = Math.round(angle * 10) / 10.0f;
+
                                 final float minAngle = (float) angle;
                                 runOnUiThread(() -> rotateShow(minAngle));
                             }
@@ -455,7 +473,7 @@ public class MainActivity extends AppCompatActivity {
                         masterRadioProto.setTargetNo(targetNo);
                         masterRadioProto.setPermitNo(targetNo);
 
-                        double currAngle = Math.max(Math.toRadians(centerCycle.hAngle), 0);
+                        double currAngle = Math.max(Math.toRadians(currXAngle/*centerCycle.getHAngle()*/), 0); // 当前回转角度
                         double currRange = Math.max(shadowLength, 0);
 
                         masterRadioProto.setRotate(Math.round(currAngle * 10) / 10.0f);
@@ -520,13 +538,12 @@ public class MainActivity extends AppCompatActivity {
                 CommTool.sleep(100);
                 count++;
 
-                if (count % 10 == 0) {
-                    //System.out.println(alarmLevel.get());
-                    AlertSound.open(alarmLevel.get());
-                }
-
                 if (count % 500 == 0) {
                     setCurrTime();
+                }
+
+                if (count % 20 == 0) {
+                    AlertSound.open(alarmLevel.get());
                 }
 
                 //倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
@@ -539,7 +556,7 @@ public class MainActivity extends AppCompatActivity {
                     realData.setHeigth(Float.parseFloat(heightView.getText().toString().split("m")[0]));
                     if (centerCycle != null) {
                         realData.setRange(centerCycle.carRange);
-                        realData.setRotate(centerCycle.hAngle);
+                        realData.setRotate(centerCycle.getHAngle());
                         realData.setDipange(centerCycle.vAngle);
                     }
                     realData.setRatedweight(Float.parseFloat(ratedWeightView.getText().toString().split("t")[0]));
@@ -655,7 +672,7 @@ public class MainActivity extends AppCompatActivity {
                         if (master.type == 1) { // 动臂式
                             double vangle = MathTool.calcVAngle(master.getBigArmLen(), radioProto.getRange(), master.archPara);
                             master.setVAngle((float) vangle); // 设置动臂式的仰角
-                            master.setHeight(master.getOrgHeight() + master.getBigArmLen() * (float) Math.sin(Math.toRadians(vangle)));
+                            master.setHeight(master.getOrgHeight() + master.getBigArmLen() * (float) Math.sin(Math.toRadians(vangle))); // 0 -> vangle
                             master.setCarRange(master.getBigArmLen()); // 动臂式 幅度最大
                         } else {
                             master.setCarRange(radioProto.getRange()); // 平臂式实际幅度
@@ -667,6 +684,7 @@ public class MainActivity extends AppCompatActivity {
                 float hangle = MathTool.radiansToAngle(radioProto.getRotate());
                 if (Math.abs(hangle - savedData.angle) >= 0.1) {
                     runOnUiThread(() -> {
+                        //System.out.println("## rotateShow, angle = " + hangle);
                         master.setHAngle(hangle);
                         master.setOnline(true);
                     });
@@ -690,7 +708,7 @@ public class MainActivity extends AppCompatActivity {
                     slaveRadioProto.setRange(Math.max(centerCycle.carRange, 0));
                 }
 
-                slaveRadioProto.setRotate(Math.max(0, ((centerCycle.hAngle % 360) * 2 * (float) Math.PI / 360)));
+                slaveRadioProto.setRotate(Math.max(0, ((currXAngle /*centerCycle.getHAngle()*/ % 360) * 2 * (float) Math.PI / 360)));
                 slaveRadioProto.packReply(); // 生成回应报文
                 try {
                     if (ttyS1OutputStream != null) {
@@ -726,9 +744,11 @@ public class MainActivity extends AppCompatActivity {
                 if (Math.abs(radioProto.getRange() - savedData.range) >= 0.1f) {
                     runOnUiThread(() -> {
                         if (slave.type == 1) { // 动臂式
+                            System.out.println("## slave0: " + slave.getBigArmLen() + "@@" + radioProto.getRange() + "$$" + slave.archPara);
                             double vangle = MathTool.calcVAngle(slave.getBigArmLen(), radioProto.getRange(), slave.archPara);
                             slave.setVAngle((float) vangle); // 设置动臂式的仰角
-                            slave.setHeight(slave.getOrgHeight() + slave.getBigArmLen() * (float) Math.sin(Math.toRadians(vangle)));
+                            System.out.println("## slave1: " + slave.getOrgHeight() + "@@" + slave.getBigArmLen() + "$$" + vangle);
+                            slave.setHeight(slave.getOrgHeight() + slave.getBigArmLen() * (float) Math.sin(Math.toRadians(vangle))); // 0 -> vangle
                             slave.setCarRange(slave.getBigArmLen()); // 动臂式 幅度最大
                         } else {
                             slave.setCarRange(radioProto.getRange()); // 平臂式实际幅度
@@ -912,7 +932,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         alarmLevel.set(getHighestAlarmLevel(event));
-        //AlertSound.open(getHighestAlarmLevel(event));
     }
 
     private void setCurrTime() {
@@ -943,7 +962,7 @@ public class MainActivity extends AppCompatActivity {
             workRec.setHeigth(Float.parseFloat(heightView.getText().toString().split("m")[0]));
             if (centerCycle != null) {
                 workRec.setRange(centerCycle.carRange);
-                workRec.setRotate(centerCycle.hAngle);
+                workRec.setRotate(centerCycle.getHAngle());
                 workRec.setDipange(centerCycle.vAngle);
             }
             workRec.setRatedweight(Float.parseFloat(ratedWeightView.getText().toString().split("t")[0]));
@@ -1020,6 +1039,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void rotateShow(float angle) {
+        //System.out.println("## rotateShow, angle = " + angle);
         centerCycle.setHAngle(angle);
         float showAngle = angle;
         angleView.setText(showAngle + "°");
@@ -1645,8 +1665,8 @@ public class MainActivity extends AppCompatActivity {
         // 触发判断本机是否为主机
         new Handler().postDelayed(() -> {
             RadioDateEventOps(new RadioEvent(radioProto.startMaster()));
-            initWatchDog();
-            setWatchDogTimeOut();
+            //initWatchDog();
+            //setWatchDogTimeOut();
         }, 3000);
     }
 

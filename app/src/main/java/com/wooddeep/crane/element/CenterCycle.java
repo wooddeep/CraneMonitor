@@ -20,7 +20,7 @@ public class CenterCycle extends CycleElem {
     public float y;
     public float r;                   // 原始大臂半径
     public float ir;                  // 原始小臂半径
-    public float hAngle = 0;            // 水平方向夹角
+    private float hAngle = 0;            // 水平方向夹角
     public float vAngle = 0;             // 垂直方向夹角
     public float carRange;
     public float deltaX;

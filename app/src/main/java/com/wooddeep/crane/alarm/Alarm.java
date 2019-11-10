@@ -91,6 +91,9 @@ public class Alarm {
         CenterCycle cc = (CenterCycle) craneMap.get(no);
         Geometry gcc = cc.getArmGeo(0f);
         float myHeight = cc.height; // 本塔高度
+
+        System.out.println("## myHeight: " + myHeight);
+
         Coordinate myCenter = new Coordinate(cc.x, cc.y);
 
         Set<String> idSet = craneMap.keySet();
@@ -105,6 +108,7 @@ public class Alarm {
                 Geometry cargsc = sc.getCarGeo(0, 0);
                 double carToCarDis = cargcc.distance(cargsc);
                 if (carToCarDis < alarmSet.getCarSpeedDownDist()) { // 小车减速距离
+
                     int level = carToCarDis < alarmSet.getCarStopDist() ? 1 : 2; // 1挡停车距离，2挡减速距离
 
                     Geometry gPredect1 = cc.getCarGeo(0.0f, 0.1f); // 向外运行
@@ -137,6 +141,8 @@ public class Alarm {
 
                 Geometry gsc = sc.getArmGeo(0f);
                 float sideHeight = sc.height;
+                System.out.println("## sideHeight: " + sideHeight);
+
                 if (Math.abs(myHeight - sideHeight) <= 1 && sc.online) { // 高度差相差1m, 当成等高, 查看当前圆心和对端 大臂端点的距离, 无前后告警, 只有左右告警
                     float distance = (float) gcc.distance(gsc); // 计算当前塔机 和 旁边 塔机 的距离
                     int alarmLevel = getAlarmLevel(distance, alarmSet, 0);
@@ -226,11 +232,12 @@ public class Alarm {
                     }
 
                 } else { // 中心塔基低于旁边塔基, 以中心塔基的臂和 旁机的小车 计算距离
+
                     Geometry carPos = sc.getCarGeo(0f, 0f);
                     float armToCarDis = (float) gcc.distance(carPos); // 本机大臂 到 旁机 小车的距离
-                    //System.out.printf("### center car to side[%s] car distance: %f \n", id, armToCarDis);
+                    System.out.printf("### center car to side[%s] car distance: %f \n", id, armToCarDis);
                     int alarmLevel = getAlarmLevel(armToCarDis, alarmSet, 0);
-                    //System.out.println("## alarmLevel = " + alarmLevel);
+                    System.out.println("## alarmLevel = " + alarmLevel);
                     if (alarmLevel != -1) {
                         Geometry gPredect1 = cc.getArmGeo(0.1f); // 逆时针旋转
                         float distPred1 = (float) gPredect1.distance(carPos);
@@ -238,7 +245,7 @@ public class Alarm {
                         Geometry gPredect2 = cc.getArmGeo(-0.1f); // 逆时针旋转
                         float distPred2 = (float) gPredect2.distance(carPos);
 
-                        //System.out.printf("## distPred1 = %f, distPred2 = %f, armToCarDis = %f\n", distPred1, distPred2, armToCarDis);
+                        System.out.printf("## distPred1 = %f, distPred2 = %f, armToCarDis = %f\n", distPred1, distPred2, armToCarDis);
 
                         if (distPred1 <= armToCarDis) { // 逆时针旋转 距离告警，则是 左转告警
                             //System.out.printf("### center turn left to [%s] alarm!!!\n", id);
@@ -312,7 +319,7 @@ public class Alarm {
                     Geometry gPredect1 = cc.getCarGeo(0.0f, 0.1f); // 向外运行
                     float distPred1 = (float) gPredect1.distance(sideGeo);
 
-                    Geometry gPredect2 = cc.getCarGeo(0.0f, -0.1f); // 向外运行
+                    Geometry gPredect2 = cc.getCarGeo(0.0f, -0.1f); // 向内运行
                     float distPred2 = (float) gPredect2.distance(sideGeo);
 
                     if (distPred1 <= carToAreaDis) { // 逆时针旋转 距离告警，则是 左转告警
@@ -416,7 +423,7 @@ public class Alarm {
         if (carRange >= alarmSet.getArmLengthMax()) {  // 小车最大幅度告警
             alarmEvent.hasAlarm = true;
             alarmEvent.forwardAlarm = true;
-            alarmEvent.forwardAlarmLevel = 1;
+            alarmEvent.forwardAlarmLevel = 1; // out
         }
 
         if (carRange <= alarmSet.getArmLengthMin()) { // 小车最小幅度告警
@@ -668,6 +675,7 @@ public class Alarm {
 
     public static void momentControl(AlarmEvent alarmEvent, ControlProto controlProto) {
         if (alarmEvent.momentAlarm) {
+            //System.out.println("alarmEvent.momentAlarmLevel = " + alarmEvent.momentAlarmLevel);
             switch (alarmEvent.momentAlarmLevel) {
                 case 3:
                     controlProto.setCarOut1(true);
@@ -685,7 +693,6 @@ public class Alarm {
                     break;
             }
         }
-
 
         switch (alarmEvent.momentAlarmDispearLevel) {
             case 1:
@@ -707,40 +714,42 @@ public class Alarm {
                 controlProto.setMoment3(false);
                 break;
         }
-
     }
 
     public static void carBackControl(AlarmEvent event, ControlProto controlProto) {
-        if (event.forwardAlarm) {
+        if (alarmEvent.momentAlarm && alarmEvent.momentAlarmLevel == 3) {
+            controlProto.setCarOut1(true);
+            controlProto.setCarOut2(true);
+        } else if (event.forwardAlarm) {
             switch (event.forwardAlarmLevel) {
                 case 1:
-                    controlProto.setCarBack1(true); // 停车距离
-                    controlProto.setCarBack2(true); // 减速距离
+                    controlProto.setCarOut1(true); // 停车距离
+                    controlProto.setCarOut2(true); // 减速距离
                     break;
                 case 2:
-                    controlProto.setCarBack1(false); // 停车距离
-                    controlProto.setCarBack2(true); // 减速距离
-                    break;
-            }
-        } else {
-            controlProto.setCarBack1(false);
-            controlProto.setCarBack2(false);
-        }
-
-        if (event.backendAlarm) {
-            switch (event.backendAlarmLevel) {
-                case 1:
-                    controlProto.setCarOut1(true);
-                    controlProto.setCarOut2(true);
-                    break;
-                case 2:
-                    controlProto.setCarOut1(false);
-                    controlProto.setCarOut2(true);
+                    controlProto.setCarOut1(false); // 停车距离
+                    controlProto.setCarOut2(true); // 减速距离
                     break;
             }
         } else {
             controlProto.setCarOut1(false);
             controlProto.setCarOut2(false);
+        }
+
+        if (event.backendAlarm) {
+            switch (event.backendAlarmLevel) {
+                case 1:
+                    controlProto.setCarBack1(true);
+                    controlProto.setCarBack2(true);
+                    break;
+                case 2:
+                    controlProto.setCarBack1(false);
+                    controlProto.setCarBack2(true);
+                    break;
+            }
+        } else {
+            controlProto.setCarBack1(false);
+            controlProto.setCarBack2(false);
         }
     }
 
