@@ -262,6 +262,35 @@ public class SysTool {
         return ret;
     }
 
+    public static boolean copyCheck(String source, String destination) {
+        boolean ret = true;
+
+        String command = String.format(
+            "string=`ls -lt %s`" +
+            "array=(${string//,/ })" +
+            "src_size=${array[4]}" +
+            "string=`ls -lt %s`" +
+            "array=(${string//,/ })" +
+            "dst_size=${array[4]}" +
+            "if [ $src_size == $dst_size ] then" +
+            "  echo equ" +
+            "else" +
+            "  echo neq" +
+            "fi",
+            source,
+            destination
+        );
+
+        try {
+            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            proc.waitFor();
+        } catch (Exception e) {
+
+        }
+
+        return ret;
+    }
+
     public static int copySysCfgFromUsbDisk(String dstPath, String srcName) {
         int ret = 0;
         try {
