@@ -34,6 +34,7 @@ import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.tookit.SysTool;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -174,8 +175,8 @@ public class SuperAdmin extends AppCompatActivity {
         findViewById(R.id.btn_export_sys_cfg).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SysTool.copyToUsbDisk("/data/data/com.wooddeep.crane/databases/crane.db");
-                DrawTool.showExportSysCfgDialog(activity);
+                JSONObject out = SysTool.copyToUsbDisk("/data/data/com.wooddeep.crane/databases/crane.db", "crane.db");
+                DrawTool.showExportSysCfgDialog(activity, out);
             }
         });
 

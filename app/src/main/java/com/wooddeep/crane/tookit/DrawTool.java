@@ -17,6 +17,8 @@ import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.views.GridLineView;
 import com.wooddeep.crane.views.Vertex;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -253,6 +255,33 @@ public class DrawTool {
         final AlertDialog.Builder alterDiaglog = new AlertDialog.Builder(activity);
         //alterDiaglog.setIcon(R.drawable.icon);//图标
         alterDiaglog.setTitle("系统配置导出成功(export system config success!)");//文字
+        //alterDiaglog.setMessage("生存还是死亡");//提示消息
+
+        //积极的选择
+        alterDiaglog.setPositiveButton("确认(confirm)", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(activity, "点击了生存", Toast.LENGTH_SHORT).show();
+            }
+        });
+        //消极的选择
+        alterDiaglog.setNegativeButton("取消(cancel)", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(activity, "点击了死亡", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //显示
+        alterDiaglog.show();
+    }
+
+
+    public static void showExportSysCfgDialog(Activity activity, JSONObject obj) {
+        final AlertDialog.Builder alterDiaglog = new AlertDialog.Builder(activity);
+        
+        //alterDiaglog.setIcon(R.drawable.icon);//图标
+        alterDiaglog.setTitle(obj.optString("msg", "未定义(undefine!)"));//文字
         //alterDiaglog.setMessage("生存还是死亡");//提示消息
 
         //积极的选择

@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -213,7 +216,7 @@ public class SysTool {
                 usbDir.add("/mnt/media_rw/" + line.replaceAll("\\s+", ""));
             }
 
-            for (String dir: usbDir) {
+            for (String dir : usbDir) {
                 command = String.format("cp -rf %s %s", filepath, dir);
                 proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
                 proc.waitFor();
@@ -222,6 +225,74 @@ public class SysTool {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    public static void usbDiskDetect() {
+        try {
+            String command = "ls /mnt/media_rw";
+            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            proc.waitFor();
+            InputStream fis = proc.getInputStream();
+            //用一个读输出流类去读
+            InputStreamReader isr = new InputStreamReader(fis);
+            //用缓冲器读行
+            BufferedReader br = new BufferedReader(isr);
+            String line = null;
+            //直到读完为止
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+                //usbDir.add("/mnt/media_rw/" + line.replaceAll("\\s+", ""));
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static JSONObject copyToUsbDisk(String filepath, String fileName) {
+        JSONObject out = new JSONObject();
+
+        try {
+            out.put("code", 0);
+
+            List<String> usbDir = new ArrayList<>();
+            String command;
+            command = "ls /mnt/media_rw";
+            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            proc.waitFor();
+            InputStream fis = proc.getInputStream();
+            //用一个读输出流类去读
+            InputStreamReader isr = new InputStreamReader(fis);
+            //用缓冲器读行
+            BufferedReader br = new BufferedReader(isr);
+            String line = null;
+            //直到读完为止
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+                usbDir.add("/mnt/media_rw/" + line.replaceAll("\\s+", ""));
+            }
+
+            if (usbDir.size() == 0) {
+                out.put("code", 1).put("msg", "U盘位置未知, 请在目标U盘创建一个文件名为tmec的空文件\n" +
+                    "(Usb disk not found, please create a empty file named tmec \nin the target usb disk!)");
+                return out;
+            }
+
+            for (String dir : usbDir) {
+                command = String.format("cp -rf %s %s", filepath, dir);
+                proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+                proc.waitFor();
+                copyCheck(filepath, String.format("%s/%s", dir, fileName));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return out;
     }
 
     public static int copyFromUsbDisk(String dstPath, String srcName) {
@@ -249,7 +320,7 @@ public class SysTool {
                 ret = -1;
             }
 
-            for (String udir: usbDir) {
+            for (String udir : usbDir) {
                 command = String.format("cp -rf %s/%s %s", udir, srcName, dstPath);
                 System.out.println(command);
                 proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
@@ -267,22 +338,33 @@ public class SysTool {
 
         String command = String.format(
             "string=`ls -lt %s`" +
-            "array=(${string//,/ })" +
-            "src_size=${array[4]}" +
-            "string=`ls -lt %s`" +
-            "array=(${string//,/ })" +
-            "dst_size=${array[4]}" +
-            "if [ $src_size == $dst_size ] then" +
-            "  echo equ" +
-            "else" +
-            "  echo neq" +
-            "fi",
+                "array=(${string//,/ })" +
+                "src_size=${array[4]}" +
+                "string=`ls -lt %s`" +
+                "array=(${string//,/ })" +
+                "dst_size=${array[4]}" +
+                "if [ $src_size == $dst_size ] then" +
+                "  echo equ" +
+                "else" +
+                "  echo neq" +
+                "fi",
             source,
             destination
         );
 
         try {
             Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            InputStream input = proc.getInputStream();
+            BufferedReader bf = new BufferedReader(new InputStreamReader(input));
+            String line = null;
+            try {
+                while ((line = bf.readLine()) != null) {
+                    System.out.println(line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             proc.waitFor();
         } catch (Exception e) {
 
@@ -316,7 +398,7 @@ public class SysTool {
                 ret = -1;
             }
 
-            for (String udir: usbDir) {
+            for (String udir : usbDir) {
                 command = String.format("rm -fr %s/crane.db-journal;cp -rf %s/%s %s", dstPath, udir, srcName, dstPath);
                 System.out.println(command);
                 proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});

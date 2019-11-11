@@ -1626,13 +1626,8 @@ public class MainActivity extends AppCompatActivity {
         player = MediaPlayer.create(context, R.raw.ding);
 
         try {
-            String s0Name = "S0";
-            String s1Name = "S1";
-            String model = android.os.Build.MODEL;
-            if (model.equals("rk3288")) {
-                s0Name = "S1";
-                s1Name = "S2";
-            }
+            String s0Name = "S1";
+            String s1Name = "S2";
 
             serialttyS0 = new SerialPort(
                 s0Name, 115200, 8, 0, 'o', true); // 19200 // AD数据
