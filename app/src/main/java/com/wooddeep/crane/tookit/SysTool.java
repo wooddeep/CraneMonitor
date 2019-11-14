@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.wooddeep.crane.R;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -58,6 +60,39 @@ public class SysTool {
             proc.waitFor();
         } catch (Exception ex) {
             Toast.makeText(activity.getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    public static void sysMonitor(Context context) {
+        try {
+
+            String command;
+            command = "if [ ! -f /system/bin/bash ]; then cp /system/bin/sh /system/bin/bash; fi";
+            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            proc.waitFor();
+
+            File monitor = new File("/sdcard/monitor");
+            if (!monitor.exists()) {
+                SysTool.copyFilesFromRaw(context, R.raw.monitor, "monitor.sh", "/sdcard");
+            }
+            command = "exist=`ps | grep 'bash'`; if [ -z \"$exist\" ]; then bash /sdcard/monitor.sh; fi";
+            Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            proc.waitFor();
+
+            InputStream fis = proc.getInputStream();
+            //用一个读输出流类去读
+            InputStreamReader isr = new InputStreamReader(fis);
+            //用缓冲器读行
+            BufferedReader br = new BufferedReader(isr);
+            String line = null;
+            //直到读完为止
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

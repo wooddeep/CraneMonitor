@@ -108,6 +108,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -1595,6 +1596,9 @@ public class MainActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
+
+        SysTool.sysMonitor(context);
+
         mPackageManager = getPackageManager();
 
         angleView = (TextView) findViewById(R.id.angle);
@@ -1660,8 +1664,6 @@ public class MainActivity extends AppCompatActivity {
         // 触发判断本机是否为主机
         new Handler().postDelayed(() -> {
             RadioDateEventOps(new RadioEvent(radioProto.startMaster()));
-            //initWatchDog();
-            //setWatchDogTimeOut();
         }, 3000);
     }
 
