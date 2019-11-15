@@ -59,7 +59,7 @@ if [ "$1" == "fromusb" ]; then
         cp -f $src_root/$3 $2/$3.tmp
         copy_ret=`file_size_compare $src_root/$3 $2/$3.tmp` # compare size
         if [ "$copy_ret" == "equ" ]; then
-            cp -f $2/$3.tmp $2/$3
+            mv -f $2/$3.tmp $2/$3
             echo "ok"
         else
             echo "err"
