@@ -2,11 +2,11 @@ package com.wooddeep.crane.tookit;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.wooddeep.crane.R;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -64,7 +64,7 @@ public class SysTool {
     }
 
 
-    public static void sysMonitor(Context context) {
+    public static void sysScriptInit(Context context) {
         try {
 
             String command;
@@ -72,10 +72,16 @@ public class SysTool {
             Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
             proc.waitFor();
 
-            File monitor = new File("/sdcard/monitor");
+            File monitor = new File("/sdcard/monitor.sh"); // 首付进程
             if (!monitor.exists()) {
                 SysTool.copyFilesFromRaw(context, R.raw.monitor, "monitor.sh", "/sdcard");
             }
+
+            File fileop = new File("/sdcard/fileops.sh"); // 文件拷贝工具
+            if (!fileop.exists()) {
+                SysTool.copyFilesFromRaw(context, R.raw.fileops, "fileops.sh", "/sdcard");
+            }
+
             command = "exist=`ps | grep 'bash'`; if [ -z \"$exist\" ]; then bash /sdcard/monitor.sh; fi";
             Runtime.getRuntime().exec(new String[]{"su", "-c", command});
             proc.waitFor();
@@ -320,7 +326,7 @@ public class SysTool {
                 command = String.format("cp -rf %s %s", filepath, dir);
                 proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
                 proc.waitFor();
-                copyCheck(filepath, String.format("%s/%s", dir, fileName));
+                //copyCheck(filepath, String.format("%s/%s", dir, fileName));
             }
 
         } catch (Exception e) {
@@ -368,81 +374,20 @@ public class SysTool {
         return ret;
     }
 
-    public static boolean copyCheck(String source, String destination) {
-        boolean ret = true;
-
-        String command = String.format(
-            "string=`ls -lt %s`" +
-                "array=(${string//,/ })" +
-                "src_size=${array[4]}" +
-                "string=`ls -lt %s`" +
-                "array=(${string//,/ })" +
-                "dst_size=${array[4]}" +
-                "if [ $src_size == $dst_size ] then" +
-                "  echo equ" +
-                "else" +
-                "  echo neq" +
-                "fi",
-            source,
-            destination
-        );
-
-        try {
-            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
-            InputStream input = proc.getInputStream();
-            BufferedReader bf = new BufferedReader(new InputStreamReader(input));
-            String line = null;
-            try {
-                while ((line = bf.readLine()) != null) {
-                    System.out.println(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            proc.waitFor();
-        } catch (Exception e) {
-
-        }
-
-        return ret;
-    }
-
+    // SysTool.copySysCfgFromUsbDisk("/data/data/com.wooddeep.crane/databases", "crane.db");
     public static int copySysCfgFromUsbDisk(String dstPath, String srcName) {
-        int ret = 0;
+        int ret = -1;
         try {
-            List<String> usbDir = new ArrayList<>();
-            String command;
-            command = "ls /mnt/media_rw";
-            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
-            proc.waitFor();
-            InputStream fis = proc.getInputStream();
-            //用一个读输出流类去读
-            InputStreamReader isr = new InputStreamReader(fis);
-            //用缓冲器读行
-            BufferedReader br = new BufferedReader(isr);
-            String line = null;
-            //直到读完为止
-            while ((line = br.readLine()) != null) {
-                //System.out.println(line);
-                usbDir.add("/mnt/media_rw/" + line.replaceAll("\\s+", "")); // 遇到一个U盘退出
-                break;
+            String out = executeScript("/sdcard/fileops.sh", "fromusb", "/data/data/com.wooddeep.crane/databases", "crane.db");
+            if (out.equals("ok")) {
+                ret = 0;
             }
 
-            if (usbDir.size() == 0) {
-                ret = -1;
-            }
-
-            for (String udir : usbDir) {
-                command = String.format("rm -fr %s/crane.db-journal;cp -rf %s/%s %s", dstPath, udir, srcName, dstPath);
-                System.out.println(command);
-                proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
-                proc.waitFor();
-            }
-
+            Log.v("DEBUG", out);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return ret;
     }
 
@@ -478,5 +423,33 @@ public class SysTool {
             e.printStackTrace();
         }
     }
+
+
+    public static String executeScript(String fullPath, String... args) {
+        StringBuffer out = new StringBuffer("");
+        try {
+            StringBuffer cmd = new StringBuffer(fullPath);
+
+            for (String arg : args) {
+                cmd.append(" ");
+                cmd.append(arg);
+            }
+
+            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", String.format("sh %s", cmd.toString())});
+            proc.waitFor();
+            InputStream fis = proc.getInputStream();
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            String line;
+            while ((line = br.readLine()) != null) {
+                out.append(line);
+                out.append("\n");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return out.toString();
+    }
+
 
 }

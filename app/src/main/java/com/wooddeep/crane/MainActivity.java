@@ -1597,7 +1597,7 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        SysTool.sysMonitor(context);
+        SysTool.sysScriptInit(context);
 
         mPackageManager = getPackageManager();
 

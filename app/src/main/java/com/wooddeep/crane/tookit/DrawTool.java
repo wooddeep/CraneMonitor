@@ -342,9 +342,9 @@ public class DrawTool {
         final AlertDialog.Builder alterDiaglog = new AlertDialog.Builder(activity);
         //alterDiaglog.setIcon(R.drawable.icon);//图标
         if (ok) {
-            alterDiaglog.setTitle("系统配置导入成功(import load feature success!)");//文字
+            alterDiaglog.setTitle("系统配置导入成功, 请重启(import load feature success, please restart!)");//文字
         } else {
-            alterDiaglog.setTitle("系统配置导入失败(import load feature fail!)");//文字
+            alterDiaglog.setTitle("系统配置导入失败(import load feature fail, load again!)");//文字
         }
         //alterDiaglog.setMessage("生存还是死亡");//提示消息
 
