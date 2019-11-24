@@ -175,7 +175,7 @@ public class SuperAdmin extends AppCompatActivity {
         findViewById(R.id.btn_export_sys_cfg).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                JSONObject out = SysTool.copyToUsbDisk("/data/data/com.wooddeep.crane/databases/crane.db", "crane.db");
+                JSONObject out = SysTool.copySysCfgToUsbDisk("/data/data/com.wooddeep.crane/databases/crane.db", "crane.db");
                 DrawTool.showExportSysCfgDialog(activity, out);
             }
         });

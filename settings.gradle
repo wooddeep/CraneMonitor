@@ -1,1 +1,1 @@
-include ':app', ':locktableview', ':alertview'
+include ':app',  ':alertview'

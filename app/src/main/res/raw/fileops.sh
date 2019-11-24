@@ -32,13 +32,15 @@ detect_usb_root() {
 file_size_compare() {
     string=`ls -l $1`
     array=(${string//,/ })
-    src_size=${array[3]}
+    src_size=${array[4]}
 
     string=`ls -l $2`
     array=(${string//,/ })
-    dst_size=${array[3]}
+    dst_size=${array[4]}
 
-    if [ $src_size == $dst_size ]; then
+    #echo "$src_size  $dst_size "
+
+    if [ $src_size -eq $dst_size ]; then
         echo "equ"
     else
         echo "neq"
@@ -66,3 +68,26 @@ if [ "$1" == "fromusb" ]; then
         fi
     fi
 fi
+
+if [ "$1" == "tousb" ]; then
+    dst_root=`detect_usb_root`
+    if [ "$dst_root" == "none" ]; then
+        echo "#err, usb disk not found!"
+    else
+        echo "usb root: $dst_root"
+
+        cp -f $2/$3 $dst_root/$3.tmp
+
+        #file_size_compare $2/$3 $dst_root/$3.tmp
+
+        copy_ret=`file_size_compare $2/$3 $dst_root/$3.tmp` # compare size
+        echo "## compare result: $copy_ret"
+        if [ "$copy_ret" == "equ" ]; then
+            mv -f $dst_root/$3.tmp $dst_root/$3
+            echo "ok"
+        else
+            echo "err"
+        fi
+    fi
+fi
+

