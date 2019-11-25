@@ -27,11 +27,14 @@ import com.wooddeep.crane.persist.dao.TcParamDao;
 import com.wooddeep.crane.persist.entity.SysPara;
 import com.wooddeep.crane.persist.entity.TcParam;
 import com.wooddeep.crane.tookit.DrawTool;
+import com.wooddeep.crane.tookit.EdbTool;
 import com.wooddeep.crane.tookit.SysTool;
 import com.wooddeep.crane.views.FixedTitleTable;
 import com.wooddeep.crane.views.TableCell;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -317,12 +320,27 @@ public class LoadAttribute extends AppCompatActivity {
                         @Override
                         public void onItemClick(Object o, int position) {
                             if (position == 0) {
+                                JSONArray lines = EdbTool.getExtTcParam(context, "tc.db", "tcparam");
 
-                                int ret = SysTool.copyFromUsbDisk("/data/data/com.wooddeep.crane/databases", "tc.db");
-                                if (ret == 0) {
-                                    LoadDbHelper.reopen(context); // 重新打开
+                                if (lines.length() > 0) {
 
-                                    loadDao = new TcParamDao(getApplicationContext());
+                                    loadDao.deleteAll();
+
+                                    TcParam tcParam = new TcParam();
+                                    for (int i = 0; i < lines.length(); i++) {
+                                        try {
+                                            JSONObject line = lines.getJSONObject(i);
+                                            tcParam.setArmLength(line.getString("Length"));
+                                            tcParam.setCoordinate(line.getString("Distance"));
+                                            tcParam.setCraneType(line.getString("Type"));
+                                            tcParam.setPower(line.getString("Rate"));
+                                            tcParam.setWeight(line.getString("Weight"));
+                                            loadDao.insert(tcParam);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
                                     paraDao = new SysParaDao(getApplicationContext());
 
                                     SysPara savedCraneType = paraDao.queryParaByName("craneType");  // 塔基类型

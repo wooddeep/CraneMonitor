@@ -310,7 +310,7 @@ public class DrawTool {
         final AlertDialog.Builder alterDiaglog = new AlertDialog.Builder(activity);
         //alterDiaglog.setIcon(R.drawable.icon);//图标
         if (ok) {
-            alterDiaglog.setTitle("负荷特性导入成功, 请断电重启！(import load feature success, please restart!)");//文字
+            alterDiaglog.setTitle("负荷特性导入成功(import load feature success!)");//文字
         } else {
             alterDiaglog.setTitle("负荷特性导入失败(import load feature fail!)");//文字
         }

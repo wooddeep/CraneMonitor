@@ -9,7 +9,7 @@
 # /mnt/media_rw，
 # /mnt/usb_storage
 
-usb_root=(/mnt/media_rw  /mnt/usb_storage /sdcard)
+usb_root=(/mnt/media_rw  /mnt/usb_storage /sdcard/test)
 
 detect_usb_root() {
     for root in ${usb_root[@]}; do
@@ -17,10 +17,7 @@ detect_usb_root() {
             disk_dir=`cd $root; ls`
             array=(${disk_dir// / })
             length=${#array[@]}
-            if [ $length -eq 0 ]; then
-                echo "none"
-                return
-            else
+            if [ $length -gt 0 ]; then
                echo $root/${array[0]}
                return
             fi
@@ -30,15 +27,16 @@ detect_usb_root() {
 }
 
 file_size_compare() {
-    string=`ls -l $1`
-    array=(${string//,/ })
-    src_size=${array[4]}
+    # ls -l init | awk '{for (i = 1; i < NF; i++) { if ($i ~ /^[0-9]+$/) printf("%s\n", $i)};}'
+    #string=`ls -l $1`
+    #array=(${string//,/ })
+    #src_size=${array[3]}
+    src_size=`ls -l $1 | awk '{for (i = 1; i < NF; i++) { if ($i ~ /^[0-9]+$/) printf("%s\n", $i)};}'`
 
-    string=`ls -l $2`
-    array=(${string//,/ })
-    dst_size=${array[4]}
-
-    #echo "$src_size  $dst_size "
+    #string=`ls -l $2`
+    #array=(${string//,/ })
+    #dst_size=${array[3]}
+    src_size=`ls -l $2 | awk '{for (i = 1; i < NF; i++) { if ($i ~ /^[0-9]+$/) printf("%s\n", $i)};}'`
 
     if [ $src_size -eq $dst_size ]; then
         echo "equ"
@@ -91,3 +89,6 @@ if [ "$1" == "tousb" ]; then
     fi
 fi
 
+if [ "$1" == "usbdetect" ]; then
+    detect_usb_root
+fi

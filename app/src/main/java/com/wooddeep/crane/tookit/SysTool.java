@@ -268,6 +268,29 @@ public class SysTool {
         }
     }
 
+
+    public static void usbDiskDetect() {
+        try {
+            String command = "ls /mnt/media_rw";
+            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            proc.waitFor();
+            InputStream fis = proc.getInputStream();
+            //用一个读输出流类去读
+            InputStreamReader isr = new InputStreamReader(fis);
+            //用缓冲器读行
+            BufferedReader br = new BufferedReader(isr);
+            String line = null;
+            //直到读完为止
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+                //usbDir.add("/mnt/media_rw/" + line.replaceAll("\\s+", ""));
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public static JSONObject copySysCfgToUsbDisk(String dstPath, String srcName) {
         JSONObject resp = new JSONObject();
         try {
@@ -284,6 +307,49 @@ public class SysTool {
         }
 
         return resp;
+    }
+
+    public static JSONObject copyToUsbDisk(String filepath, String fileName) {
+        JSONObject out = new JSONObject();
+
+        try {
+            out.put("code", 0);
+
+            List<String> usbDir = new ArrayList<>();
+            String command;
+            command = "ls /mnt/media_rw";
+            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            proc.waitFor();
+            InputStream fis = proc.getInputStream();
+            //用一个读输出流类去读
+            InputStreamReader isr = new InputStreamReader(fis);
+            //用缓冲器读行
+            BufferedReader br = new BufferedReader(isr);
+            String line = null;
+            //直到读完为止
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+                usbDir.add("/mnt/media_rw/" + line.replaceAll("\\s+", ""));
+            }
+
+            if (usbDir.size() == 0) {
+                out.put("code", 1).put("msg", "U盘位置未知, 请在目标U盘创建一个文件名为tmec的空文件\n" +
+                    "(Usb disk not found, please create a empty file named tmec \nin the target usb disk!)");
+                return out;
+            }
+
+            for (String dir : usbDir) {
+                command = String.format("cp -rf %s %s", filepath, dir);
+                proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+                proc.waitFor();
+                //copyCheck(filepath, String.format("%s/%s", dir, fileName));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return out;
     }
 
     public static int copyFromUsbDisk(String dstPath, String srcName) {
@@ -351,6 +417,18 @@ public class SysTool {
             }
 
             Log.v("DEBUG", out);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return ret;
+    }
+
+    public static String usbDiskRoot() {
+        String ret = "notfound";
+        try {
+            ret = executeScript("/sdcard/fileops.sh", "usbdetect").replaceAll("\r?\n", "");
+            Log.v("DEBUG", ret);
         } catch (Exception e) {
             e.printStackTrace();
         }

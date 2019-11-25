@@ -123,7 +123,7 @@ public class TcParamDao {
 
     public void deleteAll() {
         try {
-            dao.executeRaw("delete from load;");
+            dao.executeRaw("delete from tcparam;");
         } catch (SQLException e) {
             e.printStackTrace();
         }
