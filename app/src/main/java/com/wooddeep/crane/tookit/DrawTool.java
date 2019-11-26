@@ -338,15 +338,20 @@ public class DrawTool {
     /**
      * 普通dialog
      */
-    public static void showImportSysCfgDialog(Activity activity, boolean ok) {
+    public static void showImportSysCfgDialog(Activity activity, boolean ok, int code) {
+
+        String [][] errmsg = new String[][] {
+            {"成功", "success"},
+            {"U盘未找到", "usb disk not found"}
+        };
+
         final AlertDialog.Builder alterDiaglog = new AlertDialog.Builder(activity);
         //alterDiaglog.setIcon(R.drawable.icon);//图标
         if (ok) {
-            alterDiaglog.setTitle("系统配置导入成功, 请重启(import load feature success, please restart!)");//文字
+            alterDiaglog.setTitle("系统配置导入成功, 请重启(import success, please restart!)");//文字
         } else {
-            alterDiaglog.setTitle("系统配置导入失败(import load feature fail, load again!)");//文字
+            alterDiaglog.setTitle(String.format("导入失败, %s, (import fail, %s!)", errmsg[code][0], errmsg[code][1]));
         }
-        //alterDiaglog.setMessage("生存还是死亡");//提示消息
 
         //积极的选择
         alterDiaglog.setPositiveButton("确认(confirm)", new DialogInterface.OnClickListener() {

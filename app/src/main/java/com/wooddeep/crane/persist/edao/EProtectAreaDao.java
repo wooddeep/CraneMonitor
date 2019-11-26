@@ -1,25 +1,26 @@
-package com.wooddeep.crane.persist.dao;
+package com.wooddeep.crane.persist.edao;
 
 import android.content.Context;
 
 import com.j256.ormlite.dao.Dao;
 import com.wooddeep.crane.persist.DatabaseHelper;
+import com.wooddeep.crane.persist.EdbHelper;
 import com.wooddeep.crane.persist.entity.Protect;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProtectDao {
+public class EProtectAreaDao {
 
     private Context context;
     // ORMLite提供的DAO类对象，第一个泛型是要操作的数据表映射成的实体类；第二个泛型是这个实体类中ID的数据类型
     private Dao<Protect, Integer> dao;
 
-    public ProtectDao(Context context) {
+    public EProtectAreaDao(Context context, String epath) {
         this.context = context;
         try {
-            this.dao = DatabaseHelper.getInstance(context).getDaoX(Protect.class);
+            this.dao = EdbHelper.getInstance(context, epath).getDaoX(Protect.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -38,14 +39,6 @@ public class ProtectDao {
     public void delete(Protect data) {
         try {
             dao.delete(data);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void deleteAll() {
-        try {
-            dao.executeRaw("delete from protect;");
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -425,7 +425,7 @@ public class SysTool {
     }
 
     public static String usbDiskRoot() {
-        String ret = "notfound";
+        String ret = "none";
         try {
             ret = executeScript("/sdcard/fileops.sh", "usbdetect").replaceAll("\r?\n", "");
             Log.v("DEBUG", ret);

@@ -43,6 +43,14 @@ public class CalibrationDao {
         }
     }
 
+    public void deleteAll() {
+        try {
+            dao.executeRaw("delete from calibration;");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     // 修改user表中的一条数据
     public void update(Calibration data) {
         try {

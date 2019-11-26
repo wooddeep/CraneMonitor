@@ -14,7 +14,7 @@ import com.wooddeep.crane.persist.entity.Student;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unused")
+
 public class CraneParaDao {
     private SQLiteOpenHelper helper;
 

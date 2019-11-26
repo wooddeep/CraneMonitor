@@ -43,6 +43,14 @@ public class AlarmSetDao {
         }
     }
 
+    public void deleteAll() {
+        try {
+            dao.executeRaw("delete from alarm;");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     // 修改user表中的一条数据
     public void update(AlarmSet data) {
         try {

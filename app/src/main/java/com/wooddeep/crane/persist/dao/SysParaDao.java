@@ -43,6 +43,14 @@ public class SysParaDao {
         }
     }
 
+    public void deleteAll() {
+        try {
+            dao.executeRaw("delete from syspara;");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     // 修改user表中的一条数据
     public boolean update(SysPara data) {
         boolean ret = false;

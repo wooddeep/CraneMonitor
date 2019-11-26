@@ -26,9 +26,25 @@ import com.wooddeep.crane.ebus.SysParaEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.LoadDbHelper;
 import com.wooddeep.crane.persist.dao.AlarmSetDao;
+import com.wooddeep.crane.persist.dao.AreaDao;
+import com.wooddeep.crane.persist.dao.CalibrationDao;
+import com.wooddeep.crane.persist.dao.CraneDao;
+import com.wooddeep.crane.persist.dao.ProtectAreaDao;
+import com.wooddeep.crane.persist.dao.ProtectDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
 import com.wooddeep.crane.persist.dao.TcParamDao;
+import com.wooddeep.crane.persist.edao.EAlarmSetDao;
+import com.wooddeep.crane.persist.edao.EAreaDao;
+import com.wooddeep.crane.persist.edao.ECalibrationDao;
+import com.wooddeep.crane.persist.edao.ECraneDao;
+import com.wooddeep.crane.persist.edao.EProtectAreaDao;
+import com.wooddeep.crane.persist.edao.EProtectDao;
+import com.wooddeep.crane.persist.edao.ESysParaDao;
 import com.wooddeep.crane.persist.entity.AlarmSet;
+import com.wooddeep.crane.persist.entity.Area;
+import com.wooddeep.crane.persist.entity.Calibration;
+import com.wooddeep.crane.persist.entity.Crane;
+import com.wooddeep.crane.persist.entity.Protect;
 import com.wooddeep.crane.persist.entity.SysPara;
 import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.tookit.SysTool;
@@ -85,9 +101,9 @@ public class SuperAdmin extends AppCompatActivity {
         Intent intent = getIntent();
         boolean superSuper = intent.getBooleanExtra("superSuper", false);
         if (!superSuper) {
-            TableRow row = (TableRow)findViewById(R.id.row_pass_set);
+            TableRow row = (TableRow) findViewById(R.id.row_pass_set);
             row.setVisibility(GONE);
-            TableRow rowSysSet = (TableRow)findViewById(R.id.row_sys_set);
+            TableRow rowSysSet = (TableRow) findViewById(R.id.row_sys_set);
             rowSysSet.setVisibility(GONE);
         }
         activity = this;
@@ -183,13 +199,63 @@ public class SuperAdmin extends AppCompatActivity {
         findViewById(R.id.btn_import_sys_cfg).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int ret = SysTool.copySysCfgFromUsbDisk("/data/data/com.wooddeep.crane/databases", "crane.db");
-                if (ret == 0) {
-                    DrawTool.showImportSysCfgDialog(activity, true);
-                } else {
-                    DrawTool.showImportSysCfgDialog(activity, false);
+
+                String usbRoot = SysTool.usbDiskRoot();
+                if (usbRoot.equals("none")) {
+                    DrawTool.showImportSysCfgDialog(activity, false, 1);
                 }
 
+                EAlarmSetDao eAlarmSetDao = new EAlarmSetDao(context, usbRoot);
+                EAreaDao eAreaDao = new EAreaDao(context, usbRoot);
+                ECalibrationDao eCalibrationDao = new ECalibrationDao(context, usbRoot);
+                ECraneDao eCraneDao = new ECraneDao(context, usbRoot);
+                EProtectDao eProtectDao = new EProtectDao(context, usbRoot);
+                ESysParaDao eSysParaDao = new ESysParaDao(context, usbRoot);
+
+                AlarmSetDao alarmSetDao = new AlarmSetDao(context);
+                AreaDao areaDao = new AreaDao(context);
+                CalibrationDao calibrationDao = new CalibrationDao(context);
+                CraneDao craneDao = new CraneDao(context);
+                ProtectDao protectDao = new ProtectDao(context);
+                SysParaDao sysParaDao = new SysParaDao(context);
+
+                alarmSetDao.deleteAll();
+                List<AlarmSet> alarmSets = eAlarmSetDao.selectAll();
+                for (AlarmSet alarmSet: alarmSets) {
+                    alarmSetDao.insert(alarmSet);
+                }
+
+                areaDao.deleteAll();
+                List<Area> areas = eAreaDao.selectAll();
+                for (Area area: areas) {
+                    eAreaDao.insert(area);
+                }
+
+                calibrationDao.deleteAll();
+                List<Calibration> calibrations = eCalibrationDao.selectAll();
+                for (Calibration calibration: calibrations) {
+                    calibrationDao.insert(calibration);
+                }
+
+                craneDao.deleteAll();
+                List<Crane> cranes = eCraneDao.selectAll();
+                for (Crane crane: cranes) {
+                    craneDao.insert(crane);
+                }
+
+                protectDao.deleteAll();
+                List<Protect> protects = eProtectDao.selectAll();
+                for (Protect protect: protects) {
+                    protectDao.insert(protect);
+                }
+
+                sysParaDao.deleteAll();
+                List<SysPara> sysParas = eSysParaDao.selectAll();
+                for (SysPara sysPara: sysParas) {
+                    sysParaDao.insert(sysPara);
+                }
+
+                DrawTool.showImportSysCfgDialog(activity, true, 0);
             }
         });
 

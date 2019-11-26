@@ -43,6 +43,14 @@ public class ProtectAreaDao {
         }
     }
 
+    public void deleteAll() {
+        try {
+            dao.executeRaw("delete from protect;");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     // 修改user表中的一条数据
     public void update(Protect data) {
         try {

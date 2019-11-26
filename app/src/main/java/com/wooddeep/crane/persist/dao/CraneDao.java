@@ -43,6 +43,14 @@ public class CraneDao {
         }
     }
 
+    public void deleteAll() {
+        try {
+            dao.executeRaw("delete from crane;");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     // 修改user表中的一条数据
     public void update(Crane data) {
         try {
