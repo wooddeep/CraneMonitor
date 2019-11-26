@@ -3,6 +3,10 @@
 # author: wooddeep
 # hope for health!!!!
 
+if [ ! -d /sdcard/crane ]; then
+    mkdir -p /sdcard/crane
+fi
+
 while true; do
   #echo "hello world"
 

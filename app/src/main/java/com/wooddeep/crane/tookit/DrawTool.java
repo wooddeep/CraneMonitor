@@ -342,7 +342,8 @@ public class DrawTool {
 
         String [][] errmsg = new String[][] {
             {"成功", "success"},
-            {"U盘未找到", "usb disk not found"}
+            {"U盘未找到", "usb disk not found"},
+            {"读外部数据库失败", "read extenal database fail"}
         };
 
         final AlertDialog.Builder alterDiaglog = new AlertDialog.Builder(activity);

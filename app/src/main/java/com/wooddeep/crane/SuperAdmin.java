@@ -1,11 +1,15 @@
 package com.wooddeep.crane;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -94,6 +98,21 @@ public class SuperAdmin extends AppCompatActivity {
         }
     }
 
+    private void reqireAuth() {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            //申请WRITE_EXTERNAL_STORAGE权限
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                1);
+        }
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            //申请WRITE_EXTERNAL_STORAGE权限
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                1);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +126,7 @@ public class SuperAdmin extends AppCompatActivity {
             rowSysSet.setVisibility(GONE);
         }
         activity = this;
+        reqireAuth();
         context = getApplicationContext();
         paraDao = new SysParaDao(context);
         if (getSupportActionBar() != null) {
@@ -200,10 +220,13 @@ public class SuperAdmin extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String usbRoot = SysTool.usbDiskRoot();
-                if (usbRoot.equals("none")) {
+                String extenalRoot = SysTool.usbDiskRoot();
+                if (extenalRoot.equals("none")) {
                     DrawTool.showImportSysCfgDialog(activity, false, 1);
                 }
+
+                final String usbRoot = "/sdcard/crane";
+                SysTool.executeScript("/sdcard/fileops.sh", "fromusb", "/sdcard/crane", "crane.db");
 
                 EAlarmSetDao eAlarmSetDao = new EAlarmSetDao(context, usbRoot);
                 EAreaDao eAreaDao = new EAreaDao(context, usbRoot);
@@ -219,8 +242,19 @@ public class SuperAdmin extends AppCompatActivity {
                 ProtectDao protectDao = new ProtectDao(context);
                 SysParaDao sysParaDao = new SysParaDao(context);
 
-                alarmSetDao.deleteAll();
+                List<Crane> cranes = eCraneDao.selectAll();
+                if (cranes == null || cranes.size() == 0) {
+                    DrawTool.showImportSysCfgDialog(activity, false, 2);
+                    return;
+                }
+                craneDao.deleteAll();
+                for (Crane crane: cranes) {
+                    craneDao.insert(crane);
+                }
+
                 List<AlarmSet> alarmSets = eAlarmSetDao.selectAll();
+                if (alarmSets == null) return;
+                alarmSetDao.deleteAll();
                 for (AlarmSet alarmSet: alarmSets) {
                     alarmSetDao.insert(alarmSet);
                 }
@@ -235,12 +269,6 @@ public class SuperAdmin extends AppCompatActivity {
                 List<Calibration> calibrations = eCalibrationDao.selectAll();
                 for (Calibration calibration: calibrations) {
                     calibrationDao.insert(calibration);
-                }
-
-                craneDao.deleteAll();
-                List<Crane> cranes = eCraneDao.selectAll();
-                for (Crane crane: cranes) {
-                    craneDao.insert(crane);
                 }
 
                 protectDao.deleteAll();

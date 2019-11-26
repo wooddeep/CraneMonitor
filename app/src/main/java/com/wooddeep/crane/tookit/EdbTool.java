@@ -27,7 +27,10 @@ public class EdbTool {
         mContext = context;
         String usbRoot = SysTool.usbDiskRoot();
         if (usbRoot.equals("none")) return out;
-        DB_PATH = usbRoot;
+
+        SysTool.executeScript("/sdcard/fileops.sh", "fromusb", "/sdcard/crane", "tc.db");
+
+        DB_PATH = "/sdcard/crane";
 
         try {
             File file = new File(DB_PATH);
