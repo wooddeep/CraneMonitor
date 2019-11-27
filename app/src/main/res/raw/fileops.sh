@@ -36,7 +36,7 @@ file_size_compare() {
     #string=`ls -l $2`
     #array=(${string//,/ })
     #dst_size=${array[3]}
-    src_size=`ls -l $2 | awk '{for (i = 1; i < NF; i++) { if ($i ~ /^[0-9]+$/) printf("%s\n", $i)};}'`
+    dst_size=`ls -l $2 | awk '{for (i = 1; i < NF; i++) { if ($i ~ /^[0-9]+$/) printf("%s\n", $i)};}'`
 
     if [ $src_size -eq $dst_size ]; then
         echo "equ"

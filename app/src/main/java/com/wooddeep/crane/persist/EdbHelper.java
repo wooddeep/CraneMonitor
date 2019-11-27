@@ -59,6 +59,10 @@ public class EdbHelper extends OrmLiteSqliteOpenHelper {
         return instance;
     }
 
+    public static synchronized EdbHelper getInstance() {
+        return instance;
+    }
+
     // 私有的构造方法
 
     private EdbHelper(Context context) {
@@ -126,5 +130,6 @@ public class EdbHelper extends OrmLiteSqliteOpenHelper {
             Dao dao = daos.get(key);
             dao = null;
         }
+        instance = null;
     }
 }

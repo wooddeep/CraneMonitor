@@ -28,6 +28,7 @@ import com.wooddeep.crane.R;
 import com.wooddeep.crane.ebus.AlarmSetEvent;
 import com.wooddeep.crane.ebus.SysParaEvent;
 import com.wooddeep.crane.persist.DatabaseHelper;
+import com.wooddeep.crane.persist.EdbHelper;
 import com.wooddeep.crane.persist.LoadDbHelper;
 import com.wooddeep.crane.persist.dao.AlarmSetDao;
 import com.wooddeep.crane.persist.dao.AreaDao;
@@ -282,6 +283,8 @@ public class SuperAdmin extends AppCompatActivity {
                 for (SysPara sysPara: sysParas) {
                     sysParaDao.insert(sysPara);
                 }
+
+                EdbHelper.getInstance().close();
 
                 DrawTool.showImportSysCfgDialog(activity, true, 0);
             }
