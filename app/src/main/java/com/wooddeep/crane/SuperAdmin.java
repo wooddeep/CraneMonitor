@@ -309,9 +309,10 @@ public class SuperAdmin extends AppCompatActivity {
             remotePort = Integer.parseInt(rp.getParaValue());
         }
 
-        /*
+
         ((EditText) findViewById(R.id.et_remote_addr_set)).setText(remoteAddr);
-        ((EditText) findViewById(R.id.et_remote_port_set)).setText(remotePort);
+        ((EditText) findViewById(R.id.et_remote_port_set)).setText(String.valueOf(remotePort));
+
 
         ((Button) findViewById(R.id.btn_remote_set)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -344,7 +345,7 @@ public class SuperAdmin extends AppCompatActivity {
                 }
             }
         });
-        */
+
 
     }
 
