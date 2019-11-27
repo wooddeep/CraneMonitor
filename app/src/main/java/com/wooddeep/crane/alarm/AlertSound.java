@@ -109,7 +109,8 @@ public class AlertSound {
     }
     */
 
-
+    // https://zhidao.baidu.com/question/180171516810102444.html
+    // https://blog.csdn.net/xiangzaixiansheng/article/details/90549439
     public static void open(int index) {
 
         if (index > 5) return;

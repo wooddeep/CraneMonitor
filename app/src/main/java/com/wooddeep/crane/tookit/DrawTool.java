@@ -384,4 +384,27 @@ public class DrawTool {
         alertView.show();
     }
 
+    public static void showDialog(Activity activity, String message) {
+        final AlertDialog.Builder alterDiaglog = new AlertDialog.Builder(activity);
+        alterDiaglog.setTitle(message);//文字
+
+        //积极的选择
+        alterDiaglog.setPositiveButton("确认(confirm)", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(activity, "点击了生存", Toast.LENGTH_SHORT).show();
+            }
+        });
+        //消极的选择
+        alterDiaglog.setNegativeButton("取消(cancel)", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(activity, "点击了死亡", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //显示
+        alterDiaglog.show();
+    }
+
 }

@@ -82,6 +82,11 @@ public class SysTool {
                 SysTool.copyFilesFromRaw(context, R.raw.fileops, "fileops.sh", "/sdcard");
             }
 
+            File syscfg = new File("/sdcard/syscfg.json"); // 系统配置文件
+            if (!syscfg.exists()) {
+                SysTool.copyFilesFromRaw(context, R.raw.syscfg, "syscfg.json", "/sdcard");
+            }
+
             command = "exist=`ps | grep 'bash'`; if [ -z \"$exist\" ]; then bash /sdcard/monitor.sh; fi";
             Runtime.getRuntime().exec(new String[]{"su", "-c", command});
             proc.waitFor();
@@ -496,5 +501,23 @@ public class SysTool {
         return out.toString();
     }
 
+    public static String readFile(String filename) {
+        StringBuffer out = new StringBuffer("");
+        try {
+            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", String.format("cat %s", filename)});
+            proc.waitFor();
+            InputStream fis = proc.getInputStream();
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            String line;
+            while ((line = br.readLine()) != null) {
+                out.append(line);
+                out.append("\n");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return out.toString();
+    }
 
 }

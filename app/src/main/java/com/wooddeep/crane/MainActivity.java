@@ -8,6 +8,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -89,10 +92,10 @@ import com.wooddeep.crane.simulator.UartEmitter;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DataUtil;
-import com.wooddeep.crane.tookit.DogTool;
 import com.wooddeep.crane.tookit.MathTool;
 import com.wooddeep.crane.tookit.MomentOut;
 import com.wooddeep.crane.tookit.SysTool;
+import com.wooddeep.crane.tookit.TcpClient;
 import com.wooddeep.crane.views.CraneView;
 import com.wooddeep.crane.views.Vertex;
 
@@ -1723,4 +1726,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+	
+	    // ringtone 设置循环播放
+    // https://blog.csdn.net/w1181775042/article/details/47036659
+
+    private void xx() {
+        Uri defaultRingtoneUri = RingtoneManager.getActualDefaultRingtoneUri(MainActivity.this, RingtoneManager.TYPE_RINGTONE);
+
+        Ringtone ringtone = RingtoneManager.getRingtone(MainActivity.this, defaultRingtoneUri);
+
+        ringtone.play();
+    }
+
 }

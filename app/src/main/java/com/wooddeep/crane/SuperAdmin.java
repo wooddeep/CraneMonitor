@@ -290,6 +290,62 @@ public class SuperAdmin extends AppCompatActivity {
             }
         });
 
+
+        String remoteAddr = "192.168.140.94";
+        SysPara ra = paraDao.queryParaByName("remoteAddr");
+        if (ra == null) {
+            ra = new SysPara("remoteAddr", remoteAddr);
+            paraDao.insert(ra);
+        } else {
+            remoteAddr = ra.getParaValue();
+        }
+
+        int remotePort = 1733;
+        SysPara rp = paraDao.queryParaByName("remotePort");
+        if (rp == null) {
+            rp = new SysPara("remotePort", String.valueOf(remotePort));
+            paraDao.insert(rp);
+        } else {
+            remotePort = Integer.parseInt(rp.getParaValue());
+        }
+
+        /*
+        ((EditText) findViewById(R.id.et_remote_addr_set)).setText(remoteAddr);
+        ((EditText) findViewById(R.id.et_remote_port_set)).setText(remotePort);
+
+        ((Button) findViewById(R.id.btn_remote_set)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String addr = ((EditText) findViewById(R.id.et_remote_addr_set)).getText().toString();
+                String port = ((EditText) findViewById(R.id.et_remote_port_set)).getText().toString();
+
+                if (!addr.matches("[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+")) {
+                    DrawTool.showDialog(activity, "地址格式错误!(address format error!)");
+                } else if (!port.matches("[0-9]+")) {
+                    DrawTool.showDialog(activity, "端口格式错误!(port format error!)");
+                } else {
+                    SysPara ra = paraDao.queryParaByName("remoteAddr");
+                    ra.setParaValue(addr);
+                    boolean ret = paraDao.update(ra);
+                    if (!ret) {
+                        DrawTool.showDialog(activity, "存地址失败!(save address fail!)");
+                        return;
+                    }
+
+                    SysPara rp = paraDao.queryParaByName("remotePort");
+                    rp.setParaValue(port);
+                    ret = paraDao.update(rp);
+                    if (!ret) {
+                        DrawTool.showDialog(activity, "存端口失败!(save port fail!)");
+                        return;
+                    }
+
+                    DrawTool.showDialog(activity, "成功!(success!)");
+                }
+            }
+        });
+        */
+
     }
 
     private void setOnTouchListener(View view) {
