@@ -569,10 +569,6 @@ public class MainActivity extends AppCompatActivity {
                     realDataDao.insert(realData);
                 }
 
-                if (count % 6 == 0) { // 喂软件狗
-                    feedWatchDog();
-                }
-
                 if (ttyS0InputStream == null || ttyS1InputStream == null || ttyS2InputStream == null) {
                     continue;
                 }
@@ -594,45 +590,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-        }).start();
-    }
-
-    private void watchDogThread() {
-
-        new Thread(() -> {
-
-            boolean live = true;
-
-            Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-            for (Thread thread : threadSet) {
-                if (thread.getName().equals("watchdog")) {
-                    System.out.println("## thread exist, I will exit!");
-                    live = false;
-                }
-            }
-
-            int count = 0;
-            if (live) {
-                Thread.currentThread().setName("watchdog");
-                while (true && !sysExit) {
-                    CommTool.sleep(100);
-                    count++;
-                    if (count % 100 == 0) {
-                        //System.out.println(sdf.format(new Date()));
-                        System.out.println("## I will finish!");
-                        System.out.println("## activity = " + activity);
-                        // 获取activity的值
-                        activity.finish();
-                    }
-
-                    if (sysExit) {
-                        CommTool.sleep(2000);
-                        System.out.println(sdf.format(new Date()) + ": I will launch again");
-                        launchPackage("com.wooddeep.crane", 1);
-                        sysExit = false;
-                    }
-                }
-            }
         }).start();
     }
 
@@ -1670,30 +1627,6 @@ public class MainActivity extends AppCompatActivity {
         }, 3000);
     }
 
-    private void initWatchDog() {
-        DogTool.changePermission();
-        intent = new Intent(DogTool.ACTION_WATCHDOG_INIT);
-        sendBroadcast(intent);
-    }
-
-    private void setWatchDogTimeOut() {
-        intent = new Intent(DogTool.ACTION_WATCHDOG_SETTIMEOUT);
-        intent.putExtra("timeout", 3);
-        sendBroadcast(intent);
-    }
-
-    private Intent feedIntent = new Intent(DogTool.ACTION_WATCHDOG_KICK);
-
-    private void feedWatchDog() {
-        runOnUiThread(
-            new Runnable() {
-                @Override
-                public void run() {
-                    sendBroadcast(feedIntent);
-                }
-            });
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -1705,28 +1638,6 @@ public class MainActivity extends AppCompatActivity {
         //按返回键返回桌面
         moveTaskToBack(true);
     }
-
-    private void feedLaunchWatchDog() {
-        feedIntent.setAction("cn.programmer.CUSTOM_INTENT");
-        runOnUiThread(() -> {
-            sendBroadcast(feedIntent);
-        });
-    }
-
-    private void launchPackage(String packageName, int id) {
-        if (packageName != null && !packageName.equals("nonon")) {
-            try {
-                mPackageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
-                Intent intent = mPackageManager.getLaunchIntentForPackage(packageName);
-                startActivity(intent);
-            } catch (PackageManager.NameNotFoundException e) {
-                Toast.makeText(MainActivity.this, "应用" + id + "不存在", Toast.LENGTH_SHORT).show();
-            } catch (NullPointerException e) {
-                Toast.makeText(MainActivity.this, "应用" + id + "无法启动", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-	
 	    // ringtone 设置循环播放
     // https://blog.csdn.net/w1181775042/article/details/47036659
 

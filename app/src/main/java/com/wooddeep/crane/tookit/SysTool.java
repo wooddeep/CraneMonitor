@@ -72,6 +72,10 @@ public class SysTool {
             Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
             proc.waitFor();
 
+            command = "if [ ! -d /sdcard/crane ]; then mkdir -p /sdcard/crane; fi";
+            proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            proc.waitFor();
+
             File monitor = new File("/sdcard/monitor.sh"); // 首付进程
             if (!monitor.exists()) {
                 SysTool.copyFilesFromRaw(context, R.raw.monitor, "monitor.sh", "/sdcard");

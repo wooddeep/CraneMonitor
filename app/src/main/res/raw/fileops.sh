@@ -9,7 +9,7 @@
 # /mnt/media_rw，
 # /mnt/usb_storage
 
-usb_root=(/mnt/media_rw  /mnt/usb_storage /sdcard/test)
+usb_root=(/mnt/media_rw  /mnt/usb_storage/USB_DISK1 /mnt/usb_storage/USB_DISK2 /mnt/usb_storage/USB_DISK3 /mnt/usb_storage/USB_DISK4)
 
 detect_usb_root() {
     for root in ${usb_root[@]}; do
