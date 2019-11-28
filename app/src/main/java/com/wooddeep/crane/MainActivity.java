@@ -593,6 +593,11 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
+    public void startSocketThread() {
+        TcpClient client = new TcpClient(paraDao);
+        new Thread(() -> client.run()).start();
+    }
+
     // 侦听电台数据
     public void RadioDateEventOps(RadioEvent event) {
         int cmdRet = radioProto.parse(event.getData()); // 解析电台数据
@@ -1619,6 +1624,7 @@ public class MainActivity extends AppCompatActivity {
             startRadioReadThread();
             startRadioWriteThread();
             startTimerThread();
+            startSocketThread();
         }, 100);
 
         // 触发判断本机是否为主机
@@ -1626,6 +1632,7 @@ public class MainActivity extends AppCompatActivity {
             RadioDateEventOps(new RadioEvent(radioProto.startMaster()));
         }, 3000);
     }
+
 
     @Override
     protected void onDestroy() {
@@ -1638,7 +1645,8 @@ public class MainActivity extends AppCompatActivity {
         //按返回键返回桌面
         moveTaskToBack(true);
     }
-	    // ringtone 设置循环播放
+
+    // ringtone 设置循环播放
     // https://blog.csdn.net/w1181775042/article/details/47036659
 
     private void xx() {
