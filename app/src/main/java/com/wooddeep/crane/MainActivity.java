@@ -594,7 +594,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startSocketThread() {
-        TcpClient client = new TcpClient(paraDao);
+        TcpClient client = new TcpClient();
         new Thread(() -> client.run()).start();
     }
 

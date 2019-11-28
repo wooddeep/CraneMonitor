@@ -1,7 +1,6 @@
 package com.wooddeep.crane.tookit;
 
-import com.wooddeep.crane.persist.dao.SysParaDao;
-import com.wooddeep.crane.persist.entity.SysPara;
+import com.wooddeep.crane.SuperAdmin;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,65 +14,64 @@ public class TcpClient {
     private OutputStream outputStream = null;
     private InputStream inputStream = null;
 
-    private SysParaDao paraDao = null;
+    private String savedAddr = "192.168.141.195";
+    private int savedPort = 1733;
 
-    public TcpClient(SysParaDao sysParaDao) {
-        paraDao = sysParaDao;
-    }
-
-    public void run() {
-
-        String remoteAddr = "192.168.140.94";
-        SysPara ra = paraDao.queryParaByName("remoteAddr");
-        if (ra == null) {
-            ra = new SysPara("remoteAddr", remoteAddr);
-            paraDao.insert(ra);
-        } else {
-            remoteAddr = ra.getParaValue();
-        }
-
-        int remotePort = 1733;
-        SysPara rp = paraDao.queryParaByName("remotePort");
-        if (rp == null) {
-            rp = new SysPara("remotePort", String.valueOf(remotePort));
-            paraDao.insert(rp);
-        } else {
-            remotePort = Integer.parseInt(rp.getParaValue());
-        }
-
+    private void reconnect() {
+        System.out.printf("## reconnect to %s:%d\n", savedAddr, savedPort);
         try {
-            socket = new Socket(remoteAddr, remotePort);
+            socket = new Socket(savedAddr, savedPort);
         } catch (UnknownHostException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.printf("cause: %s, mesg: %s\n", e.getCause(), e.getMessage());
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.printf("cause: %s, mesg: %s\n", e.getCause(), e.getMessage());
         }
+
+        if (socket == null) return;
 
         //获取输出流
         try {
             outputStream = socket.getOutputStream();
             inputStream = socket.getInputStream();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.printf("cause: %s, mesg: %s\n", e.getCause(), e.getMessage());
         }
+    }
+
+    public void run() {
+
+        reconnect();
+        final byte[] buffer = new byte[1024];//创建接收缓冲区
 
         try {
             while (true) {
-                final byte[] buffer = new byte[1024];//创建接收缓冲区
+
+                Object msg = SuperAdmin.mq.poll();
+                if (msg != null) { // 重建socket
+                    String[] remote = ((String) msg).split(":");
+                    String addr = remote[0];
+                    int port = Integer.parseInt(remote[1]);
+                    savedAddr = addr;
+                    savedPort = port;
+                    reconnect(); // 重连接
+                }
+
+                if (socket == null) {
+                    reconnect();
+                    continue;
+                }
 
                 outputStream.write("hello".getBytes());
                 final int len = inputStream.read(buffer);//数据读出来，并且返回数据的长度
 
                 System.out.println("## len = " + len);
 
-                Thread.sleep(20000);
+                if (len == -1) reconnect();
 
+                Thread.sleep(5000);
             }
         } catch (Exception e) {
-
+            System.out.printf("cause: %s, mesg: %s\n", e.getCause(), e.getMessage());
         }
 
     }

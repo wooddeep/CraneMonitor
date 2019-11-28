@@ -60,6 +60,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static android.media.AudioManager.ADJUST_LOWER;
 import static android.media.AudioManager.ADJUST_RAISE;
@@ -75,6 +76,8 @@ public class SuperAdmin extends AppCompatActivity {
     private Activity activity;
     private Context context;
     private SysParaDao paraDao;
+
+    public static LinkedBlockingQueue mq = new LinkedBlockingQueue();
 
     private Activity[] activities = new Activity[]{
 
@@ -341,6 +344,7 @@ public class SuperAdmin extends AppCompatActivity {
                         return;
                     }
 
+                    mq.offer(addr + ":" + port);
                     DrawTool.showDialog(activity, "成功!(success!)");
                 }
             }
