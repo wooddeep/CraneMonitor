@@ -183,9 +183,9 @@ public class LoadAttribute extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        confLoad(getApplicationContext());
         loadDao = new TcParamDao(getApplicationContext());
         paraDao = new SysParaDao(getApplicationContext());
+        confLoad(getApplicationContext());
 
         String savedCraneType = paraDao.queryValueByName("craneType");  // 塔基类型
         String savedAramLength = paraDao.queryValueByName("armLength"); // 臂长
@@ -306,13 +306,15 @@ public class LoadAttribute extends AppCompatActivity {
         view.setOnTouchListener(onTouchListener);
     }
 
-    private void setOnClickListener(View view) {
+    AlertView gAlertView = null;
 
+    private void setOnClickListener(View view) {
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (view.getId() == R.id.load_data) {
                     //loadDao = new TcParamDao(context);
+
                     AlertView alertView = new AlertView("加载负荷特性参数(load)?", "", null,
                         new String[]{"确定(confirm)", "取消(cancel)"}, null, activity,
                         AlertView.Style.Alert, new OnItemClickListener() {
@@ -323,43 +325,56 @@ public class LoadAttribute extends AppCompatActivity {
 
                                 if (lines.length() > 0) {
 
-                                    loadDao.deleteAll();
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            loadDao.deleteAll();
+                                            TcParam tcParam = new TcParam();
+                                            int total = lines.length();
+                                            int prevPercent = 0;
+                                            for (int i = 0; i < lines.length(); i++) {
+                                                try {
+                                                    JSONObject line = lines.getJSONObject(i);
+                                                    tcParam.setArmLength(line.getString("Length"));
+                                                    tcParam.setCoordinate(line.getString("Distance"));
+                                                    tcParam.setCraneType(line.getString("Type"));
+                                                    tcParam.setPower(line.getString("Rate"));
+                                                    tcParam.setWeight(line.getString("Weight"));
+                                                    System.out.println("### i = " + i);
+                                                    loadDao.insert(tcParam);
+                                                    int currPercent = (i + 1) * 100 / total;
+                                                    if (currPercent != prevPercent) {
+                                                        prevPercent = currPercent;
+                                                        runOnUiThread(() -> gAlertView.setMessage(currPercent + "/100"));
+                                                    }
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
 
-                                    TcParam tcParam = new TcParam();
-                                    for (int i = 0; i < lines.length(); i++) {
-                                        try {
-                                            JSONObject line = lines.getJSONObject(i);
-                                            tcParam.setArmLength(line.getString("Length"));
-                                            tcParam.setCoordinate(line.getString("Distance"));
-                                            tcParam.setCraneType(line.getString("Type"));
-                                            tcParam.setPower(line.getString("Rate"));
-                                            tcParam.setWeight(line.getString("Weight"));
-                                            loadDao.insert(tcParam);
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
+                                            paraDao = new SysParaDao(getApplicationContext());
+
+                                            SysPara savedCraneType = paraDao.queryParaByName("craneType");  // 塔基类型
+                                            SysPara savedAramLength = paraDao.queryParaByName("armLength"); // 臂长
+                                            SysPara savedPower = paraDao.queryParaByName("power"); // 倍率
+
+                                            craneTypes = loadDao.getCraneTypes();
+                                            armLengths = loadDao.getArmLengths(craneTypes.get(0));
+                                            cables = loadDao.getCables(craneTypes.get(0), armLengths.get(0));
+
+                                            savedCraneType.setParaValue(craneTypes.get(0));
+                                            savedAramLength.setParaValue(armLengths.get(0));
+                                            savedPower.setParaValue(cables.get(0));
+                                            EventBus.getDefault().post(new SysParaEvent(craneTypes.get(0), armLengths.get(0), cables.get(0))); // 触发系统参数相关
+
+                                            paraDao.update(savedCraneType);
+                                            paraDao.update(savedAramLength);
+                                            paraDao.update(savedPower);
+                                            runOnUiThread(() -> DrawTool.showImportDialog(activity, true));
+                                            //DrawTool.showImportDialog(activity, true);
                                         }
-                                    }
+                                    }).start();
 
-                                    paraDao = new SysParaDao(getApplicationContext());
-
-                                    SysPara savedCraneType = paraDao.queryParaByName("craneType");  // 塔基类型
-                                    SysPara savedAramLength = paraDao.queryParaByName("armLength"); // 臂长
-                                    SysPara savedPower = paraDao.queryParaByName("power"); // 倍率
-
-                                    craneTypes = loadDao.getCraneTypes();
-                                    armLengths = loadDao.getArmLengths(craneTypes.get(0));
-                                    cables = loadDao.getCables(craneTypes.get(0), armLengths.get(0));
-
-                                    savedCraneType.setParaValue(craneTypes.get(0));
-                                    savedAramLength.setParaValue(armLengths.get(0));
-                                    savedPower.setParaValue(cables.get(0));
-                                    EventBus.getDefault().post(new SysParaEvent(craneTypes.get(0), armLengths.get(0), cables.get(0))); // 触发系统参数相关
-
-                                    paraDao.update(savedCraneType);
-                                    paraDao.update(savedAramLength);
-                                    paraDao.update(savedPower);
-
-                                    DrawTool.showImportDialog(activity, true);
                                 } else {
                                     DrawTool.showImportDialog(activity, false);
                                 }
@@ -367,6 +382,7 @@ public class LoadAttribute extends AppCompatActivity {
                         }
                     });
                     alertView.show();
+                    gAlertView = alertView;
                 } else if (view.getId() == R.id.save_data) { // 保持数据
 
                     AlertView alertView = new AlertView("保存负荷特性参数(save)?", "", null,

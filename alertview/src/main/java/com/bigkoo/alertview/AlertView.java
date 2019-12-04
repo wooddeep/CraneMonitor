@@ -150,6 +150,7 @@ public class AlertView {
         //标题和消息
         TextView tvAlertTitle = (TextView) viewGroup.findViewById(R.id.tvAlertTitle);
         TextView tvAlertMsg = (TextView) viewGroup.findViewById(R.id.tvAlertMsg);
+        gTvAlertMsg = tvAlertMsg;
         if(title != null) {
             tvAlertTitle.setText(title);
         }else{
@@ -161,6 +162,15 @@ public class AlertView {
             tvAlertMsg.setVisibility(View.GONE);
         }
     }
+
+    private TextView gTvAlertMsg = null;
+
+    public void setMessage(String message) {
+        if (gTvAlertMsg != null) {
+            gTvAlertMsg.setText(message);
+        }
+    }
+
     protected void initListView(){
         Context context = contextWeak.get();
         if(context == null) return;
