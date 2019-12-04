@@ -76,8 +76,7 @@ import java.util.List;
 public class LoadAttribute extends AppCompatActivity {
     private Context context;
     private FixedTitleTable table;
-    private int screenWidth = 400; // dp
-
+    //private int screenWidth = 400; // dp
 
     private Activity activity = this;
 
@@ -123,7 +122,7 @@ public class LoadAttribute extends AppCompatActivity {
     private List<TcParam> confLoad(Context contex) {
         LoadDbHelper.getInstance(contex).createTable(TcParam.class);
         DatabaseHelper.getInstance(contex).createTable(SysPara.class);
-        loadDao = new TcParamDao(contex);
+        //loadDao = new TcParamDao(contex);
         List<TcParam> paras = loadDao.selectAll();
 
         return paras;
@@ -272,7 +271,7 @@ public class LoadAttribute extends AppCompatActivity {
 
         System.out.printf("%s-%s-%s\n", craneType, armLength, cableNum);
 
-        loadDao = new TcParamDao(getApplicationContext());
+        //loadDao = new TcParamDao(getApplicationContext());
         return loadDao.getLoads(craneType, armLength, cableNum);
 
     }
@@ -313,7 +312,7 @@ public class LoadAttribute extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (view.getId() == R.id.load_data) {
-                    loadDao = new TcParamDao(context);
+                    //loadDao = new TcParamDao(context);
                     AlertView alertView = new AlertView("加载负荷特性参数(load)?", "", null,
                         new String[]{"确定(confirm)", "取消(cancel)"}, null, activity,
                         AlertView.Style.Alert, new OnItemClickListener() {

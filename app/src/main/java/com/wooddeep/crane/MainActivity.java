@@ -58,6 +58,7 @@ import com.wooddeep.crane.element.SideCycle;
 import com.wooddeep.crane.main.Constant;
 import com.wooddeep.crane.main.SavedData;
 import com.wooddeep.crane.main.ShowData;
+import com.wooddeep.crane.net.NetClient;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.LoadDbHelper;
 import com.wooddeep.crane.persist.LogDbHelper;
@@ -1624,7 +1625,8 @@ public class MainActivity extends AppCompatActivity {
             startRadioReadThread();
             startRadioWriteThread();
             startTimerThread();
-            startSocketThread();
+            //startSocketThread();
+            NetClient.run();
         }, 100);
 
         // 触发判断本机是否为主机
