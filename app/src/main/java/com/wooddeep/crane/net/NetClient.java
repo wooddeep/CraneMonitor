@@ -1,13 +1,18 @@
 package com.wooddeep.crane.net;
 
+import com.wooddeep.crane.MainActivity;
 import com.wooddeep.crane.net.network.Protocol;
+import com.wooddeep.crane.persist.dao.SysParaDao;
+import com.wooddeep.crane.persist.entity.SysPara;
+
+import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class NetClient {
 
@@ -19,10 +24,20 @@ public class NetClient {
     private String savedAddr = "192.168.141.195"; //"192.168.141.43";
     private int savedPort = 1733;
 
-    private Lock lock = new ReentrantLock();
-
     private final byte[] buffer = new byte[10240];//创建接收缓冲区
+
     private Protocol protocol = new Protocol();
+
+    public static LinkedBlockingQueue mq = new LinkedBlockingQueue();
+    public static volatile boolean netOk = false;
+    private static SysParaDao paraDao;
+    public static volatile String sessionId = "initialize";
+    public static volatile int timeSlot = 5000;
+
+    public NetClient(String addr, int port) {
+        this.savedAddr = addr;
+        this.savedPort = port;
+    }
 
     private void reconnect() {
         System.out.printf("## reconnect to %s:%d\n", savedAddr, savedPort);
@@ -31,9 +46,14 @@ public class NetClient {
             outputStream = socket.getOutputStream();
             inputStream = socket.getInputStream();
             reconnFlag.set(false);
+            netOk = true;
+            mq.clear();
+            byte[] body = protocol.getSession(paraDao); // 重连之后，
+            mq.offer(body);
 
         } catch (Exception e) {
             reconnFlag.set(true);
+            netOk = false;
             System.out.printf("## reconnect[0] -> cause: %s, mesg: %s\n", e.getCause(), e.getMessage());
             try {
                 Thread.sleep(2000);
@@ -44,22 +64,33 @@ public class NetClient {
     }
 
     public void runWrite() {
-        while (true) {
+        while (true && !MainActivity.sysExit) {
 
             if (reconnFlag.get()) {
                 reconnect();
             }
 
             try {
-                Thread.sleep(3000);
+
+                Object message = mq.poll(3, TimeUnit.SECONDS);
+                if (message == null) continue;
+
+                if (message instanceof String) { // 配置地址与端口
+                    String[] remote = ((String) message).split(":");
+                    String addr = remote[0];
+                    int port = Integer.parseInt(remote[1]);
+                    savedAddr = addr;
+                    savedPort = port;
+                    reconnFlag.set(true);
+                    continue;
+                }
 
                 if (socket == null) {
                     continue;
                 }
 
-                byte[] body = protocol.getSession();
+                byte[] body = (byte[]) message;
                 int beWriteN = protocol.doPack(body);
-
                 System.out.println("## beWriteN = " + beWriteN);
 
                 outputStream.write(protocol.getPack(), 0, beWriteN);
@@ -79,7 +110,7 @@ public class NetClient {
     }
 
     public void runRead() {
-        while (true) {
+        while (true && !MainActivity.sysExit) {
             try {
 
                 if (inputStream == null || reconnFlag.get()) {
@@ -91,9 +122,29 @@ public class NetClient {
 
                 if (len == -1) {
                     reconnFlag.set(true);
+                    continue;
                 }
+
                 System.out.println("## len = " + len);
-                protocol.unPack(buffer, len);
+                JSONObject resp = protocol.unPack(buffer, len);
+
+                // {"cmd":"get.session", "data":{"sessionid": "afdsf123"}}
+                String cmd = resp.optString("cmd", "");
+                switch (cmd) {
+                    case "get.session":
+                        sessionId = resp.optJSONObject("data").optString("sessionid", "unknown");
+                        break;
+                    case "set.timeslot": //{"cmd":"set.timeslot", "data":{"realdata":5000}}
+                        timeSlot = resp.optJSONObject("data").optInt("timeslot", 5000); //resp.optJSONObject("data").getInt("timeslot")
+                        System.out.println("## timeSlot = " + timeSlot);
+                        byte[] body = protocol.response(cmd); // ack信息
+                        NetClient.mq.offer(body);
+                        break;
+                    default:
+                        //System.out.println("##unkonwn response command!");
+                        break;
+                }
+
 
             } catch (Exception e) {
                 System.out.printf("## runRead[0] -> cause: %s, mesg: %s\n", e.getCause(), e.getMessage());
@@ -129,8 +180,26 @@ public class NetClient {
         }
     }
 
-    public static void run() {
-        NetClient client = new NetClient();
+    public static void run(SysParaDao dao) {
+        paraDao = dao;
+        String remoteAddr = "192.168.140.94";
+        SysPara ra = paraDao.queryParaByName("remoteAddr");
+        if (ra == null) {
+            ra = new SysPara("remoteAddr", remoteAddr);
+            paraDao.insert(ra);
+        } else {
+            remoteAddr = ra.getParaValue();
+        }
+
+        int remotePort = 1733;
+        SysPara rp = paraDao.queryParaByName("remotePort");
+        if (rp == null) {
+            rp = new SysPara("remotePort", String.valueOf(remotePort));
+            paraDao.insert(rp);
+        } else {
+            remotePort = Integer.parseInt(rp.getParaValue());
+        }
+        NetClient client = new NetClient(remoteAddr, remotePort);
         client.new NetThread(true).start();
         client.new NetThread(false).start();
     }

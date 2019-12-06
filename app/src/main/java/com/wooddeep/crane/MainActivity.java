@@ -96,7 +96,6 @@ import com.wooddeep.crane.tookit.DataUtil;
 import com.wooddeep.crane.tookit.MathTool;
 import com.wooddeep.crane.tookit.MomentOut;
 import com.wooddeep.crane.tookit.SysTool;
-import com.wooddeep.crane.tookit.TcpClient;
 import com.wooddeep.crane.views.CraneView;
 import com.wooddeep.crane.views.Vertex;
 
@@ -236,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView windSpeedView;
     private MediaPlayer player;
 
-    private boolean sysExit = false;
+    public static volatile boolean sysExit = false;
     private Intent intent = null;
 
     private float startWeight = 0.3f;
@@ -533,8 +532,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void startTimerThread() {
+    private com.wooddeep.crane.net.network.Protocol protocol = new com.wooddeep.crane.net.network.Protocol();
 
+    private void startTimerThread() {
         AlertSound.init(getApplicationContext());
         new Thread(() -> {
             int count = 0;
@@ -542,6 +542,11 @@ public class MainActivity extends AppCompatActivity {
             while (true && !sysExit) {
                 CommTool.sleep(100);
                 count++;
+
+                if (count % (NetClient.timeSlot / 100) == 0 && NetClient.netOk) {
+                    byte[] body = protocol.getRealData(paraDao); // TODO 替换实时数据
+                    NetClient.mq.offer(body);
+                }
 
                 if (count % 500 == 0) {
                     setCurrTime();
@@ -588,15 +593,9 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-
             }
 
         }).start();
-    }
-
-    public void startSocketThread() {
-        TcpClient client = new TcpClient();
-        new Thread(() -> client.run()).start();
     }
 
     // 侦听电台数据
@@ -1563,6 +1562,7 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
+
         SysTool.sysScriptInit(context);
 
         mPackageManager = getPackageManager();
@@ -1625,8 +1625,7 @@ public class MainActivity extends AppCompatActivity {
             startRadioReadThread();
             startRadioWriteThread();
             startTimerThread();
-            //startSocketThread();
-            NetClient.run();
+            NetClient.run(paraDao);
         }, 100);
 
         // 触发判断本机是否为主机

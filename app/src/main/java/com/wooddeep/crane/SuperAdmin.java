@@ -27,6 +27,7 @@ import com.bigkoo.alertview.OnItemClickListener;
 import com.wooddeep.crane.R;
 import com.wooddeep.crane.ebus.AlarmSetEvent;
 import com.wooddeep.crane.ebus.SysParaEvent;
+import com.wooddeep.crane.net.NetClient;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.EdbHelper;
 import com.wooddeep.crane.persist.LoadDbHelper;
@@ -76,8 +77,6 @@ public class SuperAdmin extends AppCompatActivity {
     private Activity activity;
     private Context context;
     private SysParaDao paraDao;
-
-    public static LinkedBlockingQueue mq = new LinkedBlockingQueue();
 
     private Activity[] activities = new Activity[]{
 
@@ -344,7 +343,7 @@ public class SuperAdmin extends AppCompatActivity {
                         return;
                     }
 
-                    mq.offer(addr + ":" + port);
+                    NetClient.mq.offer(addr + ":" + port);
                     DrawTool.showDialog(activity, "成功!(success!)");
                 }
             }

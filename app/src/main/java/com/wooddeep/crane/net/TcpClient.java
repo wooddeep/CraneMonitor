@@ -66,7 +66,7 @@ public class TcpClient {
                         continue;
                     }
 
-                    byte[] body = protocol.getSession();
+                    byte[] body = protocol.getSession(null);
                     int beWriteN = protocol.doPack(body);
 
                     System.out.println("## beWriteN = " + beWriteN);

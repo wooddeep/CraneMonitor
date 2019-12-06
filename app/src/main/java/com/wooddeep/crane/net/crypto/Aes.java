@@ -10,6 +10,7 @@ import java.security.SecureRandom;
 
 public class Aes {
 
+
     public static byte[] encrypt(byte[] data, byte[] key) throws Exception {
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         byte[] iv = new byte[cipher.getBlockSize()];
