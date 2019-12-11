@@ -460,7 +460,7 @@ public class LoadAttribute extends AppCompatActivity {
 
         // 头部信息
         ArrayList<TableCell> colNames = new ArrayList<TableCell>() {{
-            add(new TableCell(0, "小车坐标(米)/Car Pos(m)"));
+            add(new TableCell(0, "小车坐标(米)/Trolley Pos(m)"));
             add(new TableCell(0, "额定吊重(吨)/Lift Weight(t)"));
         }};
 

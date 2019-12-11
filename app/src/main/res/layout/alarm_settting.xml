@@ -520,7 +520,7 @@
                         android:layout_gravity="left"
                         android:layout_marginLeft="@dimen/dp10"
                         android:gravity="center"
-                        android:text="幅度控制参数(米)/Amplitude control(m)"
+                        android:text="幅度控制参数(米)/Trolley control(m)"
                         android:textSize="@dimen/dp15"
                         android:textStyle="bold" />
                 </LinearLayout>

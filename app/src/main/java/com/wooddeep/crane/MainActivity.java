@@ -1,9 +1,12 @@
 package com.wooddeep.crane;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -14,7 +17,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -93,8 +100,11 @@ import com.wooddeep.crane.simulator.UartEmitter;
 import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DataUtil;
+import com.wooddeep.crane.tookit.DrawTool;
+import com.wooddeep.crane.tookit.HttpUtils;
 import com.wooddeep.crane.tookit.MathTool;
 import com.wooddeep.crane.tookit.MomentOut;
+import com.wooddeep.crane.tookit.NetTool;
 import com.wooddeep.crane.tookit.SysTool;
 import com.wooddeep.crane.views.CraneView;
 import com.wooddeep.crane.views.Vertex;
@@ -248,6 +258,8 @@ public class MainActivity extends AppCompatActivity {
     public static AtomicInteger alarmLevel = new AtomicInteger(100);
 
     public Float currXAngle = 0.0f;
+
+    public static AtomicBoolean registered = new AtomicBoolean(false);
 
     public float getOscale() {
         return oscale;
@@ -450,6 +462,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     continue;
+                    //sysExit = true;
                 }
             }
 
@@ -494,6 +507,7 @@ public class MainActivity extends AppCompatActivity {
                         } catch (Exception e) {
                             e.printStackTrace();
                             continue;
+                            //sysExit = true;
                         }
                     }
 
@@ -1125,16 +1139,85 @@ public class MainActivity extends AppCompatActivity {
         return paras;
     }
 
+    public final static int REQUEST_READ_PHONE_STATE = 1;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_READ_PHONE_STATE:
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    //TODO
+                    getDeviceId(this);
+                } else {
+                    Toast.makeText(this, "权限已被用户拒绝", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    @SuppressLint("HardwareIds")
+    public static String getDeviceId(Context context) {
+        String deviceId = "";
+        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        if (null != tm) {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_READ_PHONE_STATE);
+            } else {
+                if (tm.getDeviceId() != null) {
+                    deviceId = tm.getDeviceId();
+                } else {
+                    deviceId = Settings.Secure.getString(context.getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+                }
+            }
+            //Log.d("deviceId--->", deviceId);
+        }
+        return deviceId;
+    }
+
     private void renderMenu() {
 
         ((ImageView) findViewById(R.id.menu)).setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("MissingPermission")
             @Override
             public void onClick(View view) {
                 ImageView btnMenu = (ImageView) findViewById(R.id.menu);
                 LinearLayout menuExpand = (LinearLayout) findViewById(R.id.menu_expand);
                 Context contex = getApplicationContext();
                 if (menuExpand.getVisibility() == View.GONE) {
-                    findViewById(R.id.password_confirm).setVisibility(View.VISIBLE);
+
+                    if (registered.get()) {
+                        SysPara sysParaRegisterd = new SysPara("registered", "true");
+                        paraDao.insert(sysParaRegisterd);
+                    }
+
+                    String registered = paraDao.queryValueByName("registered");
+                    if (registered == null || registered.length() == 0 || registered.equals("false")) { // 未注册
+                        // 判断网络是否正常
+                        boolean netOk = NetTool.isNetworkAvailable(context);
+                        if (!netOk) {
+                            DrawTool.showDialog(activity, "出厂设置, 请连接wifi或移动数据!",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // 弹出WIFI设置页面
+                                        Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                                        startActivity(intent);
+                                    }
+                                });
+                        } else {
+                            String imei = getDeviceId(context);
+                            System.out.println("imei = " + imei);
+                            String mac = NetTool.getMacAddress(context);
+                            Log.d("mac--->", mac);
+                            HttpUtils.sendPost(imei, mac);
+                        }
+                    } else {
+                        findViewById(R.id.password_confirm).setVisibility(View.VISIBLE);
+                    }
+
                 } else {
                     menuExpand.setVisibility(View.GONE);
                     AnimUtil.alphaAnimation(btnMenu);
