@@ -60,7 +60,7 @@ public class CraneSetting extends AppCompatActivity {
     private FixedTitleTable table;
 
     private static String[] craneParaNames = new String[]{
-        "塔基类型/Crane Type",
+        "塔机类型/Crane Type",
         "X1坐标(米)/X1 Coordinate(m)",
         "Y1坐标(米)/Y1 Coordinate(m)",
         "X2偏移(米)/X2 Offset(m)",
@@ -156,7 +156,7 @@ public class CraneSetting extends AppCompatActivity {
     private void saveCraneInfo() {
         CraneDao dao = new CraneDao(context);
         List<List<String>> gTable = table.getCurrData();
-        AlertView alertView = new AlertView("保存塔基参数", "确定保存?", null,
+        AlertView alertView = new AlertView("保存塔机参数", "确定保存?", null,
             new String[]{"确定", "取消"}, null, activity,
             AlertView.Style.Alert, (o, position) -> {
             if (position == 0 && gTable != null) { // 确认
@@ -211,7 +211,7 @@ public class CraneSetting extends AppCompatActivity {
         dao.insert(new Crane(
             false,
             0,
-            String.format("%d号塔基/No.%02d", rowCnt + 1, rowCnt + 1),
+            String.format("%d号塔机/No.%02d", rowCnt + 1, rowCnt + 1),
             0,
             100,
             100,
@@ -278,7 +278,7 @@ public class CraneSetting extends AppCompatActivity {
         }};
 
         for (int i = 0; i < paras.size(); i++) {
-            colNames.add(new TableCell(0, String.format("%d号塔基/No.%d", i + 1, i + 1), new View.OnClickListener() {
+            colNames.add(new TableCell(0, String.format("%d号塔机/No.%d", i + 1, i + 1), new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     CraneDao dao = new CraneDao(context);
@@ -287,7 +287,7 @@ public class CraneSetting extends AppCompatActivity {
                     int id = textView.getId();
                     Crane selectedCrane = dao.queryById(id);
 
-                    AlertView alertView = new AlertView("保存塔基参数", "确定" + selectedCrane.getName() + "绑定本终端?", null,
+                    AlertView alertView = new AlertView("保存塔机参数", "确定" + selectedCrane.getName() + "绑定本终端?", null,
                         new String[]{"确定", "取消"}, null, activity,
                         AlertView.Style.Alert, new OnItemClickListener() {
                         @Override

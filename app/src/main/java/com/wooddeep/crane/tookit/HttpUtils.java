@@ -15,8 +15,8 @@ import java.util.Map;
 
 public class HttpUtils {
 
-    private static String PATH = "http://192.168.0.103:1833/register";
-    //private static String PATH = "http://47.107.172.74:1833/register";
+    //private static String PATH = "http://192.168.0.103:1833/register";
+    private static String PATH = "http://47.107.172.74:1833/register";
     private static URL url;
 
     public static void sendPost(String imei, String mac) {
