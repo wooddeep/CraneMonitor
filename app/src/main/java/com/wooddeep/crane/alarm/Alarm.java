@@ -102,7 +102,7 @@ public class Alarm {
             BaseElem elem = craneMap.get(id);
             if (elem instanceof SideCycle) { // cycle
                 SideCycle sc = (SideCycle) craneMap.get(id);
-
+                if (!sc.online) continue; // 离线不判断告警
                 // 小车和小车的距离判断
                 Geometry cargcc = cc.getCarGeo(0, 0);
                 Geometry cargsc = sc.getCarGeo(0, 0);

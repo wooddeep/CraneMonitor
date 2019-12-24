@@ -1,5 +1,10 @@
 package com.wooddeep.crane.tookit;
 
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.provider.Settings;
+
 import com.wooddeep.crane.MainActivity;
 
 import java.io.ByteArrayOutputStream;
@@ -19,7 +24,7 @@ public class HttpUtils {
     private static String PATH = "http://47.107.172.74:1833/register";
     private static URL url;
 
-    public static void sendPost(String imei, String mac) {
+    public static void sendPost(String imei, String mac, Activity activity) {
 
         new Thread(
             new Runnable() {
@@ -32,6 +37,14 @@ public class HttpUtils {
                     System.out.println("result->" + result);
                     if (result != null && result.length() > 0) {
                         MainActivity.registered.set(true);
+                    } else {
+                        DrawTool.showDialog(activity, "网络异常, 请连接确定网络连接!",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // 弹出WIFI设置页面
+                                }
+                            });
                     }
                 }
             }

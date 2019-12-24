@@ -114,6 +114,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -426,6 +427,8 @@ public class MainActivity extends AppCompatActivity {
                     CommTool.sleep(100);
                     counter++;
 
+                } catch (IOException ioe) {
+                    System.exit(0);
                 } catch (Exception e) {
                     e.printStackTrace();
                     continue;
@@ -1208,11 +1211,11 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
                         } else {
-                            String imei = getDeviceId(context);
+                            String imei = getDeviceId(activity);
                             System.out.println("imei = " + imei);
                             String mac = NetTool.getMacAddress(context);
                             Log.d("mac--->", mac);
-                            HttpUtils.sendPost(imei, mac);
+                            HttpUtils.sendPost(imei, mac, activity);
                         }
                     } else {
                         findViewById(R.id.password_confirm).setVisibility(View.VISIBLE);
