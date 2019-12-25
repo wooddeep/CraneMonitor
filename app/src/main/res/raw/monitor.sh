@@ -15,5 +15,5 @@ while true; do
     am start com.wooddeep.crane/com.wooddeep.crane.MainActivity
   fi
 
-  sleep 2
+  sleep 5
 done

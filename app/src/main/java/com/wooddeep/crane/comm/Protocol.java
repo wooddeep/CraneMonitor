@@ -123,6 +123,8 @@ public class Protocol {
     public float calcRealWeigth(Calibration calibration) {
         float weightValue = calibration.getWeightStart() + calibration.getWeightRate() *
             (getWeight() - calibration.getWeightStartData());
+        if (weightValue < 0.0f) weightValue = 0;
+
         setRealWeight(Math.round(weightValue * 10) / 10.0f);
         return Math.round(weightValue * 10) / 10.0f;
     }
@@ -145,6 +147,7 @@ public class Protocol {
     public float calcRealLength(Calibration calibration) {
         float armLengthValue = calibration.getLengthStart() + calibration.getLengthRate() *
             ((float) getAmplitude() - calibration.getLengthStartData());
+        if (armLengthValue < 0.0f) armLengthValue = 0.0f;
 
         setRealLength(Math.round(armLengthValue * 10) / 10.0f);
 

@@ -200,7 +200,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     double rate = rotate / (end - start);
 
                     TextView tvRate = (TextView) findViewById(rotateStartX1.rateShowId);
-                    tvRate.setText(String.valueOf(rate));
+                    tvRate.setText(String.format("%.4f", rate));
 
                     calibration.setRotateStartX1(x1);
                     calibration.setRotateStartY1(y1);
@@ -270,7 +270,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     double rate = rotate / (end - start);
 
                     TextView tvRate = (TextView) findViewById(rotateStartX1.rateShowId);
-                    tvRate.setText(String.valueOf(rate));
+                    tvRate.setText(String.format("%.4f", rate));
 
                     double startRotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
                         new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(centerX + 100, centerY)); // 计算起始角度
@@ -335,7 +335,7 @@ public class CalibrationSetting extends AppCompatActivity {
                             long endMsec = System.currentTimeMillis();
                             float rate = (end - start) * 1000 / (endMsec - startMsec);
                             TextView tv = (TextView) findViewById(GearRate1.rateShowId);
-                            tv.setText(String.format("%.2f", rate));
+                            tv.setText(String.format("%.4f", rate));
                             calibration.setGearRate1(rate);
                             calibrationDao.update(calibration);
                             EventBus.getDefault().post(new CalibrationEvent(calibration));
@@ -371,7 +371,7 @@ public class CalibrationSetting extends AppCompatActivity {
                             long endMsec = System.currentTimeMillis();
                             float rate = (end - start) * 1000 / (endMsec - startMsec);
                             TextView tv = (TextView) findViewById(GearRate2.rateShowId);
-                            tv.setText(String.format("%.2f", rate));
+                            tv.setText(String.format("%.4f", rate));
                             calibration.setGearRate2(rate);
                             calibrationDao.update(calibration);
                             EventBus.getDefault().post(new CalibrationEvent(calibration));
@@ -408,7 +408,7 @@ public class CalibrationSetting extends AppCompatActivity {
                             long endMsec = System.currentTimeMillis();
                             float rate = (end - start) * 1000 / (endMsec - startMsec);
                             TextView tv = (TextView) findViewById(GearRate3.rateShowId);
-                            tv.setText(String.format("%.2f", rate));
+                            tv.setText(String.format("%.4f", rate));
                             calibration.setGearRate3(rate);
                             calibrationDao.update(calibration);
                             EventBus.getDefault().post(new CalibrationEvent(calibration));
@@ -445,7 +445,7 @@ public class CalibrationSetting extends AppCompatActivity {
                             long endMsec = System.currentTimeMillis();
                             float rate = (end - start) * 1000 / (endMsec - startMsec);
                             TextView tv = (TextView) findViewById(GearRate4.rateShowId);
-                            tv.setText(String.format("%.2f", rate));
+                            tv.setText(String.format("%.4f", rate));
                             calibration.setGearRate4(rate);
                             calibrationDao.update(calibration);
                             EventBus.getDefault().post(new CalibrationEvent(calibration));
@@ -482,7 +482,7 @@ public class CalibrationSetting extends AppCompatActivity {
                             long endMsec = System.currentTimeMillis();
                             float rate = (end - start) * 1000 / (endMsec - startMsec);
                             TextView tv = (TextView) findViewById(GearRate5.rateShowId);
-                            tv.setText(String.format("%.2f", rate));
+                            tv.setText(String.format("%.4f", rate));
                             calibration.setGearRate5(rate);
                             calibrationDao.update(calibration);
                             EventBus.getDefault().post(new CalibrationEvent(calibration));
@@ -530,7 +530,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibration.setDipAngleRate(rate);
 
                     TextView tvRateShow = (TextView) findViewById(dipAngleStart.rateShowId);
-                    tvRateShow.setText(String.valueOf(rate));
+                    tvRateShow.setText(String.format("%.4f", rate));
 
                     calibrationDao.update(calibration);
 
@@ -583,7 +583,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibration.setDipAngleRate(rate);
 
                     TextView tvRateShow = (TextView) findViewById(dipAngleStart.rateShowId);
-                    tvRateShow.setText(String.valueOf(rate));
+                    tvRateShow.setText(String.format("%.4f", rate));
                     calibrationDao.update(calibration);
 
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
@@ -637,7 +637,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
 
                     TextView tvRateShow = (TextView) findViewById(weightStart.rateShowId);
-                    tvRateShow.setText(String.valueOf(rate));
+                    tvRateShow.setText(String.format("%.4f", rate));
 
                     // 存储标定记录
                     caliRec.setType("weight");
@@ -687,7 +687,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
 
                     TextView tvRateShow = (TextView) findViewById(weightStart.rateShowId);
-                    tvRateShow.setText(String.valueOf(rate));
+                    tvRateShow.setText(String.format("%.4f", rate));
 
                     // 存储标定记录
                     caliRec.setType("weight");
@@ -737,7 +737,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
 
                     TextView tvRateShow = (TextView) findViewById(lengthStart.rateShowId);
-                    tvRateShow.setText(String.valueOf(rate));
+                    tvRateShow.setText(String.format("%.4f", rate));
 
                     // 存储标定记录
                     caliRec.setType("length");
@@ -787,7 +787,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
 
                     TextView tvRateShow = (TextView) findViewById(lengthStart.rateShowId);
-                    tvRateShow.setText(String.valueOf(rate));
+                    tvRateShow.setText(String.format("%.4f", rate));
 
                     // 存储标定记录
                     caliRec.setType("length");
@@ -844,7 +844,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
 
                     TextView tvRateShow = (TextView) findViewById(heightStart.rateShowId);
-                    tvRateShow.setText(String.valueOf(rate));
+                    tvRateShow.setText(String.format("%.4f", rate));
 
                     // 存储标定记录
                     caliRec.setType("height");
@@ -899,7 +899,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
 
                     TextView tvRateShow = (TextView) findViewById(heightStart.rateShowId);
-                    tvRateShow.setText(String.valueOf(rate));
+                    tvRateShow.setText(String.format("%.4f", rate));
 
                     // 存储标定记录
                     caliRec.setType("height");
@@ -1013,7 +1013,7 @@ public class CalibrationSetting extends AppCompatActivity {
                     field = Calibration.class.getDeclaredField(rateName);
                     field.setAccessible(true);
                     value = field.get(para);
-                    tv.setText(value.toString());
+                    tv.setText(String.format("%.4f", value));
                 }
 
                 if (dataName != null) {

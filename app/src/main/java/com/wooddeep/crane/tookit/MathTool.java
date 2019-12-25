@@ -39,6 +39,9 @@ public class MathTool {
             }
         }
 
+        float ww = Float.parseFloat(loads.get(loads.size() - 1).getWeight());
+        momentOut.moment = Math.round(1000 * curWeight / ww) / 10.0f;
+        momentOut.ratedWeight = Math.round(ww * 10) / 10.0f;
         return momentOut;
     }
 

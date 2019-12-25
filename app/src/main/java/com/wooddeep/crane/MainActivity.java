@@ -457,7 +457,27 @@ public class MainActivity extends AppCompatActivity {
 
                         if (dataUtil.check()) {
                             radioEvent.setData(dataUtil.get());
+                            /*
+                            for (int i = 0; i < dataUtil.get().length; i++) {
+                                System.out.printf("%02x ", dataUtil.get()[i]);
+                            }
+                            System.out.println("");
+                            */
                             RadioDateEventOps(radioEvent);
+                        }
+                    } else {
+                        long currTime = System.currentTimeMillis(); // 当前时间
+                        Set<String> radioRecSet = radioStatusMap.keySet();
+                        for (String no : radioRecSet) {
+                            long prevRecTimer = radioStatusMap.get(no); // 上次记录时间
+                            //System.out.printf("## %s: %d - %d = %d\n", no, currTime, prevRecTimer, currTime - prevRecTimer);
+                            if (currTime - prevRecTimer > 300000) { // 通信10失联，判断超时
+                                runOnUiThread(() -> {
+                                    craneMap.get(no).setColor(Color.LTGRAY);
+                                    craneMap.get(no).setCarRange(0); // 失联设备, 设置小车幅度为0
+                                });
+                                craneMap.get(no).setOnline(false); // 设置离线状态
+                            }
                         }
                     }
 
@@ -619,10 +639,26 @@ public class MainActivity extends AppCompatActivity {
     public void RadioDateEventOps(RadioEvent event) {
         int cmdRet = radioProto.parse(event.getData()); // 解析电台数据
         if (cmdRet == -1) return;
+        long currTime = System.currentTimeMillis(); // 当前时间
+        /*
+        long currTime = System.currentTimeMillis(); // 当前时间
+        Set<String> radioRecSet = radioStatusMap.keySet();
+        for (String no : radioRecSet) {
+            long prevRecTimer = radioStatusMap.get(no); // 上次记录时间
+            System.out.printf("## %s: %d - %d = %d\n", no, currTime, prevRecTimer, currTime - prevRecTimer);
+            if (currTime - prevRecTimer > 6000) { // 通信10失联，判断超时
+                runOnUiThread(() -> {
+                    craneMap.get(no).setColor(Color.LTGRAY);
+                    craneMap.get(no).setCarRange(0); // 失联设备, 设置小车幅度为0
+                });
+                craneMap.get(no).setOnline(false); // 设置离线状态
+            }
+        }
+        */
 
         if (iAmMaster.get() && radioProto.isQuery) return;
 
-        if (cmdRet == RadioProto.CMD_START_MASTER && waitFlag == true) { // 启动主机命令
+        if (cmdRet == RadioProto.CMD_START_MASTER && waitFlag == true ) { // 启动主机命令
             iAmMaster.set(true);
             runOnUiThread(() -> masterNoView.setText(myCraneNo));
             waitFlag = false;
@@ -631,13 +667,15 @@ public class MainActivity extends AppCompatActivity {
 
         if (radioProto.sourceNo.equals(myCraneNo)) return; // TODO 再次验证
 
-        long currTime = System.currentTimeMillis(); // 当前时间
-
         if (radioProto.isQuery) { // 收到主机的查询命令，本机必然为从机
             waitFlag = false;
-
             CycleElem master = craneMap.get(radioProto.getSourceNo()); // 作为从机, 更新主机的信息 // TODO 根据塔基类型，计算仰角
-            runOnUiThread(() -> masterNoView.setText(radioProto.getSourceNo())); // TODO 缓存
+            //System.out.println("## masterNo: " + radioProto.getSourceNo());
+
+            String currShowMasterNo = masterNoView.getText().toString();
+            if (currShowMasterNo == null || !currShowMasterNo.equals(radioProto.getSourceNo()) ) {
+                runOnUiThread(() -> masterNoView.setText(radioProto.getSourceNo())); // TODO 缓存
+            }
 
             if (master != null) {
                 runOnUiThread(() -> {
@@ -754,10 +792,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        /*
         Set<String> radioRecSet = radioStatusMap.keySet();
         for (String no : radioRecSet) {
             long prevRecTimer = radioStatusMap.get(no); // 上次记录时间
-            if (currTime - prevRecTimer > 60000) { // 通信10失联，判断超时
+            if (currTime - prevRecTimer > 6000) { // 通信10失联，判断超时
                 runOnUiThread(() -> {
                     craneMap.get(no).setColor(Color.LTGRAY);
                     craneMap.get(no).setCarRange(0); // 失联设备, 设置小车幅度为0
@@ -765,6 +804,7 @@ public class MainActivity extends AppCompatActivity {
                 craneMap.get(no).setOnline(false); // 设置离线状态
             }
         }
+        */
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
@@ -1468,6 +1508,10 @@ public class MainActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.craneNo)).setText("No.:" + number); // 显示塔基类型
         //craneNumbers.add(number); // 本机的编号
 
+        new Handler().postDelayed(() -> {
+            RadioDateEventOps(new RadioEvent(radioProto.startMaster()));
+        }, 1000 * Integer.parseInt(myCraneNo));
+
         float prvLength = prevProto.getRealLength(); // 前次小车位置
         float prvVAngle = prevProto.getRealVAngle(); // 前次垂直角度
         float prvHAngle = (float) prevRotateProto.getAngle(); // 前次水平角度
@@ -1711,13 +1755,13 @@ public class MainActivity extends AppCompatActivity {
             startRadioReadThread();
             startRadioWriteThread();
             startTimerThread();
-            NetClient.run(paraDao);
-        }, 100);
+            //NetClient.run(paraDao);
+        }, 10);
 
         // 触发判断本机是否为主机
-        new Handler().postDelayed(() -> {
-            RadioDateEventOps(new RadioEvent(radioProto.startMaster()));
-        }, 3000);
+        //new Handler().postDelayed(() -> {
+        //    RadioDateEventOps(new RadioEvent(radioProto.startMaster()));
+        //}, 1000 * Integer.parseInt(myCraneNo));
     }
 
 

@@ -38,13 +38,15 @@ public class HttpUtils {
                     if (result != null && result.length() > 0) {
                         MainActivity.registered.set(true);
                     } else {
-                        DrawTool.showDialog(activity, "网络异常, 请连接确定网络连接!",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // 弹出WIFI设置页面
-                                }
-                            });
+                        activity.runOnUiThread(() -> {
+                            DrawTool.showDialog(activity, "网络异常, 请连接确定网络连接!",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // 弹出WIFI设置页面
+                                    }
+                                });
+                        });
                     }
                 }
             }

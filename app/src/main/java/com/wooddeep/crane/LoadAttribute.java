@@ -188,15 +188,57 @@ public class LoadAttribute extends AppCompatActivity {
         confLoad(getApplicationContext());
 
         String savedCraneType = paraDao.queryValueByName("craneType");  // 塔基类型
-        String savedAramLength = paraDao.queryValueByName("armLength"); // 臂长
-        String savedPower = paraDao.queryValueByName("power"); // 倍率
-
         craneTypes = loadDao.getCraneTypes();
-        String craneType = savedCraneType != null ? savedCraneType : craneTypes.get(0);
+        int craneTypeEquCnt = 0;
+        for (String craneType: craneTypes) {
+            if (craneType.equals(savedCraneType))  { // 保存的塔基类型 在新的 载荷表中可以查找到
+                craneTypeEquCnt++;
+            }
+        }
+
+        String craneType = savedCraneType;
+        if (craneTypeEquCnt == 0) {
+            craneType = craneTypes.get(0);
+            SysPara craneTypePara = paraDao.queryParaByName("craneType");
+            craneTypePara.setParaValue(craneType);
+            paraDao.update(craneTypePara);
+        }
+
+
+        String savedAramLength = paraDao.queryValueByName("armLength"); // 臂长
         armLengths = loadDao.getArmLengths(craneType);
-        String armLength = savedAramLength != null ? savedAramLength : armLengths.get(0);
+        int armLenEquCnt = 0;
+        for (String armlen: armLengths) {
+            if (armlen.equals(savedAramLength))  { // 保存的塔基类型 在新的 载荷表中可以查找到
+                armLenEquCnt++;
+            }
+        }
+
+        String armLength = savedAramLength.trim();
+        if (armLenEquCnt == 0) {
+            armLength = armLengths.get(0).trim();
+            SysPara para = paraDao.queryParaByName("armLength");
+            para.setParaValue(armLength);
+            paraDao.update(para);
+        }
+
+        String savedPower = paraDao.queryValueByName("power"); // 倍率
         cables = loadDao.getCables(craneType, armLength);
-        String power = savedPower != null ? savedPower : cables.get(0);
+        int powerEquCnt = 0;
+        for (String cable: cables) {
+            if (cable.equals(savedPower))  { // 保存的塔基类型 在新的 载荷表中可以查找到
+                powerEquCnt++;
+            }
+        }
+
+        String power = savedPower.trim();
+        if (powerEquCnt == 0) {
+            power = cables.get(0).trim();
+            SysPara para = paraDao.queryParaByName("power");
+            para.setParaValue(power);
+            paraDao.update(para);
+        }
+
         MaterialSpinner spinner = (MaterialSpinner) findViewById(R.id.crane_type_option); // 塔基类型
         MaterialSpinner armLenSpinner = (MaterialSpinner) findViewById(R.id.arm_length_option); // 臂长
         MaterialSpinner cableSpiner = (MaterialSpinner) findViewById(R.id.rope_num_option); // 吊绳倍率
