@@ -258,12 +258,10 @@ public class MainActivity extends AppCompatActivity {
     private PackageManager mPackageManager;
     private DataUtil dataUtil = new DataUtil();
     public static ShowData showData = new ShowData();
-
     public static AtomicInteger alarmLevel = new AtomicInteger(100);
-
     public Float currXAngle = 0.0f;
-
     public static AtomicBoolean registered = new AtomicBoolean(false);
+
 
     public float getOscale() {
         return oscale;
@@ -584,16 +582,24 @@ public class MainActivity extends AppCompatActivity {
                 count++;
 
                 if (count % (NetClient.timeSlot / 100) == 0 && NetClient.netOk) {
-                    byte[] body = protocol.getRealData(paraDao); // TODO 替换实时数据
+                    //System.out.println(Math.round(currWeight * 10) / 10.0f);
+                    protocol.setRealData(
+                        centerCycle.getHAngle(),
+                        centerCycle.vAngle,
+                        mainCrane.getBigArmLength(),
+                        shadowLength,
+                        Math.round(currWeight * 10) / 10.0f, //  Math.round(ww * 10) / 10.0f;
+                        Float.parseFloat(momentView.getText().toString().split("%")[0]), // 吊钩高度
+                        Float.parseFloat(windSpeedView.getText().toString().split("m")[0]), // 风速
+                        mainCrane.getCraneHeight(),
+                        Float.parseFloat(heightView.getText().toString().split("m")[0]), // 吊钩高度
+                        iPower, // 倍率
+                        isMasterCrane,
+                        isRvcMode.get() ? "rcv" : "freq",
+                        centerCycle.getType() == 0 ? "flat" : "luffing"
+                    );
+                    byte[] body = protocol.getRealData(paraDao);
                     NetClient.mq.offer(body);
-                }
-
-                if (count % 500 == 0) {
-                    setCurrTime();
-                }
-
-                if (count % 20 == 0) {
-                    AlertSound.open(alarmLevel.get());
                 }
 
                 //倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
@@ -613,6 +619,14 @@ public class MainActivity extends AppCompatActivity {
                     realData.setWeight(Float.parseFloat(weightView.getText().toString().split("t")[0]));
                     realData.setWindspeed(Float.parseFloat(windSpeedView.getText().toString().split("m")[0]));
                     realDataDao.insert(realData);
+                }
+
+                if (count % 500 == 0) {
+                    setCurrTime();
+                }
+
+                if (count % 20 == 0) {
+                    AlertSound.open(alarmLevel.get());
                 }
 
                 if (ttyS0InputStream == null || ttyS1InputStream == null || ttyS2InputStream == null) {
@@ -647,7 +661,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (iAmMaster.get() && radioProto.isQuery) return;
 
-        if (cmdRet == RadioProto.CMD_START_MASTER && waitFlag == true ) { // 启动主机命令
+        if (cmdRet == RadioProto.CMD_START_MASTER && waitFlag == true) { // 启动主机命令
             iAmMaster.set(true);
             runOnUiThread(() -> masterNoView.setText(myCraneNo));
             waitFlag = false;
@@ -662,7 +676,7 @@ public class MainActivity extends AppCompatActivity {
             //System.out.println("## masterNo: " + radioProto.getSourceNo());
 
             String currShowMasterNo = masterNoView.getText().toString();
-            if (currShowMasterNo == null || !currShowMasterNo.equals(radioProto.getSourceNo()) ) {
+            if (currShowMasterNo == null || !currShowMasterNo.equals(radioProto.getSourceNo())) {
                 runOnUiThread(() -> masterNoView.setText(radioProto.getSourceNo())); // TODO 缓存
             }
 
@@ -1755,13 +1769,9 @@ public class MainActivity extends AppCompatActivity {
             startRadioReadThread();
             startRadioWriteThread();
             startTimerThread();
-            //NetClient.run(paraDao);
+            String mac = NetTool.getMacAddress(context);
+            NetClient.run(paraDao, mac.replaceAll(":", ""));
         }, 10);
-
-        // 触发判断本机是否为主机
-        //new Handler().postDelayed(() -> {
-        //    RadioDateEventOps(new RadioEvent(radioProto.startMaster()));
-        //}, 1000 * Integer.parseInt(myCraneNo));
     }
 
 

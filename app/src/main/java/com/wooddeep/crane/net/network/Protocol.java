@@ -6,11 +6,17 @@ import com.wooddeep.crane.net.NetClient;
 import com.wooddeep.crane.net.crypto.Aes;
 import com.wooddeep.crane.persist.dao.SysParaDao;
 import com.wooddeep.crane.persist.entity.SysPara;
+import com.wooddeep.crane.tookit.EdbTool;
+import com.wooddeep.crane.tookit.NetTool;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.crypto.Cipher;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 public class Protocol {
@@ -81,17 +87,23 @@ public class Protocol {
     }
 
     // UUID 代替设备唯一标识
-    public byte[] getSession(SysParaDao paraDao) {
-        String uuid = paraDao.queryValueByName("uuid");
-        if (uuid == null) {
-            uuid = UUID.randomUUID().toString().replaceAll("-", "");
-            SysPara uuidObj = new SysPara("uuid", uuid);
-            paraDao.insert(uuidObj);
+    public byte[] getSession(SysParaDao paraDao, String mac) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        JSONArray out = EdbTool.extTableQuery("forever.db", "syspara", "select paraValue from syspara where paraName='uuid'");
+        if (out.length() == 0) {
+            String uuid = String.format("%s@%s", mac, sdf.format(new Date()));
+            EdbTool.extTableExec("forever.db", "syspara", String.format("insert into syspara (paraName, paraValue) values ('uuid', '%s')", uuid));
+            devid = uuid;
+        } else {
+            try {
+                devid = out.getJSONObject(0).getString("paraValue");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
-        devid = uuid;
 
         try {
-            cmdGetSession.getJSONObject("data").put("devid", uuid);
+            cmdGetSession.getJSONObject("data").put("devid", devid);
             byte[] content = cmdGetSession.toString().getBytes();
             //byte[] encryptOut = eCipher.doFinal(content);// 加密
             byte[] encryptOut = Aes.encrypt(content, "BDE1236987450ACF".getBytes());
@@ -105,6 +117,33 @@ public class Protocol {
 
 
     private byte [] key = "BDE1236987450ACF".getBytes();
+
+
+    public void setRealData(float rotate, float angle, float bigArmLen, float carRange,
+                            float weight, float moment, float windSpeed, float height,
+                            float hookHeight, int ropeNum, boolean isMain, String type, String craneType) {
+        try {
+            JSONObject data = cmdRptRealData.getJSONObject("data");
+            data.put("rotate",  rotate);
+            data.put("angle", angle);
+            data.put("bigArmLen", bigArmLen);
+            data.put("carRange", carRange);
+            data.put("weight", weight);
+            data.put("moment", moment);
+            data.put("windSpeed", windSpeed);
+            data.put("height", height);
+            data.put("hookHeight", hookHeight);
+            data.put("ropeNum", ropeNum);
+            data.put("isMain", isMain);
+            data.put("type", type);
+            data.put("craneType", craneType);
+
+            //System.out.println(data.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     public byte[] getRealData(SysParaDao paraDao) {
         try {

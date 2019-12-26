@@ -21,7 +21,7 @@ public class NetClient {
     private volatile InputStream inputStream = null;
     private volatile AtomicBoolean reconnFlag = new AtomicBoolean(true);
 
-    private String savedAddr = "192.168.141.195"; //"192.168.141.43";
+    private String savedAddr = "47.92.251.221"; //"192.168.141.43";
     private int savedPort = 1733;
 
     private final byte[] buffer = new byte[10240];//创建接收缓冲区
@@ -39,7 +39,7 @@ public class NetClient {
         this.savedPort = port;
     }
 
-    private void reconnect() {
+    private void reconnect(String mac) {
         System.out.printf("## reconnect to %s:%d\n", savedAddr, savedPort);
         try {
             socket = new Socket(savedAddr, savedPort);
@@ -48,7 +48,7 @@ public class NetClient {
             reconnFlag.set(false);
             netOk = true;
             mq.clear();
-            byte[] body = protocol.getSession(paraDao); // 重连之后，
+            byte[] body = protocol.getSession(paraDao, mac); // 重连之后，
             mq.offer(body);
 
         } catch (Exception e) {
@@ -63,11 +63,11 @@ public class NetClient {
         }
     }
 
-    public void runWrite() {
+    public void runWrite(String mac) {
         while (true && !MainActivity.sysExit) {
 
             if (reconnFlag.get()) {
-                reconnect();
+                reconnect(mac);
             }
 
             try {
@@ -165,24 +165,26 @@ public class NetClient {
     private class NetThread extends Thread {
 
         private boolean flag;
+        private String mac;
 
-        public NetThread(boolean flag) {
+        public NetThread(boolean flag, String m) {
             this.flag = flag;
+            this.mac = m;
         }
 
         @Override
         public void run() {
             if (flag) {
-                runWrite();
+                runWrite(mac);
             } else {
                 runRead();
             }
         }
     }
 
-    public static void run(SysParaDao dao) {
+    public static void run(SysParaDao dao, String mac) {
         paraDao = dao;
-        String remoteAddr = "192.168.140.94";
+        String remoteAddr = "47.92.251.221";
         SysPara ra = paraDao.queryParaByName("remoteAddr");
         if (ra == null) {
             ra = new SysPara("remoteAddr", remoteAddr);
@@ -200,8 +202,8 @@ public class NetClient {
             remotePort = Integer.parseInt(rp.getParaValue());
         }
         NetClient client = new NetClient(remoteAddr, remotePort);
-        client.new NetThread(true).start();
-        client.new NetThread(false).start();
+        client.new NetThread(true, mac).start();
+        client.new NetThread(false, mac).start();
     }
 }
 

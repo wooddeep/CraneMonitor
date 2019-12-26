@@ -147,6 +147,7 @@ public class EdbTool {
         return out;
     }
 
+
     public static JSONArray extTableExec(String dbname, String tbname, String sql) {
         JSONArray out = new JSONArray();
 
@@ -162,5 +163,42 @@ public class EdbTool {
         return out;
     }
 
+    public static String extKvGet(String dbname, String key) {
+        String out = null;
+        DB_PATH = "/sdcard/crane";
+        try {
+            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(DB_PATH + "/" + dbname, null);
+            Cursor cursor = db.rawQuery(String.format("select paraValue from syspara where paraName='%s'", key), new String[]{});
+            if (cursor.moveToFirst()) {
+                do {
+                    out = cursor.getString(0);
+                    break;
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return out;
+    }
+
+    public static JSONArray extKvSet(String dbname, String key, String value) {
+        JSONArray out = new JSONArray();
+        DB_PATH = "/sdcard/crane";
+        try {
+            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(DB_PATH + "/" + dbname, null);
+            String saved = extKvGet(dbname, key);
+            if (saved == null) {
+                db.execSQL(String.format("insert into syspara (paraName, paraValue) values ('%s', '%s')", key, value));
+            } else {
+                db.execSQL(String.format("update syspara set paraValue='%s' where paraName='%s'", value, key));
+            }
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return out;
+    }
 
 }

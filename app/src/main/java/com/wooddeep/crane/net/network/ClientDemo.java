@@ -93,7 +93,7 @@ public class ClientDemo {
             while (true) {
                 Thread.sleep(5000);
                 synchronized (sendBuffer) {
-                    byte[] body = protocol.getSession(null);
+                    byte[] body = null; //protocol.getSession(null, null);
                     int beWriteN = protocol.doPack(body);
                     System.out.println("## beWriteN = " + beWriteN);
                     sendBuffer.put(protocol.getPack(), 0, beWriteN);
