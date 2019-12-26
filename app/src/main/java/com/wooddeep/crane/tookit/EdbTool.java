@@ -117,4 +117,50 @@ public class EdbTool {
         }
         return out;
     }
+
+    public static JSONArray extTableQuery(String dbname, String tbname, String sql) {
+        JSONArray out = new JSONArray();
+
+        DB_PATH = "/sdcard/crane";
+
+        try {
+            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(DB_PATH + "/" + dbname, null);
+            Cursor cursor = db.rawQuery(sql, new String[]{});
+            if (cursor.moveToFirst()) {
+                do {
+                    JSONObject line = new JSONObject();
+
+                    for (int i = 0; i < cursor.getColumnCount(); i++) {
+                        String colName = cursor.getColumnName(i);
+                        line.put(colName,  cursor.getString(i));
+                    }
+                    out.put(line);
+                    //Log.d("Type : ", cursor.getString(cursor.getColumnIndex("Type")));
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return out;
+    }
+
+    public static JSONArray extTableExec(String dbname, String tbname, String sql) {
+        JSONArray out = new JSONArray();
+
+        DB_PATH = "/sdcard/crane";
+
+        try {
+            SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(DB_PATH + "/" + dbname, null);
+            db.execSQL(sql);
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return out;
+    }
+
+
 }

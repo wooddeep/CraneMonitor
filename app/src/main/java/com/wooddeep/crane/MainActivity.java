@@ -101,6 +101,7 @@ import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DataUtil;
 import com.wooddeep.crane.tookit.DrawTool;
+import com.wooddeep.crane.tookit.EdbTool;
 import com.wooddeep.crane.tookit.HttpUtils;
 import com.wooddeep.crane.tookit.MathTool;
 import com.wooddeep.crane.tookit.MomentOut;
@@ -112,6 +113,8 @@ import com.wooddeep.crane.views.Vertex;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.File;
 import java.io.IOException;
@@ -640,21 +643,7 @@ public class MainActivity extends AppCompatActivity {
         int cmdRet = radioProto.parse(event.getData()); // 解析电台数据
         if (cmdRet == -1) return;
         long currTime = System.currentTimeMillis(); // 当前时间
-        /*
-        long currTime = System.currentTimeMillis(); // 当前时间
-        Set<String> radioRecSet = radioStatusMap.keySet();
-        for (String no : radioRecSet) {
-            long prevRecTimer = radioStatusMap.get(no); // 上次记录时间
-            System.out.printf("## %s: %d - %d = %d\n", no, currTime, prevRecTimer, currTime - prevRecTimer);
-            if (currTime - prevRecTimer > 6000) { // 通信10失联，判断超时
-                runOnUiThread(() -> {
-                    craneMap.get(no).setColor(Color.LTGRAY);
-                    craneMap.get(no).setCarRange(0); // 失联设备, 设置小车幅度为0
-                });
-                craneMap.get(no).setOnline(false); // 设置离线状态
-            }
-        }
-        */
+
 
         if (iAmMaster.get() && radioProto.isQuery) return;
 
@@ -1230,14 +1219,20 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayout menuExpand = (LinearLayout) findViewById(R.id.menu_expand);
                 Context contex = getApplicationContext();
                 if (menuExpand.getVisibility() == View.GONE) {
-
+                    String mac = NetTool.getMacAddress(context);
                     if (registered.get()) {
-                        SysPara sysParaRegisterd = new SysPara("registered", "true");
-                        paraDao.insert(sysParaRegisterd);
+                        EdbTool.extTableExec("forever.db", "syspara", String.format("update syspara set paraValue='%s' where paraName='registered'", mac));
                     }
 
-                    String registered = paraDao.queryValueByName("registered");
-                    if (registered == null || registered.length() == 0 || registered.equals("false")) { // 未注册
+                    JSONArray out = EdbTool.extTableQuery("forever.db", "syspara", "select paraValue from syspara where paraName='registered'");
+                    String registered = null;
+                    if (out.length() > 0) try {
+                        registered = out.getJSONObject(0).optString("paraValue", "");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (registered == null || registered.length() == 0 || !registered.equals(mac)) { // 未注册
                         // 判断网络是否正常
                         boolean netOk = NetTool.isNetworkAvailable(context);
                         if (!netOk) {
@@ -1253,7 +1248,6 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             String imei = getDeviceId(activity);
                             System.out.println("imei = " + imei);
-                            String mac = NetTool.getMacAddress(context);
                             Log.d("mac--->", mac);
                             HttpUtils.sendPost(imei, mac, activity);
                         }
@@ -1653,6 +1647,12 @@ public class MainActivity extends AppCompatActivity {
         if (!dbFile.exists()) {
             SysTool.copyFilesFromRaw(this, R.raw.tc, "tc.db", "/data/data/com.wooddeep.crane/databases");
             SysTool.copyFilesFromRaw(this, R.raw.crane, "crane.db", "/data/data/com.wooddeep.crane/databases");
+            SysTool.copyFilesFromRaw(this, R.raw.crane, "crane.db", "/data/data/com.wooddeep.crane/databases");
+        }
+
+        File dbReg = new File("/sdcard/crane/forever.db");
+        if (!dbReg.exists()) {
+            SysTool.copyFilesFromRaw(this, R.raw.forever, "forever.db", "/sdcard/crane/");
         }
 
         CraneDao craneDao = new CraneDao(MainActivity.this);
