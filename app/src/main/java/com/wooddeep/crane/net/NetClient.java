@@ -137,6 +137,16 @@ public class NetClient {
                     case "set.timeslot": //{"cmd":"set.timeslot", "data":{"realdata":5000}}
                         timeSlot = resp.optJSONObject("data").optInt("timeslot", 5000); //resp.optJSONObject("data").getInt("timeslot")
                         System.out.println("## timeSlot = " + timeSlot);
+
+                        SysPara timeSlotObj = paraDao.queryParaByName("timeSlot");
+                        if (timeSlotObj == null) {
+                            timeSlotObj = new SysPara("timeSlot", "5000");
+                            paraDao.insert(timeSlotObj);
+                        } else {
+                            timeSlotObj.setParaValue(String.valueOf(timeSlot));
+                            paraDao.update(timeSlotObj); // 存入数据库
+                        }
+
                         byte[] body = protocol.response(cmd); // ack信息
                         NetClient.mq.offer(body);
                         break;
@@ -201,6 +211,15 @@ public class NetClient {
         } else {
             remotePort = Integer.parseInt(rp.getParaValue());
         }
+
+        SysPara timeSlotObj = paraDao.queryParaByName("timeSlot");
+        if (timeSlotObj == null) {
+            timeSlotObj = new SysPara("timeSlot", String.valueOf(5000));
+            paraDao.insert(timeSlotObj);
+        } else {
+            timeSlot = Integer.parseInt(timeSlotObj.getParaValue());
+        }
+
         NetClient client = new NetClient(remoteAddr, remotePort);
         client.new NetThread(true, mac).start();
         client.new NetThread(false, mac).start();
