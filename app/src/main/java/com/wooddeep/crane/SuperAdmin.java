@@ -26,6 +26,8 @@ import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
 import com.wooddeep.crane.R;
 import com.wooddeep.crane.ebus.AlarmSetEvent;
+import com.wooddeep.crane.ebus.CalibrationEvent;
+import com.wooddeep.crane.ebus.RestartEvent;
 import com.wooddeep.crane.ebus.SysParaEvent;
 import com.wooddeep.crane.net.NetClient;
 import com.wooddeep.crane.persist.DatabaseHelper;
@@ -293,7 +295,7 @@ public class SuperAdmin extends AppCompatActivity {
         });
 
 
-        String remoteAddr = "192.168.140.94";
+        String remoteAddr = "47.92.251.221";
         SysPara ra = paraDao.queryParaByName("remoteAddr");
         if (ra == null) {
             ra = new SysPara("remoteAddr", remoteAddr);
@@ -350,6 +352,43 @@ public class SuperAdmin extends AppCompatActivity {
         });
 
 
+        ((Button) findViewById(R.id.btn_channel_set)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String channel = ((EditText) findViewById(R.id.et_channel_set)).getText().toString();
+                MainActivity.channelSet.set(true);
+
+                /*
+                String port = ((EditText) findViewById(R.id.et_remote_port_set)).getText().toString();
+
+                if (!addr.matches("[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+")) {
+                    DrawTool.showDialog(activity, "地址格式错误!(address format error!)");
+                } else if (!port.matches("[0-9]+")) {
+                    DrawTool.showDialog(activity, "端口格式错误!(port format error!)");
+                } else {
+                    SysPara ra = paraDao.queryParaByName("remoteAddr");
+                    ra.setParaValue(addr);
+                    boolean ret = paraDao.update(ra);
+                    if (!ret) {
+                        DrawTool.showDialog(activity, "存地址失败!(save address fail!)");
+                        return;
+                    }
+
+                    SysPara rp = paraDao.queryParaByName("remotePort");
+                    rp.setParaValue(port);
+                    ret = paraDao.update(rp);
+                    if (!ret) {
+                        DrawTool.showDialog(activity, "存端口失败!(save port fail!)");
+                        return;
+                    }
+
+                    NetClient.mq.offer(addr + ":" + port);
+                    DrawTool.showDialog(activity, "成功!(success!)");
+                }
+                */
+            }
+        });
+
     }
 
     private void setOnTouchListener(View view) {
@@ -400,6 +439,8 @@ public class SuperAdmin extends AppCompatActivity {
                     alertView.show();
 
                 } else if (view.getId() == R.id.close_logo) {
+                    MainActivity.channelSet.set(false);
+                    EventBus.getDefault().post(new RestartEvent(0));
                     finish();
                 }
             }

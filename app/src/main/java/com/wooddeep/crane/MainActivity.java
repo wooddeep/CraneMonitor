@@ -51,6 +51,7 @@ import com.wooddeep.crane.ebus.FanSpeedEvent;
 import com.wooddeep.crane.ebus.HeightEvent;
 import com.wooddeep.crane.ebus.LengthEvent;
 import com.wooddeep.crane.ebus.RadioEvent;
+import com.wooddeep.crane.ebus.RestartEvent;
 import com.wooddeep.crane.ebus.RotateEvent;
 import com.wooddeep.crane.ebus.SimulatorEvent;
 import com.wooddeep.crane.ebus.SysParaEvent;
@@ -262,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
     public Float currXAngle = 0.0f;
     public static AtomicBoolean registered = new AtomicBoolean(false);
 
+    public static AtomicBoolean channelSet = new AtomicBoolean(false);
 
     public float getOscale() {
         return oscale;
@@ -443,8 +445,8 @@ public class MainActivity extends AppCompatActivity {
 
         new Thread(() -> {
 
-            while (true && !sysExit) {
-
+            while (!sysExit && !channelSet.get()) {
+                System.out.println("## RadioReadThread ...");
                 if (ttyS0InputStream == null || ttyS1InputStream == null || ttyS2InputStream == null) {
                     CommTool.sleep(100);
                     continue;
@@ -496,7 +498,7 @@ public class MainActivity extends AppCompatActivity {
     private void startRadioWriteThread() {
         new Thread(() -> {
 
-            while (true && !sysExit) {
+            while (!sysExit && !channelSet.get()) {
 
                 if (ttyS0InputStream == null || ttyS1InputStream == null || ttyS2InputStream == null) {
                     CommTool.sleep(100);
@@ -581,7 +583,7 @@ public class MainActivity extends AppCompatActivity {
                 CommTool.sleep(100);
                 count++;
 
-                if (count % (NetClient.timeSlot / 100) == 0 && NetClient.netOk) {
+                if (count % (NetClient.timeSlot / 100) == 0 &&  NetClient.netOk) {
                     //System.out.println(Math.round(currWeight * 10) / 10.0f);
                     protocol.setRealData(
                         centerCycle.getHAngle(),
@@ -1696,6 +1698,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void restartRadioEventBus(RestartEvent event) {
+
+        /*
+        try {
+            ttyS1OutputStream.close();
+            ttyS1InputStream.close();
+            serialttyS1.closeSerial();
+
+            serialttyS1 = new SerialPort("S2", 19200, 8, 0, 'o', true);
+            ttyS1InputStream = serialttyS1.getInputStream();
+            ttyS1OutputStream = serialttyS1.getOutputStream();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        */
+
+        startRadioReadThread();
+        startRadioWriteThread();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1739,9 +1765,12 @@ public class MainActivity extends AppCompatActivity {
 
         player = MediaPlayer.create(context, R.raw.ding);
 
+
+        // 串口设置: 8N1,一个起始位,8个数据位,一个停止位
+
         try {
-            String s0Name = "S1";
-            String s1Name = "S2";
+            String s0Name = "S1"; // AD
+            String s1Name = "S2"; // 电台
 
             serialttyS0 = new SerialPort(
                 s0Name, 115200, 8, 0, 'o', true); // 19200 // AD数据
@@ -1755,7 +1784,7 @@ public class MainActivity extends AppCompatActivity {
             ttyS1OutputStream = serialttyS1.getOutputStream();
 
             serialttyS2 = new SerialPort(
-                "S3", 19200, 8, 1, 'e', true);
+                "S3", 19200, 8, 1, 'e', true); // 编码
             ttyS2OutputStream = serialttyS2.getOutputStream();
             ttyS2InputStream = serialttyS2.getInputStream();
 

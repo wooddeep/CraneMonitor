@@ -317,6 +317,85 @@
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:gravity="center"
+                    app:srcCompat="@mipmap/channel" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp20"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="频道(channel set)"
+                    android:textSize="@dimen/dp10"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_weight="8"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="5"
+                    android:gravity="center"
+                    android:text="频道编号(number):"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+
+                <EditText
+                    android:id="@+id/et_channel_set"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="5"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:text=""
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+
+                <Button
+                    android:id="@+id/btn_channel_set"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="5"
+                    android:gravity="center"
+                    android:text="确定(confirm)"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/row_sys_set"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp60"
+            android:background="@drawable/split_boder">
+
+            <LinearLayout
+                android:layout_width="@dimen/dp0"
+                android:layout_marginTop="@dimen/dp5"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp50"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
                     app:srcCompat="@mipmap/sysset" />
 
                 <TextView
