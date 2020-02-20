@@ -88,7 +88,9 @@ public class Protocol {
 
     // UUID 代替设备唯一标识
     public byte[] getSession(SysParaDao paraDao, String mac) {
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        /*
         JSONArray out = EdbTool.extTableQuery("forever.db", "syspara", "select paraValue from syspara where paraName='uuid'");
         if (out.length() == 0) {
             String uuid = String.format("%s@%s", mac, sdf.format(new Date()));
@@ -101,6 +103,17 @@ public class Protocol {
                 e.printStackTrace();
             }
         }
+        */
+
+        String uuid = paraDao.queryValueByName("uuid");
+        if (uuid == null || uuid.length() == 0) {
+            uuid = String.format("%s@%s", mac, sdf.format(new Date()));
+            //EdbTool.extTableExec("forever.db", "syspara", String.format("insert into syspara (paraName, paraValue) values ('uuid', '%s')", uuid));
+            SysPara uuidPara = new SysPara("uuid", uuid);
+            paraDao.insert(uuidPara);
+        }
+
+        devid = uuid;
 
         try {
             cmdGetSession.getJSONObject("data").put("devid", devid);

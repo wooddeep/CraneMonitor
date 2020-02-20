@@ -20,15 +20,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
+import com.example.x6.serialportlib.SerialPort;
 import com.wooddeep.crane.R;
 import com.wooddeep.crane.ebus.AlarmSetEvent;
 import com.wooddeep.crane.ebus.CalibrationEvent;
+import com.wooddeep.crane.ebus.ChannelEvent;
 import com.wooddeep.crane.ebus.RestartEvent;
 import com.wooddeep.crane.ebus.SysParaEvent;
+import com.wooddeep.crane.ebus.UartEvent;
 import com.wooddeep.crane.net.NetClient;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.EdbHelper;
@@ -58,8 +62,13 @@ import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.tookit.SysTool;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -118,6 +127,33 @@ public class SuperAdmin extends AppCompatActivity {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void channelEventBus(ChannelEvent event) {
+        try {
+
+            SysPara rc = paraDao.queryParaByName("channel");
+            if (rc == null) {
+                rc = new SysPara("channel", String.valueOf(event.getCurrChannel()));
+                paraDao.insert(rc);
+            } else {
+                rc = new SysPara("channel", String.valueOf(event.getCurrChannel()));
+                paraDao.update(rc);
+            }
+
+            if (event.getType() == 0) {
+                ((TextView) findViewById(R.id.tv_curr_channel)).setText(String.valueOf(event.getCurrChannel()));
+            }
+
+            if (event.getType() == 1) {
+                //((TextView) findViewById(R.id.tv_curr_channel)).setText(String.valueOf(event.getCurrChannel()));
+                DrawTool.showDialog(activity, "成功!(success!)");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,6 +166,7 @@ public class SuperAdmin extends AppCompatActivity {
             TableRow rowSysSet = (TableRow) findViewById(R.id.row_sys_set);
             rowSysSet.setVisibility(GONE);
         }
+        EventBus.getDefault().register(this);
         activity = this;
         reqireAuth();
         context = getApplicationContext();
@@ -253,38 +290,38 @@ public class SuperAdmin extends AppCompatActivity {
                     return;
                 }
                 craneDao.deleteAll();
-                for (Crane crane: cranes) {
+                for (Crane crane : cranes) {
                     craneDao.insert(crane);
                 }
 
                 List<AlarmSet> alarmSets = eAlarmSetDao.selectAll();
                 if (alarmSets == null) return;
                 alarmSetDao.deleteAll();
-                for (AlarmSet alarmSet: alarmSets) {
+                for (AlarmSet alarmSet : alarmSets) {
                     alarmSetDao.insert(alarmSet);
                 }
 
                 areaDao.deleteAll();
                 List<Area> areas = eAreaDao.selectAll();
-                for (Area area: areas) {
+                for (Area area : areas) {
                     eAreaDao.insert(area);
                 }
 
                 calibrationDao.deleteAll();
                 List<Calibration> calibrations = eCalibrationDao.selectAll();
-                for (Calibration calibration: calibrations) {
+                for (Calibration calibration : calibrations) {
                     calibrationDao.insert(calibration);
                 }
 
                 protectDao.deleteAll();
                 List<Protect> protects = eProtectDao.selectAll();
-                for (Protect protect: protects) {
+                for (Protect protect : protects) {
                     protectDao.insert(protect);
                 }
 
                 sysParaDao.deleteAll();
                 List<SysPara> sysParas = eSysParaDao.selectAll();
-                for (SysPara sysPara: sysParas) {
+                for (SysPara sysPara : sysParas) {
                     sysParaDao.insert(sysPara);
                 }
 
@@ -351,41 +388,35 @@ public class SuperAdmin extends AppCompatActivity {
             }
         });
 
-
         ((Button) findViewById(R.id.btn_channel_set)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String channel = ((EditText) findViewById(R.id.et_channel_set)).getText().toString();
-                MainActivity.channelSet.set(true);
-
-                /*
-                String port = ((EditText) findViewById(R.id.et_remote_port_set)).getText().toString();
-
-                if (!addr.matches("[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+")) {
-                    DrawTool.showDialog(activity, "地址格式错误!(address format error!)");
-                } else if (!port.matches("[0-9]+")) {
-                    DrawTool.showDialog(activity, "端口格式错误!(port format error!)");
+                String channel = ((EditText) findViewById(R.id.et_channel_set)).getText().toString(); // 通道编号
+                if (!channel.matches("[0-9]+")) {
+                    DrawTool.showDialog(activity, "信道格式错误!(channel format error!)");
                 } else {
-                    SysPara ra = paraDao.queryParaByName("remoteAddr");
-                    ra.setParaValue(addr);
-                    boolean ret = paraDao.update(ra);
-                    if (!ret) {
-                        DrawTool.showDialog(activity, "存地址失败!(save address fail!)");
+
+                    int ichannel = Integer.parseInt(channel);
+                    if (ichannel < 0 || ichannel > 83) {
+                        DrawTool.showDialog(activity, "信道范围[0-83]!(channel number range:[0-83]!)");
                         return;
                     }
-
-                    SysPara rp = paraDao.queryParaByName("remotePort");
-                    rp.setParaValue(port);
-                    ret = paraDao.update(rp);
-                    if (!ret) {
-                        DrawTool.showDialog(activity, "存端口失败!(save port fail!)");
-                        return;
+                    MainActivity.channelOps.set(true);
+                    try {
+                        Thread.sleep(500);
+                        EventBus.getDefault().post(new RestartEvent(1, Integer.parseInt(channel))); // 设置，并获取当前
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-
-                    NetClient.mq.offer(addr + ":" + port);
-                    DrawTool.showDialog(activity, "成功!(success!)");
                 }
-                */
+            }
+        });
+
+        ((Button) findViewById(R.id.btn_channel_qry)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.channelOps.set(true);
+                EventBus.getDefault().post(new RestartEvent(0, 0)); // 设置，并获取当前
             }
         });
 
@@ -439,7 +470,7 @@ public class SuperAdmin extends AppCompatActivity {
                     alertView.show();
 
                 } else if (view.getId() == R.id.close_logo) {
-                    MainActivity.channelSet.set(false);
+                    MainActivity.channelOps.set(false);
                     EventBus.getDefault().post(new RestartEvent(0));
                     finish();
                 }

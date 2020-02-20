@@ -5,20 +5,36 @@ package com.wooddeep.crane.ebus;
  */
 
 public class RestartEvent {
-    private float speed;
+    private int type;
+
+    private int setChannelNo;
 
     public RestartEvent() {
     }
 
-    public RestartEvent(float w) {
-        this.speed = w;
+    public RestartEvent(int t) {
+        this.type = t;
     }
 
-    public float getSpeed() {
-        return speed;
+    public RestartEvent(int type, int setChannelNo) {
+        this.type = type;
+        this.setChannelNo = setChannelNo;
     }
 
-    public void setSpeed(float speed) {
-        this.speed = speed;
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+
+    public int getSetChannelNo() {
+        return setChannelNo;
+    }
+
+    public void setSetChannelNo(int setChannelNo) {
+        this.setChannelNo = setChannelNo;
     }
 }

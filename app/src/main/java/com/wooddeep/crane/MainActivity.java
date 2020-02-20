@@ -47,6 +47,7 @@ import com.wooddeep.crane.ebus.AlarmEvent;
 import com.wooddeep.crane.ebus.AlarmSetEvent;
 import com.wooddeep.crane.ebus.CalibrationCloseEvent;
 import com.wooddeep.crane.ebus.CalibrationEvent;
+import com.wooddeep.crane.ebus.ChannelEvent;
 import com.wooddeep.crane.ebus.FanSpeedEvent;
 import com.wooddeep.crane.ebus.HeightEvent;
 import com.wooddeep.crane.ebus.LengthEvent;
@@ -263,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
     public Float currXAngle = 0.0f;
     public static AtomicBoolean registered = new AtomicBoolean(false);
 
-    public static AtomicBoolean channelSet = new AtomicBoolean(false);
+    public static AtomicBoolean channelOps = new AtomicBoolean(false);
 
     public float getOscale() {
         return oscale;
@@ -400,7 +401,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             //xangle = Math.round(xangle * 10) / 10.0f;
                             //System.out.println("xangle:" + xangle);
-                            currXAngle = (float)xangle;
+                            currXAngle = (float) xangle;
 
                             if (Math.abs(currRotateProto.getAngle() - prevRotateProto.getAngle()) >= 0.1f) {
                                 rotateEvent.setCenterX(mainCrane.getCoordX1());
@@ -445,8 +446,8 @@ public class MainActivity extends AppCompatActivity {
 
         new Thread(() -> {
 
-            while (!sysExit && !channelSet.get()) {
-                System.out.println("## RadioReadThread ...");
+            while (!sysExit && !channelOps.get()) {
+                //System.out.println("## RadioReadThread ...");
                 if (ttyS0InputStream == null || ttyS1InputStream == null || ttyS2InputStream == null) {
                     CommTool.sleep(100);
                     continue;
@@ -455,17 +456,9 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     if (ttyS1InputStream.available() > 0) {
                         int len = ttyS1InputStream.read(radioXBuff, 0, 1024);
-
                         dataUtil.add(radioXBuff, len);
-
                         if (dataUtil.check()) {
                             radioEvent.setData(dataUtil.get());
-                            /*
-                            for (int i = 0; i < dataUtil.get().length; i++) {
-                                System.out.printf("%02x ", dataUtil.get()[i]);
-                            }
-                            System.out.println("");
-                            */
                             RadioDateEventOps(radioEvent);
                         }
                     } else {
@@ -492,13 +485,29 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            if (channelOps.get()) {
+                try {
+                    ttyS1InputStream.close();
+                    ttyS1OutputStream.close();
+                    serialttyS1.closeSerial();
+
+                    serialttyS1 = new SerialPort(
+                        "S2", 9600, 8, 1, 'n', false);
+                    ttyS1InputStream = serialttyS1.getInputStream();
+                    ttyS1OutputStream = serialttyS1.getOutputStream();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
         }).start();
     }
 
     private void startRadioWriteThread() {
         new Thread(() -> {
 
-            while (!sysExit && !channelSet.get()) {
+            while (!sysExit && !channelOps.get()) {
 
                 if (ttyS0InputStream == null || ttyS1InputStream == null || ttyS2InputStream == null) {
                     CommTool.sleep(100);
@@ -583,7 +592,7 @@ public class MainActivity extends AppCompatActivity {
                 CommTool.sleep(100);
                 count++;
 
-                if (count % (NetClient.timeSlot / 100) == 0 &&  NetClient.netOk) {
+                if (count % (NetClient.timeSlot / 100) == 0 && NetClient.netOk && centerCycle != null) {
                     //System.out.println(Math.round(currWeight * 10) / 10.0f);
                     protocol.setRealData(
                         centerCycle.getHAngle(),
@@ -656,10 +665,11 @@ public class MainActivity extends AppCompatActivity {
 
     // 侦听电台数据
     public void RadioDateEventOps(RadioEvent event) {
+
         int cmdRet = radioProto.parse(event.getData()); // 解析电台数据
+
         if (cmdRet == -1) return;
         long currTime = System.currentTimeMillis(); // 当前时间
-
 
         if (iAmMaster.get() && radioProto.isQuery) return;
 
@@ -673,9 +683,11 @@ public class MainActivity extends AppCompatActivity {
         if (radioProto.sourceNo.equals(myCraneNo)) return; // TODO 再次验证
 
         if (radioProto.isQuery) { // 收到主机的查询命令，本机必然为从机
+
             waitFlag = false;
             CycleElem master = craneMap.get(radioProto.getSourceNo()); // 作为从机, 更新主机的信息 // TODO 根据塔基类型，计算仰角
             //System.out.println("## masterNo: " + radioProto.getSourceNo());
+            if (master != null) master.setOnline(true);
 
             String currShowMasterNo = masterNoView.getText().toString();
             if (currShowMasterNo == null || !currShowMasterNo.equals(radioProto.getSourceNo())) {
@@ -712,7 +724,6 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         //System.out.println("## rotateShow, angle = " + hangle);
                         master.setHAngle(hangle);
-                        master.setOnline(true);
                     });
                     savedData.angle = hangle;
                 }
@@ -721,7 +732,8 @@ public class MainActivity extends AppCompatActivity {
             if (radioProto.getTargetNo() == null || radioProto.getSourceNo() == null) return;
 
             if (radioProto.getSourceNo().equals(radioProto.getTargetNo()) // 源ID和目标ID相同
-                || radioProto.getTargetNo().equals(myCraneNo)) { // 目标ID相同是本机
+                || radioProto.getTargetNo().equals(myCraneNo) || radioProto.getPermitNo().equals(myCraneNo)) { // 目标ID相同是本机
+
                 slaveRadioProto.setSourceNo(Integer.parseInt(myCraneNo));
                 slaveRadioProto.setTargetNo(0); // 固定为0
                 slaveRadioProto.setPermitNo(0);
@@ -1237,16 +1249,26 @@ public class MainActivity extends AppCompatActivity {
                 if (menuExpand.getVisibility() == View.GONE) {
                     String mac = NetTool.getMacAddress(context);
                     if (registered.get()) {
-                        EdbTool.extTableExec("forever.db", "syspara", String.format("update syspara set paraValue='%s' where paraName='registered'", mac));
+                        //EdbTool.extTableExec("forever.db", "syspara", String.format("update syspara set paraValue='%s' where paraName='registered'", mac));
+                        SysPara para = paraDao.queryParaByName("registered");
+                        if (para == null) {
+                            para = new SysPara("registered", mac);
+                            paraDao.insert(para);
+                        } else {
+                            para.setParaValue(mac);
+                            paraDao.update(para);
+                        }
                     }
 
-                    JSONArray out = EdbTool.extTableQuery("forever.db", "syspara", "select paraValue from syspara where paraName='registered'");
-                    String registered = null;
+                    //JSONArray out = EdbTool.extTableQuery("forever.db", "syspara", "select paraValue from syspara where paraName='registered'");
+                    String registered = paraDao.queryValueByName("registered");
+                    /*
                     if (out.length() > 0) try {
                         registered = out.getJSONObject(0).optString("paraValue", "");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    */
 
                     if (registered == null || registered.length() == 0 || !registered.equals(mac)) { // 未注册
                         // 判断网络是否正常
@@ -1319,6 +1341,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } else {
                     Toast toast = Toast.makeText(MainActivity.this, "密码错误，重新输入(password error, try again!)", Toast.LENGTH_SHORT);
+                    input.setText("");
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                 }
@@ -1664,12 +1687,15 @@ public class MainActivity extends AppCompatActivity {
             SysTool.copyFilesFromRaw(this, R.raw.tc, "tc.db", "/data/data/com.wooddeep.crane/databases");
             SysTool.copyFilesFromRaw(this, R.raw.crane, "crane.db", "/data/data/com.wooddeep.crane/databases");
             SysTool.copyFilesFromRaw(this, R.raw.crane, "crane.db", "/data/data/com.wooddeep.crane/databases");
+            //SysTool.copyFilesFromRaw(this, R.raw.forever, "forever.db", "/sdcard/crane/");
         }
 
+        /*
         File dbReg = new File("/sdcard/crane/forever.db");
         if (!dbReg.exists()) {
             SysTool.copyFilesFromRaw(this, R.raw.forever, "forever.db", "/sdcard/crane/");
         }
+        */
 
         CraneDao craneDao = new CraneDao(MainActivity.this);
         AreaDao areaDao = new AreaDao(MainActivity.this);
@@ -1703,23 +1729,56 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void restartRadioEventBus(RestartEvent event) {
 
-        /*
-        try {
-            ttyS1OutputStream.close();
-            ttyS1InputStream.close();
-            serialttyS1.closeSerial();
+        if (!channelOps.get()) { // 重启通信
+            try {
+                ttyS1OutputStream.close();
+                ttyS1InputStream.close();
+                serialttyS1.closeSerial();
 
-            serialttyS1 = new SerialPort("S2", 19200, 8, 0, 'o', true);
-            ttyS1InputStream = serialttyS1.getInputStream();
-            ttyS1OutputStream = serialttyS1.getOutputStream();
+                serialttyS1 = new SerialPort("S2", 19200, 8, 0, 'o', true);
+                ttyS1InputStream = serialttyS1.getInputStream();
+                ttyS1OutputStream = serialttyS1.getOutputStream();
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            startRadioReadThread();
+            startRadioWriteThread();
+        } else { // 操作通信频道
+            if (event.getType() == 0) { // 获取当前通道
+                byte[] readx = new byte[100];
+                try {
+                    ttyS1OutputStream.write(new byte[]{(byte) 0xc1, 0x05, 0x01}); // 读取当前编号
+                    CommTool.sleep(300);
+                    int readn = ttyS1InputStream.read(readx);
+                    for (int n = 0; n < readn; n++) {
+                        System.out.printf("0x%02x ", 0x000000FF & readx[n]);
+                    }
+
+                    EventBus.getDefault().post(new ChannelEvent(0, readx[3], 0));
+                    System.out.println("");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (event.getType() == 1) { // 设置通道
+                byte[] readx = new byte[100];
+                try {
+                    //System.out.println("### set channel no: " + event.getSetChannelNo());
+                    ttyS1OutputStream.write(new byte[]{(byte) 0xc0, 0x05, 0x01, (byte) event.getSetChannelNo()}); // 读取当前编号
+                    int readn = ttyS1InputStream.read(readx);
+                    for (int n = 0; n < readn; n++) {
+                        System.out.printf("0x%02x ", 0x000000FF & readx[n]);
+                    }
+                    EventBus.getDefault().post(new ChannelEvent(1, readx[3], 0));
+                    System.out.println("");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        */
-
-        startRadioReadThread();
-        startRadioWriteThread();
     }
 
     @Override
@@ -1764,7 +1823,6 @@ public class MainActivity extends AppCompatActivity {
         setCurrTime();
 
         player = MediaPlayer.create(context, R.raw.ding);
-
 
         // 串口设置: 8N1,一个起始位,8个数据位,一个停止位
 
@@ -1814,17 +1872,6 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         //按返回键返回桌面
         moveTaskToBack(true);
-    }
-
-    // ringtone 设置循环播放
-    // https://blog.csdn.net/w1181775042/article/details/47036659
-
-    private void xx() {
-        Uri defaultRingtoneUri = RingtoneManager.getActualDefaultRingtoneUri(MainActivity.this, RingtoneManager.TYPE_RINGTONE);
-
-        Ringtone ringtone = RingtoneManager.getRingtone(MainActivity.this, defaultRingtoneUri);
-
-        ringtone.play();
     }
 
 }

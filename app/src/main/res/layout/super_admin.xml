@@ -299,9 +299,9 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/row_sys_set"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp60"
+            android:visibility="visible"
             android:background="@drawable/split_boder">
 
             <LinearLayout
@@ -340,9 +340,50 @@
                     android:layout_height="@dimen/dp60"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
+                    android:layout_weight="4"
+                    android:gravity="center"
+                    android:text="当前信道(curr channel):"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+
+                <EditText
+                    android:id="@+id/tv_curr_channel"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="4"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:text=""
+                    android:editable="false"
+                    android:focusable="false"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+
+                <Button
+                    android:id="@+id/btn_channel_qry"
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
                     android:layout_weight="5"
                     android:gravity="center"
-                    android:text="频道编号(number):"
+                    android:text="检查(check)"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:textSize="@dimen/dp15" />
+
+                <TextView
+                    android:layout_width="@dimen/dp0"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_weight="4"
+                    android:gravity="center"
+                    android:text="频道编号(channel):"
                     android:layout_marginLeft="@dimen/dp15"
                     android:layout_marginRight="@dimen/dp15"
                     android:textSize="@dimen/dp15" />
@@ -353,7 +394,7 @@
                     android:layout_height="@dimen/dp60"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:layout_weight="5"
+                    android:layout_weight="4"
                     android:gravity="center"
                     android:inputType="number"
                     android:text=""
@@ -369,7 +410,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="5"
                     android:gravity="center"
-                    android:text="确定(confirm)"
+                    android:text="设置(set)"
                     android:layout_marginLeft="@dimen/dp15"
                     android:layout_marginRight="@dimen/dp15"
                     android:textSize="@dimen/dp15" />

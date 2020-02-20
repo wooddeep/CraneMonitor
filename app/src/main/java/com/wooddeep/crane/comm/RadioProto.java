@@ -79,11 +79,13 @@ public class RadioProto {
             return CMD_START_MASTER;
         }
 
+        //System.out.printf("##@@@### %c%c\n", (char) data[35], (char) data[36]);
+
         StringTool.stringModify(this.sourceNo, sourceNoChars, (char) data[1], (char) data[2]);
         this.sourceNo = craneIdMap.get(getSourceNoInt()); // 通过数字计算得到字符串
         StringTool.stringModify(this.targetNo, targetNoChars, (char) data[4], (char) data[5]);
         this.targetNo = craneIdMap.get(getTargetNoInt()); // 通过数字计算得到字符串
-        StringTool.stringModify(this.permitNo, permitNoChars, (char) data[36], (char) data[37]);
+        StringTool.stringModify(this.permitNo, permitNoChars, (char) data[35], (char) data[36]);
         this.permitNo = craneIdMap.get(getPermitNoInt()); // 通过数字计算得到字符串
 
         // TODO rangeChars， rotateChars -> 转浮点数
@@ -219,6 +221,10 @@ public class RadioProto {
         //StringTool.stringModify(this.targetNo, targetNoChars, no);
         this.permitRepl.setReplacement(no);
         StringTool.stringModify(modleChars, this.permitRepl);
+    }
+
+    public String getPermitNo() {
+        return permitNo;
     }
 
     public float getRotate() {
