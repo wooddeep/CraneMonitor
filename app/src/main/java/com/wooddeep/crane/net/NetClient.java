@@ -1,5 +1,7 @@
 package com.wooddeep.crane.net;
 
+import android.graphics.Color;
+
 import com.wooddeep.crane.MainActivity;
 import com.wooddeep.crane.net.network.Protocol;
 import com.wooddeep.crane.persist.dao.SysParaDao;
@@ -10,6 +12,7 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -96,7 +99,6 @@ public class NetClient {
                 outputStream.write(protocol.getPack(), 0, beWriteN);
                 outputStream.flush();
 
-
             } catch (Exception e) {
                 System.out.printf("## runWrite[0] -> cause: %s, mesg: %s\n", e.getCause(), e.getMessage());
                 try {
@@ -150,6 +152,7 @@ public class NetClient {
                         byte[] body = protocol.response(cmd); // ack信息
                         NetClient.mq.offer(body);
                         break;
+
                     default:
                         //System.out.println("##unkonwn response command!");
                         break;

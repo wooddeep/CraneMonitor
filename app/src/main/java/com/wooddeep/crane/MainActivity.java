@@ -39,6 +39,7 @@ import com.example.x6.serialportlib.SerialPort;
 import com.wooddeep.crane.alarm.Alarm;
 import com.wooddeep.crane.alarm.AlertSound;
 import com.wooddeep.crane.comm.ControlProto;
+import com.wooddeep.crane.comm.NetRadioProto;
 import com.wooddeep.crane.comm.Protocol;
 import com.wooddeep.crane.comm.RadioProto;
 import com.wooddeep.crane.comm.RotateProto;
@@ -106,6 +107,7 @@ import com.wooddeep.crane.tookit.DrawTool;
 import com.wooddeep.crane.tookit.EdbTool;
 import com.wooddeep.crane.tookit.HttpUtils;
 import com.wooddeep.crane.tookit.MathTool;
+import com.wooddeep.crane.tookit.MixDataUtil;
 import com.wooddeep.crane.tookit.MomentOut;
 import com.wooddeep.crane.tookit.NetTool;
 import com.wooddeep.crane.tookit.SysTool;
@@ -133,6 +135,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 //import androidx.annotation.RequiresApi;
 
@@ -258,13 +261,16 @@ public class MainActivity extends AppCompatActivity {
     private float endWeight = 0.2f;
     private float currWeight = 0.3f;
     private PackageManager mPackageManager;
-    private DataUtil dataUtil = new DataUtil();
+    //private DataUtil dataUtil = new DataUtil();
+    private MixDataUtil mixDataUtil = new MixDataUtil();
     public static ShowData showData = new ShowData();
     public static AtomicInteger alarmLevel = new AtomicInteger(100);
     public Float currXAngle = 0.0f;
     public static AtomicBoolean registered = new AtomicBoolean(false);
 
     public static AtomicBoolean channelOps = new AtomicBoolean(false);
+
+    public static NetRadioProto netRadioProto = new NetRadioProto();
 
     public float getOscale() {
         return oscale;
@@ -442,12 +448,13 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
+    boolean netRadio = false; // 调试
+
     private void startRadioReadThread() {
 
         new Thread(() -> {
 
-            while (!sysExit && !channelOps.get()) {
-                //System.out.println("## RadioReadThread ...");
+            while (!sysExit && !channelOps.get() && !netRadio) { // 电台通信
                 if (ttyS0InputStream == null || ttyS1InputStream == null || ttyS2InputStream == null) {
                     CommTool.sleep(100);
                     continue;
@@ -456,9 +463,9 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     if (ttyS1InputStream.available() > 0) {
                         int len = ttyS1InputStream.read(radioXBuff, 0, 1024);
-                        dataUtil.add(radioXBuff, len);
-                        if (dataUtil.check()) {
-                            radioEvent.setData(dataUtil.get());
+                        mixDataUtil.add(radioXBuff, len);
+                        if (mixDataUtil.check()) { // 协议类型判断
+                            radioEvent.setData(mixDataUtil.get());
                             RadioDateEventOps(radioEvent);
                         }
                     } else {
@@ -466,7 +473,6 @@ public class MainActivity extends AppCompatActivity {
                         Set<String> radioRecSet = radioStatusMap.keySet();
                         for (String no : radioRecSet) {
                             long prevRecTimer = radioStatusMap.get(no); // 上次记录时间
-                            //System.out.printf("## %s: %d - %d = %d\n", no, currTime, prevRecTimer, currTime - prevRecTimer);
                             if (currTime - prevRecTimer > 300000) { // 通信10失联，判断超时
                                 runOnUiThread(() -> {
                                     craneMap.get(no).setColor(Color.LTGRAY);
@@ -481,7 +487,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     continue;
-                    //sysExit = true;
                 }
             }
 
@@ -501,13 +506,52 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            while (!sysExit && netRadio) {  // 网络通信
+                try {
+                    //netRadioProto.lock.writeLock().lock();
+                    netRadioProto.lock.writeLock().tryLock();
+                    if (netRadioProto.length > 0) {
+                        int frameNum = netRadioProto.length / 39;
+                        byte [] tmpBuff = new byte[39];
+                        for (int i = 0; i < frameNum; i++) {
+                            System.arraycopy(netRadioProto.netBuffer, 39 * i, tmpBuff, 0, 39);
+                            radioEvent.setData(tmpBuff);
+                            RadioDateEventOps(radioEvent);
+                            System.out.println(new String(tmpBuff));
+                        }
+                        netRadioProto.length = 0;
+                    } else {
+                        long currTime = System.currentTimeMillis(); // 当前时间
+                        Set<String> radioRecSet = radioStatusMap.keySet();
+                        for (String no : radioRecSet) {
+                            long prevRecTimer = radioStatusMap.get(no); // 上次记录时间
+                            if (currTime - prevRecTimer > 300000) { // 通信10失联，判断超时
+                                runOnUiThread(() -> {
+                                    craneMap.get(no).setColor(Color.LTGRAY);
+                                    craneMap.get(no).setCarRange(0); // 失联设备, 设置小车幅度为0
+                                });
+                                craneMap.get(no).setOnline(false); // 设置离线状态
+                            }
+                        }
+                    }
+
+                    netRadioProto.lock.writeLock().unlock();
+
+                    CommTool.sleep(5);
+                } catch (Exception e) {
+                    //e.printStackTrace();
+                    System.out.println(e.getMessage());
+                    continue;
+                }
+            }
+
         }).start();
     }
 
     private void startRadioWriteThread() {
         new Thread(() -> {
 
-            while (!sysExit && !channelOps.get()) {
+            while (!sysExit && !channelOps.get() && !netRadio) {
 
                 if (ttyS0InputStream == null || ttyS1InputStream == null || ttyS2InputStream == null) {
                     CommTool.sleep(100);
@@ -515,34 +559,62 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 try {
-                    if (iAmMaster.get() && craneNumbers.size() >= 1) { // 主机
-                        //System.out.println("##### I am master!!!");
+                    if (iAmMaster.get() && craneNumbers.size() >= 1) { // 主机, 发送查询
                         int iMyCraneNo = Integer.parseInt(myCraneNo);
                         currSlaveIndex = (currSlaveIndex + 1) % craneNumbers.size();
                         int targetNo = Integer.parseInt(craneNumbers.get(currSlaveIndex));
-                        //if (iMyCraneNo == targetNo) continue;
                         masterRadioProto.setSourceNo(iMyCraneNo);
                         masterRadioProto.setTargetNo(targetNo);
                         masterRadioProto.setPermitNo(targetNo);
 
-                        double currAngle = Math.max(Math.toRadians(currXAngle/*centerCycle.getHAngle()*/), 0); // 当前回转角度
+                        double currAngle = Math.max(Math.toRadians(currXAngle), 0); // 当前回转角度
                         double currRange = Math.max(shadowLength, 0);
 
                         masterRadioProto.setRotate(Math.round(currAngle * 10) / 10.0f);
                         masterRadioProto.setRange(Math.round(currRange * 10) / 10.0f);
-
-                        //System.out.printf("### master write data: %f -- %f \n", currAngle, currRange); // TODO 幅度值，角度值不对
                         masterRadioProto.packReply(); // 生成回应报文
-                        //StringTool.showCharArray1(masterRadioProto.modleChars);
 
                         try {
-                            //ttyS1OutputStream.write(masterRadioProto.modleBytes); // 发送应答报文
                             ttyS1OutputStream.write(masterRadioProto.modleBytes, 0, 39);
                             ttyS1OutputStream.flush();
                         } catch (Exception e) {
                             e.printStackTrace();
                             continue;
-                            //sysExit = true;
+                        }
+                    }
+
+                    CommTool.sleep(130);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    continue;
+                }
+            }
+
+            while (!sysExit && netRadio) {
+
+                try {
+                    if (iAmMaster.get() && craneNumbers.size() >= 1) { // 不管主机还是从机，上报数据
+                        int iMyCraneNo = Integer.parseInt(myCraneNo);
+                        currSlaveIndex = (currSlaveIndex + 1) % craneNumbers.size();
+                        int targetNo = Integer.parseInt(craneNumbers.get(currSlaveIndex));
+                        masterRadioProto.setSourceNo(iMyCraneNo);
+                        masterRadioProto.setTargetNo(targetNo);
+                        masterRadioProto.setPermitNo(targetNo);
+
+                        double currAngle = Math.max(Math.toRadians(currXAngle), 0); // 当前回转角度
+                        double currRange = Math.max(shadowLength, 0);
+
+                        masterRadioProto.setRotate(Math.round(currAngle * 10) / 10.0f);
+                        masterRadioProto.setRange(Math.round(currRange * 10) / 10.0f);
+                        masterRadioProto.packReply(); // 生成回应报文
+
+                        try {
+                            // 通过网络写
+                            NetClient.mq.offer(masterRadioProto.modleBytes);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            continue;
                         }
                     }
 
@@ -808,20 +880,6 @@ public class MainActivity extends AppCompatActivity {
                 radioStatusMap.put(radioProto.getSourceNo(), currTime);
             }
         }
-
-        /*
-        Set<String> radioRecSet = radioStatusMap.keySet();
-        for (String no : radioRecSet) {
-            long prevRecTimer = radioStatusMap.get(no); // 上次记录时间
-            if (currTime - prevRecTimer > 6000) { // 通信10失联，判断超时
-                runOnUiThread(() -> {
-                    craneMap.get(no).setColor(Color.LTGRAY);
-                    craneMap.get(no).setCarRange(0); // 失联设备, 设置小车幅度为0
-                });
-                craneMap.get(no).setOnline(false); // 设置离线状态
-            }
-        }
-        */
     }
 
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中

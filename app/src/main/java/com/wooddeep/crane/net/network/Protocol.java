@@ -1,7 +1,7 @@
 package com.wooddeep.crane.net.network;
 
 
-
+import com.wooddeep.crane.MainActivity;
 import com.wooddeep.crane.net.NetClient;
 import com.wooddeep.crane.net.crypto.Aes;
 import com.wooddeep.crane.persist.dao.SysParaDao;
@@ -44,7 +44,7 @@ public class Protocol {
     static JSONObject cmdRptRealData = null;
     static JSONObject cmdResponse = null;
 
-    public Protocol()  {
+    public Protocol() {
         try {
             cmdGetSession = new JSONObject("{\"cmd\":\"get.session\", \"data\":{\"devid\":\"12345678\"}}");
             cmdRptRealData = new JSONObject("{\"cmd\":\"rpt.realdata\", \"data\":{\n" +
@@ -129,7 +129,7 @@ public class Protocol {
     }
 
 
-    private byte [] key = "BDE1236987450ACF".getBytes();
+    private byte[] key = "BDE1236987450ACF".getBytes();
 
 
     public void setRealData(float rotate, float angle, float bigArmLen, float carRange,
@@ -137,7 +137,7 @@ public class Protocol {
                             float hookHeight, int ropeNum, boolean isMain, String type, String craneType) {
         try {
             JSONObject data = cmdRptRealData.getJSONObject("data");
-            data.put("rotate",  rotate);
+            data.put("rotate", rotate);
             data.put("angle", angle);
             data.put("bigArmLen", bigArmLen);
             data.put("carRange", carRange);
@@ -195,6 +195,8 @@ public class Protocol {
     public JSONObject unPack(byte[] pack, int n) {
         if (n < 6) return null;
 
+        JSONObject out = null;
+
         int start = -1;
         int end = -1;
 
@@ -210,29 +212,24 @@ public class Protocol {
 
         if (start < 0 || end < 0) return null;
 
-
+        int dataLen = (end - 1) - (start + 3) + 1;
         try {
-            int dataLen = (end - 1) - (start + 3) + 1;
             System.arraycopy(pack, start + HEAD_LENGTH, recv, 0, dataLen);
-
-            /*
-            for (int i = 0; i < dataLen; i++) {
-                System.out.printf("0x%02x ", recv[i] & 0xFF);
-            }
-            System.out.println("");
-            */
-
-            //byte[] decryptOut = eDipher.doFinal(pack, start + HEAD_LENGTH, dataLen);
             byte[] decryptOut = Aes.decrypt(pack, start + HEAD_LENGTH, dataLen, key);
-            System.out.println(new String(decryptOut));
-            return new JSONObject(new String(decryptOut));
-
+            out = new JSONObject(new String(decryptOut));
 
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.printf("cause: %s, mesg: %s\n", e.getCause(), e.getMessage());
+            //e.printStackTrace();
+            System.out.println(e.getMessage());
+            MainActivity.netRadioProto.lock.writeLock().lock();
+            //out = new JSONObject(new String(recv, 0, dataLen));
+            System.arraycopy(recv, 0, MainActivity.netRadioProto.netBuffer, 0, dataLen);
+            MainActivity.netRadioProto.length = dataLen;
+            MainActivity.netRadioProto.lock.writeLock().unlock();
         }
-        return null;
+
+        //System.out.println(out);
+        return out;
     }
 
 
