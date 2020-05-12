@@ -27,7 +27,7 @@ public class TruckView extends View {
     private Paint paintFill3;
     private Paint paintBorder; // 边界画笔
     private Paint paintWheel;
-
+    private Paint xxxpaint;  // 实心画笔
     public int craneType = 0;
     public float armLenth = 300;
     public float hookHeight = 100;
@@ -54,6 +54,7 @@ public class TruckView extends View {
         armAngle = attrArray.getFloat(R.styleable.TruckView_truck_arm_angle, 0.0f);
 
         paintFill = new Paint();
+        xxxpaint = new Paint();
         paintBorder = new Paint();
         paintFill2 = new Paint();
         paintFill3 = new Paint();
@@ -65,6 +66,10 @@ public class TruckView extends View {
         paintFill.setStrokeWidth(2);
         paintFill.setAntiAlias(true);
         paintFill.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
+
+        xxxpaint.setColor(Color.BLACK);
+        xxxpaint.setStrokeJoin(Paint.Join.ROUND);
+        xxxpaint.setStrokeCap(Paint.Cap.SQUARE);
 
         paintFill2.setColor(Color.rgb(255, 140, 0));
         paintFill2.setStrokeJoin(Paint.Join.ROUND);
@@ -162,6 +167,8 @@ public class TruckView extends View {
 
         fastenX1 = x + (capWidth / 2) * (float) Math.sin(Math.toRadians(theta));
         fastenY1 = y - (capWidth / 2) * (float) Math.cos(Math.toRadians(theta));
+
+        canvas.drawCircle(fastenX1, fastenY1, 0.25f * wheelRadius, xxxpaint);
 
         path.lineTo(x + (capWidth / 2) * (float) Math.sin(Math.toRadians(theta)), y - (capWidth / 2) * (float) Math.cos(Math.toRadians(theta)));
 
@@ -456,6 +463,9 @@ public class TruckView extends View {
         path.lineTo(x - l * (float) Math.sin(Math.toRadians(theta)) - w * (float) Math.cos(Math.toRadians(theta - 30)),
             y + l * (float) Math.cos(Math.toRadians(theta)) - w * (float) Math.sin(Math.toRadians(theta - 30))); // point!!!
 
+        float startX = x - l * (float) Math.sin(Math.toRadians(theta)) - w * (float) Math.cos(Math.toRadians(theta - 30));
+        float startY = y + l * (float) Math.cos(Math.toRadians(theta)) - w * (float) Math.sin(Math.toRadians(theta - 30));
+
         path.lineTo(x - l * (float) Math.sin(Math.toRadians(theta)) - w * (float) Math.cos(Math.toRadians(theta - 30)) + d * (float) Math.cos(Math.toRadians(90 - theta)),
             y + l * (float) Math.cos(Math.toRadians(theta)) - w * (float) Math.sin(Math.toRadians(theta - 30)) - d * (float) Math.sin(Math.toRadians(90 - theta)));
 
@@ -464,6 +474,8 @@ public class TruckView extends View {
 
         path.lineTo(tx + s * (float) Math.sin(Math.toRadians(120 - theta)), ty + s * (float) Math.cos(Math.toRadians(120 - theta)));
 
+        canvas.drawCircle(startX, startY, 0.25f * wheelRadius, xxxpaint);
+
         ////////////
         tx = x + l * (float) Math.sin(Math.toRadians(theta)) - w * (float) Math.cos(Math.toRadians(theta + 30)) - d * (float) Math.sin(Math.toRadians(theta));
         ty = y - l * (float) Math.cos(Math.toRadians(theta)) - w * (float) Math.sin(Math.toRadians(theta + 30)) + d * (float) Math.cos(Math.toRadians(theta));
@@ -471,6 +483,9 @@ public class TruckView extends View {
 
         path.lineTo(x + l * (float) Math.sin(Math.toRadians(theta)) - w * (float) Math.cos(Math.toRadians(theta + 30)) - d * (float) Math.sin(Math.toRadians(theta)),
             y - l * (float) Math.cos(Math.toRadians(theta)) - w * (float) Math.sin(Math.toRadians(theta + 30)) + d * (float) Math.cos(Math.toRadians(theta)));
+
+        canvas.drawCircle(x + l * (float) Math.sin(Math.toRadians(theta)) - w * (float) Math.cos(Math.toRadians(theta + 30)),
+            y - l * (float) Math.cos(Math.toRadians(theta)) - w * (float) Math.sin(Math.toRadians(theta + 30)), 0.25f * wheelRadius, xxxpaint);
 
         path.lineTo(x + l * (float) Math.sin(Math.toRadians(theta)) - w * (float) Math.cos(Math.toRadians(theta + 30)),
             y - l * (float) Math.cos(Math.toRadians(theta)) - w * (float) Math.sin(Math.toRadians(theta + 30))); // point
