@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--此处的name必须和自定义View的类名一致-->
+    <declare-styleable name="TruckView">
+        <attr name="truck_crane_type" format="integer"></attr>
+        <attr name="truck_arm_length" format="float"></attr>
+        <attr name="truck_hook_height" format="float"></attr>
+        <attr name="truck_arm_angle" format="float"></attr>
+    </declare-styleable>
+
+</resources>
