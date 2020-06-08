@@ -6,6 +6,45 @@ package com.wooddeep.crane.tookit;
 
 public class DataUtil {
 
+    /*
+
+     A9 9A 2C 01 4C 4A 66 4A 82 00 4F 01 00 00 A3 0E 7F 0C 00 00 6F 7C
+     0F 00 E3 E5 AF 43 00 00 C8 42 00 00 C8 42 00 00 00 00 00 00 C6 10
+
+     */
+
+    private byte[] header = new byte[]{(byte) 0xA9, (byte) 0x9A}; // 2 字节
+
+    private byte[] target = new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}; // 4字节
+
+    private byte[] source = new byte[]{(byte) 0x00, (byte) 0x00}; // 2字节
+
+    private byte[] moment = new byte[]{(byte) 0xA9, (byte) 0x9A}; // 2 字节
+
+    private byte[] ratedWeight = new byte[]{(byte) 0xA9, (byte) 0x9A}; // 2 字节
+
+    private byte[] weight = new byte[]{(byte) 0xA9, (byte) 0x9A}; // 2 字节
+
+    private byte[] range = new byte[]{(byte) 0xA9, (byte) 0x9A}; // 2 字节
+
+    private byte[] height = new byte[]{(byte) 0xA9, (byte) 0x9A}; // 2 字节
+
+    private byte[] reserve0 = new byte[]{(byte) 0xA9, (byte) 0x9A}; // 2 字节
+
+    private byte[] digAngle = new byte[]{(byte) 0xA9, (byte) 0x9A}; // 2 字节
+
+    private byte[] windSpeed = new byte[]{(byte) 0xA9, (byte) 0x9A}; // 2 字节
+
+    private byte[] rotate = new byte[]{(byte) 0xA9, (byte) 0x9A, (byte) 0xA9, (byte) 0x9A}; // 4 字节
+
+    private byte[] xAxis = new byte[]{(byte) 0xA9, (byte) 0x9A, (byte) 0xA9, (byte) 0x9A}; // 4 字节
+
+    private byte[] yAxis = new byte[]{(byte) 0xA9, (byte) 0x9A, (byte) 0xA9, (byte) 0x9A}; // 4 字节
+
+    private byte[] reserve1 = new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}; // 6 字节
+
+    private byte[] crc = new byte[]{(byte) 0xA9, (byte) 0x9A}; // 2 字节
+
     private byte START = '%';
     private byte END = '#';
 

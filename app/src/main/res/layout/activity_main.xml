@@ -390,6 +390,17 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/version_show"
+                android:layout_width="@dimen/dp40"
+                android:layout_height="@dimen/dp40"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:layout_toRightOf="@+id/text_container"
+                android:gravity="center"
+                android:text="V1.0"
+                android:paddingBottom="@dimen/dp2"/>
+
             <ImageView
                 android:id="@+id/master_no_logo"
                 android:layout_width="@dimen/dp40"

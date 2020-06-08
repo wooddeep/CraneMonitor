@@ -42,6 +42,7 @@ import com.wooddeep.crane.comm.ControlProto;
 import com.wooddeep.crane.comm.NetRadioProto;
 import com.wooddeep.crane.comm.Protocol;
 import com.wooddeep.crane.comm.RadioProto;
+import com.wooddeep.crane.comm.RecenProto;
 import com.wooddeep.crane.comm.RotateProto;
 import com.wooddeep.crane.ebus.AlarmDetectEvent;
 import com.wooddeep.crane.ebus.AlarmEvent;
@@ -193,8 +194,8 @@ public class MainActivity extends AppCompatActivity {
     public static AtomicBoolean isRvcMode = new AtomicBoolean(false);
 
     private ControlProto controlProto = new ControlProto();
-    private RadioProto slaveRadioProto = new RadioProto();  // 本机作为从机时，需要radio通信的对象
-    private RadioProto masterRadioProto = new RadioProto(); // 本机作为主机时，需要radio通信的对象
+    private RecenProto slaveRadioProto = new RecenProto();  // 本机作为从机时，需要radio通信的对象
+    private RecenProto masterRadioProto = new RecenProto(); // 本机作为主机时，需要radio通信的对象
 
     private SerialPort serialttyS0;
     private SerialPort serialttyS1;
@@ -450,7 +451,7 @@ public class MainActivity extends AppCompatActivity {
 
     boolean netRadio = false; // 调试
 
-    private void startRadioReadThread() {
+    private void startRadioReadThread() { // 收线程
 
         new Thread(() -> {
 
@@ -466,7 +467,7 @@ public class MainActivity extends AppCompatActivity {
                         mixDataUtil.add(radioXBuff, len);
                         if (mixDataUtil.check()) { // 协议类型判断
                             radioEvent.setData(mixDataUtil.get());
-                            RadioDateEventOps(radioEvent);
+                            RadioDateEventOps(radioEvent); // 处理协议报文
                         }
                     } else {
                         long currTime = System.currentTimeMillis(); // 当前时间
@@ -559,7 +560,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 try {
-                    if (iAmMaster.get() && craneNumbers.size() >= 1) { // 主机, 发送查询
+                    if (iAmMaster.get() && craneNumbers.size() >= 1) { // 主机, 发送查询, 发送【1】
                         int iMyCraneNo = Integer.parseInt(myCraneNo);
                         currSlaveIndex = (currSlaveIndex + 1) % craneNumbers.size();
                         int targetNo = Integer.parseInt(craneNumbers.get(currSlaveIndex));
@@ -575,7 +576,7 @@ public class MainActivity extends AppCompatActivity {
                         masterRadioProto.packReply(); // 生成回应报文
 
                         try {
-                            ttyS1OutputStream.write(masterRadioProto.modleBytes, 0, 39);
+                            ttyS1OutputStream.write(masterRadioProto.modleBytes, 0, 39); // TODO 39字节转换为44字节
                             ttyS1OutputStream.flush();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -737,10 +738,11 @@ public class MainActivity extends AppCompatActivity {
 
     // 侦听电台数据
     public void RadioDateEventOps(RadioEvent event) {
-
         int cmdRet = radioProto.parse(event.getData()); // 解析电台数据
 
+        //System.out.printf("## cmdRet = %d\n", cmdRet);
         if (cmdRet == -1) return;
+
         long currTime = System.currentTimeMillis(); // 当前时间
 
         if (iAmMaster.get() && radioProto.isQuery) return;
@@ -752,13 +754,13 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        if (radioProto.sourceNo.equals(radioProto.targetNo)) return; // TODO 再次验证
+
         if (radioProto.sourceNo.equals(myCraneNo)) return; // TODO 再次验证
 
         if (radioProto.isQuery) { // 收到主机的查询命令，本机必然为从机
-
             waitFlag = false;
             CycleElem master = craneMap.get(radioProto.getSourceNo()); // 作为从机, 更新主机的信息 // TODO 根据塔基类型，计算仰角
-            //System.out.println("## masterNo: " + radioProto.getSourceNo());
             if (master != null) master.setOnline(true);
 
             String currShowMasterNo = masterNoView.getText().toString();
@@ -818,12 +820,35 @@ public class MainActivity extends AppCompatActivity {
                     slaveRadioProto.setRange(Math.max(centerCycle.carRange, 0));
                 }
 
+                /*
+                System.out.print("## master no:" + masterNoView.getText().toString());
+                System.out.print(" ## srouce no:" + Integer.parseInt(myCraneNo));
+                System.out.print(" ## range:" + slaveRadioProto.getRange());
+                System.out.println(" ## rotate:" + Math.toDegrees(slaveRadioProto.rotate));
+                */
+
                 slaveRadioProto.setRotate(Math.max(0, ((currXAngle /*centerCycle.getHAngle()*/ % 360) * 2 * (float) Math.PI / 360)));
-                slaveRadioProto.packReply(); // 生成回应报文
+                slaveRadioProto.packReply(); // 生成回应报文 从机 写【2】
                 try {
                     if (ttyS1OutputStream != null) {
-                        ttyS1OutputStream.write(slaveRadioProto.modleBytes, 0, 39);
+                        float height = Float.parseFloat(heightView.getText().toString().split("m")[0]);
+                        float dipAngle = Float.parseFloat(heightView.getText().toString().split("m")[0]);
+                        float windSpeed = Float.parseFloat(windSpeedView.getText().toString().split("m")[0]);
+                        float ratedWeight = Float.parseFloat(ratedWeightView.getText().toString().split("t")[0]);
+                        byte [] out = mixDataUtil.slaveResp(slaveRadioProto, Integer.parseInt(myCraneNo), centerCycle.x, centerCycle.y,
+                            ratedWeight, currWeight, height, currProto.getRealVAngle(), windSpeed);
+                        //ttyS1OutputStream.write(slaveRadioProto.modleBytes, 0, 39); // 原来的协议
+                        ttyS1OutputStream.write(out, 0, 44); // 兼容东仑协议
                         ttyS1OutputStream.flush();
+
+                        /*
+                        System.out.print("### resp: ");
+                        for (int n = 0; n < 44; n++) {
+                            System.out.printf("0x%02x ", 0x000000FF & out[n]);
+                        }
+                        System.out.println("");
+                        */
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1915,7 +1940,7 @@ public class MainActivity extends AppCompatActivity {
             startRadioWriteThread();
             startTimerThread();
             String mac = NetTool.getMacAddress(context);
-            NetClient.run(paraDao, mac.replaceAll(":", ""));
+            //NetClient.run(paraDao, mac.replaceAll(":", "")); // TODO 开启网络
         }, 10);
     }
 
