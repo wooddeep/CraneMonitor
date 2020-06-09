@@ -261,8 +261,8 @@ public class MainActivity extends AppCompatActivity {
     private float endWeight = 0.2f;
     private float currWeight = 0.3f;
     private PackageManager mPackageManager;
-    //private DataUtil dataUtil = new DataUtil();
-    private MixDataUtil mixDataUtil = new MixDataUtil();
+    private DataUtil dataUtil = new DataUtil();
+    //private MixDataUtil mixDataUtil = new MixDataUtil();
     public static ShowData showData = new ShowData();
     public static AtomicInteger alarmLevel = new AtomicInteger(100);
     public Float currXAngle = 0.0f;
@@ -463,10 +463,10 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     if (ttyS1InputStream.available() > 0) {
                         int len = ttyS1InputStream.read(radioXBuff, 0, 1024);
-                        mixDataUtil.add(radioXBuff, len);
-                        if (mixDataUtil.check()) { // 协议类型判断
-                            radioEvent.setData(mixDataUtil.get());
-                            RadioDateEventOps(radioEvent); // 处理协议报文
+                        dataUtil.add(radioXBuff, len);
+                        if (dataUtil.check()) { // 协议类型判断
+                            radioEvent.setData(dataUtil.get());
+                            RadioDateEventOps(radioEvent);
                         }
                     } else {
                         long currTime = System.currentTimeMillis(); // 当前时间
