@@ -660,6 +660,15 @@
                             android:src="@mipmap/log" />
 
                         <ImageView
+                            android:id="@+id/fault_diag"
+                            android:layout_width="@dimen/dp45"
+                            android:layout_height="@dimen/dp40"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="@dimen/dp15"
+                            android:gravity="center"
+                            android:src="@mipmap/fault_diag" />
+
+                        <ImageView
                             android:id="@+id/super_admin"
                             android:layout_width="@dimen/dp45"
                             android:layout_height="@dimen/dp40"

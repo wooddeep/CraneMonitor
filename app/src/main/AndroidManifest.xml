@@ -63,7 +63,7 @@
         <activity
             android:alwaysRetainTaskState='true'
             android:exported='true'
-            android:name="com.wooddeep.crane.TruckActivity">
+            android:name="com.wooddeep.crane.FaultDiagActivity">
         </activity>
 
         <receiver android:name="com.wooddeep.crane.message.BootUpReceiver">
