@@ -1,7 +1,6 @@
 package com.wooddeep.crane.tookit;
 
 import com.wooddeep.crane.comm.RadioProto;
-import com.wooddeep.crane.comm.RecenProto;
 
 /**
  * Created by niuto on 2019/9/19.
@@ -115,12 +114,12 @@ public class MixDataUtil {
 
 
     public byte[] get() {
-        /*
+
         for (int i = 0; i < out.length; i++) {
-            System.out.printf("%02x ", out[i]);
+            System.out.printf("0x%02x ", out[i]);
         }
-        System.out.println();
-        */
+
+        System.out.println("");
 
         int dstNo = ((0x000000FF & out[5]) << 8 | (0x000000FF & out[4])) & 0x0000FFFF; // 目标地址
         int srcNo = ((0x000000FF & out[7]) << 8 | (0x000000FF & out[6])) & 0x0000FFFF; // 源地址
@@ -138,121 +137,22 @@ public class MixDataUtil {
         l &= 0xffffff;
         l |= ((long) out[27] << 24);
 
-        //float rotate = Float.intBitsToFloat(l);
-        float rotate = (float)Math.toRadians(Float.intBitsToFloat(l));
+        float rotate = Float.intBitsToFloat(l);
 
-        //System.out.printf("src: %d, dst: %d , ## range = %f, rotate = %f\n", srcNo, dstNo, fRange, rotate);
+        System.out.printf("## range = %f, rotate = %f\n", fRange, rotate);
 
         radioProto.setSourceNo(srcNo);
-
-        radioProto.setTargetNo(dstNo); // 如果为回文，则target为0
+        radioProto.setTargetNo(dstNo);
         radioProto.setPermitNo(dstNo);
         radioProto.setRange(fRange);
         radioProto.setRotate(rotate);
-        //System.out.printf("%s\n ", new String(radioProto.modleBytes));
 
-        byte flag = (byte) (out[8] & 0x000000F0); // 区分主机查询 和 从机 回应 报文
-        //System.out.println("#### flag = " + flag);
+        radioProto.packReply();
+        System.out.printf("%s\n ", new String(radioProto.modleBytes));
 
-        if (flag == 0) radioProto.setTargetNo(0);
-
-        return radioProto.packReply(); // 44字节转换为 39字节
-    }
-
-    // 对方主机，我是从机
-    // A9 9A 2C 01 68 4A 66 4A 82 00 4F 01 00 00 A0 0F 7F 0C 00 00 6F 7C 0F 00 E3 E5 AF 43 00 00 16 43 00 00 C8 42 00 00 00 00 00 00 32 E7
-
-
-    public byte[] slaveResp(RecenProto proto, int sourceNo, float x, float y, float ratedWeight, float weight, float height, float dipAngle, float windSpeed) {
-        byte[] out = new byte[44];
-
-        out[0] = (byte) 0xA9; // 头
-        out[1] = (byte) 0x9A;
-
-        out[2] = (byte) 0x2C; // 版本
-        out[3] = (byte) 0x01;
-
-        try {
-            int masterNo = Integer.parseInt(proto.getMasterNo());
-            out[4] = (byte) ((masterNo >> 0) & 0x000000FF); // 主机 编号
-            out[5] = (byte) ((masterNo >> 8) & 0x000000FF); // 主机 编号
-            out[6] = (byte) ((sourceNo >> 0) & 0x000000FF); // 从机 编号
-            out[7] = (byte) ((sourceNo >> 8) & 0x000000FF);
-
-            //System.out.printf("## m = %d, s = %d\n", masterNo, sourceNo);
-
-        } catch (Exception e) {
-            System.out.println(e.getCause());
-        }
-
-        out[8] = (byte) 0x00; // 主机82，从机02
-        out[9] = (byte) 0x00; // 力矩百分比
-
-        if (weight < 0) weight = 0;
-        int iweight =  (int)(weight * 100);
-        out[10] = (byte) 0x4f; // 额重
-        out[11] = (byte) 0x01;
-
-        if (ratedWeight < 0) ratedWeight = 0;
-        int iratedWeight =  (int)(ratedWeight * 100);
-        out[12] = (byte) ((iratedWeight >> 0) & 0x000000FF); // 重量
-        out[13] = (byte) ((iratedWeight >> 8) & 0x000000FF);
-
-        int range =  (int)(proto.getRange() * 100);
-        out[14] = (byte) ((range >> 0) & 0x000000FF); // 幅度
-        out[15] = (byte) ((range >> 8) & 0x000000FF);
-
-        if (height < 0) height = 0;
-        int iheight =  (int)(height * 100);
-        out[16] = (byte) ((iheight >> 0) & 0x000000FF); // 高度
-        out[17] = (byte) ((iheight >> 8) & 0x000000FF);
-
-        out[18] = (byte) 0x00; //
-        out[19] = (byte) 0x00;
-
-        if (dipAngle < 0) dipAngle = 0;
-        int idipAngle =  (int)(dipAngle * 100);
-        out[20] = (byte) ((idipAngle >> 0) & 0x000000FF);  // 仰角
-        out[21] = (byte) ((idipAngle >> 8) & 0x000000FF);
-
-        if (windSpeed < 0) windSpeed = 0;
-        int iwindSpeed =  (int)(windSpeed * 100);
-        out[22] = (byte) ((iwindSpeed >> 0) & 0x000000FF);  // 风速
-        out[23] = (byte) ((iwindSpeed >> 8) & 0x000000FF);
-
-        int rotate = Float.floatToIntBits((float) Math.toDegrees(proto.rotate));
-        out[24] = (byte) ((rotate >> 0) & 0x000000FF); //0xE3; // 回转角度
-        out[25] = (byte) ((rotate >> 8) & 0x000000FF);
-        ;
-        out[26] = (byte) ((rotate >> 16) & 0x000000FF);
-        out[27] = (byte) ((rotate >> 24) & 0x000000FF);
-
-        int ix = Float.floatToIntBits(x);
-
-        out[28] = (byte) ((ix >> 0) & 0x000000FF);
-        out[29] = (byte) ((ix >> 8) & 0x000000FF);
-        out[30] = (byte) ((ix >> 16) & 0x000000FF);
-        out[31] = (byte) ((ix >> 24) & 0x000000FF);
-
-        int iy = Float.floatToIntBits(y);
-        out[32] = (byte) ((iy >> 0) & 0x000000FF);
-        out[33] = (byte) ((iy >> 8) & 0x000000FF);
-        out[34] = (byte) ((iy >> 16) & 0x000000FF);
-        out[35] = (byte) ((iy >> 24) & 0x000000FF);
-
-        out[36] = (byte) 0x42;
-        out[37] = (byte) 0x42;
-        out[38] = (byte) 0x42;
-        out[39] = (byte) 0x42;
-        out[40] = (byte) 0x42;
-        out[41] = (byte) 0x42;
-
-        int crc = CrcUtil.CRC_16_X25_INT(out, 42);
-
-        out[42] = (byte) (crc & 0x000000FF);
-        out[43] = (byte) ((crc >> 8) & 0x000000FF);
 
         return out;
     }
+
 
 }

@@ -42,7 +42,6 @@ import com.wooddeep.crane.comm.ControlProto;
 import com.wooddeep.crane.comm.NetRadioProto;
 import com.wooddeep.crane.comm.Protocol;
 import com.wooddeep.crane.comm.RadioProto;
-import com.wooddeep.crane.comm.RecenProto;
 import com.wooddeep.crane.comm.RotateProto;
 import com.wooddeep.crane.ebus.AlarmDetectEvent;
 import com.wooddeep.crane.ebus.AlarmEvent;
@@ -194,8 +193,8 @@ public class MainActivity extends AppCompatActivity {
     public static AtomicBoolean isRvcMode = new AtomicBoolean(false);
 
     private ControlProto controlProto = new ControlProto();
-    private RecenProto slaveRadioProto = new RecenProto();  // 本机作为从机时，需要radio通信的对象
-    private RecenProto masterRadioProto = new RecenProto(); // 本机作为主机时，需要radio通信的对象
+    private RadioProto slaveRadioProto = new RadioProto();  // 本机作为从机时，需要radio通信的对象
+    private RadioProto masterRadioProto = new RadioProto(); // 本机作为主机时，需要radio通信的对象
 
     private SerialPort serialttyS0;
     private SerialPort serialttyS1;
@@ -754,7 +753,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        if (radioProto.sourceNo.equals(radioProto.targetNo)) return; // TODO 再次验证
+        //if (radioProto.sourceNo.equals(radioProto.targetNo)) return; // TODO 再次验证
 
         if (radioProto.sourceNo.equals(myCraneNo)) return; // TODO 再次验证
 
@@ -820,35 +819,12 @@ public class MainActivity extends AppCompatActivity {
                     slaveRadioProto.setRange(Math.max(centerCycle.carRange, 0));
                 }
 
-                /*
-                System.out.print("## master no:" + masterNoView.getText().toString());
-                System.out.print(" ## srouce no:" + Integer.parseInt(myCraneNo));
-                System.out.print(" ## range:" + slaveRadioProto.getRange());
-                System.out.println(" ## rotate:" + Math.toDegrees(slaveRadioProto.rotate));
-                */
-
                 slaveRadioProto.setRotate(Math.max(0, ((currXAngle /*centerCycle.getHAngle()*/ % 360) * 2 * (float) Math.PI / 360)));
-                slaveRadioProto.packReply(); // 生成回应报文 从机 写【2】
+                slaveRadioProto.packReply(); // 生成回应报文
                 try {
                     if (ttyS1OutputStream != null) {
-                        float height = Float.parseFloat(heightView.getText().toString().split("m")[0]);
-                        float dipAngle = Float.parseFloat(heightView.getText().toString().split("m")[0]);
-                        float windSpeed = Float.parseFloat(windSpeedView.getText().toString().split("m")[0]);
-                        float ratedWeight = Float.parseFloat(ratedWeightView.getText().toString().split("t")[0]);
-                        byte [] out = mixDataUtil.slaveResp(slaveRadioProto, Integer.parseInt(myCraneNo), centerCycle.x, centerCycle.y,
-                            ratedWeight, currWeight, height, currProto.getRealVAngle(), windSpeed);
-                        //ttyS1OutputStream.write(slaveRadioProto.modleBytes, 0, 39); // 原来的协议
-                        ttyS1OutputStream.write(out, 0, 44); // 兼容东仑协议
+                        ttyS1OutputStream.write(slaveRadioProto.modleBytes, 0, 39);
                         ttyS1OutputStream.flush();
-
-                        /*
-                        System.out.print("### resp: ");
-                        for (int n = 0; n < 44; n++) {
-                            System.out.printf("0x%02x ", 0x000000FF & out[n]);
-                        }
-                        System.out.println("");
-                        */
-
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
