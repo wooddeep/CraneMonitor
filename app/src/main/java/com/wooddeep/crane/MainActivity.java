@@ -1428,6 +1428,7 @@ public class MainActivity extends AppCompatActivity {
             add((ImageView) findViewById(R.id.alarm_setting));
             add((ImageView) findViewById(R.id.load_attribute));
             add((ImageView) findViewById(R.id.data_record));
+            add((ImageView) findViewById(R.id.fault_diag));
             add((ImageView) findViewById(R.id.super_admin));
             add((ImageView) findViewById(R.id.zoom_in));
             add((ImageView) findViewById(R.id.zoom_out));
@@ -1550,6 +1551,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, DataRecord.class);
+                startActivity(intent);
+            }
+        });
+
+        // 跳转到日志记录
+        ImageView faultDiag = (ImageView) findViewById(R.id.fault_diag);
+        faultDiag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, TruckActivity.class);
                 startActivity(intent);
             }
         });

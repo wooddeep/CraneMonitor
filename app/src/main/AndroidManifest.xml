@@ -60,6 +60,12 @@
             android:name="com.wooddeep.crane.SuperAdmin">
         </activity>
 
+        <activity
+            android:alwaysRetainTaskState='true'
+            android:exported='true'
+            android:name="com.wooddeep.crane.TruckActivity">
+        </activity>
+
         <receiver android:name="com.wooddeep.crane.message.BootUpReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
