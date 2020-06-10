@@ -81,7 +81,7 @@
 
     <include
         android:id="@+id/load_attr_container"
-        layout="@layout/table_temp"></include>
+        layout="@layout/fault_diag_temp"></include>
 
 
 </LinearLayout>

@@ -183,119 +183,6 @@ public class FaultDiagActivity extends AppCompatActivity {
         loadDao = new TcParamDao(getApplicationContext());
         paraDao = new SysParaDao(getApplicationContext());
         confLoad(getApplicationContext());
-        /*
-        String savedCraneType = paraDao.queryValueByName("craneType");  // 塔基类型
-        craneTypes = loadDao.getCraneTypes();
-        int craneTypeEquCnt = 0;
-        for (String craneType: craneTypes) {
-            if (craneType.equals(savedCraneType))  { // 保存的塔基类型 在新的 载荷表中可以查找到
-                craneTypeEquCnt++;
-            }
-        }
-
-        String craneType = savedCraneType;
-        if (craneTypeEquCnt == 0) {
-            craneType = craneTypes.get(0);
-            SysPara craneTypePara = paraDao.queryParaByName("craneType");
-            craneTypePara.setParaValue(craneType);
-            paraDao.update(craneTypePara);
-        }
-
-
-        String savedAramLength = paraDao.queryValueByName("armLength"); // 臂长
-        armLengths = loadDao.getArmLengths(craneType);
-        int armLenEquCnt = 0;
-        for (String armlen: armLengths) {
-            if (armlen.equals(savedAramLength))  { // 保存的塔基类型 在新的 载荷表中可以查找到
-                armLenEquCnt++;
-            }
-        }
-
-        String armLength = savedAramLength.trim();
-        if (armLenEquCnt == 0) {
-            armLength = armLengths.get(0).trim();
-            SysPara para = paraDao.queryParaByName("armLength");
-            para.setParaValue(armLength);
-            paraDao.update(para);
-        }
-
-        String savedPower = paraDao.queryValueByName("power"); // 倍率
-        cables = loadDao.getCables(craneType, armLength);
-        int powerEquCnt = 0;
-        for (String cable: cables) {
-            if (cable.equals(savedPower))  { // 保存的塔基类型 在新的 载荷表中可以查找到
-                powerEquCnt++;
-            }
-        }
-
-        String power = savedPower.trim();
-        if (powerEquCnt == 0) {
-            power = cables.get(0).trim();
-            SysPara para = paraDao.queryParaByName("power");
-            para.setParaValue(power);
-            paraDao.update(para);
-        }
-
-        MaterialSpinner spinner = (MaterialSpinner) findViewById(R.id.crane_type_option); // 塔基类型
-        MaterialSpinner armLenSpinner = (MaterialSpinner) findViewById(R.id.arm_length_option); // 臂长
-        MaterialSpinner cableSpiner = (MaterialSpinner) findViewById(R.id.rope_num_option); // 吊绳倍率
-
-        spinner.setItems(craneTypes);
-        spinner.setSelectedIndex(getIndex(craneTypes, craneType));
-        spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, String currCraneType) {
-                armLengths = loadDao.getArmLengths(currCraneType);
-                armLenSpinner.setItems(armLengths);
-                armLenSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-                    @Override
-                    public void onItemSelected(MaterialSpinner view, int position, long id, String currArmLen) {
-                        cables = loadDao.getCables(currCraneType, currArmLen);
-                        cableSpiner.setItems(cables);
-                        cableSpiner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-                            @Override
-                            public void onItemSelected(MaterialSpinner view, int position, long id, String currPower) {
-                                // TODO
-                            }
-                        });
-                    }
-                });
-
-                //List<Load> paras = confLoad(context);
-                showLoadInfo(); // 渲染出表格
-            }
-        });
-
-        armLenSpinner.setItems(armLengths);
-        armLenSpinner.setSelectedIndex(getIndex(armLengths, armLength));
-        armLenSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, String currArmLen) {
-                String currCraneType = spinner.getText().toString();//spinner
-                cables = loadDao.getCables(currCraneType, currArmLen);
-                cableSpiner.setItems(cables);
-                cableSpiner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-                    @Override
-                    public void onItemSelected(MaterialSpinner view, int position, long id, String currPower) {
-                        // TODO
-                    }
-                });
-                //List<Load> paras = confLoad(context);
-                showLoadInfo(); // 渲染出表格
-            }
-        });
-
-        cableSpiner.setItems(cables);
-        cableSpiner.setSelectedIndex(getIndex(cables, power));
-        cableSpiner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                //Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
-                //List<Load> paras = confLoad(context);
-                showLoadInfo(); // 渲染出表格
-            }
-        });
-        */
     }
 
     public List<TcParam> queryLoadByCondition() {
@@ -351,139 +238,18 @@ public class FaultDiagActivity extends AppCompatActivity {
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (view.getId() == R.id.load_data) {
-                    //loadDao = new TcParamDao(context);
-
-                    AlertView alertView = new AlertView("加载负荷特性参数(load)?", "", null,
-                        new String[]{"确定(confirm)", "取消(cancel)"}, null, activity,
-                        AlertView.Style.Alert, new OnItemClickListener() {
-                        @Override
-                        public void onItemClick(Object o, int position) {
-                            if (position == 0) {
-                                JSONArray lines = EdbTool.getExtTcParam(context, "tc.db", "tcparam");
-
-                                if (lines.length() > 0) {
-
-                                    new Thread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            loadDao.deleteAll();
-                                            TcParam tcParam = new TcParam();
-                                            int total = lines.length();
-                                            int prevPercent = 0;
-                                            for (int i = 0; i < lines.length(); i++) {
-                                                try {
-                                                    JSONObject line = lines.getJSONObject(i);
-                                                    tcParam.setArmLength(line.getString("Length"));
-                                                    tcParam.setCoordinate(line.getString("Distance"));
-                                                    tcParam.setCraneType(line.getString("Type"));
-                                                    tcParam.setPower(line.getString("Rate"));
-                                                    tcParam.setWeight(line.getString("Weight"));
-                                                    System.out.println("### i = " + i);
-                                                    loadDao.insert(tcParam);
-                                                    int currPercent = (i + 1) * 100 / total;
-                                                    if (currPercent != prevPercent) {
-                                                        prevPercent = currPercent;
-                                                        runOnUiThread(() -> gAlertView.setMessage(currPercent + "/100"));
-                                                    }
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-
-                                            paraDao = new SysParaDao(getApplicationContext());
-
-                                            SysPara savedCraneType = paraDao.queryParaByName("craneType");  // 塔基类型
-                                            SysPara savedAramLength = paraDao.queryParaByName("armLength"); // 臂长
-                                            SysPara savedPower = paraDao.queryParaByName("power"); // 倍率
-
-                                            craneTypes = loadDao.getCraneTypes();
-                                            armLengths = loadDao.getArmLengths(craneTypes.get(0));
-                                            cables = loadDao.getCables(craneTypes.get(0), armLengths.get(0));
-
-                                            savedCraneType.setParaValue(craneTypes.get(0));
-                                            savedAramLength.setParaValue(armLengths.get(0));
-                                            savedPower.setParaValue(cables.get(0));
-                                            EventBus.getDefault().post(new SysParaEvent(craneTypes.get(0), armLengths.get(0), cables.get(0))); // 触发系统参数相关
-
-                                            paraDao.update(savedCraneType);
-                                            paraDao.update(savedAramLength);
-                                            paraDao.update(savedPower);
-                                            runOnUiThread(() -> DrawTool.showImportDialog(activity, true));
-                                            //DrawTool.showImportDialog(activity, true);
-                                        }
-                                    }).start();
-
-                                } else {
-                                    DrawTool.showImportDialog(activity, false);
-                                }
-                            }
-                        }
-                    });
-                    alertView.show();
-                    gAlertView = alertView;
-                } else if (view.getId() == R.id.save_data) { // 保持数据
-
-                    AlertView alertView = new AlertView("保存负荷特性参数(save)?", "", null,
-                        new String[]{"确定(confirm)", "取消(cancel)"}, null, activity,
-                        AlertView.Style.Alert, new OnItemClickListener() {
-                        @Override
-                        public void onItemClick(Object o, int position) {
-                            if (position == 0) {
-                                MaterialSpinner craneTypeSpinner = (MaterialSpinner) findViewById(R.id.crane_type_option);
-                                MaterialSpinner armLenSpinner = (MaterialSpinner) findViewById(R.id.arm_length_option);
-                                MaterialSpinner cableNumSpinner = (MaterialSpinner) findViewById(R.id.rope_num_option);
-                                String craneType = craneTypeSpinner.getText().toString();
-                                String armLength = armLenSpinner.getText().toString();
-                                String cableNum = cableNumSpinner.getText().toString();
-                                SysParaDao sysParadao = new SysParaDao(getApplicationContext());
-
-                                SysPara para = sysParadao.queryParaByName("craneType");
-                                if (para == null) {
-                                    para = new SysPara("craneType", craneType);
-                                    sysParadao.insert(para);
-                                } else {
-                                    para.setParaValue(craneType);
-                                    sysParadao.update(para);
-                                }
-
-                                para = sysParadao.queryParaByName("armLength");
-                                if (para == null) {
-                                    para = new SysPara("armLength", armLength);
-                                    sysParadao.insert(para);
-                                } else {
-                                    para.setParaValue(armLength);
-                                    sysParadao.update(para);
-                                }
-
-                                para = sysParadao.queryParaByName("power");
-                                if (para == null) {
-                                    para = new SysPara("power", cableNum);
-                                    sysParadao.insert(para);
-                                } else {
-                                    para.setParaValue(cableNum);
-                                    sysParadao.update(para);
-                                }
-
-                                EventBus.getDefault().post(new SysParaEvent(craneType, armLength, cableNum)); // 触发系统参数相关
-                            }
-                        }
-                    });
-                    alertView.show();
-                } else if (view.getId() == R.id.close_logo) {
+                if (view.getId() == R.id.close_logo) {
                     finish();
                 }
             }
         };
 
-        //view.setOnClickListener(onClickListener);
+        view.setOnClickListener(onClickListener);
     }
 
     private void setOnTouchListener() {
         List<ImageView> menuButtons = new ArrayList<ImageView>() {{
-            add((ImageView) findViewById(R.id.load_data));
             add((ImageView) findViewById(R.id.close_logo));
-            add((ImageView) findViewById(R.id.save_data));
         }};
 
         for (ImageView view : menuButtons) {
@@ -498,9 +264,9 @@ public class FaultDiagActivity extends AppCompatActivity {
 
         // 头部信息
         ArrayList<TableCell> colNames = new ArrayList<TableCell>() {{
-            add(new TableCell(0, "故障编号/fault id"));
-            add(new TableCell(0, "故障编码/fault code"));
-            add(new TableCell(0, "故障描述/fault describe"));
+            add(new TableCell(0, "故障编号"));
+            add(new TableCell(0, "故障编码"));
+            add(new TableCell(0, "故障描述"));
         }};
 
         List<Integer> idList = new ArrayList() {{
@@ -511,8 +277,8 @@ public class FaultDiagActivity extends AppCompatActivity {
 
 
          List<Integer> widthList = new ArrayList() {{
-            add(100); // ID
-            add(300); // 时间
+            add(200); // ID
+            add(200); // 时间
             add(width - 400);
         }};
 
