@@ -11,9 +11,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -104,10 +101,8 @@ import com.wooddeep.crane.tookit.AnimUtil;
 import com.wooddeep.crane.tookit.CommTool;
 import com.wooddeep.crane.tookit.DataUtil;
 import com.wooddeep.crane.tookit.DrawTool;
-import com.wooddeep.crane.tookit.EdbTool;
 import com.wooddeep.crane.tookit.HttpUtils;
 import com.wooddeep.crane.tookit.MathTool;
-import com.wooddeep.crane.tookit.MixDataUtil;
 import com.wooddeep.crane.tookit.MomentOut;
 import com.wooddeep.crane.tookit.NetTool;
 import com.wooddeep.crane.tookit.SysTool;
@@ -117,8 +112,6 @@ import com.wooddeep.crane.views.Vertex;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.io.File;
 import java.io.IOException;
@@ -129,13 +122,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 //import androidx.annotation.RequiresApi;
 
@@ -257,9 +248,10 @@ public class MainActivity extends AppCompatActivity {
     public static volatile boolean sysExit = false;
     private Intent intent = null;
 
-    private float startWeight = 0.3f;
-    private float endWeight = 0.2f;
-    private float currWeight = 0.3f;
+    private float currWeight = 0.3f; // 当前总量
+    private float currMoment = 0.0f; // 当前力矩
+    private float saveMoment = 0.0f;
+
     private PackageManager mPackageManager;
     private DataUtil dataUtil = new DataUtil();
     //private MixDataUtil mixDataUtil = new MixDataUtil();
@@ -319,7 +311,6 @@ public class MainActivity extends AppCompatActivity {
                                     vAngleView.setText(currProto.getRealVAngle() + "°");
                                     double deltaHeight = centerCycle.getBigArmLen() * Math.sin(Math.toRadians(currProto.getRealVAngle()));
 
-                                    //centerCycle.setHeight(centerCycle.getOrgHeight() + (float) deltaHeight); // 修改高度
                                     centerCycle.setHeight(centerCycle.getOrgHeight() + (float) 0);
 
                                     System.out.println("### " + centerCycle.getOrgHeight() + "@@" + deltaHeight + "$$" + centerCycle.height + "&&" + currProto.getRealVAngle());
@@ -362,11 +353,9 @@ public class MainActivity extends AppCompatActivity {
 
                             if (centerCycle.getType() == 1) {
                                 MomentOut moment = MathTool.momentCalc(loadParas, currProto.getRealWeight(), shadowLength);
-                                //System.out.println("### 1 = " + moment.moment);
                                 runOnUiThread(() -> momentShow(moment.moment));
                             } else {
                                 MomentOut moment = MathTool.momentCalc(loadParas, currProto.getRealWeight(), currProto.getRealLength());
-                                //System.out.println("### 0 = " + moment.moment);
                                 runOnUiThread(() -> momentShow(moment.moment));
                             }
                         }
@@ -405,8 +394,7 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 xangle = xangle % 360;
                             }
-                            //xangle = Math.round(xangle * 10) / 10.0f;
-                            //System.out.println("xangle:" + xangle);
+
                             currXAngle = (float) xangle;
 
                             if (Math.abs(currRotateProto.getAngle() - prevRotateProto.getAngle()) >= 0.1f) {
@@ -698,6 +686,7 @@ public class MainActivity extends AppCompatActivity {
                         realData.setRotate(centerCycle.getHAngle());
                         realData.setDipange(centerCycle.vAngle);
                     }
+                    realData.setMoment(Float.parseFloat(momentView.getText().toString().split("%")[0]));
                     realData.setRatedweight(Float.parseFloat(ratedWeightView.getText().toString().split("t")[0]));
                     realData.setWeight(Float.parseFloat(weightView.getText().toString().split("t")[0]));
                     realData.setWindspeed(Float.parseFloat(windSpeedView.getText().toString().split("m")[0]));
@@ -1041,39 +1030,14 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(() -> currDate.setText(cells[0]));
     }
 
-
-    // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void weightEventBus(WeightEvent event) {
         if (calibration == null) return;
-        TextView view = (TextView) findViewById(R.id.weight);
-
-        if (event.getWeight() > currWeight && event.getWeight() >= startWeight) { // 记录最大值
-            currWeight = event.getWeight();
-        }
-
-        if (event.getWeight() < endWeight && currWeight > startWeight) {
-            Date date = new Date();
-            recPowerOnOff(date);
-            String dateNowStr = sdf.format(date);
-            workRec.setTime(dateNowStr);
-            workRec.setRopenum(iPower); // 倍率
-            workRec.setHeigth(Float.parseFloat(heightView.getText().toString().split("m")[0]));
-            if (centerCycle != null) {
-                workRec.setRange(centerCycle.carRange);
-                workRec.setRotate(centerCycle.getHAngle());
-                workRec.setDipange(centerCycle.vAngle);
-            }
-            workRec.setRatedweight(Float.parseFloat(ratedWeightView.getText().toString().split("t")[0]));
-            workRec.setWeight(Float.parseFloat(weightView.getText().toString().split("t")[0]));
-            workRec.setWindspeed(Float.parseFloat(windSpeedView.getText().toString().split("m")[0]));
-            workRecDao.insert(workRec);
-
-            currWeight = endWeight;
-        }
-
+        TextView view = findViewById(R.id.weight);
+        currWeight = event.getWeight();
         view.setText(event.getWeight() + "t");
     }
+
 
     // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -1146,6 +1110,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void momentShow(float moment) {
+        currMoment = moment;
+        //System.out.println("### currMoment: " + currMoment );
+        if (currMoment > 40.0f && currMoment > saveMoment ) { // 力矩 > 40% 认为开始工作
+            Date date = new Date();
+            recPowerOnOff(date);
+            String dateNowStr = sdf.format(date);
+            workRec.setTime(dateNowStr);
+            workRec.setRopenum(iPower); // 倍率
+            workRec.setHeigth(Float.parseFloat(heightView.getText().toString().split("m")[0]));
+            if (centerCycle != null) {
+                workRec.setRange(centerCycle.carRange);
+                workRec.setRotate(centerCycle.getHAngle());
+                workRec.setDipange(centerCycle.vAngle);
+            }
+            workRec.setRatedweight(Float.parseFloat(ratedWeightView.getText().toString().split("t")[0]));
+            workRec.setWeight(currWeight);
+            workRec.setMoment(currMoment);
+            workRec.setWindspeed(Float.parseFloat(windSpeedView.getText().toString().split("m")[0]));
+        }
+
+        if (currMoment < 15.f && workRec.getMoment() > 40) { // 力矩 < 15% 任务工作结束
+            workRecDao.insert(workRec);
+            workRec.setMoment(0); // 清除 记录 条件
+        }
+
+        saveMoment = currMoment;
         momentView.setText(moment + "%");
     }
 

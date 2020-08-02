@@ -390,6 +390,7 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
+            <!-- v1.1 成志信 版本 -->
             <TextView
                 android:id="@+id/version_show"
                 android:layout_width="@dimen/dp40"
@@ -398,7 +399,7 @@
                 android:layout_gravity="center"
                 android:layout_toRightOf="@+id/text_container"
                 android:gravity="center"
-                android:text="V1.0"
+                android:text="V1.1"
                 android:paddingBottom="@dimen/dp2"/>
 
             <ImageView
@@ -666,6 +667,7 @@
                             android:layout_gravity="center"
                             android:layout_marginLeft="@dimen/dp15"
                             android:gravity="center"
+                            android:visibility="gone"
                             android:src="@mipmap/fault_diag" />
 
                         <ImageView

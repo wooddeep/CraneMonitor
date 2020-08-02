@@ -147,9 +147,10 @@ public class AreaSetting extends AppCompatActivity {
                 } else if (view.getId() == R.id.minus_logo) {
                     List<Area> paras = confLoad(context);
                     if (paras.size() <= 1) {
-                        Toast toast = Toast.makeText(AreaSetting.this, "不能全删除!", Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(AreaSetting.this, "不能全删除(can't remove all)!", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
+                        return;
                     }
                     AreaDao dao = new AreaDao(context);
                     dao.delete(paras.get(paras.size() - 1));
