@@ -33,7 +33,7 @@ public class WorkRecTable extends TableDesc {
         add(new TableCell(0, "幅度/range"));
         add(new TableCell(0, "额重/rated weight"));
         add(new TableCell(0, "重量/weight"));
-        add(new TableCell(0, "回转/rotate"));
+        add(new TableCell(0, "回转/slewing"));
         add(new TableCell(0, "行走/walk"));
         add(new TableCell(0, "仰角/dip angle"));
         add(new TableCell(0, "风速/wind speed"));

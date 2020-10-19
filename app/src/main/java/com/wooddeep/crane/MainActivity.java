@@ -682,7 +682,11 @@ public class MainActivity extends AppCompatActivity {
                     realData.setRopenum(iPower); // 倍率
                     realData.setHeigth(Float.parseFloat(heightView.getText().toString().split("m")[0]));
                     if (centerCycle != null) {
-                        realData.setRange(centerCycle.carRange);
+                        if (centerCycle.getType() == 1) {
+                            realData.setRange(shadowLength);
+                        } else {
+                            realData.setRange(centerCycle.carRange);
+                        }
                         realData.setRotate(centerCycle.getHAngle());
                         realData.setDipange(centerCycle.vAngle);
                     }
@@ -1120,7 +1124,12 @@ public class MainActivity extends AppCompatActivity {
             workRec.setRopenum(iPower); // 倍率
             workRec.setHeigth(Float.parseFloat(heightView.getText().toString().split("m")[0]));
             if (centerCycle != null) {
-                workRec.setRange(centerCycle.carRange);
+                if (centerCycle.getType() == 1) {
+                    workRec.setRange(shadowLength);
+                } else {
+                    workRec.setRange(centerCycle.carRange);
+                }
+
                 workRec.setRotate(centerCycle.getHAngle());
                 workRec.setDipange(centerCycle.vAngle);
             }

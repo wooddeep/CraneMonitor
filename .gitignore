@@ -3,3 +3,4 @@
 local.properties
 .gradle
 *.gradle
+.DS_Store
