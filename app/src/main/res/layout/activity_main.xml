@@ -529,6 +529,16 @@
                     android:text="2019-04-27"
                     android:textSize="@dimen/dp22"
                     android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/devNo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp0"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="NO: 000000"
+                    android:textSize="@dimen/dp22"
+                    android:textStyle="bold" />
             </LinearLayout>
 
         </RelativeLayout>

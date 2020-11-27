@@ -39,10 +39,12 @@ public class Protocol {
 
     static String devid = null;
 
-
+    // 各种协议
     static JSONObject cmdGetSession = null;
     static JSONObject cmdRptRealData = null;
     static JSONObject cmdResponse = null;
+
+    static JSONObject cmdRptCaliData = null;
 
     public Protocol() {
         try {
@@ -63,6 +65,12 @@ public class Protocol {
                 "    \"isMain\": true,\n" +
                 "    \"type\": \"rcv\",\n" +
                 "    \"craneType\": \"flat\"\n" +
+                "  }\n" +
+                "}");
+
+            cmdRptCaliData = new JSONObject("{\"cmd\":\"rpt.calib\", \"data\":{\n" +
+                "    \"devid\":\"12345678\",\n" +
+                "    \"sessionid\": \"afdsf123\"\n" +
                 "  }\n" +
                 "}");
 
@@ -164,6 +172,55 @@ public class Protocol {
             cmdRptRealData.getJSONObject("data").put("devid", devid);
             byte[] content = cmdRptRealData.toString().getBytes();
             //byte[] encryptOut = eCipher.doFinal(content);// 加密
+            byte[] encryptOut = Aes.encrypt(content, key);
+            return encryptOut;
+        } catch (Exception e) {
+            System.out.printf("cause: %s, mesg: %s\n", e.getCause(), e.getMessage());
+        }
+
+        return null;
+    }
+
+    public void setCalibData(float centerX, float centerY, float angle, int craneType,
+                             float bigArmLen, byte[] rotate, byte[] scale) {
+        try {
+            JSONObject data = cmdRptCaliData.getJSONObject("data");
+            data.put("centerX", centerX);
+            data.put("centerY", centerY);
+            data.put("angle", angle);
+            data.put("craneType", craneType);
+            data.put("bigArmLen", bigArmLen);
+
+            JSONArray rArray = new JSONArray();
+            if (rotate != null) {
+                for (int i = 0; i < rotate.length; i++) {
+                    rArray.put(rotate[i] & 0x000000FF);
+                }
+                data.put("rotate", rArray);
+            }
+
+            if (scale != null) {
+                JSONArray sArray = new JSONArray();
+                for (int i = 0; i < scale.length; i++) {
+                    sArray.put(scale[i] & 0x000000FF);
+                }
+                data.put("scale", sArray);
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public byte[] getCalibData(SysParaDao paraDao) {
+        try {
+            cmdRptCaliData.getJSONObject("data").put("sessionid", NetClient.sessionId);
+            cmdRptCaliData.getJSONObject("data").put("devid", devid);
+
+            System.out.println(cmdRptCaliData.toString());
+
+            byte[] content = cmdRptCaliData.toString().getBytes();
             byte[] encryptOut = Aes.encrypt(content, key);
             return encryptOut;
         } catch (Exception e) {

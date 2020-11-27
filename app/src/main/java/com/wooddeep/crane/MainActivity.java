@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AtomicBoolean iAmMaster = new AtomicBoolean(false); // 本机是否为通信主机
     private SimulatorFlags flags = new SimulatorFlags();
-    public static boolean calibrationFlag = false;
+    public static  AtomicBoolean calibrationFlag = new AtomicBoolean(true);
     private boolean isMasterCrane = false; // 是否主塔机
     private boolean waitFlag = true; // 等待主机信号标识
     private boolean superSuper = false;
@@ -369,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
                             });
                         }
 
-                        if (calibrationFlag) {
+                        if (calibrationFlag.get()) {
                             uartEvent.craneType = centerCycle.getType();
                             uartEvent.bigArmLength = centerCycle.getBigArmLen();
                             uartEvent.setData(adRBuff);
@@ -417,8 +417,19 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
-                        if (calibrationFlag) {
-                            eventBus.post(rotateEvent);
+                        if (calibrationFlag.get()) {
+                            eventBus.post(rotateEvent); // 发送给标定Activity
+                            protocol.setCalibData(
+                                rotateEvent.centerX,
+                                rotateEvent.centerX,
+                                rotateEvent.angle,
+                                uartEvent.craneType,
+                                uartEvent.bigArmLength,
+                                rotateEvent.data,
+                                uartEvent.data
+                            );
+                            byte[] body = protocol.getCalibData(paraDao);
+                            NetClient.mq.offer(body); // 发送传感器数据给服务器
                         }
                     }
 
@@ -671,6 +682,21 @@ public class MainActivity extends AppCompatActivity {
                     );
                     byte[] body = protocol.getRealData(paraDao);
                     NetClient.mq.offer(body);
+
+                    rotateEvent.data = new byte[] {1, 2, 3, 4, 5, 6};
+                    uartEvent.data = new byte[] {10, 20, 30, 40, 50, 60};
+                    protocol.setCalibData(
+                        rotateEvent.centerX,
+                        rotateEvent.centerX,
+                        rotateEvent.angle,
+                        uartEvent.craneType,
+                        uartEvent.bigArmLength,
+                        rotateEvent.data,
+                        uartEvent.data
+                    );
+
+                    byte[] calibody = protocol.getCalibData(paraDao);
+                    NetClient.mq.offer(calibody);
                 }
 
                 //倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
@@ -1037,7 +1063,7 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void weightEventBus(WeightEvent event) {
         if (calibration == null) return;
-        TextView view = findViewById(R.id.weight);
+        TextView view = (TextView)findViewById(R.id.weight);
         currWeight = event.getWeight();
         view.setText(event.getWeight() + "t");
     }
@@ -1172,7 +1198,7 @@ public class MainActivity extends AppCompatActivity {
     // 定义处理接收的方法, MAIN方法: 事件处理放在main方法中
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void calibrationCloseEventBus(CalibrationCloseEvent simEvent) {
-        calibrationFlag = false;
+        calibrationFlag.set(false);
     }
 
     // 系统参数相关
@@ -1519,7 +1545,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
 
                 new Handler().postDelayed(() -> {
-                    calibrationFlag = true; // 延时开关
+                    calibrationFlag.set(true); // 延时开关
                 }, 1000);
             }
         });
@@ -1925,8 +1951,12 @@ public class MainActivity extends AppCompatActivity {
             startRadioReadThread();
             startRadioWriteThread();
             startTimerThread();
-            String mac = NetTool.getMacAddress(context);
-            //NetClient.run(paraDao, mac.replaceAll(":", "")); // TODO 开启网络
+            String mac = NetTool.getMacAddress(context).replaceAll(":", "");
+
+            TextView devNoView = (TextView) findViewById(R.id.devNo);
+            devNoView.setText("DN: " + mac.substring(mac.length() - 6, mac.length()));
+
+            NetClient.run(paraDao, mac); // TODO 开启网络
         }, 10);
     }
 

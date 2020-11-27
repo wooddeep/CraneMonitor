@@ -153,6 +153,14 @@ public class NetClient {
                         NetClient.mq.offer(body);
                         break;
 
+                    case "start.calib": // 启动标定
+                        MainActivity.calibrationFlag.set(true);
+                        break;
+
+                    case "end.calib": // 启动标定
+                        MainActivity.calibrationFlag.set(false);
+                        break;
+
                     default:
                         //System.out.println("##unkonwn response command!");
                         break;
