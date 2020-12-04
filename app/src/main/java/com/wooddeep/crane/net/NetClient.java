@@ -94,7 +94,7 @@ public class NetClient {
 
                 byte[] body = (byte[]) message;
                 int beWriteN = protocol.doPack(body);
-                System.out.println("## beWriteN = " + beWriteN);
+                //System.out.printf("## beWriteN = {}: {}", beWriteN, message);
 
                 outputStream.write(protocol.getPack(), 0, beWriteN);
                 outputStream.flush();
@@ -155,10 +155,12 @@ public class NetClient {
 
                     case "start.calib": // 启动标定
                         MainActivity.calibrationFlag.set(true);
+                        System.out.println("### cmd: start calibration");
                         break;
 
-                    case "end.calib": // 启动标定
+                    case "end.calib": // 关闭标定
                         MainActivity.calibrationFlag.set(false);
+                        System.out.println("### cmd: end calibration");
                         break;
 
                     default:

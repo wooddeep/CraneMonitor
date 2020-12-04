@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AtomicBoolean iAmMaster = new AtomicBoolean(false); // 本机是否为通信主机
     private SimulatorFlags flags = new SimulatorFlags();
-    public static  AtomicBoolean calibrationFlag = new AtomicBoolean(true);
+    public static  AtomicBoolean calibrationFlag = new AtomicBoolean(false);
     private boolean isMasterCrane = false; // 是否主塔机
     private boolean waitFlag = true; // 等待主机信号标识
     private boolean superSuper = false;
@@ -683,20 +683,25 @@ public class MainActivity extends AppCompatActivity {
                     byte[] body = protocol.getRealData(paraDao);
                     NetClient.mq.offer(body);
 
-                    rotateEvent.data = new byte[] {1, 2, 3, 4, 5, 6};
-                    uartEvent.data = new byte[] {10, 20, 30, 40, 50, 60};
-                    protocol.setCalibData(
-                        rotateEvent.centerX,
-                        rotateEvent.centerX,
-                        rotateEvent.angle,
-                        uartEvent.craneType,
-                        uartEvent.bigArmLength,
-                        rotateEvent.data,
-                        uartEvent.data
-                    );
+                    // 通过网络上传标定数据
+                    if (calibrationFlag.get()) {
+                        rotateEvent.data = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
+                        uartEvent.data = new byte[]{(byte)0xAA, 20, 30, 40, 50, 60, 70, 80, 90, 100, 1, 2, 3, 4, 5, 6, 7, 8, 9, (byte)0x55};
+                        protocol.setCalibData(
+                            rotateEvent.centerX,
+                            rotateEvent.centerX,
+                            rotateEvent.angle,
+                            uartEvent.craneType,
+                            uartEvent.bigArmLength,
+                            rotateEvent.data,
+                            uartEvent.data
+                        );
 
-                    byte[] calibody = protocol.getCalibData(paraDao);
-                    NetClient.mq.offer(calibody);
+
+
+                        byte[] calibody = protocol.getCalibData(paraDao);
+                        NetClient.mq.offer(calibody);
+                    }
                 }
 
                 //倍率，力矩，高度，幅度，额定重量，重量，回转，行走，仰角，风速，备注
