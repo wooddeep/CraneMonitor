@@ -97,7 +97,7 @@ public class Protocol {
     // UUID 代替设备唯一标识
     public byte[] getSession(SysParaDao paraDao, String mac) {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
         /*
         JSONArray out = EdbTool.extTableQuery("forever.db", "syspara", "select paraValue from syspara where paraName='uuid'");
         if (out.length() == 0) {
@@ -113,9 +113,12 @@ public class Protocol {
         }
         */
 
+        //String mac = NetTool.getMacAddress(context).replaceAll(":", "");
+        //devNoView.setText("DN: " + mac.substring(mac.length() - 6, mac.length()));
+
         String uuid = paraDao.queryValueByName("uuid");
-        if (uuid == null || uuid.length() == 0) {
-            uuid = String.format("%s@%s", mac, sdf.format(new Date()));
+        if (uuid == null || uuid.length() == 0 || uuid.equals("47d69b6fe798495abd2abdfa05a41b68")) {
+            uuid = String.format("%s", mac.replaceAll(":", ""));
             //EdbTool.extTableExec("forever.db", "syspara", String.format("insert into syspara (paraName, paraValue) values ('uuid', '%s')", uuid));
             SysPara uuidPara = new SysPara("uuid", uuid);
             paraDao.insert(uuidPara);
