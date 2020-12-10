@@ -839,7 +839,7 @@ public class Alarm {
         momentControl(event, controlProto);
         carBackControl(event, controlProto);
 
-        if (MainActivity.calibrationFlag) {
+        if (MainActivity.calibrationFlag.get()) {
             controlProto.control[4] = 0;
             controlProto.control[5] = 0;
         }

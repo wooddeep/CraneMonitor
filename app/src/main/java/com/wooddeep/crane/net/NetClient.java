@@ -4,7 +4,9 @@ import android.graphics.Color;
 
 import com.wooddeep.crane.MainActivity;
 import com.wooddeep.crane.net.network.Protocol;
+import com.wooddeep.crane.persist.dao.CalibrationDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
+import com.wooddeep.crane.persist.entity.Calibration;
 import com.wooddeep.crane.persist.entity.SysPara;
 
 import org.json.JSONObject;
@@ -12,6 +14,7 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +37,8 @@ public class NetClient {
     public static LinkedBlockingQueue mq = new LinkedBlockingQueue();
     public static volatile boolean netOk = false;
     private static SysParaDao paraDao;
+    private static CalibrationDao calibrationDao;
+
     public static volatile String sessionId = "initialize";
     public static volatile int timeSlot = 5000;
 
@@ -153,6 +158,32 @@ public class NetClient {
                         NetClient.mq.offer(body);
                         break;
 
+                    case "set.calib":
+
+                        List<Calibration> paras = calibrationDao.selectAll();
+                        if (paras.size() < 1) return;
+                        Calibration para = paras.get(0);
+                        Calibration calibration  = para; // 从系统中导出配置
+                        JSONObject calibData = resp.optJSONObject("data");
+                        String type = calibData.optString("type"); // TODO 根据type来做各种设置
+                        int startUartData = calibData.optInt("sad");
+                        int endUartData = calibData.optInt("ead");
+                        double startDimValue = calibData.optDouble("sval1");
+                        double endDimValue = calibData.optDouble("eval1");
+                        double rate = calibData.optDouble("k");
+                        calibration.setWeightStartData(startUartData);
+                        calibration.setWeightEndData(endUartData);
+                        calibration.setWeightStart((float)startDimValue);
+                        calibration.setWeightEnd((float)endDimValue);
+                        calibration.setWeightRate((float)rate);
+                        calibrationDao.update(calibration);
+
+                        System.out.println(calibData.toString());
+
+                        body = protocol.response(cmd); // ack信息
+                        NetClient.mq.offer(body);
+                        break;
+
                     case "start.calib": // 启动标定
                         MainActivity.calibrationFlag.set(true);
                         System.out.println("### cmd: start calibration");
@@ -205,8 +236,9 @@ public class NetClient {
         }
     }
 
-    public static void run(SysParaDao dao, String mac) {
+    public static void run(SysParaDao dao, CalibrationDao calibDao, String mac) {
         paraDao = dao;
+        calibrationDao = calibDao;
         String remoteAddr = "47.92.251.221";
         SysPara ra = paraDao.queryParaByName("remoteAddr");
         if (ra == null) {
@@ -215,6 +247,8 @@ public class NetClient {
         } else {
             remoteAddr = ra.getParaValue();
         }
+
+        remoteAddr = "81.69.46.54";
 
         int remotePort = 1733;
         SysPara rp = paraDao.queryParaByName("remotePort");

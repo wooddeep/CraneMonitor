@@ -220,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
     private RealDataDao realDataDao; // 工作记录DAO
     private RealData realData = new RealData(); // 工作记录
     private CtrlRecDao ctrlRecDao;
+    private CalibrationDao calibDao;
     private CtrlRec ctrlRec = new CtrlRec(); // 控制记录
     private WorkRecDao workRecDao; // 工作记录DAO
     private WorkRecrod workRec = new WorkRecrod(); // 工作记录
@@ -1902,6 +1903,7 @@ public class MainActivity extends AppCompatActivity {
         EventBus.getDefault().register(this);
         initTable(); // 初始化表
         paraDao = new SysParaDao(getApplicationContext()); // 系统参数
+        calibDao = new CalibrationDao(getApplicationContext());
         switchRecDao = new SwitchRecDao(context); // 开关机
         ctrlRecDao = new CtrlRecDao(context);
         workRecDao = new WorkRecDao(context);
@@ -1961,7 +1963,7 @@ public class MainActivity extends AppCompatActivity {
             TextView devNoView = (TextView) findViewById(R.id.devNo);
             devNoView.setText("DN: " + mac.substring(mac.length() - 6, mac.length()));
 
-            NetClient.run(paraDao, mac); // TODO 开启网络
+            NetClient.run(paraDao, calibDao, mac); // TODO 开启网络
         }, 10);
     }
 
