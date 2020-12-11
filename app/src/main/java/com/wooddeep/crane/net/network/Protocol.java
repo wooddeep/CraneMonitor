@@ -1,7 +1,10 @@
 package com.wooddeep.crane.net.network;
 
 
+import android.widget.TextView;
+
 import com.wooddeep.crane.MainActivity;
+import com.wooddeep.crane.R;
 import com.wooddeep.crane.net.NetClient;
 import com.wooddeep.crane.net.crypto.Aes;
 import com.wooddeep.crane.persist.dao.SysParaDao;
@@ -94,6 +97,20 @@ public class Protocol {
         return null;
     }
 
+    public byte[] response(String cmd, JSONObject data) {
+        try {
+            cmdResponse.put("cmd", cmd);
+            cmdResponse.put("data", data);
+            byte[] content = cmdResponse.toString().getBytes();
+            //byte[] encryptOut = eCipher.doFinal(content);// 加密
+            byte[] encryptOut = Aes.encrypt(content, "BDE1236987450ACF".getBytes());
+            return encryptOut;
+        } catch (Exception e) {
+            System.out.printf("cause: %s, mesg: %s\n", e.getCause(), e.getMessage());
+        }
+        return null;
+    }
+
     // UUID 代替设备唯一标识
     public byte[] getSession(SysParaDao paraDao, String mac) {
 
@@ -124,7 +141,7 @@ public class Protocol {
             paraDao.insert(uuidPara);
         }
 
-        devid = uuid;
+        devid = uuid; // 设备ID是生成的UUID TODO， 主界面显示这个ID
 
         try {
             cmdGetSession.getJSONObject("data").put("devid", devid);

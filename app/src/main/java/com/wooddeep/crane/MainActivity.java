@@ -418,6 +418,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
+                        /*
                         if (calibrationFlag.get()) {
                             eventBus.post(rotateEvent); // 发送给标定Activity
                             protocol.setCalibData(
@@ -432,6 +433,7 @@ public class MainActivity extends AppCompatActivity {
                             byte[] body = protocol.getCalibData(paraDao);
                             NetClient.mq.offer(body); // 发送传感器数据给服务器
                         }
+                        */
                     }
 
                     CommTool.sleep(100);
@@ -664,11 +666,11 @@ public class MainActivity extends AppCompatActivity {
                 CommTool.sleep(100);
                 count++;
 
-                /*
+
                 // 通过网络上传标定数据
                 if (calibrationFlag.get()) {
-                    rotateEvent.data = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
-                    uartEvent.data = new byte[]{(byte)0xAA, 20, 30, 40, 50, 60, 70, 80, 90, 100, 1, 2, 3, 4, 5, 6, 7, 8, 9, (byte)0x55};
+                    //rotateEvent.data = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
+                    //uartEvent.data = new byte[]{(byte)0xAA, 20, 30, 40, 50, 60, 70, 80, 90, 100, 1, 2, 3, 4, 5, 6, 7, 8, 9, (byte)0x55};
                     protocol.setCalibData(
                         rotateEvent.centerX,
                         rotateEvent.centerX,
@@ -682,12 +684,12 @@ public class MainActivity extends AppCompatActivity {
                     byte[] calibody = protocol.getCalibData(paraDao);
                     NetClient.mq.offer(calibody);
                 }
-                */
 
+                // 实时数据
                 if (count % (NetClient.timeSlot / 100) == 0 && NetClient.netOk && centerCycle != null) {
                     //System.out.println(Math.round(currWeight * 10) / 10.0f);
                     protocol.setRealData(
-                        centerCycle.getHAngle(),
+                        Float.parseFloat(angleView.getText().toString().split("°")[0]), // 回转角度
                         centerCycle.vAngle,
                         mainCrane.getBigArmLength(),
                         shadowLength,

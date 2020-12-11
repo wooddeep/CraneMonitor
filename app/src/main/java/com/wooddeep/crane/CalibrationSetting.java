@@ -159,6 +159,39 @@ public class CalibrationSetting extends AppCompatActivity {
 
     }
 
+    /**
+     * start:其实AD值，END终止AD值
+     *
+     **/
+    public static float setRotateRate(CalibrationDao dao, Calibration calibration, float start, float end, float x1, float y1, float x2, float y2) {
+
+        double rotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
+            new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(x2, y2)); // [0 - 2pi]
+        rotate = Math.toDegrees(rotate);
+        if (rotate <= 0.0001f) rotate = 360.0;
+
+        double startRotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
+            new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(centerX + 100, centerY)); // 计算起始角度
+        startRotate = Math.toDegrees(startRotate);
+        if (y1 < centerY) {
+            startRotate = 360.0f - startRotate;
+        }
+
+        double rate = rotate / (end - start);
+
+        calibration.setRotateStartX1(x1);
+        calibration.setRotateStartY1(y1);
+        calibration.setRotateEndX2(x2);
+        calibration.setRotateEndY2(y2);
+        calibration.setRotateStartData(start);
+        calibration.setRotateEndData(end);
+        calibration.setRotateStartAngle((float) startRotate);
+        calibration.setRotateRate(rate);
+        dao.update(calibration);
+        return (float)rate;
+    }
+
+
     // 回转
     private CalibrationCell rotateStartX1 = new CalibrationCell("rotateStartX1", "rotateStartData", "rotateRate", R.id.etx1, R.id.tv_rotate_coord1, R.id.btn_rotate_coord1, R.id.tv_rotate_rate) {
         @Override
@@ -496,6 +529,31 @@ public class CalibrationSetting extends AppCompatActivity {
         }
     };
 
+    public static float setRangeRate(CalibrationDao dao, Calibration calibration, float start, float end, float x1, float x2) {
+
+        float startUartData = start;
+        float endUartData = end;
+
+        float startDimValue = x1;
+        float endDimValue = x2;
+
+        float deltaUartData = endUartData - startUartData;
+        float deltaDimValue = endDimValue - startDimValue;
+        float rate = deltaDimValue / deltaUartData;
+
+        calibration.setDipAngleStartData(startUartData);
+        calibration.setDipAngleEndData(endUartData);
+        calibration.setDipAngleStart(startDimValue);
+        calibration.setDipAngleEnd(endDimValue);
+        calibration.setDipAngleRate(rate);
+
+        dao.update(calibration);
+
+        return rate;
+    }
+
+
+
     // 倾角 ~ 幅度
     private CalibrationCell dipAngleStart = new CalibrationCell("dipAngleStart", "dipAngleStartData", "dipAngleRate", R.id.et_dip_angle_start, R.id.tv_dip_angle_start, R.id.btn_dip_angle_start, R.id.tv_dip_angle_rate) {
         @Override
@@ -602,6 +660,28 @@ public class CalibrationSetting extends AppCompatActivity {
         }
     };
 
+
+    public static float setWeightRate(CalibrationDao dao, Calibration calibration, float start, float end, float x1, float x2) {
+
+        float startUartData = start;
+        float endUartData = end;
+        float startDimValue = x1;
+        float endDimValue = x2;
+        float deltaUartData = endUartData - startUartData;
+        float deltaDimValue = endDimValue - startDimValue;
+        float rate = deltaDimValue / deltaUartData;
+
+        calibration.setWeightStartData(startUartData);
+        calibration.setWeightEndData(endUartData);
+        calibration.setWeightStart(startDimValue);
+        calibration.setWeightEnd(endDimValue);
+        calibration.setWeightRate(rate);
+        dao.update(calibration);
+
+        return rate;
+    }
+
+
     // 重量
     private CalibrationCell weightStart = new CalibrationCell("weightStart", "weightStartData", "weightRate", R.id.et_weight_start, R.id.tv_weight_start, R.id.btn_weight_start, R.id.tv_weight_rate) {
         @Override
@@ -703,6 +783,27 @@ public class CalibrationSetting extends AppCompatActivity {
         }
     };
 
+    public static float setLengthRate(CalibrationDao dao, Calibration calibration, float start, float end, float x1, float x2) {
+
+        float startUartData = start; // uart 读值
+        float endUartData = end; // uart 读值
+        float startDimValue = x1;
+        float endDimValue = x2;
+        float deltaUartData = endUartData - startUartData;
+        float deltaDimValue = endDimValue - startDimValue;
+        float rate = deltaDimValue / deltaUartData;
+
+        calibration.setLengthStartData(startUartData);
+        calibration.setLengthEndData(endUartData);
+        calibration.setLengthStart(startDimValue);
+        calibration.setLengthEnd(endDimValue);
+        calibration.setLengthRate(rate);
+        dao.update(calibration);
+
+        return rate;
+    }
+
+
     // 长度
     private CalibrationCell lengthStart = new CalibrationCell("lengthStart", "lengthStartData", "lengthRate", R.id.et_arm_length_start, R.id.tv_arm_length_start, R.id.btn_arm_length_start, R.id.tv_arm_length_rate) {
         @Override
@@ -802,6 +903,28 @@ public class CalibrationSetting extends AppCompatActivity {
             });
         }
     };
+
+
+    public static float setHeightRate(CalibrationDao dao, Calibration calibration, float start, float end, float x1, float x2) {
+
+        float startUartData = start; // uart 读值
+        float endUartData = end; // uart 读值
+        float startDimValue = x1;
+        float endDimValue = x2;
+        float deltaUartData = endUartData - startUartData;
+        float deltaDimValue = endDimValue - startDimValue;
+        float rate = deltaDimValue / deltaUartData;
+
+        calibration.setHeightStartData(startUartData);
+        calibration.setHeightEndData(endUartData);
+        calibration.setHeightStart(startDimValue);
+        calibration.setHeightEnd(endDimValue);
+        calibration.setHeightRate(rate);
+        dao.update(calibration);
+
+        return rate;
+    }
+
 
     // 高度
     private CalibrationCell heightStart = new CalibrationCell("heightStart", "heightStartData", "heightRate", R.id.et_tower_height_start, R.id.tv_tower_height_start, R.id.btn_tower_height_start, R.id.tv_tower_height_rate) {

@@ -2,6 +2,7 @@ package com.wooddeep.crane.net;
 
 import android.graphics.Color;
 
+import com.wooddeep.crane.CalibrationSetting;
 import com.wooddeep.crane.MainActivity;
 import com.wooddeep.crane.net.network.Protocol;
 import com.wooddeep.crane.persist.dao.CalibrationDao;
@@ -165,22 +166,38 @@ public class NetClient {
                         Calibration para = paras.get(0);
                         Calibration calibration  = para; // 从系统中导出配置
                         JSONObject calibData = resp.optJSONObject("data");
-                        String type = calibData.optString("type"); // TODO 根据type来做各种设置
-                        int startUartData = calibData.optInt("sad");
-                        int endUartData = calibData.optInt("ead");
-                        double startDimValue = calibData.optDouble("sval1");
-                        double endDimValue = calibData.optDouble("eval1");
-                        double rate = calibData.optDouble("k");
-                        calibration.setWeightStartData(startUartData);
-                        calibration.setWeightEndData(endUartData);
-                        calibration.setWeightStart((float)startDimValue);
-                        calibration.setWeightEnd((float)endDimValue);
-                        calibration.setWeightRate((float)rate);
-                        calibrationDao.update(calibration);
 
-                        System.out.println(calibData.toString());
+                        float startUartData = (float)calibData.optInt("sad");
+                        float endUartData = (float)calibData.optInt("ead");
+                        float startDimValue = (float)calibData.optDouble("sval1");
+                        float startDimValue2 = (float)calibData.optDouble("sval2");
+                        float endDimValue = (float)calibData.optDouble("eval1");
+                        float endDimValue2 = (float)calibData.optDouble("eval2");
 
-                        body = protocol.response(cmd); // ack信息
+                        double rate = 1;
+                        String type = calibData.optString("type"); // 根据type来做各种设置
+                        switch (type) {
+                            case "rotate":
+                                rate = CalibrationSetting.setRotateRate(calibrationDao, calibration, startUartData,
+                                    endUartData, startDimValue, startDimValue2, endDimValue, endDimValue2);
+                                break;
+                            case "weight":
+                                rate = CalibrationSetting.setWeightRate(calibrationDao, calibration, startUartData,
+                                    endUartData, startDimValue, endDimValue);
+                                break;
+                            case "length":
+                                rate = CalibrationSetting.setLengthRate(calibrationDao, calibration, startUartData,
+                                    endUartData, startDimValue, endDimValue);
+                                break;
+                            case "height":
+                                rate = CalibrationSetting.setHeightRate(calibrationDao, calibration, startUartData,
+                                    endUartData, startDimValue, endDimValue);
+                                break;
+                            default:
+                                break;
+                        }
+
+                        body = protocol.response(cmd, new JSONObject().put("k", rate)); // ack信息
                         NetClient.mq.offer(body);
                         break;
 
