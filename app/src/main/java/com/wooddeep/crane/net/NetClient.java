@@ -35,7 +35,7 @@ public class NetClient {
 
     private Protocol protocol = new Protocol();
 
-    public static LinkedBlockingQueue mq = new LinkedBlockingQueue();
+    public static LinkedBlockingQueue mq = new LinkedBlockingQueue(100000);
     public static volatile boolean netOk = false;
     private static SysParaDao paraDao;
     private static CalibrationDao calibrationDao;
