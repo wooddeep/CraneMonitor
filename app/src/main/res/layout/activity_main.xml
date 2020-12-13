@@ -509,10 +509,11 @@
                 android:gravity="center"
                 app:srcCompat="@mipmap/calender" />
 
+
             <LinearLayout
                 android:id="@+id/time_container"
                 android:layout_width="@dimen/dp150"
-                android:layout_height="@dimen/dp40"
+                android:layout_height="@dimen/dp60"
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
@@ -522,22 +523,18 @@
                 <TextView
                     android:id="@+id/currDate"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp0"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="2019-04-27"
-                    android:textSize="@dimen/dp22"
+                    android:layout_height="wrap_content"
+                    android:text="2020-11-28"
+                    android:textSize="@dimen/dp14"
                     android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/devNo"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp0"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
+                    android:layout_height="wrap_content"
                     android:text="NO: 000000"
-                    android:textSize="@dimen/dp22"
+                    android:textSize="@dimen/dp12"
+                    android:gravity="right | center_vertical"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -980,7 +977,15 @@
                         app:arm_angle="30"
                         app:arm_length="600"
                         app:crane_type="0"
-                        app:hook_height="300" />
+                        app:hook_height="300"
+                        android:visibility="visible"/>
+
+                    <SurfaceView
+                        android:id="@+id/srfc"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone"/>
+
                 </LinearLayout>
 
                 <TableLayout

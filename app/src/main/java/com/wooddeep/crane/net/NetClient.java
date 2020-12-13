@@ -4,12 +4,14 @@ import android.graphics.Color;
 
 import com.wooddeep.crane.CalibrationSetting;
 import com.wooddeep.crane.MainActivity;
+import com.wooddeep.crane.ebus.CalibrationEvent;
 import com.wooddeep.crane.net.network.Protocol;
 import com.wooddeep.crane.persist.dao.CalibrationDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
 import com.wooddeep.crane.persist.entity.Calibration;
 import com.wooddeep.crane.persist.entity.SysPara;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
 import java.io.InputStream;
@@ -167,6 +169,8 @@ public class NetClient {
                         Calibration calibration  = para; // 从系统中导出配置
                         JSONObject calibData = resp.optJSONObject("data");
 
+                        System.out.println("## calib set: " + calibData.toString());
+
                         float startUartData = (float)calibData.optInt("sad");
                         float endUartData = (float)calibData.optInt("ead");
                         float startDimValue = (float)calibData.optDouble("sval1");
@@ -199,15 +203,19 @@ public class NetClient {
 
                         body = protocol.response(cmd, new JSONObject().put("k", rate)); // ack信息
                         NetClient.mq.offer(body);
+                        EventBus.getDefault().post(new CalibrationEvent(calibration)); // TODO 判断正确情况下，何时发起刷新标定信息
+
+                        System.out.println("## calib cal k: " + rate);
+
                         break;
 
                     case "start.calib": // 启动标定
-                        MainActivity.calibrationFlag.set(true);
+                        MainActivity.netCalibFlag.set(true);
                         System.out.println("### cmd: start calibration");
                         break;
 
                     case "end.calib": // 关闭标定
-                        MainActivity.calibrationFlag.set(false);
+                        MainActivity.netCalibFlag.set(false);
                         System.out.println("### cmd: end calibration");
                         break;
 

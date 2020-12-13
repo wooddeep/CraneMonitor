@@ -238,7 +238,7 @@ public class Protocol {
             cmdRptCaliData.getJSONObject("data").put("sessionid", NetClient.sessionId);
             cmdRptCaliData.getJSONObject("data").put("devid", devid);
 
-            System.out.println(cmdRptCaliData.toString());
+            //System.out.println(cmdRptCaliData.toString());
 
             byte[] content = cmdRptCaliData.toString().getBytes();
             byte[] encryptOut = Aes.encrypt(content, key);

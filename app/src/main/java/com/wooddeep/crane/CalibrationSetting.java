@@ -793,11 +793,20 @@ public class CalibrationSetting extends AppCompatActivity {
         float deltaDimValue = endDimValue - startDimValue;
         float rate = deltaDimValue / deltaUartData;
 
-        calibration.setLengthStartData(startUartData);
-        calibration.setLengthEndData(endUartData);
-        calibration.setLengthStart(startDimValue);
-        calibration.setLengthEnd(endDimValue);
-        calibration.setLengthRate(rate);
+        if (MainActivity.calibCraneType.get() == 0) {
+            calibration.setLengthStartData(startUartData);
+            calibration.setLengthEndData(endUartData);
+            calibration.setLengthStart(startDimValue);
+            calibration.setLengthEnd(endDimValue);
+            calibration.setLengthRate(rate);
+        } else {
+            calibration.setDipAngleStartData(startUartData);
+            calibration.setDipAngleEndData(endUartData);
+            calibration.setDipAngleStart(startDimValue);
+            calibration.setDipAngleEnd(endDimValue);
+            calibration.setDipAngleRate(rate);
+        }
+
         dao.update(calibration);
 
         return rate;

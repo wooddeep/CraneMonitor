@@ -178,6 +178,9 @@ public class MainActivity extends AppCompatActivity {
     private AtomicBoolean iAmMaster = new AtomicBoolean(false); // 本机是否为通信主机
     private SimulatorFlags flags = new SimulatorFlags();
     public static  AtomicBoolean calibrationFlag = new AtomicBoolean(false);
+    public static  AtomicBoolean netCalibFlag = new AtomicBoolean(false);
+    public static AtomicInteger calibCraneType = new AtomicInteger(0);
+
     private boolean isMasterCrane = false; // 是否主塔机
     private boolean waitFlag = true; // 等待主机信号标识
     private boolean superSuper = false;
@@ -370,10 +373,10 @@ public class MainActivity extends AppCompatActivity {
                             });
                         }
 
+                        uartEvent.craneType = centerCycle.getType();
+                        uartEvent.bigArmLength = centerCycle.getBigArmLen();
+                        uartEvent.setData(adRBuff);
                         if (calibrationFlag.get()) {
-                            uartEvent.craneType = centerCycle.getType();
-                            uartEvent.bigArmLength = centerCycle.getBigArmLen();
-                            uartEvent.setData(adRBuff);
                             eventBus.post(uartEvent); // 发送通知标定模块数据
                         }
                     }
@@ -398,12 +401,16 @@ public class MainActivity extends AppCompatActivity {
 
                             currXAngle = (float) xangle;
 
-                            if (Math.abs(currRotateProto.getAngle() - prevRotateProto.getAngle()) >= 0.1f) {
+                            if (Math.abs(currRotateProto.getAngle() - prevRotateProto.getAngle()) >= 0.1f || calibrationFlag.get()) {
                                 rotateEvent.setCenterX(mainCrane.getCoordX1());
                                 rotateEvent.setCenterY(mainCrane.getCoordY1());
                                 rotateEvent.setAngle((float) currRotateProto.getAngle());
                                 rotateEvent.setData(rotateRBuff);
                                 prevRotateProto.setAngle(currRotateProto.getAngle());
+
+                                if (calibrationFlag.get()) {
+                                    eventBus.post(rotateEvent); // 发送给标定Activity
+                                }
 
                                 double angle = currRotateProto.getAngle();
                                 if (angle < 0) {
@@ -417,22 +424,6 @@ public class MainActivity extends AppCompatActivity {
                                 runOnUiThread(() -> rotateShow(minAngle));
                             }
                         }
-
-                        if (calibrationFlag.get()) {
-                            eventBus.post(rotateEvent); // 发送给标定Activity
-                            protocol.setCalibData(
-                                rotateEvent.centerX,
-                                rotateEvent.centerX,
-                                rotateEvent.angle,
-                                uartEvent.craneType,
-                                uartEvent.bigArmLength,
-                                rotateEvent.data,
-                                uartEvent.data
-                            );
-                            byte[] body = protocol.getCalibData(paraDao);
-                            NetClient.mq.offer(body); // 发送传感器数据给服务器
-                        }
-
                     }
 
                     CommTool.sleep(100);
@@ -664,6 +655,21 @@ public class MainActivity extends AppCompatActivity {
             while (true && !sysExit) {
                 CommTool.sleep(100);
                 count++;
+
+                if (netCalibFlag.get()) {
+                    protocol.setCalibData(
+                        rotateEvent.centerX,
+                        rotateEvent.centerX,
+                        rotateEvent.angle,
+                        uartEvent.craneType,
+                        uartEvent.bigArmLength,
+                        rotateEvent.data,
+                        uartEvent.data
+                    );
+                    calibCraneType.set(uartEvent.craneType);
+                    byte[] body = protocol.getCalibData(paraDao);
+                    NetClient.mq.offer(body); // 发送传感器数据给服务器
+                }
 
                 // 实时数据
                 if (count % (NetClient.timeSlot / 100) == 0 && NetClient.netOk && centerCycle != null) {
@@ -1043,9 +1049,11 @@ public class MainActivity extends AppCompatActivity {
     private void setCurrTime() {
         Date date = new Date();
         String dateNowStr = sdf.format(date);
-        String[] cells = dateNowStr.split(" ");
+        //String[] cells = dateNowStr.split(" ");
         TextView currDate = (TextView) findViewById(R.id.currDate);
-        runOnUiThread(() -> currDate.setText(cells[0]));
+        //runOnUiThread(() -> currDate.setText(cells[0]));
+        runOnUiThread(() -> currDate.setText(dateNowStr.substring(0, dateNowStr.length() - 3)));
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -1930,6 +1938,8 @@ public class MainActivity extends AppCompatActivity {
             ttyS2OutputStream = serialttyS2.getOutputStream();
             ttyS2InputStream = serialttyS2.getInputStream();
 
+            // TODO: 新产品的回转485在4号串口, S3 -> S4
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1943,7 +1953,7 @@ public class MainActivity extends AppCompatActivity {
             String mac = NetTool.getMacAddress(context).replaceAll(":", "");
 
             TextView devNoView = (TextView) findViewById(R.id.devNo);
-            devNoView.setText("DN: " + mac.substring(mac.length() - 6, mac.length()));
+            devNoView.setText("DN: " + mac);
 
             NetClient.run(paraDao, calibDao, mac); // TODO 开启网络
         }, 10);
