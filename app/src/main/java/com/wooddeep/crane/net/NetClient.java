@@ -3,12 +3,15 @@ package com.wooddeep.crane.net;
 import android.graphics.Color;
 
 import com.wooddeep.crane.CalibrationSetting;
+import com.wooddeep.crane.CraneSetting;
 import com.wooddeep.crane.MainActivity;
 import com.wooddeep.crane.ebus.CalibrationEvent;
 import com.wooddeep.crane.net.network.Protocol;
 import com.wooddeep.crane.persist.dao.CalibrationDao;
+import com.wooddeep.crane.persist.dao.CraneDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
 import com.wooddeep.crane.persist.entity.Calibration;
+import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.SysPara;
 
 import org.greenrobot.eventbus.EventBus;
@@ -41,6 +44,8 @@ public class NetClient {
     public static volatile boolean netOk = false;
     private static SysParaDao paraDao;
     private static CalibrationDao calibrationDao;
+    private static CraneDao craneDao;
+
 
     public static volatile String sessionId = "initialize";
     public static volatile int timeSlot = 5000;
@@ -212,11 +217,23 @@ public class NetClient {
                     case "start.calib": // 启动标定
                         MainActivity.netCalibFlag.set(true);
                         System.out.println("### cmd: start calibration");
+
+                        protocol.setCfgCalibData(calibrationDao, "all");
+                        body = protocol.getCfgCalibData(paraDao);
+                        NetClient.mq.offer(body); // 发送传感器数据给服务器
+
                         break;
 
                     case "end.calib": // 关闭标定
                         MainActivity.netCalibFlag.set(false);
                         System.out.println("### cmd: end calibration");
+                        break;
+
+                    case "get.cfg.crane": // 获取塔基配置
+                        CraneSetting.getCraneConfig(craneDao);
+                        protocol.setCranePara(craneDao);
+                        body = protocol.getCranePara(paraDao);
+                        NetClient.mq.offer(body); // 发送传感器数据给服务器
                         break;
 
                     default:
@@ -261,10 +278,12 @@ public class NetClient {
         }
     }
 
-    public static void run(SysParaDao dao, CalibrationDao calibDao, String mac) {
+    public static void run(SysParaDao dao, CalibrationDao calibDao, CraneDao cd,String mac) {
         paraDao = dao;
         calibrationDao = calibDao;
-        String remoteAddr = "47.92.251.221";
+        craneDao = cd;
+
+        String remoteAddr = "81.69.46.54";
         SysPara ra = paraDao.queryParaByName("remoteAddr");
         if (ra == null) {
             ra = new SysPara("remoteAddr", remoteAddr);

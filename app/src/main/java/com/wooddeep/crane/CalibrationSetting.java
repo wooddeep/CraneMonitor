@@ -23,6 +23,7 @@ import com.wooddeep.crane.ebus.MessageEvent;
 import com.wooddeep.crane.ebus.RotateEvent;
 import com.wooddeep.crane.ebus.SimulatorEvent;
 import com.wooddeep.crane.ebus.UartEvent;
+import com.wooddeep.crane.net.NetClient;
 import com.wooddeep.crane.persist.DatabaseHelper;
 import com.wooddeep.crane.persist.dao.CalibrationDao;
 import com.wooddeep.crane.persist.dao.log.CaliRecDao;
@@ -246,6 +247,10 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibrationDao.update(calibration);
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
 
+                    com.wooddeep.crane.net.network.Protocol.setCfgCalibData(calibrationDao, "rotate");
+                    byte [] body = com.wooddeep.crane.net.network.Protocol.getCfgCalibData(null);
+                    NetClient.mq.offer(body); // 发送数据给服务器
+
                     // 存储标定记录
                     caliRec.setType("rotate");
                     caliRec.setStartAD(start);
@@ -322,6 +327,10 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibration.setRotateStartAngle((float) startRotate);
                     calibrationDao.update(calibration);
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
+
+                    com.wooddeep.crane.net.network.Protocol.setCfgCalibData(calibrationDao, "rotate");
+                    byte [] body = com.wooddeep.crane.net.network.Protocol.getCfgCalibData(null);
+                    NetClient.mq.offer(body); // 发送数据给服务器
 
                     // 存储标定记录
                     caliRec.setType("rotate");
@@ -593,6 +602,9 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibrationDao.update(calibration);
 
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
+                    com.wooddeep.crane.net.network.Protocol.setCfgCalibData(calibrationDao, "length");
+                    byte [] body = com.wooddeep.crane.net.network.Protocol.getCfgCalibData(null);
+                    NetClient.mq.offer(body); // 发送数据给服务器
 
                     // 存储标定记录
                     caliRec.setType("dipangle");
@@ -645,6 +657,9 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibrationDao.update(calibration);
 
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
+                    com.wooddeep.crane.net.network.Protocol.setCfgCalibData(calibrationDao, "length");
+                    byte [] body = com.wooddeep.crane.net.network.Protocol.getCfgCalibData(null);
+                    NetClient.mq.offer(body); // 发送数据给服务器
 
                     // 存储标定记录
                     caliRec.setType("dipangle");
@@ -716,6 +731,10 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibrationDao.update(calibration);
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
 
+                    com.wooddeep.crane.net.network.Protocol.setCfgCalibData(calibrationDao, "weight");
+                    byte [] body = com.wooddeep.crane.net.network.Protocol.getCfgCalibData(null);
+                    NetClient.mq.offer(body); // 发送数据给服务器
+
                     TextView tvRateShow = (TextView) findViewById(weightStart.rateShowId);
                     tvRateShow.setText(String.format("%.4f", rate));
 
@@ -765,6 +784,10 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibration.setWeightRate(rate);
                     calibrationDao.update(calibration);
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
+
+                    com.wooddeep.crane.net.network.Protocol.setCfgCalibData(calibrationDao, "weight");
+                    byte [] body = com.wooddeep.crane.net.network.Protocol.getCfgCalibData(null);
+                    NetClient.mq.offer(body); // 发送数据给服务器
 
                     TextView tvRateShow = (TextView) findViewById(weightStart.rateShowId);
                     tvRateShow.setText(String.format("%.4f", rate));
@@ -846,6 +869,10 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibrationDao.update(calibration);
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
 
+                    com.wooddeep.crane.net.network.Protocol.setCfgCalibData(calibrationDao, "length");
+                    byte [] body = com.wooddeep.crane.net.network.Protocol.getCfgCalibData(null);
+                    NetClient.mq.offer(body); // 发送数据给服务器
+
                     TextView tvRateShow = (TextView) findViewById(lengthStart.rateShowId);
                     tvRateShow.setText(String.format("%.4f", rate));
 
@@ -895,6 +922,10 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibration.setLengthRate(rate);
                     calibrationDao.update(calibration);
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
+
+                    com.wooddeep.crane.net.network.Protocol.setCfgCalibData(calibrationDao, "length");
+                    byte [] body = com.wooddeep.crane.net.network.Protocol.getCfgCalibData(null);
+                    NetClient.mq.offer(body); // 发送数据给服务器
 
                     TextView tvRateShow = (TextView) findViewById(lengthStart.rateShowId);
                     tvRateShow.setText(String.format("%.4f", rate));
@@ -975,6 +1006,10 @@ public class CalibrationSetting extends AppCompatActivity {
 
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
 
+                    com.wooddeep.crane.net.network.Protocol.setCfgCalibData(calibrationDao, "height");
+                    byte [] body = com.wooddeep.crane.net.network.Protocol.getCfgCalibData(null);
+                    NetClient.mq.offer(body); // 发送数据给服务器
+
                     TextView tvRateShow = (TextView) findViewById(heightStart.rateShowId);
                     tvRateShow.setText(String.format("%.4f", rate));
 
@@ -1029,6 +1064,10 @@ public class CalibrationSetting extends AppCompatActivity {
                     calibration.setHeightRate(rate);
                     calibrationDao.update(calibration);
                     EventBus.getDefault().post(new CalibrationEvent(calibration));
+
+                    com.wooddeep.crane.net.network.Protocol.setCfgCalibData(calibrationDao, "height");
+                    byte [] body = com.wooddeep.crane.net.network.Protocol.getCfgCalibData(null);
+                    NetClient.mq.offer(body); // 发送数据给服务器
 
                     TextView tvRateShow = (TextView) findViewById(heightStart.rateShowId);
                     tvRateShow.setText(String.format("%.4f", rate));

@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 // android开源控件
 // https://www.cnblogs.com/porter/p/8135835.html
@@ -60,6 +61,7 @@ public class CraneSetting extends AppCompatActivity {
     private FixedTitleTable table;
 
     private static String[] craneParaNames = new String[]{
+        "自定义编号/custom no",
         "塔机类型/Crane Type",
         "X1坐标(米)/X1 Coordinate(m)",
         "Y1坐标(米)/Y1 Coordinate(m)",
@@ -77,6 +79,7 @@ public class CraneSetting extends AppCompatActivity {
     };
 
     private static boolean[] craneParaVisible = new boolean[]{
+        true,
         true,
         true,
         true,
@@ -165,20 +168,21 @@ public class CraneSetting extends AppCompatActivity {
                     Crane cp = dao.queryById(id);
                     cp.setId(id);
                     cp.setName(String.format("%d号塔机", j + 1));
-                    cp.setType(Integer.parseInt(gTable.get(1).get(j)));
-                    cp.setCoordX1(Float.parseFloat(gTable.get(2).get(j)));
-                    cp.setCoordY1(Float.parseFloat(gTable.get(3).get(j)));
-                    cp.setCoordX2(Float.parseFloat(gTable.get(4).get(j)));
-                    cp.setCoordY2(Float.parseFloat(gTable.get(5).get(j)));
-                    cp.setCraneHeight(Float.parseFloat(gTable.get(6).get(j)));
-                    cp.setBigArmLength(Float.parseFloat(gTable.get(7).get(j)));
-                    cp.setBalancArmLength(Float.parseFloat(gTable.get(8).get(j)));
-                    cp.setCraneBodyRadius(Float.parseFloat(gTable.get(9).get(j)));
-                    cp.setBigArmWidth(Float.parseFloat(gTable.get(10).get(j)));
-                    cp.setBalancArmWidth(Float.parseFloat(gTable.get(11).get(j)));
-                    cp.setMaxAngle(Float.parseFloat(gTable.get(12).get(j)));
-                    cp.setMinAngle(Float.parseFloat(gTable.get(13).get(j)));
-                    cp.setArchPara(Float.parseFloat(gTable.get(14).get(j)));
+                    cp.setCustomNo(gTable.get(1).get(j).trim());
+                    cp.setType(Integer.parseInt(gTable.get(2).get(j)));
+                    cp.setCoordX1(Float.parseFloat(gTable.get(3).get(j)));
+                    cp.setCoordY1(Float.parseFloat(gTable.get(4).get(j)));
+                    cp.setCoordX2(Float.parseFloat(gTable.get(5).get(j)));
+                    cp.setCoordY2(Float.parseFloat(gTable.get(6).get(j)));
+                    cp.setCraneHeight(Float.parseFloat(gTable.get(7).get(j)));
+                    cp.setBigArmLength(Float.parseFloat(gTable.get(8).get(j)));
+                    cp.setBalancArmLength(Float.parseFloat(gTable.get(9).get(j)));
+                    cp.setCraneBodyRadius(Float.parseFloat(gTable.get(10).get(j)));
+                    cp.setBigArmWidth(Float.parseFloat(gTable.get(11).get(j)));
+                    cp.setBalancArmWidth(Float.parseFloat(gTable.get(12).get(j)));
+                    cp.setMaxAngle(Float.parseFloat(gTable.get(13).get(j)));
+                    cp.setMinAngle(Float.parseFloat(gTable.get(14).get(j)));
+                    cp.setArchPara(Float.parseFloat(gTable.get(15).get(j)));
                     dao.update(cp);
                     hideKeyboard();
                 }
@@ -330,48 +334,52 @@ public class CraneSetting extends AppCompatActivity {
             for (int j = 0; j < paras.size(); j++) {
                 switch (i) {
                     case 0:
+                        cells.add(new TableCell(3, String.valueOf(paras.get(j).getCustomNo())));
+                        break;
+
+                    case 1:
                         JSONObject privData = new JSONObject();
                         JSONArray options = new JSONArray("[\"平臂式(flat-top)\", \"动臂式(luffing)\"]");
                         privData.put("options", options);
                         cells.add(new TableCell(2, String.valueOf(paras.get(j).getType()), privData));
                         break;
-                    case 1:
+                    case 2:
                         cells.add(new TableCell(1, String.valueOf(paras.get(j).getCoordX1())));
                         break;
-                    case 2:
+                    case 3:
                         cells.add(new TableCell(1, String.valueOf(paras.get(j).getCoordY1())));
                         break;
-                    case 3:
+                    case 4:
                         cells.add(new TableCell(1, String.valueOf(paras.get(j).getCoordX2())));
                         break;
-                    case 4:
+                    case 5:
                         cells.add(new TableCell(1, String.valueOf(paras.get(j).getCoordY2())));
                         break;
-                    case 5:
+                    case 6:
                         cells.add(new TableCell(1, String.valueOf(paras.get(j).getCraneHeight())));
                         break;
-                    case 6:
+                    case 7:
                         cells.add(new TableCell(1, String.valueOf(paras.get(j).getBigArmLength())));
                         break;
-                    case 7:
+                    case 8:
                         cells.add(new TableCell(1, String.valueOf(paras.get(j).getBalancArmLength())));
                         break;
-                    case 8:
+                    case 9:
                         cells.add(new TableCell(1, String.valueOf(paras.get(j).getCraneBodyRadius())));
                         break;
-                    case 9:
+                    case 10:
                         cells.add(new TableCell(1, String.valueOf(paras.get(j).getBigArmWidth())));
                         break;
-                    case 10:
+                    case 11:
                         cells.add(new TableCell(1, String.valueOf(paras.get(j).getBalancArmWidth())));
                         break;
-                    case 11:
+                    case 12:
                         cells.add(new TableCell(1, String.valueOf(paras.get(j).getMaxAngle())));
                         break;
-                    case 12:
+                    case 13:
                         cells.add(new TableCell(1, String.valueOf(paras.get(j).getMinAngle())));
                         break;
-                    case 13:
+                    case 14:
                         cells.add(new TableCell(1, String.valueOf(paras.get(j).getArchPara())));
                         break;
                 }
@@ -399,5 +407,53 @@ public class CraneSetting extends AppCompatActivity {
         }
 
         setOnTouchListener();
+    }
+
+//            "塔机类型/Crane Type",
+//                "X1坐标(米)/X1 Coordinate(m)",
+//                "Y1坐标(米)/Y1 Coordinate(m)",
+//                "X2偏移(米)/X2 Offset(m)",
+//                "Y2偏移(米)/X2 Offset(m)",
+//                "塔机高度(米)/Height(m)",
+//                "大臂长度(米)/Main Jib(m)",
+//                "平衡臂长度(米)/Counter Jib(m)",
+//                "塔身直径(米)/Crane Diameter(m)",
+//                "大臂宽度",
+//                "平衡臂宽度",
+//                "最大仰角(°)/Max Angle(°)",
+//                "最小仰角(°)/Min Angle(°)",
+//                "结构参数(米)/Arch Parameter(m)",
+
+    public static JSONObject getCraneConfig(CraneDao dao) {
+        JSONObject data = new JSONObject();
+        List<Crane> paras = dao.selectAll();
+
+        try {
+            for (Crane crane : paras) {
+                if (crane.isMain()) {
+                    data.put("no", crane.getId());
+                    data.put("co", crane.getCustomNo());
+                    data.put("ct", crane.getType());
+                    data.put("xc", crane.getCoordX1());
+                    data.put("yc", crane.getCoordY1());
+                    data.put("xo", crane.getCoordX2());
+                    data.put("yo", crane.getCoordX2());
+                    data.put("ch", crane.getCraneHeight());
+                    data.put("mjl", crane.getBigArmLength());
+                    data.put("cjl", crane.getBalancArmLength());
+                    data.put("cd", crane.getCraneBodyRadius());
+                    data.put("mjw", crane.getBigArmWidth());
+                    data.put("cjw", crane.getBalancArmWidth());
+                    data.put("msa", crane.getMaxAngle());
+                    data.put("mxa", crane.getMinAngle());
+                    data.put("ap", crane.getArchPara());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return data;
     }
 }

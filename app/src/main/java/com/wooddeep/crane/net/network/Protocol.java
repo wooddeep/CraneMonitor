@@ -3,11 +3,15 @@ package com.wooddeep.crane.net.network;
 
 import android.widget.TextView;
 
+import com.wooddeep.crane.CraneSetting;
 import com.wooddeep.crane.MainActivity;
 import com.wooddeep.crane.R;
 import com.wooddeep.crane.net.NetClient;
 import com.wooddeep.crane.net.crypto.Aes;
+import com.wooddeep.crane.persist.dao.CalibrationDao;
+import com.wooddeep.crane.persist.dao.CraneDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
+import com.wooddeep.crane.persist.entity.Calibration;
 import com.wooddeep.crane.persist.entity.SysPara;
 import com.wooddeep.crane.tookit.EdbTool;
 import com.wooddeep.crane.tookit.NetTool;
@@ -20,6 +24,7 @@ import javax.crypto.Cipher;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class Protocol {
@@ -49,6 +54,11 @@ public class Protocol {
 
     static JSONObject cmdRptCaliData = null;
 
+    static JSONObject cmdRptCfgCalib = null;
+
+
+    static JSONObject cmdRptCranePara = null;
+
     public Protocol() {
         try {
             cmdGetSession = new JSONObject("{\"cmd\":\"get.session\", \"data\":{\"devid\":\"12345678\"}}");
@@ -72,6 +82,19 @@ public class Protocol {
                 "}");
 
             cmdRptCaliData = new JSONObject("{\"cmd\":\"rpt.calib\", \"data\":{\n" +
+                "    \"devid\":\"12345678\",\n" +
+                "    \"sessionid\": \"afdsf123\"\n" +
+                "  }\n" +
+                "}");
+
+            cmdRptCfgCalib = new JSONObject("{\"cmd\":\"rpt.cfg.calib\", \"data\":{\n" +
+                "    \"devid\":\"12345678\",\n" +
+                "    \"sessionid\": \"afdsf123\"\n" +
+                "  }\n" +
+                "}");
+
+
+            cmdRptCranePara = new JSONObject("{\"cmd\":\"rpt.cfg.crane\", \"data\":{\n" +
                 "    \"devid\":\"12345678\",\n" +
                 "    \"sessionid\": \"afdsf123\"\n" +
                 "  }\n" +
@@ -157,7 +180,7 @@ public class Protocol {
     }
 
 
-    private byte[] key = "BDE1236987450ACF".getBytes();
+    private static byte[] key = "BDE1236987450ACF".getBytes();
 
 
     public void setRealData(float rotate, float angle, float bigArmLen, float carRange,
@@ -249,6 +272,102 @@ public class Protocol {
 
         return null;
     }
+
+    public static void setCfgCalibData(CalibrationDao dao, String type) {
+        try {
+
+            List<Calibration> paras = dao.selectAll();
+            if (paras.size() < 1) return;
+            Calibration para = paras.get(0);
+            cmdRptCfgCalib.put("data", new JSONObject());
+            JSONObject data = cmdRptCfgCalib.getJSONObject("data");
+
+            switch (type) {
+                case "all":
+                    data.put("weight", new JSONObject().put("sad", para.weightStartData).put("sval1", para.weightStart)
+                        .put("ead", para.weightEndData).put("eval1", para.weightEnd).put("k", "" + para.weightRate));
+
+                    data.put("height", new JSONObject().put("sad", para.heightStartData).put("sval1", para.heightStart)
+                        .put("ead", para.heightEndData).put("eval1", para.heightEnd).put("k", "" + para.heightRate));
+
+                    data.put("length", new JSONObject().put("sad", para.lengthStartData).put("sval1", para.lengthStart)
+                        .put("ead", para.lengthEndData).put("eval1", para.lengthEnd).put("k", "" + para.lengthRate));
+
+                    data.put("rotate", new JSONObject().put("sad", para.rotateStartData).put("sval1", para.rotateStartX1).put("sval2", para.rotateStartY1)
+                        .put("ead", para.rotateEndData).put("eval1", para.rotateEndX2).put("eval2", para.rotateEndY2).put("k", "" + para.rotateRate));
+
+                    break;
+                case "weight":
+                    data.put("weight", new JSONObject().put("sad", para.weightStartData).put("sval1", para.weightStart)
+                        .put("ead", para.weightEndData).put("eval1", para.weightEnd).put("k", "" + para.weightRate));
+
+                    break;
+                case "height":
+                    data.put("height", new JSONObject().put("sad", para.heightStartData).put("sval1", para.heightStart)
+                        .put("ead", para.heightEndData).put("eval1", para.heightEnd).put("k", "" + para.heightRate));
+
+                    break;
+                case "length":
+                    data.put("length", new JSONObject().put("sad", para.lengthStartData).put("sval1", para.lengthStart)
+                        .put("ead", para.lengthEndData).put("eval1", para.lengthEnd).put("k", para.lengthRate));
+
+                    break;
+                case "rotate":
+                    data.put("rotate", new JSONObject().put("sad", para.rotateStartData).put("sval1", para.rotateStartX1).put("sval2", para.rotateStartY1)
+                        .put("ead", para.rotateEndData).put("eval1", para.rotateEndX2).put("eval2", para.rotateEndY2).put("k", para.rotateRate));
+                    break;
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static byte[] getCfgCalibData(SysParaDao paraDao) {
+        try {
+            cmdRptCfgCalib.getJSONObject("data").put("sessionid", NetClient.sessionId);
+            cmdRptCfgCalib.getJSONObject("data").put("devid", devid);
+
+            System.out.println(cmdRptCfgCalib.toString());
+
+            byte[] content = cmdRptCfgCalib.toString().getBytes();
+            byte[] encryptOut = Aes.encrypt(content, key);
+            return encryptOut;
+        } catch (Exception e) {
+            System.out.printf("cause: %s, mesg: %s\n", e.getCause(), e.getMessage());
+        }
+
+        return null;
+    }
+
+
+    public void setCranePara(CraneDao dao) {
+        try {
+            JSONObject data = CraneSetting.getCraneConfig(dao);
+            cmdRptCranePara.put("data", data);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public byte[] getCranePara(SysParaDao paraDao) {
+        try {
+            cmdRptCranePara.getJSONObject("data").put("sessionid", NetClient.sessionId);
+            cmdRptCranePara.getJSONObject("data").put("devid", devid);
+
+            //System.out.println(cmdRptCaliData.toString());
+
+            byte[] content = cmdRptCranePara.toString().getBytes();
+            byte[] encryptOut = Aes.encrypt(content, key);
+            return encryptOut;
+        } catch (Exception e) {
+            System.out.printf("cause: %s, mesg: %s\n", e.getCause(), e.getMessage());
+        }
+
+        return null;
+    }
+
 
     public int doPack(byte[] body) {
         int currIndex = 0;

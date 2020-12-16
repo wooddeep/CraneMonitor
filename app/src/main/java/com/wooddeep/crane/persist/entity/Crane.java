@@ -60,6 +60,11 @@ public class Crane {
     @DatabaseField(columnName = "archPara", useGetSet = true, defaultValue = "0.0")
     private float archPara;
 
+    // 添加了一列， 用户自定义编号
+    //  ALTER TABLE crane ADD COLUMN customNo varchar(50) DEFAULT "0";
+    @DatabaseField(columnName = "customNo", useGetSet = true, defaultValue = "0")
+    private String customNo;
+
     public int getId() {
         return id;
     }
@@ -202,6 +207,14 @@ public class Crane {
 
     public void setBalancArmWidth(float balancArmWidth) {
         BalancArmWidth = balancArmWidth;
+    }
+
+    public String getCustomNo() {
+        return customNo;
+    }
+
+    public void setCustomNo(String customNo) {
+        this.customNo = customNo;
     }
 
     public Crane() {

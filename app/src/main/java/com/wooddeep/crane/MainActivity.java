@@ -224,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
     private RealData realData = new RealData(); // 工作记录
     private CtrlRecDao ctrlRecDao;
     private CalibrationDao calibDao;
+    private CraneDao craneDao;
     private CtrlRec ctrlRec = new CtrlRec(); // 控制记录
     private WorkRecDao workRecDao; // 工作记录DAO
     private WorkRecrod workRec = new WorkRecrod(); // 工作记录
@@ -655,6 +656,11 @@ public class MainActivity extends AppCompatActivity {
             while (true && !sysExit) {
                 CommTool.sleep(100);
                 count++;
+
+                if (ttyS0InputStream == null) { // 兼容模拟器
+                    rotateEvent.data = new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
+                    uartEvent.data = new byte[]{(byte) 0xAA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte) 0x55};
+                }
 
                 if (netCalibFlag.get()) {
                     protocol.setCalibData(
@@ -1955,7 +1961,7 @@ public class MainActivity extends AppCompatActivity {
             TextView devNoView = (TextView) findViewById(R.id.devNo);
             devNoView.setText("DN: " + mac);
 
-            NetClient.run(paraDao, calibDao, mac); // TODO 开启网络
+            NetClient.run(paraDao, calibDao, craneDao, mac); // TODO 开启网络
         }, 10);
     }
 

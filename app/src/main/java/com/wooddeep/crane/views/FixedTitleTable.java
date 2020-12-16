@@ -310,6 +310,24 @@ public class FixedTitleTable {
                     });
                     //if (cell.clickListener != null) editor.setOnClickListener(cell.clickListener);
                     break;
+
+                case 3:
+                    editor = (EditText) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_et, null);
+                    editor.setHeight(60);
+                    editor.setWidth((int) colWidth);
+                    editor.setBackgroundColor(Color.WHITE);
+                    //editor.setGravity(Gravity.CENTER);
+                    editor.setTextColor(Color.DKGRAY);
+                    editor.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
+                    contentRow.addView(editor); // 先添加控件
+                    rowLp = (TableRow.LayoutParams) editor.getLayoutParams();
+                    rowLp.setMargins(0, 0, 2, 0); // 再设置margin
+                    editor.setText(cell.value);
+                    editor.setTextSize(textSize);
+
+                    if (cell.clickListener != null) editor.setOnClickListener(cell.clickListener);
+                    break;
+
                 default:
                     break;
             }
