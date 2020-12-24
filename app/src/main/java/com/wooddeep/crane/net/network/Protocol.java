@@ -87,7 +87,7 @@ public class Protocol {
                 "  }\n" +
                 "}");
 
-            cmdRptCfgCalib = new JSONObject("{\"cmd\":\"get.cfg.calib\", \"data\":{\n" +
+            cmdRptCfgCalib = new JSONObject("{\"cmd\":\"rpt.cfg.calib\", \"data\":{\n" +
                 "    \"devid\":\"12345678\",\n" +
                 "    \"sessionid\": \"afdsf123\"\n" +
                 "  }\n" +
