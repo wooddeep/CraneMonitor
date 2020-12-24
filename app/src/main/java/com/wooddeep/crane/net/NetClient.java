@@ -140,8 +140,10 @@ public class NetClient {
                     continue;
                 }
 
-                System.out.println("## len = " + len);
+                //System.out.println("## len = " + len);
                 JSONObject resp = protocol.unPack(buffer, len);
+                System.out.println(resp.toString());
+                if (resp == null) continue;
 
                 // {"cmd":"get.session", "data":{"sessionid": "afdsf123"}}
                 String cmd = resp.optString("cmd", "");
@@ -236,6 +238,10 @@ public class NetClient {
                         NetClient.mq.offer(body); // 发送传感器数据给服务器
                         break;
 
+                    case "set.cfg.crane":
+                        CraneSetting.saveCraneInfo(craneDao, resp.optJSONObject("data"));
+                        break;
+
                     default:
                         //System.out.println("##unkonwn response command!");
                         break;
@@ -243,6 +249,7 @@ public class NetClient {
 
 
             } catch (Exception e) {
+                e.printStackTrace();
                 System.out.printf("## runRead[0] -> cause: %s, mesg: %s\n", e.getCause(), e.getMessage());
                 if (e.getCause() == null) {
                     try {

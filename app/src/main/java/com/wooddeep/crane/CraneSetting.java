@@ -456,4 +456,33 @@ public class CraneSetting extends AppCompatActivity {
 
         return data;
     }
+
+    public static void saveCraneInfo(CraneDao dao, JSONObject data) {
+        List<Crane> paras = dao.selectAll();
+        try {
+            for (Crane crane : paras) {
+                if (crane.isMain()) {
+                    crane.setCustomNo(data.getString("co").trim());
+                    crane.setType(data.getInt("ct"));
+                    crane.setCoordX1((float)data.getDouble("xc"));
+                    crane.setCoordY1((float)data.getDouble("yc"));
+                    crane.setCoordX2((float)data.getDouble("xo"));
+                    crane.setCoordY2((float)data.getDouble("yo"));
+                    crane.setCraneHeight((float)data.getDouble("ch"));
+                    crane.setBigArmLength((float)data.getDouble("mjl"));
+                    crane.setBalancArmLength((float)data.getDouble("cjl"));
+                    crane.setCraneBodyRadius((float)data.getDouble("cd"));
+                    crane.setBigArmWidth((float)data.getDouble("mjw"));
+                    crane.setBalancArmWidth((float)data.getDouble("cjw"));
+                    crane.setMaxAngle((float)data.getDouble("msa"));
+                    crane.setMinAngle((float)data.getDouble("mxa"));
+                    crane.setArchPara((float)data.getDouble("ap"));
+                    dao.update(crane);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

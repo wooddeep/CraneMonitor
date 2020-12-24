@@ -87,7 +87,7 @@ public class Protocol {
                 "  }\n" +
                 "}");
 
-            cmdRptCfgCalib = new JSONObject("{\"cmd\":\"rpt.cfg.calib\", \"data\":{\n" +
+            cmdRptCfgCalib = new JSONObject("{\"cmd\":\"get.cfg.calib\", \"data\":{\n" +
                 "    \"devid\":\"12345678\",\n" +
                 "    \"sessionid\": \"afdsf123\"\n" +
                 "  }\n" +
@@ -356,7 +356,7 @@ public class Protocol {
             cmdRptCranePara.getJSONObject("data").put("sessionid", NetClient.sessionId);
             cmdRptCranePara.getJSONObject("data").put("devid", devid);
 
-            //System.out.println(cmdRptCaliData.toString());
+            System.out.println(cmdRptCranePara.toString());
 
             byte[] content = cmdRptCranePara.toString().getBytes();
             byte[] encryptOut = Aes.encrypt(content, key);
