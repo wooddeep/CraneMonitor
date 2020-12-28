@@ -184,15 +184,13 @@ public class NetClient {
                         float startDimValue2 = (float)calibData.optDouble("sval2");
                         float endDimValue = (float)calibData.optDouble("eval1");
                         float endDimValue2 = (float)calibData.optDouble("eval2");
-                        float centerX = (float)calibData.optDouble("centerX");
-                        float centerY = (float)calibData.optDouble("centerY");
 
                         double rate = 1;
                         String type = calibData.optString("type"); // 根据type来做各种设置
                         switch (type) {
                             case "rotate":
                                 rate = CalibrationSetting.setRotateRate(calibrationDao, calibration, startUartData,
-                                    endUartData, startDimValue, startDimValue2, endDimValue, endDimValue2, centerX, centerY);
+                                    endUartData, startDimValue, startDimValue2, endDimValue, endDimValue2, MainActivity.gCenterX, MainActivity.gCenterY);
                                 break;
                             case "weight":
                                 rate = CalibrationSetting.setWeightRate(calibrationDao, calibration, startUartData,

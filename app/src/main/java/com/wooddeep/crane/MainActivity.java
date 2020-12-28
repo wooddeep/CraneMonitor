@@ -269,6 +269,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static NetRadioProto netRadioProto = new NetRadioProto();
 
+    public static float gCenterX;
+    public static float gCenterY;
+
     public float getOscale() {
         return oscale;
     }
@@ -663,6 +666,8 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (netCalibFlag.get()) {
+                    gCenterX = rotateEvent.centerX;
+                    gCenterY = rotateEvent.centerY;
                     protocol.setCalibData(
                         rotateEvent.centerX,
                         rotateEvent.centerX,
