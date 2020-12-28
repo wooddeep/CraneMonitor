@@ -678,6 +678,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 // 实时数据
+                if (NetClient.timeSlot == 0) NetClient.timeSlot = 5000;
                 if (count % (NetClient.timeSlot / 100) == 0 && NetClient.netOk && centerCycle != null) {
                     //System.out.println(Math.round(currWeight * 10) / 10.0f);
                     protocol.setRealData(
@@ -1900,6 +1901,8 @@ public class MainActivity extends AppCompatActivity {
         initTable(); // 初始化表
         paraDao = new SysParaDao(getApplicationContext()); // 系统参数
         calibDao = new CalibrationDao(getApplicationContext());
+        craneDao = new CraneDao(getApplicationContext());
+
         switchRecDao = new SwitchRecDao(context); // 开关机
         ctrlRecDao = new CtrlRecDao(context);
         workRecDao = new WorkRecDao(context);

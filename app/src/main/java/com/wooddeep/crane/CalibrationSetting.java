@@ -164,7 +164,7 @@ public class CalibrationSetting extends AppCompatActivity {
      * start:其实AD值，END终止AD值
      *
      **/
-    public static float setRotateRate(CalibrationDao dao, Calibration calibration, float start, float end, float x1, float y1, float x2, float y2) {
+    public static float setRotateRate(CalibrationDao dao, Calibration calibration, float start, float end, float x1, float y1, float x2, float y2, float centerX, float centerY) {
 
         double rotate = Angle.angleBetween(new org.locationtech.jts.geom.Coordinate(x1, y1),
             new org.locationtech.jts.geom.Coordinate(centerX, centerY), new org.locationtech.jts.geom.Coordinate(x2, y2)); // [0 - 2pi]

@@ -107,7 +107,7 @@ public class NetClient {
 
                 byte[] body = (byte[]) message;
                 int beWriteN = protocol.doPack(body);
-                //System.out.printf("## beWriteN = {}: {}", beWriteN, message);
+                //System.out.printf("## beWriteN = %d: %s\n", beWriteN, message.toString());
 
                 outputStream.write(protocol.getPack(), 0, beWriteN);
                 outputStream.flush();
@@ -142,7 +142,7 @@ public class NetClient {
 
                 //System.out.println("## len = " + len);
                 JSONObject resp = protocol.unPack(buffer, len);
-                System.out.println(resp.toString());
+                //System.out.println(resp.toString());
                 if (resp == null) continue;
 
                 // {"cmd":"get.session", "data":{"sessionid": "afdsf123"}}
@@ -184,26 +184,31 @@ public class NetClient {
                         float startDimValue2 = (float)calibData.optDouble("sval2");
                         float endDimValue = (float)calibData.optDouble("eval1");
                         float endDimValue2 = (float)calibData.optDouble("eval2");
+                        float centerX = (float)calibData.optDouble("centerX");
+                        float centerY = (float)calibData.optDouble("centerY");
 
                         double rate = 1;
                         String type = calibData.optString("type"); // 根据type来做各种设置
                         switch (type) {
                             case "rotate":
                                 rate = CalibrationSetting.setRotateRate(calibrationDao, calibration, startUartData,
-                                    endUartData, startDimValue, startDimValue2, endDimValue, endDimValue2);
+                                    endUartData, startDimValue, startDimValue2, endDimValue, endDimValue2, centerX, centerY);
                                 break;
                             case "weight":
                                 rate = CalibrationSetting.setWeightRate(calibrationDao, calibration, startUartData,
                                     endUartData, startDimValue, endDimValue);
                                 break;
+
                             case "length":
                                 rate = CalibrationSetting.setLengthRate(calibrationDao, calibration, startUartData,
                                     endUartData, startDimValue, endDimValue);
                                 break;
+
                             case "height":
                                 rate = CalibrationSetting.setHeightRate(calibrationDao, calibration, startUartData,
                                     endUartData, startDimValue, endDimValue);
                                 break;
+
                             default:
                                 break;
                         }
