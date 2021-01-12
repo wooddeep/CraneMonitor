@@ -122,6 +122,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -224,6 +225,9 @@ public class MainActivity extends AppCompatActivity {
     private RealData realData = new RealData(); // 工作记录
     private CtrlRecDao ctrlRecDao;
     private CalibrationDao calibDao;
+    private AreaDao areaDao;
+    private ProtectDao protectDao;
+    private AlarmSetDao alarmSetDao;
     private CraneDao craneDao;
     private CtrlRec ctrlRec = new CtrlRec(); // 控制记录
     private WorkRecDao workRecDao; // 工作记录DAO
@@ -279,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
     public void setOscale(float oscale) {
         this.oscale = oscale;
     }
+
 
     private void startSensorThread() {
         new Thread(() -> {
@@ -1887,6 +1892,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // KOTLIN test
+        //new com.wooddeep.crane.xyz().showMessage();
+
+
         activity = this;
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
@@ -1907,7 +1917,9 @@ public class MainActivity extends AppCompatActivity {
         paraDao = new SysParaDao(getApplicationContext()); // 系统参数
         calibDao = new CalibrationDao(getApplicationContext());
         craneDao = new CraneDao(getApplicationContext());
-
+        areaDao = new AreaDao(getApplicationContext());
+        protectDao = new ProtectDao(getApplicationContext());
+        alarmSetDao = new AlarmSetDao(getApplicationContext());
         switchRecDao = new SwitchRecDao(context); // 开关机
         ctrlRecDao = new CtrlRecDao(context);
         workRecDao = new WorkRecDao(context);
@@ -1969,7 +1981,7 @@ public class MainActivity extends AppCompatActivity {
             TextView devNoView = (TextView) findViewById(R.id.devNo);
             devNoView.setText("DN: " + mac);
 
-            NetClient.run(paraDao, calibDao, craneDao, mac); // TODO 开启网络
+            NetClient.run(paraDao, calibDao, craneDao, areaDao, protectDao, alarmSetDao, mac); // TODO 开启网络
         }, 10);
     }
 

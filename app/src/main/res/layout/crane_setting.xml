@@ -66,6 +66,15 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/bind_logo"
+            android:layout_width="@dimen/px40"
+            android:layout_height="@dimen/px40"
+            android:layout_centerInParent="true"
+            android:layout_toLeftOf="@+id/add_logo"
+            android:layout_marginRight="@dimen/dp20"
+            app:srcCompat="@mipmap/bind" />
+
+        <ImageView
             android:id="@+id/add_logo"
             android:layout_width="@dimen/px40"
             android:layout_height="@dimen/px40"

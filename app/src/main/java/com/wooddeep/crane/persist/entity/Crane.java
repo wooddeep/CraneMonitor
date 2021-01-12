@@ -65,6 +65,9 @@ public class Crane {
     @DatabaseField(columnName = "customNo", useGetSet = true, defaultValue = "0")
     private String customNo;
 
+    @DatabaseField(columnName = "devid", useGetSet = true, defaultValue = "x")
+    private String devid;
+
     public int getId() {
         return id;
     }
@@ -217,6 +220,14 @@ public class Crane {
         this.customNo = customNo;
     }
 
+    public String getDevid() {
+        return devid;
+    }
+
+    public void setDevid(String devid) {
+        this.devid = devid;
+    }
+
     public Crane() {
         super();
     }
@@ -241,6 +252,28 @@ public class Crane {
         this.BalancArmWidth = BalancArmWidth;
     }
 
+    public Crane(boolean isMain, int id, String name, int type, float coordX1, float coordY1,
+                 float coordX2, float coordY2, float CraneHeight, float BigArmLength,
+                 float BalancArmLength, float CraneBodyRadius, float BigArmWidth,
+                 float BalancArmWidth, String did) {
+        super();
+        this.id = id;
+        this.isMain = isMain;
+        this.name = name;
+        this.type = type;
+        this.coordX1 = coordX1;
+        this.coordY1 = coordY1;
+        this.coordX2 = coordX2;
+        this.coordY2 = coordY2;
+        this.CraneHeight = CraneHeight;
+        this.BigArmLength = BigArmLength;
+        this.BalancArmLength = BalancArmLength;
+        this.CraneBodyRadius = CraneBodyRadius;
+        this.BigArmWidth = BigArmWidth;
+        this.BalancArmWidth = BalancArmWidth;
+        this.devid = did;
+    }
+
     @Override
     public String toString() {
         return "";
@@ -261,7 +294,8 @@ public class Crane {
             10,
             1,
             1,
-            1);
+            1,
+            "...");
         return crane;
     }
 

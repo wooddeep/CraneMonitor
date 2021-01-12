@@ -18,10 +18,13 @@ import android.widget.Toast;
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
 import com.wooddeep.crane.persist.dao.AreaDao;
+import com.wooddeep.crane.persist.dao.ProtectDao;
 import com.wooddeep.crane.persist.entity.Area;
+import com.wooddeep.crane.persist.entity.Protect;
 import com.wooddeep.crane.views.FixedTitleTable;
 import com.wooddeep.crane.views.TableCell;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -204,6 +207,38 @@ public class AreaSetting extends AppCompatActivity {
         view.setOnClickListener(onClickListener);
     }
 
+
+    public static JSONArray getAreaConfig(AreaDao dao) {
+        JSONArray out = new JSONArray();
+        List<Area> paras = dao.selectAll();
+
+        try {
+            for (Area protect : paras) {
+                JSONObject data = new JSONObject();
+                data.put("id", protect.getId());
+                data.put("height", protect.getHeight());
+                data.put("x1", protect.getX1());
+                data.put("y1", protect.getY1());
+                data.put("x2", protect.getX2());
+                data.put("y2", protect.getY2());
+                data.put("x3", protect.getX3());
+                data.put("y3", protect.getY3());
+                data.put("x4", protect.getX4());
+                data.put("y4", protect.getY4());
+                data.put("x5", protect.getX5());
+                data.put("y5", protect.getY5());
+                data.put("x6", protect.getX6());
+                data.put("y6", protect.getY6());
+                out.put(data);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return out;
+    }
+
+
     private void setOnTouchListener() {
         List<ImageView> menuButtons = new ArrayList<ImageView>() {{
             add((ImageView) findViewById(R.id.close_logo));
@@ -217,6 +252,7 @@ public class AreaSetting extends AppCompatActivity {
             setOnClickListener(view);
         }
     }
+
 
     public void showAreaInfo(List<Area> paras) throws Exception {
         table.init(this, null);

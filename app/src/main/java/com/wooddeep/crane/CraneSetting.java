@@ -3,6 +3,7 @@ package com.wooddeep.crane;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -16,11 +17,19 @@ import android.widget.Toast;
 
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
+import com.wooddeep.crane.ebus.NotifyEvent;
+import com.wooddeep.crane.ebus.UartEvent;
+import com.wooddeep.crane.net.NetClient;
 import com.wooddeep.crane.persist.dao.CraneDao;
+import com.wooddeep.crane.persist.dao.SysParaDao;
 import com.wooddeep.crane.persist.entity.Crane;
+import com.wooddeep.crane.persist.entity.SysPara;
+import com.wooddeep.crane.tookit.NetTool;
 import com.wooddeep.crane.views.FixedTitleTable;
 import com.wooddeep.crane.views.TableCell;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -60,6 +69,8 @@ public class CraneSetting extends AppCompatActivity {
 
     private FixedTitleTable table;
 
+    private int ownerId = 1;
+
     private static String[] craneParaNames = new String[]{
         "自定义编号/custom no",
         "塔机类型/Crane Type",
@@ -76,6 +87,7 @@ public class CraneSetting extends AppCompatActivity {
         "最大仰角(°)/Max Angle(°)",
         "最小仰角(°)/Min Angle(°)",
         "结构参数(米)/Arch Parameter(m)",
+        "设备ID/device id",
     };
 
     private static boolean[] craneParaVisible = new boolean[]{
@@ -94,7 +106,36 @@ public class CraneSetting extends AppCompatActivity {
         true,
         true,
         true,
+        true,
     };
+
+
+    // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void bindEventBus(NotifyEvent event) {
+        boolean state = event.isState();
+        String bindRet = "绑定成功!(bind success!)";
+        if (!state) bindRet = String.format("绑定失败, 请先解绑%d号对应设备!(bind fail! unbind no: %d first!)", ownerId, ownerId);
+        AlertView alertView = new AlertView("绑定结果(bind result)", bindRet, null,
+
+            new String[]{"确定", "取消"}, null, activity,
+            AlertView.Style.Alert, new OnItemClickListener() {
+            @Override
+            public void onItemClick(Object o, int position) {
+                if (position == 0) { // 确认
+
+                    if (state) { // TODO: 绑定成功, 获取塔基数据，区域数据, 并且存储
+                        // TODO
+                    }
+
+                    hideKeyboard();
+                }
+            }
+        });
+        alertView.show();
+
+    }
+
 
     public void hideKeyboard() {
         try {
@@ -183,6 +224,7 @@ public class CraneSetting extends AppCompatActivity {
                     cp.setMaxAngle(Float.parseFloat(gTable.get(13).get(j)));
                     cp.setMinAngle(Float.parseFloat(gTable.get(14).get(j)));
                     cp.setArchPara(Float.parseFloat(gTable.get(15).get(j)));
+                    cp.setDevid(gTable.get(16).get(j));
                     dao.update(cp);
                     hideKeyboard();
                 }
@@ -226,7 +268,8 @@ public class CraneSetting extends AppCompatActivity {
             10,
             1,
             1,
-            1)
+            1,
+            "...")
         );
         List<Crane> paras = confLoad(context);
         try {
@@ -234,6 +277,39 @@ public class CraneSetting extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void bind() {
+        SysParaDao dao = new SysParaDao(context);
+        SysPara bind = dao.queryParaByName("bind");
+
+        if (bind.getParaValue().equals("false")) {
+            AlertView alertView = new AlertView("云端绑定塔机编号", "确定绑定本终端?", null,
+                new String[]{"确定", "取消"}, null, activity,
+                AlertView.Style.Alert, new OnItemClickListener() {
+                @Override
+                public void onItemClick(Object o, int position) {
+                    if (position == 0) { // 确认
+                        try {
+                            // 发消息通知服务端绑定，在消息的接收端异步的弹框标识是否绑定成功
+                            String mac = NetTool.getMacAddress(context).replaceAll(":", "");
+                            com.wooddeep.crane.net.network.Protocol protocol = new com.wooddeep.crane.net.network.Protocol();
+                            JSONObject breq = new JSONObject().put("cmd", "bind").put("data", new JSONObject().put("no", ownerId).put("bid", mac)); // 编号从1开始 + 1
+                            byte[] body = protocol.createBody(breq);
+                            NetClient.mq.offer(body); // 发送传感器数据给服务器
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        hideKeyboard();
+                    }
+                }
+            });
+            alertView.show();
+        } else {
+
+        }
+
     }
 
     private void setOnClickListener(View view) {
@@ -247,6 +323,8 @@ public class CraneSetting extends AppCompatActivity {
                     delCraneInfo();
                 } else if (view.getId() == R.id.save_logo) { // 保存数据
                     saveCraneInfo();
+                } else if (view.getId() == R.id.bind_logo) {
+                    bind();
                 } else if (view.getId() == R.id.close_logo) {
                     finish();
                 }
@@ -261,6 +339,7 @@ public class CraneSetting extends AppCompatActivity {
             add((ImageView) findViewById(R.id.add_logo));
             add((ImageView) findViewById(R.id.minus_logo));
             add((ImageView) findViewById(R.id.save_logo));
+            add((ImageView) findViewById(R.id.bind_logo));
         }};
 
         for (ImageView view : menuButtons) {
@@ -301,6 +380,7 @@ public class CraneSetting extends AppCompatActivity {
                                 for (int j = 0; j < craneList.size(); j++) {
                                     Crane cp = craneList.get(j);
                                     if (id == cp.getId()) {
+                                        ownerId = id;
                                         cp.setIsMain(true);
                                     } else {
                                         cp.setIsMain(false);
@@ -323,6 +403,7 @@ public class CraneSetting extends AppCompatActivity {
         for (int i = 0; i < paras.size(); i++) {
             if (paras.get(i).getIsMain() == true) {
                 table.setMainColumn(paras.get(i).getId());
+                ownerId = i + 1;
                 System.out.printf("## I am main, my id : %d\n", i);
                 break;
             }
@@ -382,6 +463,9 @@ public class CraneSetting extends AppCompatActivity {
                     case 14:
                         cells.add(new TableCell(1, String.valueOf(paras.get(j).getArchPara())));
                         break;
+                    case 15:
+                        cells.add(new TableCell(1, String.valueOf(paras.get(j).getDevid())));
+                        break;
                 }
             }
             table.addDataRow(cells, craneParaVisible[i]);
@@ -405,6 +489,21 @@ public class CraneSetting extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        SysParaDao dao = new SysParaDao(context);
+        SysPara bind = dao.queryParaByName("bind");
+        if (bind == null) {
+            bind = new SysPara("bind", "false");
+            dao.insert(bind);
+        }
+
+        ImageView bindLogo = (ImageView) findViewById(R.id.bind_logo);
+        if (bind.getParaValue().equals("false")) {
+            bindLogo.setImageDrawable(getResources().getDrawable(R.mipmap.bind));
+        } else {
+            bindLogo.setImageDrawable(getResources().getDrawable(R.mipmap.unbind));
+        }
+
 
         setOnTouchListener();
     }
@@ -464,19 +563,19 @@ public class CraneSetting extends AppCompatActivity {
                 if (crane.isMain()) {
                     crane.setCustomNo(data.getString("co").trim());
                     crane.setType(data.getInt("ct"));
-                    crane.setCoordX1((float)data.getDouble("xc"));
-                    crane.setCoordY1((float)data.getDouble("yc"));
-                    crane.setCoordX2((float)data.getDouble("xo"));
-                    crane.setCoordY2((float)data.getDouble("yo"));
-                    crane.setCraneHeight((float)data.getDouble("ch"));
-                    crane.setBigArmLength((float)data.getDouble("mjl"));
-                    crane.setBalancArmLength((float)data.getDouble("cjl"));
-                    crane.setCraneBodyRadius((float)data.getDouble("cd"));
-                    crane.setBigArmWidth((float)data.getDouble("mjw"));
-                    crane.setBalancArmWidth((float)data.getDouble("cjw"));
-                    crane.setMaxAngle((float)data.getDouble("msa"));
-                    crane.setMinAngle((float)data.getDouble("mxa"));
-                    crane.setArchPara((float)data.getDouble("ap"));
+                    crane.setCoordX1((float) data.getDouble("xc"));
+                    crane.setCoordY1((float) data.getDouble("yc"));
+                    crane.setCoordX2((float) data.getDouble("xo"));
+                    crane.setCoordY2((float) data.getDouble("yo"));
+                    crane.setCraneHeight((float) data.getDouble("ch"));
+                    crane.setBigArmLength((float) data.getDouble("mjl"));
+                    crane.setBalancArmLength((float) data.getDouble("cjl"));
+                    crane.setCraneBodyRadius((float) data.getDouble("cd"));
+                    crane.setBigArmWidth((float) data.getDouble("mjw"));
+                    crane.setBalancArmWidth((float) data.getDouble("cjw"));
+                    crane.setMaxAngle((float) data.getDouble("msa"));
+                    crane.setMinAngle((float) data.getDouble("mxa"));
+                    crane.setArchPara((float) data.getDouble("ap"));
                     dao.update(crane);
                     break;
                 }

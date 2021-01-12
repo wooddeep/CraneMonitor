@@ -2,19 +2,26 @@ package com.wooddeep.crane.net;
 
 import android.graphics.Color;
 
+import com.wooddeep.crane.AreaSetting;
 import com.wooddeep.crane.CalibrationSetting;
 import com.wooddeep.crane.CraneSetting;
 import com.wooddeep.crane.MainActivity;
+import com.wooddeep.crane.ProtectSetting;
 import com.wooddeep.crane.ebus.CalibrationEvent;
+import com.wooddeep.crane.ebus.NotifyEvent;
 import com.wooddeep.crane.net.network.Protocol;
+import com.wooddeep.crane.persist.dao.AlarmSetDao;
+import com.wooddeep.crane.persist.dao.AreaDao;
 import com.wooddeep.crane.persist.dao.CalibrationDao;
 import com.wooddeep.crane.persist.dao.CraneDao;
+import com.wooddeep.crane.persist.dao.ProtectDao;
 import com.wooddeep.crane.persist.dao.SysParaDao;
 import com.wooddeep.crane.persist.entity.Calibration;
 import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.SysPara;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.InputStream;
@@ -45,7 +52,9 @@ public class NetClient {
     private static SysParaDao paraDao;
     private static CalibrationDao calibrationDao;
     private static CraneDao craneDao;
-
+    private static AreaDao areaDao;
+    private static ProtectDao protectDao;
+    private static AlarmSetDao alarmSetDao;
 
     public static volatile String sessionId = "initialize";
     public static volatile int timeSlot = 5000;
@@ -124,7 +133,7 @@ public class NetClient {
         }
     }
 
-    public void runRead() {
+    public void runRead(String mac) {
         while (true && !MainActivity.sysExit) {
             try {
 
@@ -142,7 +151,7 @@ public class NetClient {
 
                 //System.out.println("## len = " + len);
                 JSONObject resp = protocol.unPack(buffer, len);
-                //System.out.println(resp.toString());
+                System.out.println(resp.toString());
                 if (resp == null) continue;
 
                 // {"cmd":"get.session", "data":{"sessionid": "afdsf123"}}
@@ -173,17 +182,17 @@ public class NetClient {
                         List<Calibration> paras = calibrationDao.selectAll();
                         if (paras.size() < 1) return;
                         Calibration para = paras.get(0);
-                        Calibration calibration  = para; // 从系统中导出配置
+                        Calibration calibration = para; // 从系统中导出配置
                         JSONObject calibData = resp.optJSONObject("data");
 
                         System.out.println("## calib set: " + calibData.toString());
 
-                        float startUartData = (float)calibData.optInt("sad");
-                        float endUartData = (float)calibData.optInt("ead");
-                        float startDimValue = (float)calibData.optDouble("sval1");
-                        float startDimValue2 = (float)calibData.optDouble("sval2");
-                        float endDimValue = (float)calibData.optDouble("eval1");
-                        float endDimValue2 = (float)calibData.optDouble("eval2");
+                        float startUartData = (float) calibData.optInt("sad");
+                        float endUartData = (float) calibData.optInt("ead");
+                        float startDimValue = (float) calibData.optDouble("sval1");
+                        float startDimValue2 = (float) calibData.optDouble("sval2");
+                        float endDimValue = (float) calibData.optDouble("eval1");
+                        float endDimValue2 = (float) calibData.optDouble("eval2");
 
                         double rate = 1;
                         String type = calibData.optString("type"); // 根据type来做各种设置
@@ -242,7 +251,38 @@ public class NetClient {
                         break;
 
                     case "set.cfg.crane":
+                        System.out.println(resp.toString());
                         CraneSetting.saveCraneInfo(craneDao, resp.optJSONObject("data"));
+                        break;
+
+                    case "get.cfg.area": // 获取保护区域数据
+                        JSONArray areas = AreaSetting.getAreaConfig(areaDao);
+                        JSONObject dresp = new JSONObject().put("cmd", "get.cfg.area").put("data", new JSONObject().put("areas", areas));
+                        body = protocol.createBody(dresp);
+                        NetClient.mq.offer(body); // 发送传感器数据给服务器
+                        break;
+
+                    case "set.cfg.area": // 获取保护区域数据
+//                        JSONArray areas = AreaSetting.getAreaConfig(areaDao);
+//                        JSONObject dresp = new JSONObject().put("cmd", "get.cfg.area").put("data", new JSONObject().put("areas", areas));
+//                        body = protocol.createBody(dresp);
+//                        NetClient.mq.offer(body); // 发送传感器数据给服务器
+                        break;
+
+                    case "get.cfg.protect": // 获取保护区域数据
+                        ProtectSetting.getProtectConfig(protectDao);
+                        protocol.setCranePara(craneDao);
+                        body = protocol.getCranePara(paraDao);
+                        NetClient.mq.offer(body); // 发送传感器数据给服务器
+                        break;
+
+                    case "bind":
+                        // 判断id是否是自己，如果是自己，则发消息要求ui线程更新bind图标状态
+                        if (resp.getString("bid").equals(mac)) {
+                            // 通知完成
+                            EventBus.getDefault().post(new NotifyEvent(true, resp)); // TODO：获取其他塔基的设置，区域的设置
+                        }
+
                         break;
 
                     default:
@@ -283,15 +323,19 @@ public class NetClient {
             if (flag) {
                 runWrite(mac);
             } else {
-                runRead();
+                runRead(mac);
             }
         }
     }
 
-    public static void run(SysParaDao dao, CalibrationDao calibDao, CraneDao cd,String mac) {
+    public static void run(SysParaDao dao, CalibrationDao calibDao, CraneDao cd,
+                           AreaDao ad, ProtectDao pd, AlarmSetDao asd, String mac) {
         paraDao = dao;
         calibrationDao = calibDao;
         craneDao = cd;
+        areaDao = ad;
+        protectDao = pd;
+        alarmSetDao = asd;
 
         String remoteAddr = "81.69.46.54";
         SysPara ra = paraDao.queryParaByName("remoteAddr");
@@ -301,6 +345,8 @@ public class NetClient {
         } else {
             remoteAddr = ra.getParaValue();
         }
+
+        //remoteAddr = "192.168.141.227";
 
         remoteAddr = "81.69.46.54";
 
