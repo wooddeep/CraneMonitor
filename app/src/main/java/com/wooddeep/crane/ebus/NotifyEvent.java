@@ -3,27 +3,37 @@ package com.wooddeep.crane.ebus;
 import org.json.JSONObject;
 
 public class NotifyEvent {
-    public boolean state;
-    public JSONObject payload;
+    public Boolean state;
+    public JSONObject data;
+    public String mac;
 
-    public NotifyEvent(boolean state, JSONObject payload) {
+    public NotifyEvent(Boolean state, JSONObject payload, String mac) {
         this.state = state;
-        this.payload = payload;
+        this.data = payload;
+        this.mac = mac;
     }
 
-    public boolean isState() {
+    public Boolean isState() {
         return state;
     }
 
-    public JSONObject getPayload() {
-        return payload;
+    public JSONObject getData() {
+        return data;
     }
 
-    public void setState(boolean state) {
+    public void setState(Boolean state) {
         this.state = state;
     }
 
-    public void setPayload(JSONObject payload) {
-        this.payload = payload;
+    public void setData(JSONObject payload) {
+        this.data = payload;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
     }
 }

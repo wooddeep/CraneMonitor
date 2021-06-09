@@ -1794,7 +1794,7 @@ public class MainActivity extends AppCompatActivity {
         if (!dbFile.exists()) {
             SysTool.copyFilesFromRaw(this, R.raw.tc, "tc.db", "/data/data/com.wooddeep.crane/databases");
             SysTool.copyFilesFromRaw(this, R.raw.crane, "crane.db", "/data/data/com.wooddeep.crane/databases");
-            SysTool.copyFilesFromRaw(this, R.raw.crane, "crane.db", "/data/data/com.wooddeep.crane/databases");
+            //SysTool.copyFilesFromRaw(this, R.raw.crane, "crane.db", "/data/data/com.wooddeep.crane/databases");
             //SysTool.copyFilesFromRaw(this, R.raw.forever, "forever.db", "/sdcard/crane/");
         }
 

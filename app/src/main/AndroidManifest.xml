@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wooddeep.crane">
 
     <application
@@ -10,9 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
-        <activity android:name=".MainActivity"
+        <activity android:name=".KtFfmpegActivity"
             android:hardwareAccelerated="false"
             android:alwaysRetainTaskState='true'
             android:windowSoftInputMode="adjustPan">
@@ -26,7 +25,19 @@
             </intent-filter>
 
         </activity>
+<!--        <activity-->
+<!--            android:name=".MainActivity"-->
+<!--            android:alwaysRetainTaskState="true"-->
+<!--            android:hardwareAccelerated="false"-->
+<!--            android:windowSoftInputMode="adjustPan">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--                <category android:name="android.intent.category.HOME" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
         <activity
             android:alwaysRetainTaskState='true'
             android:name="com.wooddeep.crane.CraneSetting">

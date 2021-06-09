@@ -8,6 +8,7 @@ import com.wooddeep.crane.persist.entity.Crane;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class CraneDao {
@@ -83,6 +84,21 @@ public class CraneDao {
             e.printStackTrace();
         }
         return crane;
+    }
+
+    // 根据dn取出用户信息
+    public Crane queryByDn(String dn) {
+        List<Crane> cranes = null;
+        try {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("devid", dn);
+            cranes = dao.queryForFieldValues(map);
+            if (cranes == null || cranes.size() == 0) return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return cranes.get(0);
     }
 
     public List<Crane> queryForMatching(Crane crane) {

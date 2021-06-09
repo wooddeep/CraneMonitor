@@ -6,6 +6,7 @@ import com.wooddeep.crane.AreaSetting;
 import com.wooddeep.crane.CalibrationSetting;
 import com.wooddeep.crane.CraneSetting;
 import com.wooddeep.crane.MainActivity;
+import com.wooddeep.crane.MainProp;
 import com.wooddeep.crane.ProtectSetting;
 import com.wooddeep.crane.ebus.CalibrationEvent;
 import com.wooddeep.crane.ebus.NotifyEvent;
@@ -278,10 +279,15 @@ public class NetClient {
 
                     case "bind":
                         // 判断id是否是自己，如果是自己，则发消息要求ui线程更新bind图标状态
-                        if (resp.getString("bid").equals(mac)) {
-                            // 通知完成
-                            EventBus.getDefault().post(new NotifyEvent(true, resp)); // TODO：获取其他塔基的设置，区域的设置
+                        JSONObject data = resp.optJSONObject("data");
+                        String dn = data.getString("dn");
+                        Boolean bindRet;
+                        if (dn == null)  {
+                            bindRet = null;
+                        } else {
+                            bindRet = dn.equals(mac) ? true : false;
                         }
+                        EventBus.getDefault().post(new NotifyEvent(bindRet, data, mac)); // TODO：获取其他塔基的设置，区域的设置
 
                         break;
 
@@ -348,7 +354,49 @@ public class NetClient {
 
         //remoteAddr = "192.168.141.227";
 
-        remoteAddr = "81.69.46.54";
+        int remotePort = 1733;
+        SysPara rp = paraDao.queryParaByName("remotePort");
+        if (rp == null) {
+            rp = new SysPara("remotePort", String.valueOf(remotePort));
+            paraDao.insert(rp);
+        } else {
+            remotePort = Integer.parseInt(rp.getParaValue());
+        }
+
+        SysPara timeSlotObj = paraDao.queryParaByName("timeSlot");
+        if (timeSlotObj == null) {
+            timeSlotObj = new SysPara("timeSlot", String.valueOf(5000));
+            paraDao.insert(timeSlotObj);
+        } else {
+            timeSlot = Integer.parseInt(timeSlotObj.getParaValue());
+        }
+
+        NetClient client = new NetClient(remoteAddr, remotePort);
+        client.new NetThread(true, mac).start();
+        client.new NetThread(false, mac).start();
+    }
+
+    public static void run(String mac) {
+
+        paraDao = MainProp.INSTANCE.getParaDao();
+        calibrationDao = MainProp.INSTANCE.getCalibrationDao();
+        craneDao = MainProp.INSTANCE.getCraneDao();
+        areaDao = MainProp.INSTANCE.getAreaDao();
+        protectDao = MainProp.INSTANCE.getProtectDao();
+        alarmSetDao = MainProp.INSTANCE.getAlarmSetDao();
+
+        String remoteAddr = "81.69.46.54";
+        SysPara ra = paraDao.queryParaByName("remoteAddr");
+        if (ra == null) {
+            ra = new SysPara("remoteAddr", remoteAddr);
+            paraDao.insert(ra);
+        } else {
+            remoteAddr = ra.getParaValue();
+        }
+
+        //remoteAddr = "192.168.141.227";
+
+        //remoteAddr = "81.69.46.54";
 
         int remotePort = 1733;
         SysPara rp = paraDao.queryParaByName("remotePort");
@@ -371,5 +419,6 @@ public class NetClient {
         client.new NetThread(true, mac).start();
         client.new NetThread(false, mac).start();
     }
+
 }
 

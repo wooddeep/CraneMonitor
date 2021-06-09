@@ -368,6 +368,22 @@ public class Protocol {
         return null;
     }
 
+    public byte[] createBody(JSONObject raw) {
+        try {
+            raw.getJSONObject("data").put("sessionid", NetClient.sessionId);
+            raw.getJSONObject("data").put("devid", devid);
+
+            System.out.println(raw.toString());
+
+            byte[] content = raw.toString().getBytes();
+            byte[] encryptOut = Aes.encrypt(content, key);
+            return encryptOut;
+        } catch (Exception e) {
+            System.out.printf("cause: %s, mesg: %s\n", e.getCause(), e.getMessage());
+        }
+
+        return null;
+    }
 
     public int doPack(byte[] body) {
         int currIndex = 0;

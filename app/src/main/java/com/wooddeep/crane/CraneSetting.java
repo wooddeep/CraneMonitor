@@ -28,6 +28,7 @@ import com.wooddeep.crane.tookit.NetTool;
 import com.wooddeep.crane.views.FixedTitleTable;
 import com.wooddeep.crane.views.TableCell;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
@@ -110,30 +111,118 @@ public class CraneSetting extends AppCompatActivity {
     };
 
 
-    // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void bindEventBus(NotifyEvent event) {
-        boolean state = event.isState();
-        String bindRet = "绑定成功!(bind success!)";
-        if (!state) bindRet = String.format("绑定失败, 请先解绑%d号对应设备!(bind fail! unbind no: %d first!)", ownerId, ownerId);
-        AlertView alertView = new AlertView("绑定结果(bind result)", bindRet, null,
-
-            new String[]{"确定", "取消"}, null, activity,
-            AlertView.Style.Alert, new OnItemClickListener() {
-            @Override
-            public void onItemClick(Object o, int position) {
-                if (position == 0) { // 确认
-
-                    if (state) { // TODO: 绑定成功, 获取塔基数据，区域数据, 并且存储
-                        // TODO
-                    }
-
-                    hideKeyboard();
+    private JSONObject getNetSetCfg(int index, JSONObject data) {
+        try {
+            JSONArray cranes = data.getJSONArray("cranes");
+            for (int i = 0; i < cranes.length(); i++) {
+                JSONObject setCfg = cranes.getJSONObject(i);
+                int no = setCfg.getInt("no"); // 配置从 1开始
+                if (index == no - 1) {
+                    return setCfg;
                 }
             }
-        });
-        alertView.show();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
+
+    private JSONObject getCraneNetCfg(int craneSerialNo, JSONArray cranesNetCfg) throws Exception {
+        for (int cni = 0; cni < cranesNetCfg.length(); cni++) {
+            JSONObject netCfgObj = cranesNetCfg.getJSONObject(cni);
+            int craneNo = netCfgObj.optInt("no", -1);
+            if (craneNo == craneSerialNo) {
+                return netCfgObj;
+            }
+        }
+        return null;
+    }
+
+
+    public void updateCreateSetting(JSONObject data) throws Exception {
+
+        JSONArray cranesNetCfg = data.getJSONArray("cranes"); // 网络配置
+        CraneDao dao = new CraneDao(context);
+        List<Crane> cranesCfg = dao.selectAll();
+
+        for (int cni = 0; cni < cranesNetCfg.length(); cni++) {
+            JSONObject netCfgObj = cranesNetCfg.getJSONObject(cni);
+            int craneNo = netCfgObj.optInt("no", -1);
+
+            Crane crane = null;
+            if (cranesCfg.size() < craneNo) {
+                crane = new Crane();
+                crane.setName(String.format("%d号塔机", craneNo));
+            } else {
+                crane = cranesCfg.get(craneNo - 1); // 设备的当前配置
+            }
+
+            crane.setCustomNo(netCfgObj.getString("co").trim());
+            crane.setType(netCfgObj.getInt("ct"));
+            crane.setCoordX1((float) netCfgObj.optDouble("xc", 0));
+            crane.setCoordY1((float) netCfgObj.optDouble("yc", 0));
+            crane.setCoordX2((float) netCfgObj.optDouble("xo", 0));
+            crane.setCoordY2((float) netCfgObj.optDouble("yo", 0));
+            crane.setCraneHeight((float) netCfgObj.optDouble("ch", 0));
+            crane.setBigArmLength((float) netCfgObj.optDouble("mjl", 0));
+            crane.setBalancArmLength((float) netCfgObj.optDouble("cjl", 0));
+            crane.setCraneBodyRadius((float) netCfgObj.optDouble("cd", 0));
+            crane.setBigArmWidth((float) netCfgObj.optDouble("mjw", 0));
+            crane.setBalancArmWidth((float) netCfgObj.optDouble("cjw", 0));
+            crane.setMaxAngle((float) netCfgObj.optDouble("msa", 0));
+            crane.setMinAngle((float) netCfgObj.optDouble("mxa", 0));
+            crane.setArchPara((float) netCfgObj.optDouble("ap", 0));
+            crane.setDevid(netCfgObj.getString("mid"));
+
+            if (cranesCfg.size() < craneNo) {
+                dao.insert(crane);
+            } else {
+                dao.update(crane);
+            }
+        }
+
+        for (int i = cranesNetCfg.length(); i < cranesCfg.size(); i++) {
+            dao.delete(cranesCfg.get(i));
+        }
+
+        cranesCfg = confLoad(context);
+        try {
+            showCranesInfo(cranesCfg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    // 定义处理串口数据的方法, MAIN方法: 事件处理放在main方法中
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void bindEventBus(NotifyEvent event) throws Exception {
+        boolean state = event.isState();
+        String bindRet = "绑定成功!(bind success!)";
+        if (state == false) {
+            bindRet = String.format("绑定失败, 请先解绑%d号对应设备!(bind fail! unbind no: %d first!)", ownerId, ownerId);
+        }
+
+        if (state == true) {
+            bindLogo.setImageDrawable(getResources().getDrawable(R.mipmap.unbind));
+        }
+
+        Toast toast = Toast.makeText(CraneSetting.this, bindRet, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+
+        if (state != true) {
+            return;
+        }
+
+        SysParaDao dao = new SysParaDao(context);
+        SysPara bind = dao.queryParaByName("bind");
+        bind.setParaValue("true");
+        dao.update(bind);
+
+        updateCreateSetting(event.getData());
     }
 
 
@@ -155,14 +244,18 @@ public class CraneSetting extends AppCompatActivity {
         return paras;
     }
 
+    private ImageView bindLogo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.crane_setting);
-
+        EventBus.getDefault().register(this);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
+
+        bindLogo = (ImageView) findViewById(R.id.bind_logo);
     }
 
     private void setOnTouchListener(View view) {
@@ -294,7 +387,12 @@ public class CraneSetting extends AppCompatActivity {
                             // 发消息通知服务端绑定，在消息的接收端异步的弹框标识是否绑定成功
                             String mac = NetTool.getMacAddress(context).replaceAll(":", "");
                             com.wooddeep.crane.net.network.Protocol protocol = new com.wooddeep.crane.net.network.Protocol();
-                            JSONObject breq = new JSONObject().put("cmd", "bind").put("data", new JSONObject().put("no", ownerId).put("bid", mac)); // 编号从1开始 + 1
+                            CraneDao dao = new CraneDao(context);
+                            JSONObject data = CraneSetting.getCraneConfig(dao); // 获取当前设备的配置
+
+                            JSONObject breq = new JSONObject().put("cmd", "bind")
+                                .put("data", data.put("no", ownerId).put("dn", mac)); // 编号从1开始 + 1
+
                             byte[] body = protocol.createBody(breq);
                             NetClient.mq.offer(body); // 发送传感器数据给服务器
                         } catch (Exception e) {
@@ -307,7 +405,33 @@ public class CraneSetting extends AppCompatActivity {
             });
             alertView.show();
         } else {
+            AlertView alertView = new AlertView("云端解绑定塔机编号", "确定解绑定本终端?", null,
+                new String[]{"确定", "取消"}, null, activity,
+                AlertView.Style.Alert, new OnItemClickListener() {
+                @Override
+                public void onItemClick(Object o, int position) {
+                    if (position == 0) { // 确认
+                        try {
+                            // 发消息通知服务端绑定，在消息的接收端异步的弹框标识是否绑定成功
+                            String mac = NetTool.getMacAddress(context).replaceAll(":", "");
+                            com.wooddeep.crane.net.network.Protocol protocol = new com.wooddeep.crane.net.network.Protocol();
+                            CraneDao dao = new CraneDao(context);
+                            JSONObject data = CraneSetting.getCraneConfig(dao); // 获取当前设备的配置
 
+                            JSONObject breq = new JSONObject().put("cmd", "unbind")
+                                .put("data", data.put("no", ownerId).put("dn", mac)); // 编号从1开始 + 1
+
+                            byte[] body = protocol.createBody(breq);
+                            NetClient.mq.offer(body); // 发送传感器数据给服务器
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        hideKeyboard();
+                    }
+                }
+            });
+            alertView.show();
         }
 
     }
@@ -380,7 +504,8 @@ public class CraneSetting extends AppCompatActivity {
                                 for (int j = 0; j < craneList.size(); j++) {
                                     Crane cp = craneList.get(j);
                                     if (id == cp.getId()) {
-                                        ownerId = id;
+                                        //ownerId = id;
+                                        ownerId = j + 1;
                                         cp.setIsMain(true);
                                     } else {
                                         cp.setIsMain(false);
@@ -403,7 +528,7 @@ public class CraneSetting extends AppCompatActivity {
         for (int i = 0; i < paras.size(); i++) {
             if (paras.get(i).getIsMain() == true) {
                 table.setMainColumn(paras.get(i).getId());
-                ownerId = i + 1;
+                ownerId = i + 1; // 从 1 开始 顺序计数
                 System.out.printf("## I am main, my id : %d\n", i);
                 break;
             }
@@ -497,7 +622,6 @@ public class CraneSetting extends AppCompatActivity {
             dao.insert(bind);
         }
 
-        ImageView bindLogo = (ImageView) findViewById(R.id.bind_logo);
         if (bind.getParaValue().equals("false")) {
             bindLogo.setImageDrawable(getResources().getDrawable(R.mipmap.bind));
         } else {
@@ -546,6 +670,7 @@ public class CraneSetting extends AppCompatActivity {
                     data.put("msa", crane.getMaxAngle());
                     data.put("mxa", crane.getMinAngle());
                     data.put("ap", crane.getArchPara());
+                    data.put("dn", crane.getDevid());
                     break;
                 }
             }
@@ -576,6 +701,7 @@ public class CraneSetting extends AppCompatActivity {
                     crane.setMaxAngle((float) data.getDouble("msa"));
                     crane.setMinAngle((float) data.getDouble("mxa"));
                     crane.setArchPara((float) data.getDouble("ap"));
+                    crane.setDevid(data.getString("dn"));
                     dao.update(crane);
                     break;
                 }
