@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+ * 自定义progressbar
+ * https://blog.csdn.net/mad1989/article/details/38042875
+ * https://www.jianshu.com/p/8998e381b805
+ * 九点图
+ * https://onlooker.wodemo.net/browse/392022/res/drawable-hdpi-v4/
+
+ * 程序定义进度条
+ * https://blog.csdn.net/u012005313/article/details/76047122
+
+
+ * android:gravity : 控件相对于父容器的位置
+
+ * 相对布局
+ * https://www.cnblogs.com/liter7/p/5178674.html
+-->
+
+<!--suppress ALL -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:gravity="center"
+        android:background="@color/gray"
+        android:layout_margin="0dp"
+        android:orientation="horizontal">
+
+        <com.wooddeep.crane.views.CraneView
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:scaleX="1"
+            android:scaleY="1"
+            app:arm_angle="30"
+            app:arm_length="240"
+            app:crane_type="0"
+            app:hook_height="600"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <SurfaceView
+                android:id="@+id/srfc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="6"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/btn_play_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="start" />
+
+                <Button
+                    android:id="@+id/btn_play_stop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="stop"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

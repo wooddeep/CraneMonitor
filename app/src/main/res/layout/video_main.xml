@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true"
+    android:focusableInTouchMode="true">
+
+    <RelativeLayout
+        android:id="@+id/total"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_x="0dp"
+        android:orientation="vertical">
+
+        <!--
+        <LinearLayout
+            android:id="@+id/banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_Login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/EDT_User"
+                android:layout_alignParentStart="true"
+                android:text="西南摄像机"
+                android:textColor="#ff000000"
+                android:typeface="sans" />
+
+            <Button
+                android:id="@+id/btn_zoom_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/EDT_User"
+                android:layout_alignParentStart="true"
+                android:text="In"
+                android:textColor="#ff000000"
+                android:typeface="sans" />
+
+            <Button
+                android:id="@+id/btn_zoom_out"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/EDT_User"
+                android:layout_alignParentStart="true"
+                android:text="Out"
+                android:textColor="#ff000000"
+                android:typeface="sans" />
+
+            <Button
+                android:id="@+id/btn_Login3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/EDT_User"
+                android:layout_alignParentStart="true"
+                android:text="隐藏"
+                android:textColor="#ff000000"
+                android:typeface="sans" />
+        </LinearLayout>
+        -->
+
+        <RelativeLayout
+            android:id="@+id/Play"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+
+            android:background="#ff000000"
+            android:orientation="horizontal">
+
+            <SurfaceView
+                android:id="@+id/Sur_Player"
+                android:layout_width="400dp"
+                android:layout_height="300dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:background="#0000ff00" />
+
+            <!-- 控制面板 -->
+            <LinearLayout
+                android:id="@+id/tookit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@+id/Sur_Player"
+                android:layout_alignBottom="@+id/Sur_Player"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:visibility="visible"
+                android:background="@drawable/tookit_back_boder">
+
+                <Button
+                    android:id="@+id/series"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="20dp"
+                    android:background="#00000000"
+                    android:gravity="center"
+                    android:text="历史记录"
+                    android:textColor="#A9A9A9"
+                    android:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/setting"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="20dp"
+                    android:background="#00000000"
+                    android:src="@drawable/setting"
+                    android:text="展开"
+                    android:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/expand"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="#00000000"
+                    android:src="@drawable/expand"
+                    android:text="展开"
+                    android:visibility="visible" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/setpad"
+                android:layout_width="500dp"
+                android:layout_height="400dp"
+                android:layout_centerVertical="true"
+                android:layout_centerInParent="true"
+                android:background="#FFFFFF"
+                android:visibility="gone">
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TableRow>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="20dp"
+                            android:background="#00000000"
+                            android:gravity="center"
+                            android:text="编码值"
+                            android:textColor="#A9A9A9"
+                            android:visibility="visible"
+                            android:layout_weight="1"/>
+                        <EditText
+                            android:id="@+id/encodevalue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="20dp"
+                            android:background="#00000000"
+                            android:gravity="center"
+                            android:text="1024"
+                            android:textColor="#A9A9A9"
+                            android:visibility="visible"
+                            android:layout_weight="2"/>
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:background="#00000000"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:text="初始高度"
+                            android:textColor="#A9A9A9"
+                            android:visibility="visible"
+                            android:layout_marginRight="20dp"
+                            android:layout_weight="1"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="20dp"
+                            android:orientation="horizontal"
+                            android:layout_weight="2">
+
+                            <EditText
+                                android:id="@+id/startheight"
+                                android:layout_width="80dp"
+                                android:layout_height="40dp"
+                                android:background="#00000000"
+                                android:gravity="center"
+                                android:text="1024"
+                                android:textColor="#A9A9A9"
+                                android:visibility="visible"
+                                android:layout_weight="1"/>
+                            <Button
+                                android:id="@+id/cfmstart"
+                                android:layout_width="80dp"
+                                android:layout_height="40dp"
+                                android:gravity="center"
+                                android:layout_gravity="center"
+                                android:text="确定"
+                                android:textColor="#A9A9A9"
+                                android:visibility="visible"
+                                android:layout_weight="1"/>
+
+                            <EditText
+                                android:id="@+id/showstart"
+                                android:layout_width="80dp"
+                                android:layout_height="40dp"
+                                android:background="#00000000"
+                                android:gravity="center"
+                                android:text="1024"
+                                android:textColor="#A9A9A9"
+                                android:visibility="visible"
+                                android:layout_weight="1"/>
+
+                        </LinearLayout>
+
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:background="#00000000"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:text="终止高度"
+                            android:textColor="#A9A9A9"
+                            android:visibility="visible"
+                            android:layout_marginRight="20dp"
+                            android:layout_weight="1"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="20dp"
+                            android:orientation="horizontal"
+                            android:layout_weight="2">
+
+                            <EditText
+                                android:id="@+id/endheight"
+                                android:layout_width="80dp"
+                                android:layout_height="40dp"
+                                android:background="#00000000"
+                                android:gravity="center"
+                                android:text="1024"
+                                android:textColor="#A9A9A9"
+                                android:visibility="visible"
+                                android:layout_weight="1"/>
+                            <Button
+                                android:id="@+id/cfmend"
+                                android:layout_width="80dp"
+                                android:layout_height="40dp"
+                                android:gravity="center"
+                                android:layout_gravity="center"
+                                android:text="确定"
+                                android:textColor="#A9A9A9"
+                                android:visibility="visible"
+                                android:layout_weight="1"/>
+
+                            <EditText
+                                android:id="@+id/showend"
+                                android:layout_width="80dp"
+                                android:layout_height="40dp"
+                                android:background="#00000000"
+                                android:gravity="center"
+                                android:text="1024"
+                                android:textColor="#A9A9A9"
+                                android:visibility="visible"
+                                android:layout_weight="1"/>
+
+                        </LinearLayout>
+
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="20dp"
+                            android:background="#00000000"
+                            android:gravity="center"
+                            android:text="摄像头IP"
+                            android:textColor="#A9A9A9"
+                            android:visibility="visible"
+                            android:layout_weight="1"/>
+                        <EditText
+                            android:id="@+id/ipaddr"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="20dp"
+                            android:background="#00000000"
+                            android:gravity="center"
+                            android:text="192.168.0.77"
+                            android:textColor="#A9A9A9"
+                            android:visibility="visible"
+                            android:layout_weight="2"/>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/port"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="20dp"
+                            android:background="#00000000"
+                            android:gravity="center"
+                            android:text="摄像头端口"
+                            android:textColor="#A9A9A9"
+                            android:visibility="visible"
+                            android:layout_weight="1"/>
+                        <EditText
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="20dp"
+                            android:background="#00000000"
+                            android:gravity="center"
+                            android:text="8000"
+                            android:textColor="#A9A9A9"
+                            android:visibility="visible"
+                            android:layout_weight="2"/>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="20dp"
+                            android:background="#00000000"
+                            android:gravity="center"
+                            android:text="视频存储时长(分钟)"
+                            android:textColor="#A9A9A9"
+                            android:visibility="visible"
+                            android:layout_weight="1"/>
+                        <EditText
+                            android:id="@+id/timegap"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="20dp"
+                            android:background="#00000000"
+                            android:gravity="center"
+                            android:text="30"
+                            android:textColor="#A9A9A9"
+                            android:visibility="visible"
+                            android:layout_weight="2"/>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="20dp"
+                            android:background="#00000000"
+                            android:gravity="center"
+                            android:text="变焦高度(m)"
+                            android:textColor="#A9A9A9"
+                            android:visibility="visible"
+                            android:layout_weight="1"/>
+                        <EditText
+                            android:id="@+id/change_height"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="20dp"
+                            android:background="#00000000"
+                            android:gravity="center"
+                            android:text="5"
+                            android:textColor="#A9A9A9"
+                            android:visibility="visible"
+                            android:layout_weight="2"/>
+                    </TableRow>
+                </TableLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/history"
+                android:layout_width="400dp"
+                android:layout_height="300dp"
+                android:layout_centerVertical="true"
+                android:layout_centerInParent="true"
+                android:background="#FFFFFF"
+                android:visibility="gone">
+                <SurfaceView
+                    android:id="@+id/surface"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:background="#0000ff00" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/rightpad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@+id/Sur_Player"
+                android:layout_centerVertical="true"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btn_Login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/EDT_User"
+                    android:layout_alignParentStart="true"
+                    android:text="西南摄像机"
+                    android:textColor="#ff000000"
+                    android:typeface="sans" />
+
+                <Button
+                    android:id="@+id/btn_zoom_in"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/EDT_User"
+                    android:layout_alignParentStart="true"
+                    android:text="In"
+                    android:textColor="#ff000000"
+                    android:typeface="sans" />
+
+                <Button
+                    android:id="@+id/btn_zoom_out"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/EDT_User"
+                    android:layout_alignParentStart="true"
+                    android:text="Out"
+                    android:textColor="#ff000000"
+                    android:typeface="sans" />
+
+                <Button
+                    android:id="@+id/btn_Preview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/Sur_Player"
+                    android:layout_toEndOf="@+id/btn_Login"
+                    android:text="播放"
+                    android:textColor="#ff000000"
+                    android:typeface="sans" />
+
+                <Button
+                    android:id="@+id/btn_stopSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/Sur_Player"
+                    android:layout_toEndOf="@+id/btn_Preview"
+                    android:text="停保"
+                    android:textColor="#ff000000"
+                    android:typeface="sans" />
+
+                <Button
+                    android:id="@+id/btn_PTZ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/Sur_Player"
+                    android:layout_toEndOf="@+id/btn_Preview"
+                    android:text="保持"
+                    android:textColor="#ff000000"
+                    android:typeface="sans" />
+
+                <Button
+                    android:id="@+id/btn_cut"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/Sur_Player"
+                    android:layout_toEndOf="@+id/btn_Preview"
+                    android:text="截图"
+                    android:textColor="#ff000000"
+                    android:typeface="sans" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!--
+        <LinearLayout
+            android:id="@+id/footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_Preview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/Sur_Player"
+                android:layout_toEndOf="@+id/btn_Login"
+                android:text="播放"
+                android:textColor="#ff000000"
+                android:typeface="sans" />
+
+            <Button
+                android:id="@+id/btn_stopSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/Sur_Player"
+                android:layout_toEndOf="@+id/btn_Preview"
+                android:text="停保"
+                android:textColor="#ff000000"
+                android:typeface="sans" />
+
+            <Button
+                android:id="@+id/btn_PTZ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/Sur_Player"
+                android:layout_toEndOf="@+id/btn_Preview"
+                android:text="保持"
+                android:textColor="#ff000000"
+                android:typeface="sans" />
+        </LinearLayout>
+        -->
+
+    </RelativeLayout>
+
+</AbsoluteLayout>

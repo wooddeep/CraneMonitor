@@ -23,21 +23,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/start_ffmpeg"
-            android:layout_gravity="center"
             android:layout_width="400dp"
             android:layout_height="50dp"
-            android:text="button"
-            android:layout_margin="10dp" />
+            android:layout_margin="10dp"
+            android:text="button" />
 
+        <Button
+            android:id="@+id/start_mplay"
+            android:layout_width="400dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:text="PLAY" />
+
+        <VideoView
+            android:id="@+id/videoView"
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <SurfaceView
+            android:id="@+id/surfaceView"
+            android:layout_width="371dp"
+            android:layout_height="366dp"/>
     </LinearLayout>
+
 
 </LinearLayout>
