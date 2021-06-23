@@ -8,6 +8,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.wooddeep.crane.persist.entity.Area;
+import com.wooddeep.crane.persist.entity.Camera;
 import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.Protect;
 
@@ -91,6 +92,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTableIfNotExists(connectionSource, Crane.class);  // 塔基
             TableUtils.createTableIfNotExists(connectionSource, Area.class);   // 区域
             TableUtils.createTableIfNotExists(connectionSource, Protect.class);   // 区域
+            TableUtils.createTableIfNotExists(connectionSource, Camera.class);   // 区域
             //TableUtils.createTableIfNotExists(connectionSource, ProtectArea.class);   // 保护区域
             //TableUtils.createTableIfNotExists(connectionSource, Calibration.class); // 标定
             //TableUtils.createTableIfNotExists(connectionSource, Load.class);  // 负荷特性

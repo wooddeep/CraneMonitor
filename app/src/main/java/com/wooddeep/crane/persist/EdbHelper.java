@@ -105,7 +105,7 @@ public class EdbHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTableIfNotExists(connectionSource, Crane.class);  // 塔基
             TableUtils.createTableIfNotExists(connectionSource, Area.class);   // 区域
             TableUtils.createTableIfNotExists(connectionSource, Protect.class);   // 区域
-
+            TableUtils.createTableIfNotExists(connectionSource, Crane.class);   // 区域
         } catch (SQLException e) {
             e.printStackTrace();
         }

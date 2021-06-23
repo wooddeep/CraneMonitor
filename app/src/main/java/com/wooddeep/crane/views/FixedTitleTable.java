@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;
@@ -326,6 +327,25 @@ public class FixedTitleTable {
                     editor.setTextSize(textSize);
 
                     if (cell.clickListener != null) editor.setOnClickListener(cell.clickListener);
+                    break;
+
+                case 5:
+                    Button btn = (Button) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_btn, null);
+                    btn.setHeight(60);
+                    btn.setWidth((int) colWidth);
+                    btn.setBackgroundColor(Color.WHITE);
+                    btn.setGravity(Gravity.CENTER);
+                    btn.setTextColor(Color.DKGRAY);
+                    btn.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
+                    contentRow.addView(btn); // 先添加控件
+                    btn.setText(cell.value);
+                    btn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // TODO
+                        }
+                    });
+                    //if (cell.clickListener != null) editor.setOnClickListener(cell.clickListener);
                     break;
 
                 default:
