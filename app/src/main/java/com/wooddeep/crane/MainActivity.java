@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.x6.serialportlib.SerialPort;
+import com.wooddeep.crane.agent.CameraAgentKt;
 import com.wooddeep.crane.alarm.Alarm;
 import com.wooddeep.crane.alarm.AlertSound;
 import com.wooddeep.crane.comm.ControlProto;
@@ -67,11 +68,13 @@ import com.wooddeep.crane.main.SavedData;
 import com.wooddeep.crane.main.ShowData;
 import com.wooddeep.crane.net.NetClient;
 import com.wooddeep.crane.persist.DatabaseHelper;
+import com.wooddeep.crane.persist.EdbHelper;
 import com.wooddeep.crane.persist.LoadDbHelper;
 import com.wooddeep.crane.persist.LogDbHelper;
 import com.wooddeep.crane.persist.dao.AlarmSetDao;
 import com.wooddeep.crane.persist.dao.AreaDao;
 import com.wooddeep.crane.persist.dao.CalibrationDao;
+import com.wooddeep.crane.persist.dao.CameraDao;
 import com.wooddeep.crane.persist.dao.CraneDao;
 import com.wooddeep.crane.persist.dao.CraneParaDao;
 import com.wooddeep.crane.persist.dao.ProtectAreaDao;
@@ -85,6 +88,7 @@ import com.wooddeep.crane.persist.dao.log.WorkRecDao;
 import com.wooddeep.crane.persist.entity.AlarmSet;
 import com.wooddeep.crane.persist.entity.Area;
 import com.wooddeep.crane.persist.entity.Calibration;
+import com.wooddeep.crane.persist.entity.Camera;
 import com.wooddeep.crane.persist.entity.Crane;
 import com.wooddeep.crane.persist.entity.CranePara;
 import com.wooddeep.crane.persist.entity.Protect;
@@ -235,6 +239,8 @@ public class MainActivity extends AppCompatActivity {
 
     private SwitchRecDao switchRecDao;
     private SwitchRec switchRec = new SwitchRec();
+
+    private CameraDao cameraDao; // 摄像头配置
 
     private CraneView craneView;
     private TextView angleView;
@@ -1819,6 +1825,8 @@ public class MainActivity extends AppCompatActivity {
         LogDbHelper.getInstance(context).createTable(CaliRec.class);
         LogDbHelper.getInstance(context).createTable(CtrlRec.class);
         LogDbHelper.getInstance(context).createTable(SwitchRec.class);
+
+        CameraAgentKt.createCameraContainers(this, context);
 
         alarmSet = alarmSetDao.selectAll().get(0);
 
