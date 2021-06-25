@@ -19,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 
 import com.example.x6.serialportlib.SerialPort;
 import com.wooddeep.crane.agent.CameraAgentKt;
+import com.wooddeep.crane.agent.MainAgentKt;
 import com.wooddeep.crane.alarm.Alarm;
 import com.wooddeep.crane.alarm.AlertSound;
 import com.wooddeep.crane.comm.ControlProto;
@@ -1837,8 +1839,6 @@ public class MainActivity extends AppCompatActivity {
         LogDbHelper.getInstance(context).createTable(CtrlRec.class);
         LogDbHelper.getInstance(context).createTable(SwitchRec.class);
 
-        CameraAgentKt.createCameraContainers(this, context);
-
         alarmSet = alarmSetDao.selectAll().get(0);
 
         List<Calibration> calList = calibrationDao.selectAll();
@@ -1960,6 +1960,9 @@ public class MainActivity extends AppCompatActivity {
         setCurrTime();
 
         player = MediaPlayer.create(context, R.raw.ding);
+
+        MainAgentKt.setOnDoubleClick(this);
+
 
         // 串口设置: 8N1,一个起始位,8个数据位,一个停止位
 

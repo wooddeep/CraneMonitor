@@ -32,7 +32,7 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:background="#FFFCFCFC"
-        android:elevation="@dimen/dp5"
+        android:elevation="@dimen/dp10"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -398,6 +398,7 @@
     -->
 
     <LinearLayout
+        android:id="@+id/main_main_win"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
@@ -1054,7 +1055,7 @@
                         app:hook_height="300" />
 
                     <SurfaceView
-                        android:id="@+id/srfc"
+                        android:id="@+id/mini_camera"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:visibility="gone" />

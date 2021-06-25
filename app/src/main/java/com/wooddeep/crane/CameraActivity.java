@@ -41,15 +41,12 @@ public class CameraActivity extends AppCompatActivity {
 
     private ImageView saveButton;
 
-    private MediaPlayer _mediaPlayer = null;
-    //private SurfaceView  srfc;
-
+    private MediaPlayer mediaPlayer = null;
     private LibVLC libVLC = null;
-
     private Button start;
     private Button stop;
-
     private SurfaceView srfc; // = findViewById(R.id.srfc);
+    private String currUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,97 +70,59 @@ public class CameraActivity extends AppCompatActivity {
         //initMediaPlayer("");
 
         // add camera
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addCamera();
-            }
-        });
+        addButton.setOnClickListener(v -> addCamera());
 
         // delete camera
-        delButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteCamera();
-            }
-        });
+        delButton.setOnClickListener(v -> deleteCamera());
 
         // save change
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveCameraInfo(activity);
-            }
-        });
+        saveButton.setOnClickListener(v -> saveCameraInfo(activity));
 
-        findViewById(R.id.btn_play_close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                findViewById(R.id.camera_show).setVisibility(View.GONE);
-            }
-        });
+        findViewById(R.id.btn_play_close).setOnClickListener(v -> findViewById(R.id.camera_show).setVisibility(View.GONE));
 
         //在Activity中可以为按钮增加事件
         start = findViewById(R.id.btn_play_start);
         stop = findViewById(R.id.btn_play_stop);
 
-        start.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                //_mediaPlayer.getMedia().release();
-                //_mediaPlayer.release();
-                //Media media = new Media(libVLC, Uri.parse("rtsp://192.168.141.98:8554/camera"));
-
-                try {
-                    if (_mediaPlayer != null) {
-                        _mediaPlayer.getVLCVout().detachViews();
-                    }
-                    initMediaPlayer("");
-
-                    //_mediaPlayer.setMedia(media);
-                    _mediaPlayer.play();
-                } catch (Exception e) {
-
+        start.setOnClickListener(view -> {
+            try {
+                if (mediaPlayer != null) {
+                    mediaPlayer.getVLCVout().detachViews();
                 }
+                mediaPlayer = initMediaPlayer(currUri);
+                mediaPlayer.play();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 
-        stop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //mediaPlayer.pause();
+        stop.setOnClickListener(view -> {
+            if (mediaPlayer != null) {
+                mediaPlayer.pause();
             }
         });
 
     }
 
-    public void initMediaPlayer(String url) {
-
+    public MediaPlayer initMediaPlayer(String url) {
         try {
-//            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-//                mediaPlayer.stop();
-//                mediaPlayer.release();
-//                mediaPlayer = null;
-//            }
             MediaPlayer mediaPlayer;
-
             mediaPlayer = new MediaPlayer(libVLC);
             //String url = getString(R.string.http_video11_qtv_com_cn_qtv1_sd_manifest_m3u8);
-            String _url = "rtsp://192.168.141.98:8554/camera";
+            //String _url = "rtsp://192.168.141.98:8554/camera";
             //String url = "file:///sdcard/lihan.mp4";
             mediaPlayer.getVLCVout().setVideoSurface(srfc.getHolder().getSurface(), srfc.getHolder());
 
 
             //播放前还要调用这个方法
             mediaPlayer.getVLCVout().attachViews();
-            Media media = new Media(libVLC, Uri.parse(_url));
+            Media media = new Media(libVLC, Uri.parse(url));
             mediaPlayer.setMedia(media);
-            //mediaPlayer.play();
-            _mediaPlayer = mediaPlayer;
+            return mediaPlayer;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
 
@@ -229,8 +188,7 @@ public class CameraActivity extends AppCompatActivity {
         System.out.println("## url:" + url);
 
         findViewById(R.id.camera_show).setVisibility(View.VISIBLE);
-
-        //initMediaPlayer(url);
+        currUri = url;
     }
 
     private List<Integer> widthList = new ArrayList() {{
@@ -329,12 +287,7 @@ public class CameraActivity extends AppCompatActivity {
             row.add(new TableCell(3, camera.getRoute()));
             row.add(new TableCell(1, camera.getUsername()));
             row.add(new TableCell(1, camera.getPassword()));
-            View.OnClickListener cl = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    initCameraTest(v);
-                }
-            };
+            View.OnClickListener cl = v -> initCameraTest(v);
 
             row.add(new TableCell(0, "打开", cl));
             List<View> viewList = table.addDataRow(row, widthList, true);
@@ -374,12 +327,9 @@ public class CameraActivity extends AppCompatActivity {
     private AlertView gAlertView = null;
 
     private void setOnClickListener(View view) {
-        View.OnClickListener onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (view.getId() == R.id.close_logo) {
-                    finish();
-                }
+        View.OnClickListener onClickListener = view1 -> {
+            if (view1.getId() == R.id.close_logo) {
+                finish();
             }
         };
 
