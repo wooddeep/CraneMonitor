@@ -238,7 +238,7 @@ public class ProtectSetting extends AppCompatActivity {
             head.add(new TableCell(0, String.format("%02d号区域/No.%02d", i + 1, i + 1)));
         }
 
-        table.setFirstRow(head, idList);
+        table.setFirstRow(head, idList, null);
 
         for (int i = 0; i < craneParaNames.length; i++) {
             ArrayList<TableCell> row = new ArrayList<TableCell>();
@@ -287,7 +287,7 @@ public class ProtectSetting extends AppCompatActivity {
                         break;
                 }
             }
-            table.addDataRow(row, true);
+            table.addDataRow(row, null, true);
         }
 
     }

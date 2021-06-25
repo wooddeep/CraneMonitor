@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <Button xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/title_cell_width"
-    android:layout_height="@dimen/row_height"
-    android:background="#00000000"
+    android:layout_width="20dp"
+    android:layout_height="20dp"
     android:gravity="center"
     android:text="XYZ"
     android:typeface="monospace" />

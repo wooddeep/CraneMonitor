@@ -102,7 +102,7 @@ public class WorkRecTable extends TableDesc {
             row.add(new TableCell(0, String.valueOf(recrod.getWindspeed())));
             row.add(new TableCell(0, String.valueOf(recrod.getRemark())));
 
-            table.addDataRow(row, true, widthList);
+            table.addDataRow(row, widthList, true);
         }
     }
 

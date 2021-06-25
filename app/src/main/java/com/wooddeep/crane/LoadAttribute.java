@@ -511,7 +511,7 @@ public class LoadAttribute extends AppCompatActivity {
             add(-1);
         }};
 
-        table.setFirstRow(colNames, idList);
+        table.setFirstRow(colNames, idList, null);
 
         // 数据信息
         List<TcParam> loads = queryLoadByCondition();
@@ -519,7 +519,7 @@ public class LoadAttribute extends AppCompatActivity {
             ArrayList<TableCell> row = new ArrayList<TableCell>();
             row.add(new TableCell(0, load.getCoordinate()));
             row.add(new TableCell(0, load.getWeight()));
-            table.addDataRow(row, true);
+            table.addDataRow(row, null, true);
         }
 
     }

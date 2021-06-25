@@ -118,7 +118,7 @@ public class FixedTitleTable {
         }
     }
 
-    public void setFirstRow(List<TableCell> colNames, List<Integer> idList) {
+    public void setFirstRow(List<TableCell> colNames, List<Integer> idList, List<Integer> widthList) {
         float colWidth = 200;
         float spareWidth = this.screenWidth - fisrtColWidth;
         float avgWidth = (float) spareWidth / (colNames.size() - 1);
@@ -132,7 +132,12 @@ public class FixedTitleTable {
         title.setTextSize(textSize);
         title.setText(colNames.get(0).value);
 
-        title.setWidth(fisrtColWidth); // TODO
+        //title.setWidth(fisrtColWidth); // TODO
+        if (widthList == null) {
+            title.setWidth(fisrtColWidth);
+        } else {
+            title.setWidth(widthList.get(0));
+        }
 
         TextPaint tp = title.getPaint();
         tp.setFakeBoldText(true);
@@ -148,7 +153,13 @@ public class FixedTitleTable {
             view.setHeight(60);
             view.setTextSize(textSize);
 
-            view.setWidth((int) colWidth);
+            //view.setWidth((int) colWidth);
+            if (widthList == null) {
+                view.setWidth((int) colWidth);
+            } else {
+                view.setWidth(widthList.get(i));
+            }
+
             view.setBackgroundColor(Color.rgb(176, 196, 222));
             view.setGravity(Gravity.CENTER);
             view.setTextColor(Color.DKGRAY);
@@ -163,6 +174,7 @@ public class FixedTitleTable {
         firstRowTable.setVisibility(View.VISIBLE);
     }
 
+    /*
     public void setFirstRow(List<TableCell> colNames, List<Integer> idList, List<Integer> widthList) {
         TableLayout tableTitle = (TableLayout) activity.findViewById(R.id.title_table);
         TextView title = (TextView) activity.findViewById(R.id.title_tv);
@@ -199,7 +211,7 @@ public class FixedTitleTable {
         tableTitle.setVisibility(View.VISIBLE);
         firstRowTable.setVisibility(View.VISIBLE);
     }
-
+    */
 
     public void clearAll() {
         TableLayout firstColTable = (TableLayout) activity.findViewById(R.id.first_column_table);
@@ -209,13 +221,15 @@ public class FixedTitleTable {
     }
 
 
-    public void addDataRow(List<TableCell> cells, boolean visible) {
+    public List<View> addDataRow(List<TableCell> cells, List<Integer> widthList, boolean visible) {
         float colWidth = 200;
         float spareWidth = this.screenWidth - fisrtColWidth;
         float avgWidth = (float) spareWidth / (cells.size() - 1);
         if (avgWidth >= 200) {
             colWidth = avgWidth;
         }
+
+        List<View> outList = new ArrayList<View>();
 
         TableLayout firstColTable = (TableLayout) activity.findViewById(R.id.first_column_table);
         // 添加一行的第一个单元
@@ -225,7 +239,12 @@ public class FixedTitleTable {
         view.setText(cells.get(0).value);
         view.setTextSize(textSize);
         view.setHeight(60);
-        view.setWidth(fisrtColWidth); // TODO
+
+        if (widthList == null) {
+            view.setWidth(fisrtColWidth);
+        } else {
+            view.setWidth(widthList.get(0));
+        }
 
         view.setBackgroundColor(0x00000000);
         view.setGravity(Gravity.CENTER);
@@ -250,8 +269,16 @@ public class FixedTitleTable {
             switch (cell.type) {
                 case 0:
                     TextView contentView = (TextView) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_tv, null);
+                    outList.add(contentView);
                     contentView.setHeight(60);
-                    contentView.setWidth((int) colWidth);
+                    //contentView.setWidth((int) colWidth);
+
+                    if (widthList == null) {
+                        contentView.setWidth((int) colWidth);
+                    } else {
+                        contentView.setWidth(widthList.get(i));
+                    }
+
                     contentView.setBackgroundColor(Color.WHITE);
                     contentView.setGravity(Gravity.CENTER);
                     contentView.setTextColor(Color.DKGRAY);
@@ -266,11 +293,18 @@ public class FixedTitleTable {
                     break;
                 case 1:
                     EditText editor = (EditText) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_et, null);
-                    editor.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
+                    outList.add(editor);
+                    editor.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED | InputType.TYPE_CLASS_TEXT);
                     editor.setHeight(60);
-                    editor.setWidth((int) colWidth);
+                    //editor.setWidth((int) colWidth);
+
+                    if (widthList == null) {
+                        editor.setWidth((int) colWidth);
+                    } else {
+                        editor.setWidth(widthList.get(i));
+                    }
+
                     editor.setBackgroundColor(Color.WHITE);
-                    //editor.setGravity(Gravity.CENTER);
                     editor.setTextColor(Color.DKGRAY);
                     editor.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
                     contentRow.addView(editor); // 先添加控件
@@ -283,8 +317,15 @@ public class FixedTitleTable {
                     break;
                 case 2:
                     TextView button = (TextView) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_tv, null);
+                    outList.add(button);
                     button.setHeight(60);
-                    button.setWidth((int) colWidth);
+                    //button.setWidth((int) colWidth);
+                    if (widthList == null) {
+                        button.setWidth((int) colWidth);
+                    } else {
+                        button.setWidth(widthList.get(i));
+                    }
+
                     button.setBackgroundColor(Color.WHITE);
                     button.setGravity(Gravity.CENTER);
                     button.setTextColor(Color.DKGRAY);
@@ -309,13 +350,20 @@ public class FixedTitleTable {
                             v.setId(newId);
                         }
                     });
-                    //if (cell.clickListener != null) editor.setOnClickListener(cell.clickListener);
+
                     break;
 
                 case 3:
                     editor = (EditText) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_et, null);
+                    outList.add(editor);
                     editor.setHeight(60);
-                    editor.setWidth((int) colWidth);
+                    //editor.setWidth((int) colWidth);
+                    if (widthList == null) {
+                        editor.setWidth((int) colWidth);
+                    } else {
+                        editor.setWidth(widthList.get(i));
+                    }
+
                     editor.setBackgroundColor(Color.WHITE);
                     //editor.setGravity(Gravity.CENTER);
                     editor.setTextColor(Color.DKGRAY);
@@ -326,26 +374,8 @@ public class FixedTitleTable {
                     editor.setText(cell.value);
                     editor.setTextSize(textSize);
 
-                    if (cell.clickListener != null) editor.setOnClickListener(cell.clickListener);
-                    break;
-
-                case 5:
-                    Button btn = (Button) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_btn, null);
-                    btn.setHeight(60);
-                    btn.setWidth((int) colWidth);
-                    btn.setBackgroundColor(Color.WHITE);
-                    btn.setGravity(Gravity.CENTER);
-                    btn.setTextColor(Color.DKGRAY);
-                    btn.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
-                    contentRow.addView(btn); // 先添加控件
-                    btn.setText(cell.value);
-                    btn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // TODO
-                        }
-                    });
-                    //if (cell.clickListener != null) editor.setOnClickListener(cell.clickListener);
+                    if (cell.clickListener != null)
+                        editor.setOnClickListener(cell.clickListener);
                     break;
 
                 default:
@@ -356,9 +386,10 @@ public class FixedTitleTable {
         contentTable.addView(contentRow);
         lp = (TableLayout.LayoutParams) contentRow.getLayoutParams();
         lp.setMargins(0, 0, 2, 2); // 再设置margin
+        return outList;
     }
 
-
+    /*
     public void addDataRow(List<TableCell> cells, boolean visible, List<Integer> widthList) {
         TableLayout firstColTable = (TableLayout) activity.findViewById(R.id.first_column_table);
         // 添加一行的第一个单元
@@ -411,6 +442,7 @@ public class FixedTitleTable {
                 case 1:
                     EditText editor = (EditText) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_et, null);
                     editor.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
+                    //editor.setInputType(InputType.TYPE_CLASS_TEXT);
                     editor.setHeight(60);
                     editor.setWidth((int) widthList.get(i));
                     editor.setBackgroundColor(Color.WHITE);
@@ -422,7 +454,8 @@ public class FixedTitleTable {
                     rowLp.setMargins(0, 0, 2, 0); // 再设置margin
                     editor.setText(cell.value);
                     editor.setTextSize(textSize);
-                    if (cell.clickListener != null) editor.setOnClickListener(cell.clickListener);
+                    if (cell.clickListener != null)
+                        editor.setOnClickListener(cell.clickListener);
                     break;
                 case 2:
                     TextView button = (TextView) LayoutInflater.from(activity).inflate(R.layout.table_title_row_cell_tv, null);
@@ -462,7 +495,7 @@ public class FixedTitleTable {
         lp = (TableLayout.LayoutParams) contentRow.getLayoutParams();
         lp.setMargins(0, 0, 2, 2); // 再设置margin
     }
-
+    */
 
     public List<List<String>> getCurrData() {
         List<List<String>> out = new ArrayList();

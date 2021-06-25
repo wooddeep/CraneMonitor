@@ -192,7 +192,7 @@ public class DataRecord extends AppCompatActivity {
         if (currTableDesc.getWidthList() != null) {
             table.setFirstRow(currTableDesc.getColNames(), currTableDesc.getIdList(), currTableDesc.getWidthList());
         } else {
-            table.setFirstRow(currTableDesc.getColNames(), currTableDesc.getIdList());
+            table.setFirstRow(currTableDesc.getColNames(), currTableDesc.getIdList(), null);
         }
         currTableDesc.showDataInfo(table);
     }

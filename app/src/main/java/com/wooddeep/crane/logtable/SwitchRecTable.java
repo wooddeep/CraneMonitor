@@ -64,7 +64,7 @@ public class SwitchRecTable extends TableDesc {
             row.add(new TableCell(0, String.valueOf(recrod.getId())));
             row.add(new TableCell(0, recrod.getTime()));
             row.add(new TableCell(0, recrod.getAction()));
-            table.addDataRow(row, true, widthList);
+            table.addDataRow(row, widthList, true);
         }
     }
 

@@ -133,7 +133,7 @@ public class CtrlRecTable extends TableDesc {
             row.add(new TableCell(0, String.valueOf(recrod.isWeight1())));
             row.add(new TableCell(0, String.valueOf(recrod.isCarBack2())));
             row.add(new TableCell(0, String.valueOf(recrod.isCarBack1())));
-            table.addDataRow(row, true, widthList);
+            table.addDataRow(row, widthList, true);
         }
     }
 

@@ -523,7 +523,7 @@ public class CraneSetting extends AppCompatActivity {
             idList.add(paras.get(i).getId());
         }
 
-        table.setFirstRow(colNames, idList);
+        table.setFirstRow(colNames, idList, null);
 
         for (int i = 0; i < paras.size(); i++) {
             if (paras.get(i).getIsMain() == true) {
@@ -593,7 +593,7 @@ public class CraneSetting extends AppCompatActivity {
                         break;
                 }
             }
-            table.addDataRow(cells, craneParaVisible[i]);
+            table.addDataRow(cells, null, craneParaVisible[i]);
         }
 
     }

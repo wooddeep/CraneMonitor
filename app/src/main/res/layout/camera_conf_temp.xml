@@ -3,6 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_below="@+id/banner"
     android:orientation="vertical">
 
     <!-- first row -->
@@ -12,8 +13,9 @@
         android:orientation="horizontal">
 
         <!-- first column -->
+
         <ScrollView
-            android:layout_width="@dimen/title_cell_width"
+            android:layout_width="@dimen/rec_id_width"
             android:layout_height="wrap_content">
 
             <TableLayout
@@ -21,18 +23,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/light_gray"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <TableRow
                     android:id="@+id/title_row"
-                    android:layout_width="@dimen/title_cell_width"
+                    android:layout_width="@dimen/rec_id_width"
                     android:layout_height="@dimen/row_height"
                     android:layout_margin="@dimen/grid_width"
                     android:background="@color/table_first_row">
 
                     <TextView
                         android:id="@+id/title_tv"
-                        android:layout_width="@dimen/title_cell_width"
+                        android:layout_width="@dimen/rec_id_width"
                         android:layout_height="@dimen/row_height"
                         android:gravity="center"
                         android:text="TITLE"
@@ -44,6 +46,7 @@
 
             </TableLayout>
         </ScrollView>
+
 
         <ScrollView
             android:layout_width="match_parent"
@@ -69,7 +72,7 @@
 
                         <TableRow
                             android:id="@+id/first_row_row"
-                            android:layout_width="@dimen/title_cell_width"
+                            android:layout_width="@dimen/rec_id_width"
                             android:layout_height="@dimen/row_height"
                             android:layout_marginBottom="@dimen/grid_width"
                             android:layout_marginRight="@dimen/grid_width"
@@ -78,7 +81,7 @@
 
                             <TextView
                                 android:id="@+id/first_row_cell"
-                                android:layout_width="@dimen/title_cell_width"
+                                android:layout_width="@dimen/rec_id_width"
                                 android:layout_height="@dimen/row_height"
                                 android:background="@color/table_first_row"
                                 android:gravity="center"
@@ -87,30 +90,12 @@
                                 android:typeface="monospace" />
 
                             <TextView
-                                android:layout_width="@dimen/title_cell_width"
-                                android:layout_height="@dimen/row_height"
-                                android:background="@color/table_first_row"
-                                android:gravity="center"
-                                android:text="2"
-                                android:typeface="monospace" />
-
-
-                            <TextView
                                 android:layout_width="@dimen/rec_id_width"
                                 android:layout_height="@dimen/row_height"
                                 android:background="@color/table_first_row"
                                 android:gravity="center"
                                 android:text="2"
                                 android:typeface="monospace" />
-
-                            <TextView
-                                android:layout_width="@dimen/rec_id_width"
-                                android:layout_height="@dimen/row_height"
-                                android:background="@color/table_first_row"
-                                android:gravity="center"
-                                android:text="2"
-                                android:typeface="monospace" />
-
                         </TableRow>
 
                     </TableLayout>
@@ -128,7 +113,7 @@
         <!-- first column -->
         <ScrollView
             android:id="@+id/first_column"
-            android:layout_width="@dimen/title_cell_width"
+            android:layout_width="@dimen/rec_id_width"
             android:layout_height="match_parent">
 
             <TableLayout
@@ -137,25 +122,6 @@
                 android:layout_height="wrap_content"
                 android:background="@color/light_gray">
 
-                <!--
-                <TableRow
-                    android:layout_width="@dimen/title_cell_width"
-                    android:layout_height="@dimen/row_height"
-                    android:layout_marginBottom="@dimen/grid_width"
-                    android:layout_marginLeft="@dimen/grid_width"
-                    android:layout_marginRight="@dimen/grid_width"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="@dimen/title_cell_width"
-                        android:layout_height="@dimen/row_height"
-                        android:background="#00000000"
-                        android:gravity="center"
-                        android:text="参数1"
-                        android:typeface="monospace" />
-
-                </TableRow>
-                -->
             </TableLayout>
         </ScrollView>
 
@@ -182,32 +148,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@color/light_gray">
-
-                        <!--
-                        <TableRow
-                            android:layout_width="@dimen/title_cell_width"
-                            android:layout_height="@dimen/row_height"
-                            android:layout_marginBottom="@dimen/grid_width"
-                            android:layout_marginRight="@dimen/grid_width">
-
-                            <EditText
-                                android:layout_width="@dimen/title_cell_width"
-                                android:layout_height="@dimen/row_height"
-                                android:layout_marginRight="2px"
-                                android:background="@color/white"
-                                android:gravity="center"
-                                android:text="参数值"
-                                android:typeface="monospace" />
-                            <EditText
-                                android:layout_width="@dimen/title_cell_width"
-                                android:layout_height="@dimen/row_height"
-                                android:background="@color/white"
-                                android:layout_marginRight="2px"
-                                android:gravity="center"
-                                android:text="参数值"
-                                android:typeface="monospace" />
-                        </TableRow>
-                         -->
                     </TableLayout>
 
                 </HorizontalScrollView>
@@ -215,3 +155,220 @@
         </ScrollView>
     </LinearLayout>
 </LinearLayout>
+
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_below="@+id/banner"-->
+<!--    android:orientation="vertical">-->
+
+<!--    &lt;!&ndash; first row &ndash;&gt;-->
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal">-->
+
+<!--        &lt;!&ndash; first column &ndash;&gt;-->
+<!--        <ScrollView-->
+<!--            android:layout_width="@dimen/title_cell_width"-->
+<!--            android:layout_height="wrap_content">-->
+
+<!--            <TableLayout-->
+<!--                android:id="@+id/title_table"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@color/light_gray"-->
+<!--                android:visibility="gone">-->
+
+<!--                <TableRow-->
+<!--                    android:id="@+id/title_row"-->
+<!--                    android:layout_width="@dimen/rec_id_width"-->
+<!--                    android:layout_height="@dimen/row_height"-->
+<!--                    android:layout_margin="@dimen/grid_width"-->
+<!--                    android:background="@color/table_first_row">-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/title_tv"-->
+<!--                        android:layout_width="@dimen/rec_id_width"-->
+<!--                        android:layout_height="@dimen/row_height"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="TITLE"-->
+<!--                        android:textColor="@color/deep_gray"-->
+<!--                        android:textSize="@dimen/dp18"-->
+<!--                        android:typeface="monospace" />-->
+
+<!--                </TableRow>-->
+
+<!--            </TableLayout>-->
+<!--        </ScrollView>-->
+
+<!--        <ScrollView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content">-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical">-->
+
+<!--                <HorizontalScrollView-->
+<!--                    android:id="@+id/first_row"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:scrollbars="none">-->
+
+<!--                    <TableLayout-->
+<!--                        android:id="@+id/first_row_table"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:background="@color/light_gray"-->
+<!--                        android:visibility="gone">-->
+
+<!--                        <TableRow-->
+<!--                            android:id="@+id/first_row_row"-->
+<!--                            android:layout_width="@dimen/rec_id_width"-->
+<!--                            android:layout_height="@dimen/row_height"-->
+<!--                            android:layout_marginBottom="@dimen/grid_width"-->
+<!--                            android:layout_marginRight="@dimen/grid_width"-->
+<!--                            android:layout_marginTop="@dimen/grid_width"-->
+<!--                            android:background="#00000000">-->
+
+<!--                            <TextView-->
+<!--                                android:id="@+id/first_row_cell"-->
+<!--                                android:layout_width="@dimen/rec_id_width"-->
+<!--                                android:layout_height="@dimen/row_height"-->
+<!--                                android:background="@color/table_first_row"-->
+<!--                                android:gravity="center"-->
+<!--                                android:text="1"-->
+<!--                                android:layout_marginRight="2px"-->
+<!--                                android:typeface="monospace" />-->
+
+<!--                            <TextView-->
+<!--                                android:layout_width="@dimen/rec_id_width"-->
+<!--                                android:layout_height="@dimen/row_height"-->
+<!--                                android:background="@color/table_first_row"-->
+<!--                                android:gravity="center"-->
+<!--                                android:text="2"-->
+<!--                                android:typeface="monospace" />-->
+
+
+<!--                            <TextView-->
+<!--                                android:layout_width="@dimen/rec_id_width"-->
+<!--                                android:layout_height="@dimen/row_height"-->
+<!--                                android:background="@color/table_first_row"-->
+<!--                                android:gravity="center"-->
+<!--                                android:text="2"-->
+<!--                                android:typeface="monospace" />-->
+
+<!--                            <TextView-->
+<!--                                android:layout_width="@dimen/rec_id_width"-->
+<!--                                android:layout_height="@dimen/row_height"-->
+<!--                                android:background="@color/table_first_row"-->
+<!--                                android:gravity="center"-->
+<!--                                android:text="2"-->
+<!--                                android:typeface="monospace" />-->
+
+<!--                        </TableRow>-->
+
+<!--                    </TableLayout>-->
+
+<!--                </HorizontalScrollView>-->
+<!--            </LinearLayout>-->
+<!--        </ScrollView>-->
+<!--    </LinearLayout>-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:orientation="horizontal">-->
+
+<!--        &lt;!&ndash; first column &ndash;&gt;-->
+<!--        <ScrollView-->
+<!--            android:id="@+id/first_column"-->
+<!--            android:layout_width="@dimen/rec_id_width"-->
+<!--            android:layout_height="match_parent">-->
+
+<!--            <TableLayout-->
+<!--                android:id="@+id/first_column_table"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@color/light_gray">-->
+
+<!--                &lt;!&ndash;-->
+<!--                <TableRow-->
+<!--                    android:layout_width="@dimen/title_cell_width"-->
+<!--                    android:layout_height="@dimen/row_height"-->
+<!--                    android:layout_marginBottom="@dimen/grid_width"-->
+<!--                    android:layout_marginLeft="@dimen/grid_width"-->
+<!--                    android:layout_marginRight="@dimen/grid_width"-->
+<!--                    android:background="@color/white">-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="@dimen/title_cell_width"-->
+<!--                        android:layout_height="@dimen/row_height"-->
+<!--                        android:background="#00000000"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="参数1"-->
+<!--                        android:typeface="monospace" />-->
+
+<!--                </TableRow>-->
+<!--                &ndash;&gt;-->
+<!--            </TableLayout>-->
+<!--        </ScrollView>-->
+
+
+<!--        &lt;!&ndash; 内容 &ndash;&gt;-->
+<!--        <ScrollView-->
+<!--            android:id="@+id/content_verticle"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:scrollbars="none">-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:orientation="vertical">-->
+
+<!--                <HorizontalScrollView-->
+<!--                    android:id="@+id/content_horizontal"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content">-->
+
+<!--                    <TableLayout-->
+<!--                        android:id="@+id/content_talble"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:background="@color/light_gray">-->
+
+<!--                        &lt;!&ndash;-->
+<!--                        <TableRow-->
+<!--                            android:layout_width="@dimen/title_cell_width"-->
+<!--                            android:layout_height="@dimen/row_height"-->
+<!--                            android:layout_marginBottom="@dimen/grid_width"-->
+<!--                            android:layout_marginRight="@dimen/grid_width">-->
+
+<!--                            <EditText-->
+<!--                                android:layout_width="@dimen/title_cell_width"-->
+<!--                                android:layout_height="@dimen/row_height"-->
+<!--                                android:layout_marginRight="2px"-->
+<!--                                android:background="@color/white"-->
+<!--                                android:gravity="center"-->
+<!--                                android:text="参数值"-->
+<!--                                android:typeface="monospace" />-->
+<!--                            <EditText-->
+<!--                                android:layout_width="@dimen/title_cell_width"-->
+<!--                                android:layout_height="@dimen/row_height"-->
+<!--                                android:background="@color/white"-->
+<!--                                android:layout_marginRight="2px"-->
+<!--                                android:gravity="center"-->
+<!--                                android:text="参数值"-->
+<!--                                android:typeface="monospace" />-->
+<!--                        </TableRow>-->
+<!--                         &ndash;&gt;-->
+<!--                    </TableLayout>-->
+
+<!--                </HorizontalScrollView>-->
+<!--            </LinearLayout>-->
+<!--        </ScrollView>-->
+<!--    </LinearLayout>-->
+<!--</LinearLayout>-->

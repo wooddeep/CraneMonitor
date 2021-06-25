@@ -34,7 +34,7 @@
         android:background="#FFFCFCFC"
         android:elevation="@dimen/dp5"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <!--
         <LinearLayout

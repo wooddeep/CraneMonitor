@@ -31,16 +31,28 @@ public class Camera {
     @DatabaseField(columnName = "number", useGetSet = true, defaultValue = "1")
     private String number;
 
+    @DatabaseField(columnName = "route", useGetSet = true, defaultValue = "1")
+    private String route;
+
+
+    @DatabaseField(columnName = "username", useGetSet = true, defaultValue = "1")
+    private String username;
+
+    @DatabaseField(columnName = "password", useGetSet = true, defaultValue = "1")
+    private String password;
+
+
     public Camera() {
         super();
     }
 
 
-    public Camera(String ip, String port, String url, String number) {
+    public Camera(String ip, String port, String url, String number, String route) {
         this.ip = ip;
         this.port = port;
         this.url = url;
         this.number = number;
+        this.route = route;
     }
 
     public String getIp() {
@@ -75,12 +87,37 @@ public class Camera {
         this.number = number;
     }
 
+    public String getRoute() {
+        return route;
+    }
+
+    public void setRoute(String route) {
+        this.route = route;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public static Camera getInitData() {
         return new Camera(
             "127.0.0.1",
             "8544",
             "rtsp://127.0.0.1:8544/index",
-            "1"
+            "1",
+            "camera"
         );
     }
 

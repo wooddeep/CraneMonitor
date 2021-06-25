@@ -71,6 +71,8 @@ fun createCameraContainers(activity: Activity, context: Context) {
     val cameraDao = CameraDao(activity)
     val config = cameraDao.selectAll()
 
+    if (config.size <= 0) return
+
     val mainLayout = activity.findViewById<LinearLayout>(R.id.main_cameras)
 
     val rows = surfaceLayout[config.size - 1][0]

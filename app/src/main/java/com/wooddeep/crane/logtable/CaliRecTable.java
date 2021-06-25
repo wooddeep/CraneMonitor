@@ -86,7 +86,7 @@ public class CaliRecTable extends TableDesc {
             row.add(new TableCell(0, recrod.getEndValue()));
             row.add(new TableCell(0, String.valueOf(recrod.getKValue())));
 
-            table.addDataRow(row, true, widthList);
+            table.addDataRow(row, widthList, true);
         }
     }
 
