@@ -749,7 +749,7 @@
                             android:layout_gravity="center"
                             android:layout_marginLeft="@dimen/dp15"
                             android:gravity="center"
-                            android:src="@mipmap/camera_conf"/>
+                            android:src="@mipmap/camera_conf" />
 
                         <ImageView
                             android:id="@+id/super_admin"
@@ -1054,11 +1054,20 @@
                         app:crane_type="0"
                         app:hook_height="300" />
 
-                    <SurfaceView
+                    <ScrollView
                         android:id="@+id/mini_camera"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="gone" />
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:id="@+id/mini_camera_container">
+
+                        </LinearLayout>
+                    </ScrollView>
 
                 </LinearLayout>
 

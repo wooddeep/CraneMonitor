@@ -27,6 +27,7 @@ import java.util.*
 fun setOnDoubleClick(activity: Activity) {
     val gridView = activity.findViewById<FrameLayout>(R.id.main_frame)
     gridView.setOnLongClickListener { v ->
+
         createCameraContainers(activity, activity.applicationContext)
         activity.findViewById<LinearLayout>(R.id.main_cameras).visibility = View.VISIBLE
         activity.findViewById<LinearLayout>(R.id.main_main_win).visibility = View.GONE
