@@ -401,7 +401,7 @@
         android:id="@+id/main_main_win"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
+        android:layout_above="@+id/new_camera_show"
         android:orientation="vertical"
         tools:context=".MainActivity">
 
@@ -1232,4 +1232,16 @@
         </LinearLayout>
 
     </LinearLayout>
+
+
+    <!-- 视频窗口 -->
+    <LinearLayout
+        android:id="@+id/new_camera_show"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_alignParentBottom="true">
+
+    </LinearLayout>
+
+
 </RelativeLayout>
