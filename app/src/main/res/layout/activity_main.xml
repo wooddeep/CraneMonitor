@@ -18,1029 +18,1045 @@
 -->
 
 <!--suppress ALL -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
 
-    <!-- 主窗口 -->
-    <LinearLayout
-        android:id="@+id/main_cameras"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:background="#FFFCFCFC"
-        android:elevation="@dimen/dp10"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:layout_weight="2"
+        android:animateLayoutChanges="true">
+
+        <!-- 全屏视频窗口 -->
+        <LinearLayout
+            android:id="@+id/main_cameras"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="#FFFCFCFC"
+            android:elevation="@dimen/dp10"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!--
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <SurfaceView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/gray" />
+
+                <SurfaceView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <SurfaceView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/gray" />
+
+                <SurfaceView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </LinearLayout>
+            -->
+
+        </LinearLayout>
+
+        <!-- 登录认证窗口 -->
+        <LinearLayout
+            android:id="@+id/password_confirm"
+            android:layout_width="@dimen/dp320"
+            android:layout_height="@dimen/dp150"
+            android:layout_centerInParent="true"
+            android:background="@drawable/frame_border"
+            android:elevation="@dimen/dp5"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp40"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="请输入密码(please input password)"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dp16" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp60"
+                android:layout_gravity="center"
+                android:focusable="true"
+                android:focusableInTouchMode="true">
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="@dimen/dp180"
+                    android:layout_height="@dimen/dp35"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@drawable/split_boder"
+                    android:inputType="numberPassword"
+                    android:paddingLeft="@dimen/dp15"
+                    android:text=""
+                    android:textSize="@dimen/dp16" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp40">
+
+                <Button
+                    android:id="@+id/confirm"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    android:text="确定(confirm)"
+                    android:textColor="@color/deep_red"
+                    android:textSize="@dimen/dp16" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/gray" />
+
+                <Button
+                    android:id="@+id/cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    android:text="取消(cancel)"
+                    android:textColor="@color/deep_red"
+                    android:textSize="@dimen/dp16" />
+            </LinearLayout>
+        </LinearLayout>
 
         <!--
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-            <SurfaceView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+            android:id="@+id/comm_alarm_show"
+            android:layout_width="@dimen/dp150"
+            android:layout_height="@dimen/dp320"
+            android:layout_marginLeft="@dimen/dp30"
+            android:layout_centerInParent="true"
+            android:layout_alignParentLeft="true"
+            android:background="@color/gray"
+            android:elevation="@dimen/dp5"
+            android:orientation="vertical">
 
-            <View
-                android:layout_width="1dp"
+            <TableLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/gray" />
+                android:layout_margin="@dimen/dp5"
+                android:layout_weight="1"
+                android:background="@drawable/spliter_background">
 
-            <SurfaceView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-        </LinearLayout>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray" />
+                    <ImageView
+                        android:id="@+id/angle_logo"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp40"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dp2"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/rotation" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-            <SurfaceView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+                    <TextView
+                        android:id="@+id/angle"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp40"
+                        android:layout_gravity="center"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="0.0°"
+                        android:textSize="@dimen/dp22"
+                        android:textStyle="bold" />
+                </TableRow>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@color/gray" />
+                <TableRow
+                    android:id="@+id/vangle_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
-            <SurfaceView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+                    <ImageView
+                        android:id="@+id/vangle_logo"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp40"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dp2"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/vangle" />
+
+                    <TextView
+                        android:id="@+id/vangle"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp50"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="0.0°"
+                        android:textSize="@dimen/dp22"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/length_logo"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp40"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dp2"
+                        android:layout_toLeftOf="@+id/length"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/length" />
+
+                    <TextView
+                        android:id="@+id/length"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp40"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_toLeftOf="@+id/height_logo"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="0.0m"
+                        android:textSize="@dimen/dp22"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/weight_logo"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp40"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dp2"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/weight" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/weight"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp25"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:text="0.0t"
+                            android:textSize="@dimen/dp22"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:layout_width="@dimen/dp60"
+                            android:layout_height="@dimen/dp1"
+                            android:background="@color/black"
+                            android:padding="@dimen/dp2" />
+
+                        <TextView
+                            android:id="@+id/rated_weight"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp25"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:text="0.0t"
+                            android:textSize="@dimen/dp22"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/moment_logo"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp40"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dp2"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/moment_logo" />
+
+                    <TextView
+                        android:id="@+id/moment"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp50"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="0.0%"
+                        android:textSize="@dimen/dp22"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/hook_alarm_logo"
+                        android:layout_width="@dimen/dp40"
+                        android:layout_height="@dimen/dp40"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:gravity="center"
+                        app:srcCompat="@mipmap/hook" />
+
+                    <TextView
+                        android:id="@+id/hook_alarm"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp50"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="ok"
+                        android:textSize="@dimen/dp22"
+                        android:textStyle="bold" />
+                </TableRow>
+
+            </TableLayout>
         </LinearLayout>
         -->
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/password_confirm"
-        android:layout_width="@dimen/dp320"
-        android:layout_height="@dimen/dp150"
-        android:layout_centerInParent="true"
-        android:background="@drawable/frame_border"
-        android:elevation="@dimen/dp5"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp40"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="请输入密码(please input password)"
-            android:textColor="@color/black"
-            android:textSize="@dimen/dp16" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray" />
-
+        <!-- 主界面 -->
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp60"
-            android:layout_gravity="center"
-            android:focusable="true"
-            android:focusableInTouchMode="true">
-
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="@dimen/dp180"
-                android:layout_height="@dimen/dp35"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:background="@drawable/split_boder"
-                android:inputType="numberPassword"
-                android:paddingLeft="@dimen/dp15"
-                android:text=""
-                android:textSize="@dimen/dp16" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp40">
-
-            <Button
-                android:id="@+id/confirm"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/transparent"
-                android:text="确定(confirm)"
-                android:textColor="@color/deep_red"
-                android:textSize="@dimen/dp16" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@color/gray" />
-
-            <Button
-                android:id="@+id/cancel"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/transparent"
-                android:text="取消(cancel)"
-                android:textColor="@color/deep_red"
-                android:textSize="@dimen/dp16" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <!--
-    <LinearLayout
-        android:id="@+id/comm_alarm_show"
-        android:layout_width="@dimen/dp150"
-        android:layout_height="@dimen/dp320"
-        android:layout_marginLeft="@dimen/dp30"
-        android:layout_centerInParent="true"
-        android:layout_alignParentLeft="true"
-        android:background="@color/gray"
-        android:elevation="@dimen/dp5"
-        android:orientation="vertical">
-
-        <TableLayout
+            android:id="@+id/main_main_win"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/dp5"
-            android:layout_weight="1"
-            android:background="@drawable/spliter_background">
+            android:layout_above="@+id/new_camera_show"
+            android:orientation="vertical"
+            tools:context=".MainActivity">
 
-            <TableRow
+            <!-- 标题栏 -->
+            <RelativeLayout
+                android:id="@+id/title_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
+                android:layout_height="@dimen/px80"
+                android:layout_gravity="center"
+                android:background="@drawable/title_bar_background"
+                android:gravity="center">
 
                 <ImageView
-                    android:id="@+id/angle_logo"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp40"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/dp2"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/rotation" />
-
-                <TextView
-                    android:id="@+id/angle"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp40"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:text="0.0°"
-                    android:textSize="@dimen/dp22"
-                    android:textStyle="bold" />
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/vangle_row"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/vangle_logo"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp40"
+                    android:id="@+id/home_logo"
+                    android:layout_width="@dimen/px70"
+                    android:layout_height="@dimen/px70"
+                    android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/dp2"
-                    android:layout_weight="1"
                     android:gravity="center"
-                    app:srcCompat="@mipmap/vangle" />
+                    app:srcCompat="@mipmap/tmec" />
 
-                <TextView
-                    android:id="@+id/vangle"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp50"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:text="0.0°"
-                    android:textSize="@dimen/dp22"
-                    android:textStyle="bold" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/length_logo"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp40"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/dp2"
-                    android:layout_toLeftOf="@+id/length"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/length" />
-
-                <TextView
-                    android:id="@+id/length"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp40"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_toLeftOf="@+id/height_logo"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:text="0.0m"
-                    android:textSize="@dimen/dp22"
-                    android:textStyle="bold" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/weight_logo"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp40"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/dp2"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/weight" />
-
+                <!-- No and name -->
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:id="@+id/text_container"
+                    android:layout_width="@dimen/dp100"
+                    android:layout_height="@dimen/dp80"
+                    android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:layout_weight="2"
+                    android:layout_marginLeft="@dimen/dp2"
+                    android:layout_toRightOf="@+id/home_logo"
                     android:gravity="center"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/weight"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp25"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:singleLine="true"
-                        android:text="0.0t"
+                        android:id="@+id/craneNo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No.:1"
                         android:textSize="@dimen/dp22"
                         android:textStyle="bold" />
-
-                    <View
-                        android:layout_width="@dimen/dp60"
-                        android:layout_height="@dimen/dp1"
-                        android:background="@color/black"
-                        android:padding="@dimen/dp2" />
 
                     <TextView
-                        android:id="@+id/rated_weight"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp25"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:singleLine="true"
-                        android:text="0.0t"
+                        android:id="@+id/craneType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SCT16014A"
                         android:textSize="@dimen/dp22"
                         android:textStyle="bold" />
-
                 </LinearLayout>
-            </TableRow>
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/moment_logo"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp40"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/dp2"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    app:srcCompat="@mipmap/moment_logo" />
-
+                <!-- v1.1 成志信 版本 -->
                 <TextView
-                    android:id="@+id/moment"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp50"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:text="0.0%"
-                    android:textSize="@dimen/dp22"
-                    android:textStyle="bold" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/hook_alarm_logo"
+                    android:id="@+id/version_show"
                     android:layout_width="@dimen/dp40"
                     android:layout_height="@dimen/dp40"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
+                    android:layout_toRightOf="@+id/text_container"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/dp2"
+                    android:text="V1.1" />
+
+                <ImageView
+                    android:id="@+id/master_no_logo"
+                    android:layout_width="@dimen/dp40"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp2"
+                    android:layout_toLeftOf="@+id/master_no"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/dp2"
+                    app:srcCompat="@mipmap/master_no" />
+
+                <TextView
+                    android:id="@+id/master_no"
+                    android:layout_width="@dimen/dp55"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="@dimen/dp2"
+                    android:layout_toLeftOf="@+id/cable_logo"
+                    android:gravity="center"
+                    android:text="X"
+                    android:textSize="@dimen/dp22"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/cable_logo"
+                    android:layout_width="@dimen/dp35"
+                    android:layout_height="@dimen/dp35"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/dp5"
+                    android:layout_toLeftOf="@+id/cable"
+                    android:gravity="center"
+                    app:srcCompat="@mipmap/cable" />
+
+                <TextView
+                    android:id="@+id/cable"
+                    android:layout_width="@dimen/dp80"
+                    android:layout_height="@dimen/dp50"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="@dimen/dp5"
+                    android:layout_toLeftOf="@+id/height_logo"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textSize="@dimen/dp22"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/height_logo"
+                    android:layout_width="@dimen/px40"
+                    android:layout_height="@dimen/px40"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp2"
+                    android:layout_marginTop="@dimen/dp5"
+                    android:layout_toLeftOf="@+id/height"
+                    android:layout_weight="1"
                     android:gravity="center"
                     app:srcCompat="@mipmap/hook" />
 
                 <TextView
-                    android:id="@+id/hook_alarm"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp50"
+                    android:id="@+id/height"
+                    android:layout_width="@dimen/dp100"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="@dimen/dp2"
+                    android:layout_toLeftOf="@+id/wind_speed_log"
+                    android:gravity="center"
+                    android:text="0.0m"
+                    android:textSize="@dimen/dp22"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/wind_speed_log"
+                    android:layout_width="@dimen/px40"
+                    android:layout_height="@dimen/px40"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp2"
+                    android:layout_toLeftOf="@+id/wind_speed"
+                    android:gravity="center"
+                    app:srcCompat="@mipmap/wind_speed" />
+
+                <TextView
+                    android:id="@+id/wind_speed"
+                    android:layout_width="@dimen/dp100"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="@dimen/dp2"
+                    android:layout_toLeftOf="@+id/clock_logo"
+                    android:gravity="center"
+                    android:text="0.0m/s"
+                    android:textSize="@dimen/dp22"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/clock_logo"
+                    android:layout_width="@dimen/px40"
+                    android:layout_height="@dimen/px40"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dp20"
+                    android:layout_toLeftOf="@+id/time_container"
+                    android:gravity="center"
+                    app:srcCompat="@mipmap/calender" />
+
+
+                <LinearLayout
+                    android:id="@+id/time_container"
+                    android:layout_width="@dimen/dp150"
+                    android:layout_height="@dimen/dp60"
+                    android:layout_alignParentRight="true"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="ok"
-                    android:textSize="@dimen/dp22"
-                    android:textStyle="bold" />
-            </TableRow>
+                    android:orientation="vertical">
 
-        </TableLayout>
-    </LinearLayout>
-    -->
+                    <TextView
+                        android:id="@+id/currDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2020-11-28"
+                        android:textSize="@dimen/dp14"
+                        android:textStyle="bold" />
 
-    <LinearLayout
-        android:id="@+id/main_main_win"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/new_camera_show"
-        android:orientation="vertical"
-        tools:context=".MainActivity">
+                    <TextView
+                        android:id="@+id/devNo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="right | center_vertical"
+                        android:text="NO: 000000"
+                        android:textSize="@dimen/dp12"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/title_container"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/px80"
-            android:layout_gravity="center"
-            android:background="@drawable/title_bar_background"
-            android:gravity="center">
+            </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/home_logo"
-                android:layout_width="@dimen/px70"
-                android:layout_height="@dimen/px70"
-                android:layout_alignParentLeft="true"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp2"
-                android:gravity="center"
-                app:srcCompat="@mipmap/tmec" />
-
-            <!-- No and name -->
+            <!-- 主界面 -->
             <LinearLayout
-                android:id="@+id/text_container"
-                android:layout_width="@dimen/dp100"
-                android:layout_height="@dimen/dp80"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp2"
-                android:layout_toRightOf="@+id/home_logo"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/craneNo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="No.:1"
-                    android:textSize="@dimen/dp22"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/craneType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="SCT16014A"
-                    android:textSize="@dimen/dp22"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- v1.1 成志信 版本 -->
-            <TextView
-                android:id="@+id/version_show"
-                android:layout_width="@dimen/dp40"
-                android:layout_height="@dimen/dp40"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_toRightOf="@+id/text_container"
-                android:gravity="center"
-                android:paddingBottom="@dimen/dp2"
-                android:text="V1.1" />
-
-            <ImageView
-                android:id="@+id/master_no_logo"
-                android:layout_width="@dimen/dp40"
-                android:layout_height="@dimen/dp40"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp2"
-                android:layout_toLeftOf="@+id/master_no"
-                android:gravity="center"
-                android:paddingBottom="@dimen/dp2"
-                app:srcCompat="@mipmap/master_no" />
-
-            <TextView
-                android:id="@+id/master_no"
-                android:layout_width="@dimen/dp55"
-                android:layout_height="@dimen/dp40"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="@dimen/dp2"
-                android:layout_toLeftOf="@+id/cable_logo"
-                android:gravity="center"
-                android:text="X"
-                android:textSize="@dimen/dp22"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/cable_logo"
-                android:layout_width="@dimen/dp35"
-                android:layout_height="@dimen/dp35"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp5"
-                android:layout_toLeftOf="@+id/cable"
-                android:gravity="center"
-                app:srcCompat="@mipmap/cable" />
-
-            <TextView
-                android:id="@+id/cable"
-                android:layout_width="@dimen/dp80"
-                android:layout_height="@dimen/dp50"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginRight="@dimen/dp5"
-                android:layout_toLeftOf="@+id/height_logo"
-                android:gravity="center"
-                android:text="1"
-                android:textSize="@dimen/dp22"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/height_logo"
-                android:layout_width="@dimen/px40"
-                android:layout_height="@dimen/px40"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp2"
-                android:layout_marginTop="@dimen/dp5"
-                android:layout_toLeftOf="@+id/height"
-                android:layout_weight="1"
-                android:gravity="center"
-                app:srcCompat="@mipmap/hook" />
-
-            <TextView
-                android:id="@+id/height"
-                android:layout_width="@dimen/dp100"
-                android:layout_height="@dimen/dp40"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="@dimen/dp2"
-                android:layout_toLeftOf="@+id/wind_speed_log"
-                android:gravity="center"
-                android:text="0.0m"
-                android:textSize="@dimen/dp22"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/wind_speed_log"
-                android:layout_width="@dimen/px40"
-                android:layout_height="@dimen/px40"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp2"
-                android:layout_toLeftOf="@+id/wind_speed"
-                android:gravity="center"
-                app:srcCompat="@mipmap/wind_speed" />
-
-            <TextView
-                android:id="@+id/wind_speed"
-                android:layout_width="@dimen/dp100"
-                android:layout_height="@dimen/dp40"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="@dimen/dp2"
-                android:layout_toLeftOf="@+id/clock_logo"
-                android:gravity="center"
-                android:text="0.0m/s"
-                android:textSize="@dimen/dp22"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/clock_logo"
-                android:layout_width="@dimen/px40"
-                android:layout_height="@dimen/px40"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp20"
-                android:layout_toLeftOf="@+id/time_container"
-                android:gravity="center"
-                app:srcCompat="@mipmap/calender" />
-
-
-            <LinearLayout
-                android:id="@+id/time_container"
-                android:layout_width="@dimen/dp150"
-                android:layout_height="@dimen/dp60"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/currDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="2020-11-28"
-                    android:textSize="@dimen/dp14"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/devNo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="right | center_vertical"
-                    android:text="NO: 000000"
-                    android:textSize="@dimen/dp12"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-        </RelativeLayout>
-
-        <!-- 主界面 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <!-- main window for crane's cycle -->
-            <FrameLayout
-                android:id="@+id/main_frame"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="5">
+                android:layout_weight="2"
+                android:orientation="horizontal">
 
-                <com.wooddeep.crane.views.GridLineView
-                    android:id="@+id/grid"
+                <!-- main window for crane's cycle -->
+                <FrameLayout
+                    android:id="@+id/main_frame"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layerType="software" />
+                    android:layout_weight="5">
 
-                <LinearLayout
-                    android:layout_width="@dimen/dp5"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="left"
-                    android:background="@color/gray"></LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp5"
-                    android:background="@color/gray"></LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp5"
-                    android:layout_gravity="bottom"
-                    android:background="@color/gray"></LinearLayout>
-
-                <!-- 菜单容器 -->
-                <LinearLayout
-                    android:id="@+id/menu_container"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp50"
-                    android:layout_gravity="bottom"
-                    android:layout_marginLeft="@dimen/dp5"
-                    android:layout_marginBottom="@dimen/dp5"
-                    android:background="@drawable/frame_border"
-                    android:elevation="@dimen/dp10"
-                    android:orientation="horizontal"
-                    android:visibility="visible">
-
-                    <ImageView
-                        android:id="@+id/menu"
-                        android:layout_width="@dimen/dp50"
-                        android:layout_height="@dimen/dp30"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:src="@mipmap/menu_on" />
+                    <com.wooddeep.crane.views.GridLineView
+                        android:id="@+id/grid"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layerType="software" />
 
                     <LinearLayout
-                        android:id="@+id/menu_expand"
+                        android:layout_width="@dimen/dp5"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="left"
+                        android:background="@color/gray"></LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp5"
+                        android:background="@color/gray"></LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp5"
+                        android:layout_gravity="bottom"
+                        android:background="@color/gray"></LinearLayout>
+
+                    <!-- 菜单容器 -->
+                    <LinearLayout
+                        android:id="@+id/menu_container"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dp50"
                         android:layout_gravity="bottom"
+                        android:layout_marginLeft="@dimen/dp5"
+                        android:layout_marginBottom="@dimen/dp5"
+                        android:background="@drawable/frame_border"
+                        android:elevation="@dimen/dp10"
                         android:orientation="horizontal"
-                        android:visibility="gone">
+                        android:visibility="visible">
 
                         <ImageView
-                            android:id="@+id/crane_setting"
+                            android:id="@+id/menu"
                             android:layout_width="@dimen/dp50"
-                            android:layout_height="@dimen/dp40"
+                            android:layout_height="@dimen/dp30"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:src="@mipmap/crane_setting" />
+                            android:src="@mipmap/menu_on" />
 
-                        <ImageView
-                            android:id="@+id/area_setting"
-                            android:layout_width="@dimen/dp50"
-                            android:layout_height="@dimen/dp45"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/dp15"
-                            android:gravity="center"
-                            android:src="@mipmap/area_setting" />
-
-                        <ImageView
-                            android:id="@+id/protect_area_setting"
-                            android:layout_width="@dimen/dp50"
-                            android:layout_height="@dimen/dp45"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/dp15"
-                            android:gravity="center"
-                            android:src="@mipmap/protect_area_log" />
-
-                        <ImageView
-                            android:id="@+id/calibration_setting"
-                            android:layout_width="@dimen/dp40"
-                            android:layout_height="@dimen/dp35"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/dp15"
-                            android:gravity="center"
-                            android:src="@mipmap/calibration_setting" />
-
-                        <ImageView
-                            android:id="@+id/alarm_setting"
-                            android:layout_width="@dimen/dp40"
-                            android:layout_height="@dimen/dp35"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/dp15"
-                            android:gravity="center"
-                            android:src="@mipmap/alarm_setting" />
-
-                        <ImageView
-                            android:id="@+id/load_attribute"
-                            android:layout_width="@dimen/dp45"
-                            android:layout_height="@dimen/dp40"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/dp15"
-                            android:gravity="center"
-                            android:src="@mipmap/load_attr" />
-
-                        <ImageView
-                            android:id="@+id/data_record"
-                            android:layout_width="@dimen/dp45"
-                            android:layout_height="@dimen/dp40"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/dp15"
-                            android:gravity="center"
-                            android:src="@mipmap/log" />
-
-                        <!--
-                        <ImageView
-                            android:id="@+id/fault_diag"
-                            android:layout_width="@dimen/dp45"
-                            android:layout_height="@dimen/dp40"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/dp15"
-                            android:gravity="center"
-                            android:src="@mipmap/fault_diag"
-                            android:visibility="gone" />
-                        -->
-
-                        <ImageView
-                            android:id="@+id/camera_conf"
-                            android:layout_width="@dimen/dp45"
-                            android:layout_height="@dimen/dp40"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/dp15"
-                            android:gravity="center"
-                            android:src="@mipmap/camera_conf" />
-
-                        <ImageView
-                            android:id="@+id/super_admin"
-                            android:layout_width="@dimen/dp45"
-                            android:layout_height="@dimen/dp40"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/dp15"
-                            android:gravity="center"
-                            android:src="@mipmap/super_admin"
-                            android:visibility="gone" />
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- 放大缩小镜 -->
-                <LinearLayout
-                    android:id="@+id/zoom_container"
-                    android:layout_width="@dimen/dp50"
-                    android:layout_height="@dimen/dp100"
-                    android:layout_gravity="center_vertical|right"
-                    android:layout_marginRight="@dimen/dp5"
-                    android:background="@drawable/frame_border"
-                    android:elevation="@dimen/dp10"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:visibility="visible">
-
-                    <ImageView
-                        android:id="@+id/zoom_in"
-                        android:layout_width="@dimen/dp40"
-                        android:layout_height="@dimen/dp50"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:src="@mipmap/zoom_in" />
-
-                    <ImageView
-                        android:id="@+id/zoom_out"
-                        android:layout_width="@dimen/dp40"
-                        android:layout_height="@dimen/dp50"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:src="@mipmap/zoom_out" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/comm_alarm_show"
-                    android:layout_width="@dimen/dp150"
-                    android:layout_height="@dimen/dp320"
-                    android:layout_gravity="center_vertical|left"
-                    android:layout_marginLeft="@dimen/dp30"
-                    android:background="@color/gray"
-                    android:elevation="@dimen/dp5"
-                    android:orientation="vertical">
-
-                    <TableLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="@dimen/dp5"
-                        android:layout_weight="1"
-                        android:background="@drawable/spliter_background">
-
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <ImageView
-                                android:id="@+id/angle_logo"
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/dp40"
-                                android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/dp2"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                app:srcCompat="@mipmap/rotation" />
-
-                            <TextView
-                                android:id="@+id/angle"
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/dp40"
-                                android:layout_gravity="center"
-                                android:layout_weight="2"
-                                android:gravity="center"
-                                android:singleLine="true"
-                                android:text="0.0°"
-                                android:textSize="@dimen/dp22"
-                                android:textStyle="bold" />
-                        </TableRow>
-
-                        <TableRow
-                            android:id="@+id/vangle_row"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <ImageView
-                                android:id="@+id/vangle_logo"
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/dp40"
-                                android:layout_centerInParent="true"
-                                android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/dp2"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                app:srcCompat="@mipmap/vangle" />
-
-                            <TextView
-                                android:id="@+id/vangle"
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/dp50"
-                                android:layout_centerInParent="true"
-                                android:layout_gravity="center"
-                                android:layout_weight="2"
-                                android:gravity="center"
-                                android:singleLine="true"
-                                android:text="0.0°"
-                                android:textSize="@dimen/dp22"
-                                android:textStyle="bold" />
-                        </TableRow>
-
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <ImageView
-                                android:id="@+id/length_logo"
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/dp40"
-                                android:layout_centerInParent="true"
-                                android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/dp2"
-                                android:layout_toLeftOf="@+id/length"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                app:srcCompat="@mipmap/length" />
-
-                            <TextView
-                                android:id="@+id/length"
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/dp40"
-                                android:layout_centerInParent="true"
-                                android:layout_gravity="center"
-                                android:layout_toLeftOf="@+id/height_logo"
-                                android:layout_weight="2"
-                                android:gravity="center"
-                                android:singleLine="true"
-                                android:text="0.0m"
-                                android:textSize="@dimen/dp22"
-                                android:textStyle="bold" />
-                        </TableRow>
-
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <ImageView
-                                android:id="@+id/weight_logo"
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/dp40"
-                                android:layout_centerInParent="true"
-                                android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/dp2"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                app:srcCompat="@mipmap/weight" />
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center"
-                                android:layout_weight="2"
-                                android:gravity="center"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/weight"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="@dimen/dp25"
-                                    android:layout_centerInParent="true"
-                                    android:layout_gravity="center"
-                                    android:gravity="center"
-                                    android:singleLine="true"
-                                    android:text="0.0t"
-                                    android:textSize="@dimen/dp22"
-                                    android:textStyle="bold" />
-
-                                <View
-                                    android:layout_width="@dimen/dp60"
-                                    android:layout_height="@dimen/dp1"
-                                    android:background="@color/black"
-                                    android:padding="@dimen/dp2" />
-
-                                <TextView
-                                    android:id="@+id/rated_weight"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="@dimen/dp25"
-                                    android:layout_centerInParent="true"
-                                    android:layout_gravity="center"
-                                    android:gravity="center"
-                                    android:singleLine="true"
-                                    android:text="0.0t"
-                                    android:textSize="@dimen/dp22"
-                                    android:textStyle="bold" />
-
-                            </LinearLayout>
-                        </TableRow>
-
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <ImageView
-                                android:id="@+id/moment_logo"
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/dp40"
-                                android:layout_centerInParent="true"
-                                android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/dp2"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                app:srcCompat="@mipmap/moment_logo" />
-
-                            <TextView
-                                android:id="@+id/moment"
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/dp50"
-                                android:layout_centerInParent="true"
-                                android:layout_gravity="center"
-                                android:layout_weight="2"
-                                android:gravity="center"
-                                android:singleLine="true"
-                                android:text="0.0%"
-                                android:textSize="@dimen/dp22"
-                                android:textStyle="bold" />
-                        </TableRow>
-
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
+                        <LinearLayout
+                            android:id="@+id/menu_expand"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/dp50"
+                            android:layout_gravity="bottom"
+                            android:orientation="horizontal"
                             android:visibility="gone">
 
                             <ImageView
-                                android:id="@+id/hook_alarm_logo"
-                                android:layout_width="@dimen/dp40"
+                                android:id="@+id/crane_setting"
+                                android:layout_width="@dimen/dp50"
                                 android:layout_height="@dimen/dp40"
-                                android:layout_centerInParent="true"
                                 android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/dp5"
                                 android:gravity="center"
-                                app:srcCompat="@mipmap/hook" />
+                                android:src="@mipmap/crane_setting" />
 
-                            <TextView
-                                android:id="@+id/hook_alarm"
+                            <ImageView
+                                android:id="@+id/area_setting"
+                                android:layout_width="@dimen/dp50"
+                                android:layout_height="@dimen/dp45"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/dp15"
+                                android:gravity="center"
+                                android:src="@mipmap/area_setting" />
+
+                            <ImageView
+                                android:id="@+id/protect_area_setting"
+                                android:layout_width="@dimen/dp50"
+                                android:layout_height="@dimen/dp45"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/dp15"
+                                android:gravity="center"
+                                android:src="@mipmap/protect_area_log" />
+
+                            <ImageView
+                                android:id="@+id/calibration_setting"
+                                android:layout_width="@dimen/dp40"
+                                android:layout_height="@dimen/dp35"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/dp15"
+                                android:gravity="center"
+                                android:src="@mipmap/calibration_setting" />
+
+                            <ImageView
+                                android:id="@+id/alarm_setting"
+                                android:layout_width="@dimen/dp40"
+                                android:layout_height="@dimen/dp35"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/dp15"
+                                android:gravity="center"
+                                android:src="@mipmap/alarm_setting" />
+
+                            <ImageView
+                                android:id="@+id/load_attribute"
+                                android:layout_width="@dimen/dp45"
+                                android:layout_height="@dimen/dp40"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/dp15"
+                                android:gravity="center"
+                                android:src="@mipmap/load_attr" />
+
+                            <ImageView
+                                android:id="@+id/data_record"
+                                android:layout_width="@dimen/dp45"
+                                android:layout_height="@dimen/dp40"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/dp15"
+                                android:gravity="center"
+                                android:src="@mipmap/log" />
+
+                            <!--
+                            <ImageView
+                                android:id="@+id/fault_diag"
+                                android:layout_width="@dimen/dp45"
+                                android:layout_height="@dimen/dp40"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/dp15"
+                                android:gravity="center"
+                                android:src="@mipmap/fault_diag"
+                                android:visibility="gone" />
+                            -->
+
+                            <ImageView
+                                android:id="@+id/camera_conf"
+                                android:layout_width="@dimen/dp45"
+                                android:layout_height="@dimen/dp40"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/dp15"
+                                android:gravity="center"
+                                android:src="@mipmap/camera_conf" />
+
+                            <ImageView
+                                android:id="@+id/super_admin"
+                                android:layout_width="@dimen/dp45"
+                                android:layout_height="@dimen/dp40"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="@dimen/dp15"
+                                android:gravity="center"
+                                android:src="@mipmap/super_admin"
+                                android:visibility="gone" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- 放大缩小镜 -->
+                    <LinearLayout
+                        android:id="@+id/zoom_container"
+                        android:layout_width="@dimen/dp50"
+                        android:layout_height="@dimen/dp100"
+                        android:layout_gravity="center_vertical|right"
+                        android:layout_marginRight="@dimen/dp5"
+                        android:background="@drawable/frame_border"
+                        android:elevation="@dimen/dp10"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:id="@+id/zoom_in"
+                            android:layout_width="@dimen/dp40"
+                            android:layout_height="@dimen/dp50"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:src="@mipmap/zoom_in" />
+
+                        <ImageView
+                            android:id="@+id/zoom_out"
+                            android:layout_width="@dimen/dp40"
+                            android:layout_height="@dimen/dp50"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:src="@mipmap/zoom_out" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/comm_alarm_show"
+                        android:layout_width="@dimen/dp150"
+                        android:layout_height="@dimen/dp320"
+                        android:layout_gravity="center_vertical|left"
+                        android:layout_marginLeft="@dimen/dp30"
+                        android:background="@color/gray"
+                        android:elevation="@dimen/dp5"
+                        android:orientation="vertical">
+
+                        <TableLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/dp5"
+                            android:layout_weight="1"
+                            android:background="@drawable/spliter_background">
+
+                            <TableRow
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/dp50"
-                                android:layout_centerInParent="true"
-                                android:layout_gravity="center"
-                                android:gravity="center"
-                                android:text="ok"
-                                android:textSize="@dimen/dp22"
-                                android:textStyle="bold" />
-                        </TableRow>
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
 
-                    </TableLayout>
-                </LinearLayout>
+                                <ImageView
+                                    android:id="@+id/angle_logo"
+                                    android:layout_width="0dp"
+                                    android:layout_height="@dimen/dp40"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="@dimen/dp2"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    app:srcCompat="@mipmap/rotation" />
 
-            </FrameLayout>
+                                <TextView
+                                    android:id="@+id/angle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="@dimen/dp40"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="2"
+                                    android:gravity="center"
+                                    android:singleLine="true"
+                                    android:text="0.0°"
+                                    android:textSize="@dimen/dp22"
+                                    android:textStyle="bold" />
+                            </TableRow>
 
-            <!-- 右侧 塔机控件 以及 告警 -->
-            <LinearLayout
-                android:id="@+id/crane_show"
-                android:layout_width="@dimen/crane_view_width"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:background="@color/gray"
-                android:orientation="vertical">
+                            <TableRow
+                                android:id="@+id/vangle_row"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <ImageView
+                                    android:id="@+id/vangle_logo"
+                                    android:layout_width="0dp"
+                                    android:layout_height="@dimen/dp40"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="@dimen/dp2"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    app:srcCompat="@mipmap/vangle" />
+
+                                <TextView
+                                    android:id="@+id/vangle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="@dimen/dp50"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="2"
+                                    android:gravity="center"
+                                    android:singleLine="true"
+                                    android:text="0.0°"
+                                    android:textSize="@dimen/dp22"
+                                    android:textStyle="bold" />
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <ImageView
+                                    android:id="@+id/length_logo"
+                                    android:layout_width="0dp"
+                                    android:layout_height="@dimen/dp40"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="@dimen/dp2"
+                                    android:layout_toLeftOf="@+id/length"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    app:srcCompat="@mipmap/length" />
+
+                                <TextView
+                                    android:id="@+id/length"
+                                    android:layout_width="0dp"
+                                    android:layout_height="@dimen/dp40"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="center"
+                                    android:layout_toLeftOf="@+id/height_logo"
+                                    android:layout_weight="2"
+                                    android:gravity="center"
+                                    android:singleLine="true"
+                                    android:text="0.0m"
+                                    android:textSize="@dimen/dp22"
+                                    android:textStyle="bold" />
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <ImageView
+                                    android:id="@+id/weight_logo"
+                                    android:layout_width="0dp"
+                                    android:layout_height="@dimen/dp40"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="@dimen/dp2"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    app:srcCompat="@mipmap/weight" />
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="2"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/weight"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/dp25"
+                                        android:layout_centerInParent="true"
+                                        android:layout_gravity="center"
+                                        android:gravity="center"
+                                        android:singleLine="true"
+                                        android:text="0.0t"
+                                        android:textSize="@dimen/dp22"
+                                        android:textStyle="bold" />
+
+                                    <View
+                                        android:layout_width="@dimen/dp60"
+                                        android:layout_height="@dimen/dp1"
+                                        android:background="@color/black"
+                                        android:padding="@dimen/dp2" />
+
+                                    <TextView
+                                        android:id="@+id/rated_weight"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/dp25"
+                                        android:layout_centerInParent="true"
+                                        android:layout_gravity="center"
+                                        android:gravity="center"
+                                        android:singleLine="true"
+                                        android:text="0.0t"
+                                        android:textSize="@dimen/dp22"
+                                        android:textStyle="bold" />
+
+                                </LinearLayout>
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <ImageView
+                                    android:id="@+id/moment_logo"
+                                    android:layout_width="0dp"
+                                    android:layout_height="@dimen/dp40"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="@dimen/dp2"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    app:srcCompat="@mipmap/moment_logo" />
+
+                                <TextView
+                                    android:id="@+id/moment"
+                                    android:layout_width="0dp"
+                                    android:layout_height="@dimen/dp50"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="2"
+                                    android:gravity="center"
+                                    android:singleLine="true"
+                                    android:text="0.0%"
+                                    android:textSize="@dimen/dp22"
+                                    android:textStyle="bold" />
+                            </TableRow>
+
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:visibility="gone">
+
+                                <ImageView
+                                    android:id="@+id/hook_alarm_logo"
+                                    android:layout_width="@dimen/dp40"
+                                    android:layout_height="@dimen/dp40"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="@dimen/dp5"
+                                    android:gravity="center"
+                                    app:srcCompat="@mipmap/hook" />
+
+                                <TextView
+                                    android:id="@+id/hook_alarm"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/dp50"
+                                    android:layout_centerInParent="true"
+                                    android:layout_gravity="center"
+                                    android:gravity="center"
+                                    android:text="ok"
+                                    android:textSize="@dimen/dp22"
+                                    android:textStyle="bold" />
+                            </TableRow>
+
+                        </TableLayout>
+                    </LinearLayout>
+
+                </FrameLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp0"
+                    android:layout_height="match_parent"
+                    android:layout_width="6dp"
+                    android:background="@color/gray">
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <!--中间 塔机控件 以及 告警-->
+            <LinearLayout
+                android:id="@+id/crane_show"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:background="@color/gray"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/dp5"
-                    android:layout_marginTop="@dimen/dp5"
                     android:layout_marginRight="@dimen/dp5"
+                    android:layout_marginBottom="@dimen/dp5"
                     android:layout_weight="1"
                     android:background="@drawable/spliter_background"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
 
                     <com.wooddeep.crane.views.CraneView
                         android:id="@+id/crane"
@@ -1061,10 +1077,10 @@
                         android:visibility="gone">
 
                         <LinearLayout
+                            android:id="@+id/mini_camera_container"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:id="@+id/mini_camera_container">
+                            android:orientation="vertical">
 
                         </LinearLayout>
                     </ScrollView>
@@ -1072,10 +1088,9 @@
                 </LinearLayout>
 
                 <TableLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp0"
-                    android:layout_margin="@dimen/dp5"
-                    android:layout_marginTop="@dimen/dp0"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="@dimen/dp5"
+                    android:layout_marginBottom="@dimen/dp5"
                     android:layout_weight="1"
                     android:background="@drawable/spliter_background">
 
@@ -1223,7 +1238,6 @@
                             android:textStyle="bold" />
 
                     </TableRow>
-
                 </TableLayout>
 
 
@@ -1231,17 +1245,11 @@
 
         </LinearLayout>
 
-    </LinearLayout>
-
+    </RelativeLayout>
 
     <!-- 视频窗口 -->
     <LinearLayout
         android:id="@+id/new_camera_show"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_alignParentBottom="true">
-
-    </LinearLayout>
-
-
-</RelativeLayout>
+        android:layout_weight="1"></LinearLayout>
+</LinearLayout>
